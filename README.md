@@ -4,7 +4,7 @@ MVVM demo for zkweb framework
 
 ### Features
 
-- Use Angular JS 4.0 + Webpack 2.0
+- Use AngularJS 4.0 + Webpack 2.0
     - Support automatic generate script form dto and application service
     - Support return pre-compressed script bundle
     - Support CORS api request
@@ -15,6 +15,7 @@ MVVM demo for zkweb framework
 - Support multi-tenant
 - Support multi-language
 - Support multi-timezone
+- Support scheduled task
 - Support unit of work
     - Support query filter
     - Support operation filter
@@ -23,6 +24,7 @@ MVVM demo for zkweb framework
     - Support manage tenants
     - Support manage roles
     - Support manage users
+- Provide command line compile and publish script
 
 ### How to start
 
@@ -48,6 +50,10 @@ Open `ZKWeb.MVVMDemo.AspNetCore\App_Data\config.json` and modify database config
 **Start website**
 
 Open `ZKWeb.MVVMDemo.sln` with VS2017 and run the project.
+
+### Documents
+
+- [Chinese Documents(中文文档)](./docs/cn)
 
 ### LICENSE
 
