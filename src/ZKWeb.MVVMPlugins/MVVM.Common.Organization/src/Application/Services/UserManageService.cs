@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +17,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Services;
 using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Services;
+using ZKWeb.Web;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
 
@@ -38,6 +40,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
             _teantManager = tenantManager;
         }
 
+        [Action("Search", HttpMethods.POST)]
         [Description("搜索用户")]
         [CheckPrivilege(typeof(IAmAdmin), "User:View")]
         public GridSearchResponseDto Search(GridSearchRequestDto request)
@@ -59,6 +62,23 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
                 .ToResponse<UserOutputDto>();
         }
 
+        [Action("test", HttpMethods.GET)]
+        [Description("测试基本数据类型")]
+        [CheckPrivilege(typeof(IAmAdmin), "User:Test")]
+        public GridSearchResponseDto Test(string testid)
+        {
+            return new GridSearchResponseDto(10, new List<object>());
+        }
+
+        [Action("TestObject", HttpMethods.GET)]
+        [Description("测试复杂对象")]
+        [CheckPrivilege(typeof(IAmAdmin), "User:TestObject")]
+        public GridSearchResponseDto TestObject(TestInput testInputDto)
+        {
+            return new GridSearchResponseDto(10, new List<object>());
+        }
+
+        [Action("customEdit",HttpMethods.POST)]
         [Description("编辑用户")]
         [CheckPrivilege(typeof(IAmAdmin), "User:Edit")]
         public ActionResponseDto Edit(UserInputDto dto)
@@ -92,6 +112,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
             return ActionResponseDto.CreateSuccess("Deleted Successfully");
         }
 
+        [Action("", HttpMethods.GET)]
         [Description("获取所有用户类型")]
         [CheckPrivilege(typeof(IAmAdmin))]
         public IList<UserTypeOutputDto> GetAllUserTypes()
@@ -103,5 +124,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
                 Description = new T(t.Type)
             }).ToList();
         }
+    }
+
+    public class TestInput:IInputDto
+    {
+        public string param1 { get; set; }
+        public int param2 { get; set; }
     }
 }

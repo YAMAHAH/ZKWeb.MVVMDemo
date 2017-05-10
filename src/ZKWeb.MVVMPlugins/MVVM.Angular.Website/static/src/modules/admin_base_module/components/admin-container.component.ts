@@ -2,12 +2,12 @@
 import { Message, MenuItem } from 'primeng/primeng';
 import { NavMenuGroup } from '../navigation/nav-menu-group';
 import { AdminNavMenu } from '../navigation/admin-nav-menu';
-import { AppConfigService } from '../../base_module/services/app-config-service';
-import { AppTranslationService } from '../../base_module/services/app-translation-service';
 import { AppSessionService } from '../../auth_module/services/app-session-service';
 import { AppPrivilegeService } from '../../auth_module/services/app-privilege-service';
 import { WebsiteManageService } from '../../generated_module/services/website-manage-service';
 import { AdminToastService } from '../services/admin-toast-service';
+import { AppConfigService } from '../../global_module/services/app-config-service';
+import { AppTranslationService } from '../../global_module/services/app-translation-service';
 
 @Component({
     selector: 'admin-container',

@@ -21,6 +21,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Structs
         /// Url地址
         /// </summary>
         public string Url { get; set; }
+
+        /// <summary>
+        /// 请求方法
+        /// </summary>
+        public string Method { get; set; } = HttpMethods.POST;
         /// <summary>
         /// 属性列表
         /// </summary>
@@ -38,7 +43,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Structs
         /// 初始化
         /// </summary>
         public ApplicationServiceApiMethodInfo(
-            Type returnType, string name, string url,
+            Type returnType, string name, string url,string method,
             IEnumerable<Attribute> attributes,
             IEnumerable<ApplicationServiceApiParameterInfo> parameters,
             Func<IActionResult> action)
@@ -46,6 +51,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Structs
             ReturnType = returnType;
             Name = name;
             Url = url;
+            Method = method;
             Attributes = attributes;
             Parameters = parameters;
             Action = action;

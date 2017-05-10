@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AppApiService } from '../../base_module/services/app-api-service';
+import { AppApiService } from '../../global_module/services/app-api-service';
 import { ActionResponseDto } from '../dtos/action-response-dto';
 import { UserChangePasswordInputDto } from '../dtos/user-change-password-input-dto';
 import { UserUploadAvatarInputDto } from '../dtos/user-upload-avatar-input-dto';
@@ -15,7 +15,8 @@ export class UserProfileService {
         return this.appApiService.call<ActionResponseDto>(
             "/api/UserProfileService/ChangePassword",
             {
-                dto
+                method: "POST",
+                body: { dto }
             });
     }
 
@@ -24,7 +25,8 @@ export class UserProfileService {
         return this.appApiService.call<ActionResponseDto>(
             "/api/UserProfileService/UploadAvatar",
             {
-                dto
+                method: "POST",
+                body: { dto }
             });
     }
 }

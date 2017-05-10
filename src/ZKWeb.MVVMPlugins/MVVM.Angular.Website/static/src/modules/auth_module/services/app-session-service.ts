@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { SessionInfoDto } from '../../generated_module/dtos/session-info-dto';
 import { SessionService } from '../../generated_module/services/session-service';
-import { AppConfigService } from '../../base_module/services/app-config-service';
+import { AppConfigService } from '../../global_module/services/app-config-service';
 
 /** 获取会话信息的服务 */
 @Injectable()

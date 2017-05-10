@@ -14,7 +14,6 @@ import {
 
 import { BaseModule } from '../base_module/base.module';
 import { GeneratedModule } from '../generated_module/generated.module';
-
 import { AdminContainerComponent } from './components/admin-container.component';
 import { AdminToastService } from './services/admin-toast-service';
 
@@ -31,7 +30,6 @@ import { AdminToastService } from './services/admin-toast-service';
         GrowlModule,
         SlideMenuModule,
         BaseModule,
-        GeneratedModule,
         RouterModule
     ],
     declarations: [
@@ -41,7 +39,6 @@ import { AdminToastService } from './services/admin-toast-service';
         AdminToastService
     ],
     exports: [
-        RouterModule,
         AdminContainerComponent
     ]
 })

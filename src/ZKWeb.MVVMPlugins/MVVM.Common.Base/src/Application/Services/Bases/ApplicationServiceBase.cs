@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Routing;
+using System;
 using System.Collections.Generic;
 using System.FastReflection;
 using System.Linq;
@@ -71,11 +72,20 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases
                 {
                     action = filterAttribute.Filter(action);
                 }
+                //获取函数的请求方法
+                var requestPath = $"{UrlBase}/{method.Name}";
+                var requestMethod = HttpMethods.POST;
+                var requestMethodAttributes = method.GetCustomAttributes<ActionAttribute>();
+                foreach (var actionAttribute in requestMethodAttributes)
+                {
+                    requestMethod = actionAttribute.Method;
+                    requestPath = actionAttribute.Path == "" ? requestPath : $"{UrlBase}/{actionAttribute.Path}";
+                }
                 // 返回函数信息
                 var info = new ApplicationServiceApiMethodInfo(
                     method.ReturnType,
                     method.Name,
-                    $"{UrlBase}/{method.Name}",
+                    requestPath, requestMethod,
                     method.FastGetCustomAttributes(typeof(Attribute), true).OfType<Attribute>(),
                     method.GetParameters().Select(p => new ApplicationServiceApiParameterInfo(
                         p.ParameterType,
@@ -99,7 +109,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases
             {
                 var url = methodInfo.Url;
                 var action = methodInfo.Action;
-                controllerManager.RegisterAction(url, HttpMethods.POST, action);
+                controllerManager.RegisterAction(url, methodInfo.Method, action);
             }
         }
     }

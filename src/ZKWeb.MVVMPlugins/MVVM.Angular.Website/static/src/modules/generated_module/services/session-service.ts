@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AppApiService } from '../../base_module/services/app-api-service';
+import { AppApiService } from '../../global_module/services/app-api-service';
 import { SessionInfoDto } from '../dtos/session-info-dto';
 
 @Injectable()
@@ -13,6 +13,7 @@ export class SessionService {
         return this.appApiService.call<SessionInfoDto>(
             "/api/SessionService/GetSessionInfo",
             {
+                method: "POST"
             });
     }
 }

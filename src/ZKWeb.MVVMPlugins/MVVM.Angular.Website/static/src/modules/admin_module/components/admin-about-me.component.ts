@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Message } from 'primeng/primeng';
-import { AppTranslationService } from '../../base_module/services/app-translation-service';
+import { AppTranslationService } from '../../global_module/services/app-translation-service';
 import { AppSessionService } from '../../auth_module/services/app-session-service';
 import { AppPrivilegeService } from '../../auth_module/services/app-privilege-service';
 import { UserProfileService } from '../../generated_module/services/user-profile-service';

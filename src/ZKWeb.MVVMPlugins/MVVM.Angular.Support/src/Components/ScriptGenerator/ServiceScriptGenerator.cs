@@ -5,7 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Interfaces;
+using ZKWeb.Web;
 using ZKWebStandard.Ioc;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
@@ -34,7 +36,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
                 .GetCustomAttribute<DescriptionAttribute>()?.Description ?? className;
             includeBuilder.AppendLine("import { Injectable } from '@angular/core';");
             includeBuilder.AppendLine("import { Observable } from 'rxjs/Observable';");
-            includeBuilder.AppendLine("import { AppApiService } from '../../base_module/services/app-api-service';");
+            includeBuilder.AppendLine("import { AppApiService } from '../../global_module/services/app-api-service';");
             classBuilder.AppendLine("@Injectable()");
             classBuilder.AppendLine($"/** {classDescription} */");
             classBuilder.AppendLine($"export class {className} {{");
@@ -81,19 +83,68 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
                     }
                 }
                 classBuilder.AppendLine($"): Observable<{methodReturnType}> {{");
-                classBuilder.AppendLine($"        return this.appApiService.call<{methodReturnType}>(");
-                classBuilder.AppendLine($"            {JsonConvert.SerializeObject(methodUrl)},");
-                classBuilder.AppendLine($"            {{");
+                //序列化参数
+                string[] requireBodyMethods = { "post", "put", "patch" }; //head,options,get
+                string requestMethod = method.Method.ToLower();
+
+                string requestBody = string.Empty;
+                string requestParams = string.Empty;
+
+                requestBody = "{ ";
+                requestParams = "[";
                 foreach (var parameter in methodParameters)
                 {
-                    classBuilder.Append($"                {parameter.name}");
+                    requestBody += parameter.name;
+                    if (typeof(IInputDto).GetTypeInfo().IsAssignableFrom(parameter.GetType()))
+                    {
+                        requestParams += parameter.name;
+                    }
+                    else
+                    {
+                        requestParams += "{ " + parameter.name + " }";
+                    }
                     if (parameter != methodParameters.Last())
                     {
-                        classBuilder.Append(",");
+                        requestBody += ",";
+                        requestParams += ", ";
                     }
-                    classBuilder.AppendLine();
                 }
-                classBuilder.AppendLine($"            }});");
+                requestBody += " }";
+                requestParams += "]";
+
+                if (!requireBodyMethods.Contains(requestMethod))
+                {
+                    var queryString = "        let urlParams = this.appApiService.getRequestQueryString(" + requestParams + ");";
+                    if (methodParameters.Count > 0) classBuilder.AppendLine(queryString);
+                }
+                classBuilder.AppendLine($"        return this.appApiService.call<{methodReturnType}>(");
+                classBuilder.AppendLine($"            {JsonConvert.SerializeObject(methodUrl)},");
+
+                //添加BODY
+                //body:{ inputdtoA, inputdtoB } //按照约定只有一个输入参数，封装所有的信息
+ 
+                //根据API的method,生成相应的请求选项
+                // classBuilder.AppendLine($"            }},");
+                if (requireBodyMethods.Contains(requestMethod) || methodParameters.Count == 0)
+                {
+                    if (methodParameters.Count > 0)
+                    {
+                        classBuilder.AppendLine("            {\n                method: \"" + $"{method.Method}\"," +
+                                                             "\n                body: " + $"{requestBody}" +
+                                                             "\n            });");
+                    }
+                    else
+                    {
+                        classBuilder.AppendLine("            {\n                method: \"" + $"{method.Method}" + "\"\n            });");
+                    }
+                }
+                else
+                {
+                    classBuilder.AppendLine("            {\n                method: \"" + $"{method.Method}\"," +
+                                                         "\n                params: urlParams" +
+                                           "\n            });");
+                }
+
                 classBuilder.AppendLine($"    }}");
                 if (method != methods.Last())
                 {

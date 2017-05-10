@@ -2,6 +2,7 @@
     "name": "zkweb-mvvm-demo",
     "version": "1.0.0",
     "scripts": {
+        "start": " npm run watch",
         "build": "./node_modules/.bin/webpack --config webpack.config.js --colors --progress",
         "watch": "./node_modules/.bin/webpack --config webpack.config.js --colors --progress --watch",
         "lint": "./node_modules/.bin/tslint ./src/**/*.ts -t verbose"

@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { AppTranslationService } from '../../base_module/services/app-translation-service';
+import { AppTranslationService } from '../../global_module/services/app-translation-service';
 import { AuthRequirement } from '../auth/auth-requirement';
 import { UserOutputDto } from '../../generated_module/dtos/user-output-dto';
 import { UserTypes } from '../../generated_module/privileges/user-types';

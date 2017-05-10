@@ -4,7 +4,7 @@ import { SelectItem } from 'primeng/primeng';
 import { ConfirmationService } from 'primeng/primeng';
 import { CrudWithDialogBaseComponent } from '../../base_module/components/crud-with-dialog-base.component';
 import { GridSearchRequestDto } from '../../generated_module/dtos/grid-search-request-dto';
-import { AppTranslationService } from '../../base_module/services/app-translation-service';
+import { AppTranslationService } from '../../global_module/services/app-translation-service';
 import { TenantManageService } from '../../generated_module/services/tenant-manage-service';
 import { RoleManageService } from '../../generated_module/services/role-manage-service';
 import { UserManageService } from '../../generated_module/services/user-manage-service';
@@ -13,6 +13,7 @@ import { UserTypes } from '../../generated_module/privileges/user-types';
 import { Privileges } from '../../generated_module/privileges/privileges';
 import { AppPrivilegeService } from '../../auth_module/services/app-privilege-service';
 import { AppSessionService } from '../../auth_module/services/app-session-service';
+import { TestInput } from '../../generated_module/dtos/test-input';
 
 @Component({
     selector: 'admin-user-list',
@@ -50,6 +51,12 @@ export class AdminUserListComponent extends CrudWithDialogBaseComponent {
                 this.userTypeOptions.push({ label: userType.Description, value: userType.Type });
             });
         });
+
+        this.userManageService.Test("aaaaa").subscribe(res => console.log("resssssssssssssss"));
+        let inputDto = new TestInput();
+        inputDto.param1 = "myobject";
+        inputDto.param2 = 2018;
+        this.userManageService.TestObject(inputDto).subscribe(res => console.log("TestObject"));
         this.editForm.addControl("Id", new FormControl(""));
         this.editForm.addControl("Type", new FormControl("", Validators.required));
         this.editForm.addControl("Username", new FormControl("", Validators.required));

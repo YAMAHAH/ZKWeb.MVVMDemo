@@ -1,5 +1,5 @@
 ﻿import { OnInit } from '@angular/core';
-import { AppTranslationService } from '../../base_module/services/app-translation-service';
+import { AppTranslationService } from '../../global_module/services/app-translation-service';
 import { GridSearchRequestDto } from '../../generated_module/dtos/grid-search-request-dto';
 import { GridSearchResponseDto } from '../../generated_module/dtos/grid-search-response-dto';
 import { GridSearchColumnFilter } from '../../generated_module/dtos/grid-search-column-filter';

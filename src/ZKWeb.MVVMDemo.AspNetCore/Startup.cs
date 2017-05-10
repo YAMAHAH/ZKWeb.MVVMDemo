@@ -8,6 +8,7 @@ namespace ZKWeb.MVVMDemo.AspNetCore
     /// </summary>
     public class Startup : ZKWeb.Hosting.AspNetCore.StartupBase
     {
+
         /// <summary>
         /// 配置程序
         /// </summary>
@@ -23,6 +24,14 @@ namespace ZKWeb.MVVMDemo.AspNetCore
             {
                 app.UseStatusCodePages();
             }
+            //app.UseCors(p =>
+            //{
+            //   // p.WithOrigins("*");
+            //    //.AllowAnyMethod()
+            //    //.AllowAnyHeader()
+            //    //.AllowCredentials();
+            //});
+
             // 使用Swagger中间件
             app.UseSwagger();
             app.UseSwaggerUI(c =>

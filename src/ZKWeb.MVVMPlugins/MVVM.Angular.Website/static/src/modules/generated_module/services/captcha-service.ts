@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AppApiService } from '../../base_module/services/app-api-service';
+import { AppApiService } from '../../global_module/services/app-api-service';
 
 @Injectable()
 /** 验证码服务 */
@@ -12,7 +12,8 @@ export class CaptchaService {
         return this.appApiService.call<string>(
             "/api/CaptchaService/GetCaptchaImageBase64",
             {
-                key
+                method: "POST",
+                body: { key }
             });
     }
 }

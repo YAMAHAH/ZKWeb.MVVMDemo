@@ -16,5 +16,14 @@ namespace ZKWeb.MVVMDemo.AspNetCore.Controllers
         {
             return Content("hello mvc");
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult Login()
+        {
+            return Content("hello Login");
+        }
     }
 }

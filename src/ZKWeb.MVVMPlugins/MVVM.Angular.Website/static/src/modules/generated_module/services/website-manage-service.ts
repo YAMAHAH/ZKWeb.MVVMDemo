@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AppApiService } from '../../base_module/services/app-api-service';
+import { AppApiService } from '../../global_module/services/app-api-service';
 import { ActionResponseDto } from '../dtos/action-response-dto';
 import { WebsiteInfoOutputDto } from '../dtos/website-info-output-dto';
 import { WebsiteSettingsDto } from '../dtos/website-settings-dto';
@@ -17,6 +17,7 @@ export class WebsiteManageService {
         return this.appApiService.call<ActionResponseDto>(
             "/api/WebsiteManageService/ClearCache",
             {
+                method: "POST"
             });
     }
 
@@ -25,6 +26,7 @@ export class WebsiteManageService {
         return this.appApiService.call<WebsiteInfoOutputDto>(
             "/api/WebsiteManageService/GetWebsiteInfo",
             {
+                method: "POST"
             });
     }
 
@@ -33,6 +35,7 @@ export class WebsiteManageService {
         return this.appApiService.call<WebsiteSettingsDto>(
             "/api/WebsiteManageService/GetWebsiteSettings",
             {
+                method: "POST"
             });
     }
 
@@ -41,7 +44,8 @@ export class WebsiteManageService {
         return this.appApiService.call<ActionResponseDto>(
             "/api/WebsiteManageService/SaveWebsiteSettings",
             {
-                dto
+                method: "POST",
+                body: { dto }
             });
     }
 
@@ -50,7 +54,8 @@ export class WebsiteManageService {
         return this.appApiService.call<GridSearchResponseDto>(
             "/api/WebsiteManageService/SearchScheduledTasks",
             {
-                request
+                method: "POST",
+                body: { request }
             });
     }
 
@@ -59,7 +64,8 @@ export class WebsiteManageService {
         return this.appApiService.call<GridSearchResponseDto>(
             "/api/WebsiteManageService/SearchScheduledTaskLogs",
             {
-                request
+                method: "POST",
+                body: { request }
             });
     }
 }

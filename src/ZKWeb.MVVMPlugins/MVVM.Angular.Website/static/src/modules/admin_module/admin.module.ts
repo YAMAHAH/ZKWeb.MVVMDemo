@@ -13,8 +13,6 @@ import {
 } from 'primeng/primeng';
 
 import { BaseModule } from '../base_module/base.module';
-import { GeneratedModule } from '../generated_module/generated.module';
-import { AuthModule } from '../auth_module/auth.module';
 import { AdminBaseModule } from '../admin_base_module/admin_base.module';
 
 import { AuthGuard } from '../auth_module/auth/auth-guard';
@@ -72,8 +70,6 @@ const routes: Routes = [
         DataTableModule,
         TabViewModule,
         BaseModule,
-        GeneratedModule,
-        AuthModule,
         AdminBaseModule,
         RouterModule.forChild(routes)
     ],

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AppApiService } from '../../base_module/services/app-api-service';
+import { AppApiService } from '../../global_module/services/app-api-service';
 import { GridSearchResponseDto } from '../dtos/grid-search-response-dto';
 import { GridSearchRequestDto } from '../dtos/grid-search-request-dto';
 import { ActionResponseDto } from '../dtos/action-response-dto';
@@ -16,7 +16,8 @@ export class TenantManageService {
         return this.appApiService.call<GridSearchResponseDto>(
             "/api/TenantManageService/Search",
             {
-                request
+                method: "POST",
+                body: { request }
             });
     }
 
@@ -25,7 +26,8 @@ export class TenantManageService {
         return this.appApiService.call<ActionResponseDto>(
             "/api/TenantManageService/Edit",
             {
-                dto
+                method: "POST",
+                body: { dto }
             });
     }
 
@@ -34,7 +36,8 @@ export class TenantManageService {
         return this.appApiService.call<ActionResponseDto>(
             "/api/TenantManageService/Remove",
             {
-                id
+                method: "POST",
+                body: { id }
             });
     }
 }

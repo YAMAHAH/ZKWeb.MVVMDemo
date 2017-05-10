@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { AuthRequirement } from './auth-requirement';
-import { AppConfigService } from '../../base_module/services/app-config-service';
-import { AppTranslationService } from '../../base_module/services/app-translation-service';
+import { AppConfigService } from '../../global_module/services/app-config-service';
+import { AppTranslationService } from '../../global_module/services/app-translation-service';
 import { AppSessionService } from '../services/app-session-service';
 import { AppPrivilegeService } from '../services/app-privilege-service';
 

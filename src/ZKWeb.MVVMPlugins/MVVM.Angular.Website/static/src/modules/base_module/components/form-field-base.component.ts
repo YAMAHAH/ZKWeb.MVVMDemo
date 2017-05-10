@@ -1,6 +1,6 @@
 ﻿import { OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AppTranslationService } from '../../base_module/services/app-translation-service';
+import { AppTranslationService } from '../../global_module/services/app-translation-service';
 
 export abstract class FormFieldBaseComponent implements OnInit {
     /** 表单对象 */

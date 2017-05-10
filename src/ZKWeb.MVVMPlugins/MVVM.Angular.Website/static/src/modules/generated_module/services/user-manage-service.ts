@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AppApiService } from '../../base_module/services/app-api-service';
+import { AppApiService } from '../../global_module/services/app-api-service';
 import { GridSearchResponseDto } from '../dtos/grid-search-response-dto';
 import { GridSearchRequestDto } from '../dtos/grid-search-request-dto';
+import { TestInput } from '../dtos/test-input';
 import { ActionResponseDto } from '../dtos/action-response-dto';
 import { UserInputDto } from '../dtos/user-input-dto';
 import { UserTypeOutputDto } from '../dtos/user-type-output-dto';
@@ -17,16 +18,40 @@ export class UserManageService {
         return this.appApiService.call<GridSearchResponseDto>(
             "/api/UserManageService/Search",
             {
-                request
+                method: "POST",
+                body: { request }
+            });
+    }
+
+    /** 测试基本数据类型 */
+    Test(testid: string): Observable<GridSearchResponseDto> {
+        let urlParams = this.appApiService.getRequestQueryString([{ testid }]);
+        return this.appApiService.call<GridSearchResponseDto>(
+            "/api/UserManageService/test",
+            {
+                method: "GET",
+                params: urlParams
+            });
+    }
+
+    /** 测试复杂对象 */
+    TestObject(testInputDto: TestInput): Observable<GridSearchResponseDto> {
+        let urlParams = this.appApiService.getRequestQueryString([{ testInputDto }]);
+        return this.appApiService.call<GridSearchResponseDto>(
+            "/api/UserManageService/TestObject",
+            {
+                method: "GET",
+                params: urlParams
             });
     }
 
     /** 编辑用户 */
     Edit(dto: UserInputDto): Observable<ActionResponseDto> {
         return this.appApiService.call<ActionResponseDto>(
-            "/api/UserManageService/Edit",
+            "/api/UserManageService/customEdit",
             {
-                dto
+                method: "POST",
+                body: { dto }
             });
     }
 
@@ -35,7 +60,8 @@ export class UserManageService {
         return this.appApiService.call<ActionResponseDto>(
             "/api/UserManageService/Remove",
             {
-                id
+                method: "POST",
+                body: { id }
             });
     }
 
@@ -44,6 +70,7 @@ export class UserManageService {
         return this.appApiService.call<UserTypeOutputDto[]>(
             "/api/UserManageService/GetAllUserTypes",
             {
+                method: "GET"
             });
     }
 }

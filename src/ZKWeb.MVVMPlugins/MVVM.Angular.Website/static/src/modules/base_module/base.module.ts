@@ -24,10 +24,6 @@ import { FormUploadComponent } from './components/form-upload.component';
 import { FormSubmitButtonComponent } from './components/form-submit-button.component';
 import { TransPipe } from './pipes/trans-pipe';
 
-import { AppApiService } from './services/app-api-service';
-import { AppConfigService } from './services/app-config-service';
-import { AppTranslationService } from './services/app-translation-service';
-
 @NgModule({
     imports: [
         CommonModule,
@@ -55,9 +51,6 @@ import { AppTranslationService } from './services/app-translation-service';
         TransPipe
     ],
     providers: [
-        AppApiService,
-        AppConfigService,
-        AppTranslationService
     ],
     exports: [
         FormGridComponent,
