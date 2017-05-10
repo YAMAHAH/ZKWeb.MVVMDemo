@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptionsArgs,URLSearchParams } from '@angular/http';
+import { Http, Response, Headers, RequestOptionsArgs, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -168,7 +168,11 @@ export class AppApiService {
                     if (Array.isArray(value)) {
                         continue;
                     }
-                    urlSearchParams.set(key, value);
+                    if (value instanceof Object) {
+                        urlSearchParams.appendAll(this.getRequestQueryString([value]));
+                    } else {
+                        urlSearchParams.set(key, value);
+                    }
                 }
             }
         });

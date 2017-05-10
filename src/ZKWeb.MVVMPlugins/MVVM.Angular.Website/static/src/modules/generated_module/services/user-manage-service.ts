@@ -35,8 +35,8 @@ export class UserManageService {
     }
 
     /** 测试复杂对象 */
-    TestObject(testInputDto: TestInput): Observable<GridSearchResponseDto> {
-        let urlParams = this.appApiService.getRequestQueryString([{ testInputDto }]);
+    TestObject(name: string, testInputDto: TestInput): Observable<GridSearchResponseDto> {
+        let urlParams = this.appApiService.getRequestQueryString([{ name }, { testInputDto }]);
         return this.appApiService.call<GridSearchResponseDto>(
             "/api/UserManageService/TestObject",
             {

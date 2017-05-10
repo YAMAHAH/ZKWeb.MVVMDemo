@@ -20,6 +20,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Services;
 using ZKWeb.Web;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
+using ZKWebStandard.Web;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
 {
@@ -67,15 +68,15 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [CheckPrivilege(typeof(IAmAdmin), "User:Test")]
         public GridSearchResponseDto Test(string testid)
         {
-            return new GridSearchResponseDto(10, new List<object>());
+            return new GridSearchResponseDto(Convert.ToInt64(testid), new List<object>());
         }
 
         [Action("TestObject", HttpMethods.GET)]
         [Description("测试复杂对象")]
         [CheckPrivilege(typeof(IAmAdmin), "User:TestObject")]
-        public GridSearchResponseDto TestObject(TestInput testInputDto)
+        public GridSearchResponseDto TestObject(string name,TestInput testInputDto)
         {
-            return new GridSearchResponseDto(10, new List<object>());
+            return new GridSearchResponseDto(testInputDto.param2, new List<object>() { name });
         }
 
         [Action("customEdit",HttpMethods.POST)]
