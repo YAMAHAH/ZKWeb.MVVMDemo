@@ -34,6 +34,15 @@ export class UserManageService {
             });
     }
 
+    /** 测试空参数 */
+    TestGet(): Observable<GridSearchResponseDto> {
+        return this.appApiService.call<GridSearchResponseDto>(
+            "/api/UserManageService/TestGet",
+            {
+                method: "GET"
+            });
+    }
+
     /** 测试复杂对象 */
     TestObject(name: string, testInputDto: TestInput): Observable<GridSearchResponseDto> {
         let urlParams = this.appApiService.getRequestQueryString([{ name }, { testInputDto }]);

@@ -28,7 +28,10 @@ var webpackConfig = {
             }
         }),
         new webpack.optimize.CommonsChunkPlugin({
-            name: ['app', 'vendor', 'polyfills']
+            names: ['app', 'vendor', 'polyfills'],
+            minChunks: 2,
+            children: true,
+            async: true
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
@@ -48,8 +51,7 @@ var webpackConfig = {
         ]),
     ],
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.ts$/,
                 loaders: ['@ngtools/webpack'],
             },

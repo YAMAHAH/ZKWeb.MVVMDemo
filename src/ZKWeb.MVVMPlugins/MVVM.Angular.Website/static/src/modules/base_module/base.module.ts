@@ -2,13 +2,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpModule } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-    InputTextModule,
-    InputTextareaModule,
-    DropdownModule,
-    MultiSelectModule,
-    ButtonModule
-} from 'primeng/primeng';
 
 import { FormGridComponent } from './components/form-grid.component';
 import { FormValidationMessagesComponent } from './components/form-validation-messages.component';
@@ -23,6 +16,11 @@ import { FormUploadComponent } from './components/form-upload.component';
 
 import { FormSubmitButtonComponent } from './components/form-submit-button.component';
 import { TransPipe } from './pipes/trans-pipe';
+import { InputTextModule } from 'primeng/components/inputtext/inputtext';
+import { DropdownModule } from 'primeng/components/dropdown/dropdown';
+import { MultiSelectModule } from 'primeng/components/multiselect/multiselect';
+import { ButtonModule } from 'primeng/components/button/button';
+import { InputTextareaModule } from "primeng/components/inputtextarea/inputtextarea";
 
 @NgModule({
     imports: [

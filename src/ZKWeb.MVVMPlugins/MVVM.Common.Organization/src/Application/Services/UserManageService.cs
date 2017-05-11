@@ -71,6 +71,13 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
             return new GridSearchResponseDto(Convert.ToInt64(testid), new List<object>());
         }
 
+        [Action("TestGet", HttpMethods.GET)]
+        [Description("测试空参数")]
+        public GridSearchResponseDto TestGet()
+        {
+            return new GridSearchResponseDto(100, new List<object>() {  });
+        }
+
         [Action("TestObject", HttpMethods.GET)]
         [Description("测试复杂对象")]
         [CheckPrivilege(typeof(IAmAdmin), "User:TestObject")]

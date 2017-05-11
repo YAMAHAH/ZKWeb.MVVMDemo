@@ -25,6 +25,13 @@ namespace ZKWeb.MVVMDemo.AspNetCore
                 var host = new WebHostBuilder()
                     .ConfigureServices(s =>
                     {
+                        //添加cros
+                        //s.AddCors(options => options.AddPolicy("defaultCors",
+                        //     p => p.WithOrigins("*")
+                        //            .AllowAnyMethod()
+                        //            .AllowAnyHeader()
+                        //            .AllowCredentials()
+                        //));
                         // 添加Mvc组件
                         s.AddMvcCore().AddApiExplorer();
                         // 添加Swgger组件，使用自定义的Api列表提供器
@@ -38,6 +45,7 @@ namespace ZKWeb.MVVMDemo.AspNetCore
                             c.DocInclusionPredicate((a, b) => true);
                             c.SwaggerDoc("v1", new Info() { Title = "ZKWeb MVVM Demo", Version = "V1" });
                         });
+
                     })
                     .UseKestrel()
                     .UseIISIntegration()

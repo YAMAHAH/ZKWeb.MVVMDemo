@@ -8,9 +8,9 @@
 // import '@angular/router';
 
 // RxJS
-import 'rxjs/Rx';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
+// import 'rxjs/Rx';
+// import 'rxjs/add/operator/map';
+// import 'rxjs/add/operator/mergeMap';
 
 // Styles
 import './vendor/styles/primeng/primeng.min.css';
