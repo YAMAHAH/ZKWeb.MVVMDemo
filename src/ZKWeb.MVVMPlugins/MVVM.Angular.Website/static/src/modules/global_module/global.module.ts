@@ -2,12 +2,14 @@
 import { AppTranslationService } from './services/app-translation-service';
 import { AppConfigService } from './services/app-config-service';
 import { AppApiService } from './services/app-api-service';
-import { AuthModule } from '../auth_module/auth.module';
 import { TransPipe } from './pipes/trans-pipe';
+import { AuthGuard } from '../auth_module/auth/auth-guard';
+import { AppPrivilegeService } from '../auth_module/services/app-privilege-service';
+import { AppSessionService } from '../auth_module/services/app-session-service';
 
 @NgModule({
     imports: [
-        AuthModule
+
     ],
     declarations: [
         TransPipe
@@ -23,7 +25,7 @@ export class GlobalModule {
             providers: [
                 AppApiService,
                 AppConfigService,
-                AppTranslationService
+                AppTranslationService,
             ]
         };
     }

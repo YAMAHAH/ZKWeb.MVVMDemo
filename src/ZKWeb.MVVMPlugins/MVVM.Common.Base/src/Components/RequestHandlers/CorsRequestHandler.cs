@@ -23,9 +23,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.RequestHandlers
                 // 允许不使用OPTIONS直接发来的请求
                 context.Response.AddHeader("Access-Control-Allow-Origin", "*");
 
-                var accessControlHeader = context.Request.GetHeader("Access-Control-Request-Method");
+                //var accessControlHeader = context.Request.GetHeader("Access-Control-Request-Method");
+                //|| (context.Request.Method == "GET" && accessControlHeader != null)
                 // 允许使用OPTIONS探测的请求
-                if (context.Request.Method == "OPTIONS" || (context.Request.Method == "GET" && accessControlHeader != null))
+                if (context.Request.Method == "OPTIONS")
                 {
                     var requestHeaders = context.Request.GetHeader("Access-Control-Request-Headers");
                     var requestMethod = context.Request.GetHeader("Access-Control-Request-Method");
