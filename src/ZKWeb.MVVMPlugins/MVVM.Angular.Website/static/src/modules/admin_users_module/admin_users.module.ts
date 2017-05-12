@@ -34,7 +34,7 @@ const routes: Routes = [
                 requirePrivileges: [Privileges.User_View]
             }
         }
-    },
+    }
 ];
 
 @NgModule({

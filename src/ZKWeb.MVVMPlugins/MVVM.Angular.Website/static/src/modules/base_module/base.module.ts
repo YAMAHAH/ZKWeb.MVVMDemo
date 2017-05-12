@@ -48,8 +48,6 @@ import { InputTextareaModule } from "primeng/components/inputtextarea/inputtexta
         FormSubmitButtonComponent,
         TransPipe
     ],
-    providers: [
-    ],
     exports: [
         FormGridComponent,
         FormValidationMessagesComponent,

@@ -23,7 +23,7 @@ namespace ZKWeb.MVVMDemo.AspNetCore
             {
                 app.UseStatusCodePages();
             }
-            //app.UseCors("defaultCors");
+            app.UseCors("defaultCors");
 
             // 使用Swagger中间件
             app.UseSwagger();

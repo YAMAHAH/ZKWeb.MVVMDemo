@@ -26,12 +26,12 @@ namespace ZKWeb.MVVMDemo.AspNetCore
                     .ConfigureServices(s =>
                     {
                         //添加cros
-                        //s.AddCors(options => options.AddPolicy("defaultCors",
-                        //     p => p.WithOrigins("*")
-                        //            .AllowAnyMethod()
-                        //            .AllowAnyHeader()
-                        //            .AllowCredentials()
-                        //));
+                        s.AddCors(options => options.AddPolicy("defaultCors",
+                             p => p.WithOrigins("*")
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader()
+                                    .AllowCredentials()
+                        ));
                         // 添加Mvc组件
                         s.AddMvcCore().AddApiExplorer();
                         // 添加Swgger组件，使用自定义的Api列表提供器

@@ -47,7 +47,6 @@ export class AdminUserListComponent extends CrudWithDialogBaseComponent {
         });
         this.userTypeOptions.push({ label: this.appTranslationService.translate("Please Select"), value: null });
         this.userManageService.GetAllUserTypes().subscribe(userTypes => {
-            console.log(userTypes);
             userTypes && userTypes.forEach(userType => {
                 this.userTypeOptions.push({ label: userType.Description, value: userType.Type });
             });
