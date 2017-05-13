@@ -4,23 +4,30 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './components/app.component';
 import { PageNotFoundComponent } from './components/page_not_found.component';
-import { GeneratedModule } from '../generated_module/generated.module';
 import { GlobalModule } from '../global_module/global.module';
-import { AuthModule } from '../auth_module/auth.module';
+import { RouterOutletComponent } from '../global_module/components/router-outlet.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/admin', pathMatch: 'full' },
-    { path: 'admin', loadChildren: '../admin_module/admin.module#AdminModule' },
+    { path: 'admin', loadChildren: '../admin_modules/admin.module#AdminModule' },
+    {
+        path: 'application',
+        component: RouterOutletComponent,
+        loadChildren: '../application_modules/main_module/main.module#MainModule'
+    },
+    // { path: 'account', loadChildren: '../sale_module/sale.module#SaleModule' },
+    // { path: 'passport', loadChildren: '../sale_module/sale.module#SaleModule' },
     { path: '**', component: PageNotFoundComponent }
 ];
 
+//admin
+//sale/sale-order sale/sale-order-query
+// /auth/login /auth/signup
 @NgModule({
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
         GlobalModule.forRoot(),
-        AuthModule,
-        GeneratedModule,
         RouterModule.forRoot(routes)
     ],
     declarations: [

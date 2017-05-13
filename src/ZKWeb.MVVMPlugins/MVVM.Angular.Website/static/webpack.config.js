@@ -33,6 +33,50 @@ var webpackConfig = {
             children: true,
             async: true
         }),
+
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     name: "sale-chunk",
+        //     filename: "sale-chunk.js",
+        //     minChunks: (module, count) => {
+        //         // 如果模块是一个路径，而且在路径中有 "somelib" 这个名字出现，countOfHowManyTimesThisModuleIsUsedAcrossAllChunks
+        //         // 而且它还被三个不同的 chunks/入口chunk 所使用，那请将它拆分到
+        //         // 另一个分开的 chunk 中，chunk 的 keyname 是 "my-single-lib-chunk"， 而文件名是
+        //         // "my-single-lib-chunk.js"
+        //         return module.resource && (/sale/).test(module.resource) && count === 2;
+        //     }
+        // }),
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     name: "admin-chunk",
+        //     filename: "admin-chunk.js",
+        //     minChunks: (module, count) => {
+        //         console.log(module);
+        //         // 如果模块是一个路径，而且在路径中有 "somelib" 这个名字出现，
+        //         // 而且它还被三个不同的 chunks/入口chunk 所使用，那请将它拆分到
+        //         // 另一个分开的 chunk 中，chunk 的 keyname 是 "my-single-lib-chunk"， 而文件名是
+        //         // "my-single-lib-chunk.js"
+        //         return module.resource && (/admin/).test(module.resource) && count === 2;
+        //     }
+        // }),
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     name: 'vendor',
+        //     minChunks: function (module) {
+        //         // 该配置假定你引入的 bootstrap 存在于 node_modules 目录中
+        //         return module.context && module.context.indexOf('node_modules') !== -1;
+        //     }
+        // }),
+        // //为了避免vendor.*.js的hash值发生改变需要输出一个manifest.*.js文件
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     name: 'manifest' //But since there are no more common modules between them we end up with just the runtime code included in the manifest file
+        // }),
+        // new CleanWebpackPlugin(
+        //     ['dist/main.*.js', 'dist/manifest.*.js',],　 //匹配删除的文件
+        //     {
+        //         root: __dirname,       　　　　　　　　　　//根目录
+        //         verbose: true,        　　　　　　　　　　//开启在控制台输出信息
+        //         dry: false        　　　　　　　　　　//启用删除文件
+        //     }
+        // ),
+
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: './src/index.html',
@@ -52,50 +96,50 @@ var webpackConfig = {
     ],
     module: {
         rules: [{
-                test: /\.ts$/,
-                loaders: ['@ngtools/webpack'],
-            },
-            {
-                test: /\.js$/,
-                loaders: ['babel-loader'],
-                exclude: [/node_modules/, /dist/]
-            },
-            {
-                test: /\.css$/,
-                loaders: ['style-loader', 'css-loader']
-            },
-            {
-                test: /\.scss$/,
-                use: ['to-string-loader', 'css-loader', 'sass-loader']
-            },
-            {
-                test: /\.html$/,
-                loader: 'raw-loader'
-            },
-            {
-                test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url-loader?limit=10000&mimetype=application/font-woff'
-            },
-            {
-                test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url-loader?limit=10000&mimetype=application/font-woff'
-            },
-            {
-                test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
-            },
-            {
-                test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'file-loader'
-            },
-            {
-                test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
-            },
-            {
-                test: /\.(jpg|jpeg|bmp|png|gif)$/,
-                loader: "file-loader"
-            },
+            test: /\.ts$/,
+            loaders: ['@ngtools/webpack'],
+        },
+        {
+            test: /\.js$/,
+            loaders: ['babel-loader'],
+            exclude: [/node_modules/, /dist/]
+        },
+        {
+            test: /\.css$/,
+            loaders: ['style-loader', 'css-loader']
+        },
+        {
+            test: /\.scss$/,
+            use: ['to-string-loader', 'css-loader', 'sass-loader']
+        },
+        {
+            test: /\.html$/,
+            loader: 'raw-loader'
+        },
+        {
+            test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+            loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+        },
+        {
+            test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+            loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+        },
+        {
+            test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+            loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
+        },
+        {
+            test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+            loader: 'file-loader'
+        },
+        {
+            test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+            loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+        },
+        {
+            test: /\.(jpg|jpeg|bmp|png|gif)$/,
+            loader: "file-loader"
+        },
         ]
     }
 };

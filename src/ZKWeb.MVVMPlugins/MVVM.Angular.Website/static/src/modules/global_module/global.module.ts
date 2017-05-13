@@ -4,16 +4,26 @@ import { AppConfigService } from './services/app-config-service';
 import { AppApiService } from './services/app-api-service';
 import { GTransPipe } from './pipes/trans-pipe';
 import { HttpModule } from '@angular/http';
+import { RouterOutletComponent } from './components/router-outlet.component';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [
-        HttpModule
+        CommonModule,
+        HttpModule,
+        RouterModule
     ],
     declarations: [
+        RouterOutletComponent,
         GTransPipe
     ],
     exports: [
-        GTransPipe
+        GTransPipe,
+        RouterOutletComponent,
+        CommonModule,
+        HttpModule,
+        RouterModule
     ]
 })
 export class GlobalModule {

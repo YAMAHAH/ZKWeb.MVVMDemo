@@ -49,6 +49,7 @@ import { InputTextareaModule } from "primeng/components/inputtextarea/inputtexta
         TransPipe
     ],
     exports: [
+        HttpModule,
         FormGridComponent,
         FormValidationMessagesComponent,
         FormTextComponent,
