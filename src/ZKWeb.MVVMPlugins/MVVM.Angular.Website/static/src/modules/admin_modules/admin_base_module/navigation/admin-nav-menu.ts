@@ -1,6 +1,6 @@
 ﻿import { NavMenuGroup } from './nav-menu-group';
-import { UserTypes } from '../../generated_module/privileges/user-types';
-import { Privileges } from '../../generated_module/privileges/privileges';
+import { UserTypes } from "@generated_module/privileges/user-types";
+import { Privileges } from "@generated_module/privileges/privileges";
 
 /** 定义后台导航栏 */
 export const AdminNavMenu: NavMenuGroup[] = [

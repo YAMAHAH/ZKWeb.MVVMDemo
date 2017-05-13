@@ -1,13 +1,13 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { Message, MenuItem } from 'primeng/primeng';
 import { NavMenuGroup } from '../navigation/nav-menu-group';
+import { AppConfigService } from "@global_module/services/app-config-service";
+import { AppTranslationService } from "@global_module/services/app-translation-service";
+import { AppSessionService } from "@auth_module/services/app-session-service";
+import { AppPrivilegeService } from "@auth_module/services/app-privilege-service";
+import { WebsiteManageService } from "@generated_module/services/website-manage-service";
+import { AdminToastService } from "@admin_modules/admin_base_module/services/admin-toast-service";
 import { AdminNavMenu } from '../navigation/admin-nav-menu';
-import { AppSessionService } from '../../auth_module/services/app-session-service';
-import { AppPrivilegeService } from '../../auth_module/services/app-privilege-service';
-import { WebsiteManageService } from '../../generated_module/services/website-manage-service';
-import { AdminToastService } from '../services/admin-toast-service';
-import { AppConfigService } from '../../global_module/services/app-config-service';
-import { AppTranslationService } from '../../global_module/services/app-translation-service';
 
 @Component({
     selector: 'admin-container',
@@ -15,12 +15,12 @@ import { AppTranslationService } from '../../global_module/services/app-translat
     styleUrls: ['../styles/admin-container.scss']
 })
 export class AdminContainerComponent implements OnInit {
-    logoUrl = require("../../../vendor/images/logo.png");
+    logoUrl = require("@vendor/images/logo.png");
     activeMenuId: string;
     dropdownVisible: boolean = false;
     mobileMenuActive: boolean = false;
     navMenuGroups: NavMenuGroup[] = [];
-    defaultAvatarUrl: string = require("../../../vendor/images/default-avatar.jpg");
+    defaultAvatarUrl: string = require("@vendor/images/default-avatar.jpg");
     avatarUrl: string = this.defaultAvatarUrl;
     username: string;
     switchLanguageItems: MenuItem[] = [];

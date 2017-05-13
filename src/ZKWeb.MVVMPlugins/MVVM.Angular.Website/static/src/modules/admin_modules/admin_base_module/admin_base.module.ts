@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { BaseModule } from '../base_module/base.module';
 import { AdminContainerComponent } from './components/admin-container.component';
 import { AdminToastService } from './services/admin-toast-service';
 import { InputTextModule } from 'primeng/components/inputtext/inputtext';
@@ -13,6 +12,7 @@ import { MessagesModule } from 'primeng/components/messages/messages';
 import { BlockUIModule } from 'primeng/components/blockui/blockui';
 import { GrowlModule } from "primeng/components/growl/growl";
 import { SlideMenuModule } from "primeng/components/slidemenu/slidemenu";
+import { BaseModule } from "@base_module/base.module";
 
 @NgModule({
     imports: [

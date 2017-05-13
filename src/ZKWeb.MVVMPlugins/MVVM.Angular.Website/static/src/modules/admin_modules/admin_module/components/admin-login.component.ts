@@ -2,8 +2,7 @@
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Message } from 'primeng/primeng';
-
-import { UserLoginService } from '../../generated_module/services/user-login-service';
+import { UserLoginService } from "@generated_module/services/user-login-service";
 
 @Component({
     selector: 'admin-login',
@@ -17,7 +16,7 @@ export class AdminLoginComponent implements OnInit {
         Password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6)])),
         Captcha: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(4)]))
     });
-    logoUrl = require("../../../vendor/images/logo.png");
+    logoUrl = require("@vendor/images/logo.png");
     msgs: Message[] = [];
     captchaRefreshEvent = new EventEmitter();
     isSubmitting = false;

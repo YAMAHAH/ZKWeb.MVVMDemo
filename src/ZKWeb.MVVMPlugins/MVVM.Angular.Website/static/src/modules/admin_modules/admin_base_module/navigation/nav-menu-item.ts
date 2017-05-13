@@ -1,4 +1,4 @@
-﻿import { AuthRequirement } from '../../auth_module/auth/auth-requirement';
+﻿import { AuthRequirement } from '../../../auth_module/auth/auth-requirement';
 
 /** 导航菜单项 */
 export class NavMenuItem {

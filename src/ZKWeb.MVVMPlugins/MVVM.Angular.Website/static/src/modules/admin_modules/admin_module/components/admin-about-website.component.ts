@@ -1,9 +1,9 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { WebsiteManageService } from '../../generated_module/services/website-manage-service';
-import { WebsiteInfoOutputDto } from '../../generated_module/dtos/website-info-output-dto';
-import { AdminToastService } from '../../admin_base_module/services/admin-toast-service';
-import { AppTranslationService } from '../../global_module/services/app-translation-service';
-import { AppConfigService } from '../../global_module/services/app-config-service';
+import { WebsiteInfoOutputDto } from "@generated_module/dtos/website-info-output-dto";
+import { AppConfigService } from "@global_module/services/app-config-service";
+import { AppTranslationService } from "@global_module/services/app-translation-service";
+import { WebsiteManageService } from "@generated_module/services/website-manage-service";
+import { AdminToastService } from "@admin_modules/admin_base_module/services/admin-toast-service";
 
 @Component({
     selector: 'admin-about-website',

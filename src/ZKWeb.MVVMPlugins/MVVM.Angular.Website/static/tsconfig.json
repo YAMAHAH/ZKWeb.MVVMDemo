@@ -15,6 +15,29 @@
             "es2015",
             "dom"
         ],
+        "paths": {
+            "@base_module/*": [
+                "src/modules/base_module/*"
+            ],
+            "@generated_module/*": [
+                "src/modules/generated_module/*"
+            ],
+            "@global_module/*": [
+                "src/modules/global_module/*"
+            ],
+            "@auth_module/*": [
+                "src/modules/auth_module/*"
+            ],
+            "@admin_modules/*": [
+                "src/modules/admin_modules/*"
+            ],
+            "@application_modules/*": [
+                "src/modules/application_modules/*"
+            ],
+            "@vendor/*":[
+                "src/vendor/*"
+            ]
+        },
         "noEmitHelpers": false
     },
     "include": [

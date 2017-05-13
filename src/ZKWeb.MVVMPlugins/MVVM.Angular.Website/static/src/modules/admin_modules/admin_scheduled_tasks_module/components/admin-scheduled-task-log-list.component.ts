@@ -1,13 +1,13 @@
 ﻿import { Component } from '@angular/core';
 import { SelectItem } from 'primeng/primeng';
 import { ConfirmationService } from 'primeng/primeng';
-import { CrudBaseComponent } from '../../base_module/components/crud-base.component';
-import { GridSearchRequestDto } from '../../generated_module/dtos/grid-search-request-dto';
-import { AppTranslationService } from '../../global_module/services/app-translation-service';
-import { WebsiteManageService } from '../../generated_module/services/website-manage-service';
-import { UserTypes } from '../../generated_module/privileges/user-types';
-import { AppPrivilegeService } from '../../auth_module/services/app-privilege-service';
-import { AppSessionService } from '../../auth_module/services/app-session-service';
+import { CrudBaseComponent } from "@base_module/components/crud-base.component";
+import { AppSessionService } from "@auth_module/services/app-session-service";
+import { AppPrivilegeService } from "@auth_module/services/app-privilege-service";
+import { AppTranslationService } from "@global_module/services/app-translation-service";
+import { WebsiteManageService } from "@generated_module/services/website-manage-service";
+import { GridSearchRequestDto } from "@generated_module/dtos/grid-search-request-dto";
+import { UserTypes } from "@generated_module/privileges/user-types";
 
 @Component({
     selector: 'admin-scheduled-task-log-list',

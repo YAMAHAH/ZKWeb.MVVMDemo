@@ -1,14 +1,14 @@
 ﻿import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { CrudWithDialogBaseComponent } from '../../base_module/components/crud-with-dialog-base.component';
-import { GridSearchRequestDto } from '../../generated_module/dtos/grid-search-request-dto';
-import { AppTranslationService } from '../../global_module/services/app-translation-service';
-import { TenantManageService } from '../../generated_module/services/tenant-manage-service';
-import { UserTypes } from '../../generated_module/privileges/user-types';
-import { Privileges } from '../../generated_module/privileges/privileges';
-import { AppPrivilegeService } from '../../auth_module/services/app-privilege-service';
-import { AppSessionService } from '../../auth_module/services/app-session-service';
 import { ConfirmationService, SelectItem } from 'primeng/components/common/api';
+import { CrudWithDialogBaseComponent } from '@base_module/components/crud-with-dialog-base.component';
+import { AppPrivilegeService } from '@auth_module/services/app-privilege-service';
+import { AppTranslationService } from '@global_module/services/app-translation-service';
+import { TenantManageService } from "@generated_module/services/tenant-manage-service";
+import { AppSessionService } from "@auth_module/services/app-session-service";
+import { GridSearchRequestDto } from "@generated_module/dtos/grid-search-request-dto";
+import { UserTypes } from "@generated_module/privileges/user-types";
+import { Privileges } from "@generated_module/privileges/privileges";
 
 @Component({
     selector: 'admin-tenant-list',

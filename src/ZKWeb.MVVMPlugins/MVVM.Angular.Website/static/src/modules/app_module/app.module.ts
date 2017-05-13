@@ -9,7 +9,7 @@ import { RouterOutletComponent } from '../global_module/components/router-outlet
 
 const routes: Routes = [
     { path: '', redirectTo: '/admin', pathMatch: 'full' },
-    { path: 'admin', loadChildren: '../admin_modules/admin.module#AdminModule' },
+    { path: 'admin', loadChildren: '@admin_modules/admin_module/admin.module#AdminModule' },
     {
         path: 'application',
         component: RouterOutletComponent,
@@ -20,9 +20,6 @@ const routes: Routes = [
     { path: '**', component: PageNotFoundComponent }
 ];
 
-//admin
-//sale/sale-order sale/sale-order-query
-// /auth/login /auth/signup
 @NgModule({
     imports: [
         BrowserModule,

@@ -1,5 +1,5 @@
-﻿import { AuthRequirement } from '../../auth_module/auth/auth-requirement';
-import { NavMenuItem } from './nav-menu-item';
+﻿import { NavMenuItem } from './nav-menu-item';
+import { AuthRequirement } from "@auth_module/auth/auth-requirement";
 
 /** 导航菜单组 */
 export class NavMenuGroup {
