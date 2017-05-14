@@ -12,6 +12,7 @@ import { UserTypes } from "@generated_module/privileges/user-types";
 import { Privileges } from "@generated_module/privileges/privileges";
 
 @Component({
+    moduleId: module.id,
     selector: 'admin-role-list',
     templateUrl: '../views/admin-role-list.html',
     providers: [ConfirmationService]

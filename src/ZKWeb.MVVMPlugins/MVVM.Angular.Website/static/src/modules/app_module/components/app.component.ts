@@ -2,6 +2,7 @@
 import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
+    moduleId: module.id,
     selector: 'my-app',
     templateUrl: '../views/app.html'
 })

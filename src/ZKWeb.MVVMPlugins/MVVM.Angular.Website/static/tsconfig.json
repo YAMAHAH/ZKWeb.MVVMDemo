@@ -34,7 +34,7 @@
             "@application_modules/*": [
                 "src/modules/application_modules/*"
             ],
-            "@vendor/*":[
+            "@vendor/*": [
                 "src/vendor/*"
             ]
         },

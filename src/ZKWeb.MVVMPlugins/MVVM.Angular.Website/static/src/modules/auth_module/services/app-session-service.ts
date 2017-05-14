@@ -3,6 +3,8 @@ import { Observable } from 'rxjs/Observable';
 import { SessionInfoDto } from '../../generated_module/dtos/session-info-dto';
 import { SessionService } from '../../generated_module/services/session-service';
 import { AppConfigService } from '../../global_module/services/app-config-service';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/catch';
 
 /** 获取会话信息的服务 */
 @Injectable()
@@ -38,13 +40,11 @@ export class AppSessionService {
             });
         }
         // 调用api重新获取
-        let observable = this.sessionService.GetSessionInfo();
-        observable.subscribe(result => {
+        return this.sessionService.GetSessionInfo().do(result => {
             this.sessionId = newSessionId;
             this.sessionInfo = result;
             window[this.domSessionIdKey] = newSessionId;
             window[this.domSessionInfoKey] = result;
         });
-        return observable;
     }
 }

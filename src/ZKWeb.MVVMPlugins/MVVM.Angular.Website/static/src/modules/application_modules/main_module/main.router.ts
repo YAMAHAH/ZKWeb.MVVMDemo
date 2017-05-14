@@ -19,7 +19,7 @@ export const applicationMainRoutesConfig: Routes = [
         path: "sale-order-query",
         component: LazyLoadContainer,
         outlet: "sale-o-q",
-        loadChildren: "../sale_module/sale-query/sale-query.module#SaleQueryModule"
+        loadChildren: "../sale_module/sale-order-query/sale-order-query.module#SaleOrderQueryModule"
     }
 
 ];

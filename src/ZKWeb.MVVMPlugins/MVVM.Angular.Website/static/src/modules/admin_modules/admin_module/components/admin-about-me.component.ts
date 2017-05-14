@@ -7,6 +7,7 @@ import { AppSessionService } from "@auth_module/services/app-session-service";
 import { AppPrivilegeService } from "@auth_module/services/app-privilege-service";
 
 @Component({
+    moduleId: module.id,
     selector: 'admin-about-me',
     templateUrl: '../views/admin-about-me.html'
 })

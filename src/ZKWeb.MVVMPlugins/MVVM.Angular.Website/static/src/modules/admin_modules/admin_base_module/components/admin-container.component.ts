@@ -10,6 +10,7 @@ import { AdminToastService } from "@admin_modules/admin_base_module/services/adm
 import { AdminNavMenu } from '../navigation/admin-nav-menu';
 
 @Component({
+    moduleId: module.id,
     selector: 'admin-container',
     templateUrl: '../views/admin-container.html',
     styleUrls: ['../styles/admin-container.scss']

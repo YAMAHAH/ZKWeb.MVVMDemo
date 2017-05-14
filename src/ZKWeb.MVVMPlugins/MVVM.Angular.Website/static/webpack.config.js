@@ -9,8 +9,8 @@ var CopyWebpackPlugin = require("copy-webpack-plugin");
 var webpackConfig = {
     entry: {
         polyfills: './src/polyfills.ts',
-        vendor: './src/vendor.ts',
-        app: './src/main.ts'
+        vendor: './src/prod/vendor.ts',
+        app: './src/prod/main.ts'
     },
     output: {
         publicPath: '/',
@@ -79,7 +79,7 @@ var webpackConfig = {
 
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: './src/index.html',
+            template: './src/prod/index.html',
             inject: true,
             chunksSortMode: 'dependency'
         }),

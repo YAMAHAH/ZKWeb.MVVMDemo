@@ -10,6 +10,7 @@ import { GridSearchRequestDto } from "@generated_module/dtos/grid-search-request
 import { UserTypes } from "@generated_module/privileges/user-types";
 
 @Component({
+    moduleId: module.id,
     selector: 'admin-scheduled-task-log-list',
     templateUrl: '../views/admin-scheduled-task-log-list.html',
     providers: [ConfirmationService]

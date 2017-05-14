@@ -6,6 +6,7 @@ import { WebsiteManageService } from "@generated_module/services/website-manage-
 import { AdminToastService } from "@admin_modules/admin_base_module/services/admin-toast-service";
 
 @Component({
+    moduleId: module.id,
     selector: 'admin-about-website',
     templateUrl: '../views/admin-about-website.html'
 })

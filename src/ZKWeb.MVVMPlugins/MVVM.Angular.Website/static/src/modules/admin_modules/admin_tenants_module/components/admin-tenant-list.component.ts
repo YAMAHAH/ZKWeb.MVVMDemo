@@ -11,6 +11,7 @@ import { UserTypes } from "@generated_module/privileges/user-types";
 import { Privileges } from "@generated_module/privileges/privileges";
 
 @Component({
+    moduleId: module.id,
     selector: 'admin-tenant-list',
     templateUrl: '../views/admin-tenant-list.html',
     providers: [ConfirmationService]

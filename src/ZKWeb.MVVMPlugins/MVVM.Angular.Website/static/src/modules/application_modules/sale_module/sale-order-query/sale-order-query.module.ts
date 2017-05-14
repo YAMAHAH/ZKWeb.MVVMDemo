@@ -2,13 +2,13 @@
 import { NgModule } from '@angular/core';
 
 // This Module's Components
-import { SaleQueryComponent } from './sale-query.component';
+import { SaleOrderQueryComponent } from './sale-order-query.component';
 import { RouterModule, Routes } from '@angular/router';
 import { DataTableModule } from 'primeng/components/datatable/datatable';
 
 
 const saleQueryRouterConfig: Routes = [
-    { path: "", component: SaleQueryComponent }
+    { path: "", component: SaleOrderQueryComponent }
 ];
 
 @NgModule({
@@ -17,12 +17,12 @@ const saleQueryRouterConfig: Routes = [
         RouterModule.forChild(saleQueryRouterConfig)
     ],
     declarations: [
-        SaleQueryComponent,
+        SaleOrderQueryComponent,
     ],
     exports: [
-        SaleQueryComponent,
+        SaleOrderQueryComponent,
     ]
 })
-export class SaleQueryModule {
+export class SaleOrderQueryModule {
 
 }

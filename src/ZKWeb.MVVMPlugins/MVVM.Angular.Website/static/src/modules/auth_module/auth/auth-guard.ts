@@ -45,7 +45,7 @@ export class AuthGuard implements CanActivate {
                         if (checkResult.errorMessage) {
                             alert(checkResult.errorMessage);
                         }
-                        this.router.navigate(this.appConfigService.getLoginUrl());
+                        this.router.navigate([this.appConfigService.getLoginUrl().join("/"), { targetUrl: decodeURIComponent(state.url) }]);
                     }
                     o.next(checkResult.success);
                     o.complete();

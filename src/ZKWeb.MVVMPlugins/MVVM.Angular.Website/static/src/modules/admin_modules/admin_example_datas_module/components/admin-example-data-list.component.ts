@@ -11,6 +11,7 @@ import { Privileges } from "@generated_module/privileges/privileges";
 import { CrudWithDialogBaseComponent } from "@base_module/components/crud-with-dialog-base.component";
 
 @Component({
+    moduleId: module.id,
     selector: 'admin-example-data-list',
     templateUrl: '../views/admin-example-data-list.html',
     providers: [ConfirmationService]

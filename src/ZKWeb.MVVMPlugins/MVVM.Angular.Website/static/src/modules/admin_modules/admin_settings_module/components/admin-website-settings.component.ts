@@ -4,6 +4,7 @@ import { Message } from 'primeng/primeng';
 import { WebsiteManageService } from '@generated_module/services/website-manage-service';
 
 @Component({
+    moduleId: module.id,
     selector: 'admin-website-settings',
     templateUrl: '../views/admin-website-settings.html',
 })

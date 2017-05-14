@@ -7,4 +7,5 @@ import { Component } from '@angular/core';
     styleUrls: ['sale-order.component.scss']
 })
 export class SaleOrderComponent {
+    saleOrder = "Sale-Order-Module";
 }

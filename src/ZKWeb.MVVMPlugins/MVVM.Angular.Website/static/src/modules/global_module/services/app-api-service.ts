@@ -74,6 +74,7 @@ export class AppApiService {
         this.registerResultFilter(response => {
             // 解析返回的会话Id
             let newSessionId = response.headers.get(this.appConfigService.getSessionIdSetHeader());
+            console.log(response);
             if (newSessionId) {
                 this.appConfigService.setSessionId(newSessionId);
             }

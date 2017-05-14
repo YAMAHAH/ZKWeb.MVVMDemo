@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { AppTranslationService } from '../../global_module/services/app-translation-service';
 
 @Component({
+    moduleId: module.id,
     selector: 'z-form-validation-messages',
     templateUrl: '../views/form-validation-messages.html',
 })

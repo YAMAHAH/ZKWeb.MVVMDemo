@@ -1,10 +1,11 @@
 ﻿import { Component, OnInit, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Message } from 'primeng/primeng';
 import { UserLoginService } from "@generated_module/services/user-login-service";
 
 @Component({
+    moduleId: module.id,
     selector: 'admin-login',
     templateUrl: '../views/admin-login.html',
     styleUrls: ['../styles/admin-login.scss']
@@ -21,16 +22,30 @@ export class AdminLoginComponent implements OnInit {
     captchaRefreshEvent = new EventEmitter();
     isSubmitting = false;
 
+    targetUrl = "";
+
     constructor(
         private router: Router,
-        private userLoginService: UserLoginService) { }
+        private activeRoute: ActivatedRoute,
+        private userLoginService: UserLoginService) {
+        this.activeRoute
+            .params
+            .map(p => p['targetUrl'])
+            .subscribe(url => {
+                if (url) this.targetUrl = decodeURIComponent(url);
+            });
+    }
+
+    gotoUrl(target: string, defaultPage: string) {
+        this.router.navigateByUrl(target ? target : defaultPage);
+    }
 
     onSubmit() {
         this.isSubmitting = true;
         this.userLoginService.LoginAdmin(this.adminLoginForm.value).subscribe(
             result => {
                 this.isSubmitting = false;
-                this.router.navigate(['/']);
+                this.gotoUrl("/admin", "/");
             },
             error => {
                 this.isSubmitting = false;
