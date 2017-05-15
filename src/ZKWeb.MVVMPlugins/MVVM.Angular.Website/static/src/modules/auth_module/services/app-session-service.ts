@@ -4,7 +4,6 @@ import { SessionInfoDto } from '../../generated_module/dtos/session-info-dto';
 import { SessionService } from '../../generated_module/services/session-service';
 import { AppConfigService } from '../../global_module/services/app-config-service';
 import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/catch';
 import { AppStoreService } from '../../global_module/services/app-store-service';
 
 /** 获取会话信息的服务 */
@@ -29,17 +28,16 @@ export class AppSessionService {
         // http://stackoverflow.com/questions/37967182/angular2-service-reinstantiated-when-changing-route
         // http://stackoverflow.com/questions/40981306/service-is-not-being-singleton-for-angular2-router-lazy-loading-with-loadchildre
         // https://github.com/angular/angular/issues/11125
+
+        // 如果本地已有会话信息则直接返回
         // if (window[this.domSessionIdKey] && window[this.domSessionInfoKey]) {
         //     this.sessionId = window[this.domSessionIdKey];
         //     this.sessionInfo = window[this.domSessionInfoKey];
         // }
-        // 如果本地已有会话信息则直接返回
-
         // if (this.store.has(this.domSessionIdKey) && this.store.has(this.domSessionInfoKey)) {
         //     this.sessionId = this.store.getData(this.domSessionIdKey);
         //     this.sessionInfo = this.store.getData(this.domSessionInfoKey);
         // }
-
         let newSessionId = this.appConfigService.getSessionId();
         if (newSessionId === this.sessionId && this.sessionInfo) {
             return new Observable<SessionInfoDto>(o => {

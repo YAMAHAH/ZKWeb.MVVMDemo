@@ -20,7 +20,6 @@ export abstract class AppComponentBase {
         });
         this.initAppConfig();
     }
-
     async initAppConfig() {
         return new Promise(resolve => {
             this.http.get("app-config.json")
