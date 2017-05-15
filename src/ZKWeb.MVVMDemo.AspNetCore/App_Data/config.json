@@ -1,7 +1,7 @@
 {
   "ORM": "EFCore",
   "Database": "MySQL",
-  "ConnectionString": "Server=localhost;Database=ZKWebdb;User Id=root;Password=99b3ad6e;",
+  "ConnectionString": "Server=localhost;Database=ZKWebdb;User Id=root;Password=99B3AD6E;",
   "PluginDirectories": [
     "../ZKWeb.MVVMPlugins"
   ],

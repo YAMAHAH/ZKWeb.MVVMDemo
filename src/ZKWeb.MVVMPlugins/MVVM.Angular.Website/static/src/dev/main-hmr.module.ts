@@ -4,12 +4,12 @@ import { removeNgStyles, createNewHosts, createInputTransfer, bootloader } from 
 
 import { AppStore, State } from './app-store';
 
-import { AppComponent } from '../modules/app_module/components/app.component';
 import { AppHmrModule } from '../modules/app_module/app-hmr.module';
+import { AppHMRComponent } from '../modules/app_module/components/app-hmr.component';
 
 @NgModule({
     bootstrap: [
-        AppComponent
+        AppHMRComponent
     ],
     imports: [
         AppHmrModule

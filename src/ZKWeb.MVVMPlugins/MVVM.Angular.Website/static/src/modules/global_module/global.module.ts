@@ -7,6 +7,7 @@ import { HttpModule } from '@angular/http';
 import { RouterOutletComponent } from './components/router-outlet.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { PageNotFoundComponent } from './components/page_not_found.component';
 
 @NgModule({
     imports: [
@@ -16,11 +17,13 @@ import { RouterModule } from '@angular/router';
     ],
     declarations: [
         RouterOutletComponent,
+        PageNotFoundComponent,
         GTransPipe
     ],
     exports: [
         GTransPipe,
         RouterOutletComponent,
+        PageNotFoundComponent,
         CommonModule,
         HttpModule,
         RouterModule

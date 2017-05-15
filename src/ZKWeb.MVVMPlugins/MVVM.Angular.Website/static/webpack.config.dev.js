@@ -22,11 +22,7 @@ var webpackConfig = {
     plugins: [
         new CheckerPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
-            names: ['vendor', 'manifest'],
-            // names: ['app', 'vendor', 'polyfills'],
-            // minChunks: 2,
-            // children: true,
-            // async: true
+            names: ['vendor', 'manifest']
         }),
         new webpack.ContextReplacementPlugin(/angular(\\|\/)core(\\|\/)@angular/,
             path.resolve(__dirname, '../src')
@@ -37,12 +33,6 @@ var webpackConfig = {
             inject: true,
             chunksSortMode: 'dependency'
         }),
-        // new CompressionPlugin({
-        //     asset: "[path].gz[query]",
-        //     algorithm: "gzip",
-        //     test: /\.js$|\.html$/
-        // }),
-        // new webpack.optimize.UglifyJsPlugin({ minimize: false }),
         new CopyWebpackPlugin([
             { from: path.resolve(__dirname, "./src/vendor/images/favicon.ico"), to: "favicon.ico" },
             { from: path.resolve(__dirname, "./src/vendor/styles/preloader/preloader.css"), to: "preloader.css" },
@@ -51,55 +41,55 @@ var webpackConfig = {
     ],
     module: {
         rules: [{
-            test: /\.ts$/,
-            loaders: [
-                "awesome-typescript-loader",
-                "@angularclass/hmr-loader",
-                "angular-router-loader",
-                "angular2-template-loader"
-            ]
-        },
-        {
-            test: /\.js$/,
-            loaders: ['babel-loader'],
-            exclude: [/node_modules/, /dist/]
-        },
-        {
-            test: /\.css$/,
-            loaders: ['style-loader', 'css-loader']
-        },
-        {
-            test: /\.scss$/,
-            use: ['to-string-loader', 'css-loader', 'sass-loader']
-        },
-        {
-            test: /\.html$/,
-            loader: 'raw-loader'
-        },
-        {
-            test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url-loader?limit=10000&mimetype=application/font-woff'
-        },
-        {
-            test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url-loader?limit=10000&mimetype=application/font-woff'
-        },
-        {
-            test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
-        },
-        {
-            test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'file-loader'
-        },
-        {
-            test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
-        },
-        {
-            test: /\.(jpg|jpeg|bmp|png|gif)$/,
-            loader: "file-loader"
-        },
+                test: /\.ts$/,
+                loaders: [
+                    "awesome-typescript-loader",
+                    "@angularclass/hmr-loader",
+                    "angular-router-loader",
+                    "angular2-template-loader"
+                ]
+            },
+            {
+                test: /\.js$/,
+                loaders: ['babel-loader'],
+                exclude: [/node_modules/, /dist/]
+            },
+            {
+                test: /\.css$/,
+                loaders: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.scss$/,
+                use: ['to-string-loader', 'css-loader', 'sass-loader']
+            },
+            {
+                test: /\.html$/,
+                loader: 'raw-loader'
+            },
+            {
+                test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+            },
+            {
+                test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+            },
+            {
+                test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
+            },
+            {
+                test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'file-loader'
+            },
+            {
+                test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+            },
+            {
+                test: /\.(jpg|jpeg|bmp|png|gif)$/,
+                loader: "file-loader"
+            },
         ]
     }
 };
@@ -115,7 +105,7 @@ var defaultConfig = {
         extensions: ['.ts', '.js'],
         modules: [path.resolve(__dirname, 'node_modules')],
         plugins: [
-            new TsConfigPathsPlugin(/* { tsconfig, compiler } */)
+            new TsConfigPathsPlugin( /* { tsconfig, compiler } */ )
         ]
     },
     devServer: {
@@ -128,12 +118,6 @@ var defaultConfig = {
         proxy: {
             "/api": "http://localhost:53128"
         }
-        // contentBase: './',
-        // port: 3000,
-        // inline: true,
-        // stats: 'errors-only',
-        // historyApiFallback: true,
-        // watchOptions: { aggregateTimeout: 100, poll: 500 }
     },
     node: {
         global: true,

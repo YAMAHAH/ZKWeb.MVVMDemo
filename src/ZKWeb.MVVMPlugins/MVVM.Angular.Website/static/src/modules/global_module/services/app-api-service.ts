@@ -74,7 +74,6 @@ export class AppApiService {
         this.registerResultFilter(response => {
             // 解析返回的会话Id
             let newSessionId = response.headers.get(this.appConfigService.getSessionIdSetHeader());
-            console.log(response);
             if (newSessionId) {
                 this.appConfigService.setSessionId(newSessionId);
             }
@@ -92,7 +91,7 @@ export class AppApiService {
         });
         // 设置默认的错误转换器
         this.setErrorConverter(error => {
-            console.log("api request error:", error);
+            console.error("api request error:", error);
             let errorMessage: string;
             if (error instanceof Response) {
                 if (error.status === 0) {

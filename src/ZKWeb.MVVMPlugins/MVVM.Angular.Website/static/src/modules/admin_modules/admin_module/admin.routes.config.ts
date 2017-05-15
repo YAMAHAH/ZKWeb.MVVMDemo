@@ -11,7 +11,7 @@ export const adminRoutesConfig: Routes = [
     {
         path: "",
         component: AdminContainerComponent,
-        canActivate: [],
+        canActivate: [AuthGuard],
         data: { auth: { requireUserType: UserTypes.ICanUseAdminPanel } },
         children:
         [
@@ -20,13 +20,13 @@ export const adminRoutesConfig: Routes = [
             },
             {
                 path: 'about_website', component: AdminAboutWebsiteComponent,
-                canActivate: [AuthGuard],
-                data: { auth: { requireUserType: UserTypes.ICanUseAdminPanel } }
+                //  canActivate: [AuthGuard],
+                // data: { auth: { requireUserType: UserTypes.ICanUseAdminPanel } }
             },
             {
                 path: 'about_me', component: AdminAboutMeComponent,
-                canActivate: [AuthGuard],
-                data: { auth: { requireUserType: UserTypes.ICanUseAdminPanel } }
+                // canActivate: [AuthGuard],
+                // data: { auth: { requireUserType: UserTypes.ICanUseAdminPanel } }
             },
             { path: 'tenants', loadChildren: '../admin_tenants_module/admin_tenants.module#AdminTenantsModule' },
             { path: 'users', loadChildren: '../admin_users_module/admin_users.module#AdminUsersModule' },
