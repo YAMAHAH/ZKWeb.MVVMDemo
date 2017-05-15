@@ -36,6 +36,7 @@ export class AdminAboutMeComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.debug("5555");
         this.appSessionService.getSessionInfo().subscribe(
             s => {
                 this.tenant = s.User.OwnerTenantName;

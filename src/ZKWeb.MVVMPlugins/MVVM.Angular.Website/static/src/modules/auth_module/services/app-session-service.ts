@@ -5,6 +5,7 @@ import { SessionService } from '../../generated_module/services/session-service'
 import { AppConfigService } from '../../global_module/services/app-config-service';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/catch';
+import { AppStoreService } from '../../global_module/services/app-store-service';
 
 /** 获取会话信息的服务 */
 @Injectable()
@@ -15,9 +16,10 @@ export class AppSessionService {
     private sessionInfo: SessionInfoDto;
 
     constructor(
+        // private store: AppStoreService,
         private appConfigService: AppConfigService,
         private sessionService: SessionService) {
-        console.log("create app session service");
+        console.log("create app session service.");
     }
 
     /** 获取当前的会话信息 */
@@ -27,11 +29,17 @@ export class AppSessionService {
         // http://stackoverflow.com/questions/37967182/angular2-service-reinstantiated-when-changing-route
         // http://stackoverflow.com/questions/40981306/service-is-not-being-singleton-for-angular2-router-lazy-loading-with-loadchildre
         // https://github.com/angular/angular/issues/11125
-        if (window[this.domSessionIdKey] && window[this.domSessionInfoKey]) {
-            this.sessionId = window[this.domSessionIdKey];
-            this.sessionInfo = window[this.domSessionInfoKey];
-        }
+        // if (window[this.domSessionIdKey] && window[this.domSessionInfoKey]) {
+        //     this.sessionId = window[this.domSessionIdKey];
+        //     this.sessionInfo = window[this.domSessionInfoKey];
+        // }
         // 如果本地已有会话信息则直接返回
+
+        // if (this.store.has(this.domSessionIdKey) && this.store.has(this.domSessionInfoKey)) {
+        //     this.sessionId = this.store.getData(this.domSessionIdKey);
+        //     this.sessionInfo = this.store.getData(this.domSessionInfoKey);
+        // }
+
         let newSessionId = this.appConfigService.getSessionId();
         if (newSessionId === this.sessionId && this.sessionInfo) {
             return new Observable<SessionInfoDto>(o => {
@@ -43,8 +51,10 @@ export class AppSessionService {
         return this.sessionService.GetSessionInfo().do(result => {
             this.sessionId = newSessionId;
             this.sessionInfo = result;
-            window[this.domSessionIdKey] = newSessionId;
-            window[this.domSessionInfoKey] = result;
+            // this.store.setData(this.domSessionIdKey, newSessionId);
+            // this.store.setData(this.domSessionInfoKey, result);
+            // window[this.domSessionIdKey] = newSessionId;
+            // window[this.domSessionInfoKey] = result;
         });
     }
 }

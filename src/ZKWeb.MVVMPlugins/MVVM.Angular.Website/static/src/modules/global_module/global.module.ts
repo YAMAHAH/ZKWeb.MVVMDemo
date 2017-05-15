@@ -8,6 +8,7 @@ import { RouterOutletComponent } from './components/router-outlet.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './components/page_not_found.component';
+import { AppStoreService } from './services/app-store-service';
 
 @NgModule({
     imports: [
@@ -37,6 +38,7 @@ export class GlobalModule {
                 AppApiService,
                 AppConfigService,
                 AppTranslationService,
+                AppStoreService
             ]
         };
     }

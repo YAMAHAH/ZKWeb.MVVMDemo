@@ -1,4 +1,4 @@
-﻿import { Component, Injector } from '@angular/core';
+﻿import { Component, Injector, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { AppComponentBase } from './app-component.base';
 

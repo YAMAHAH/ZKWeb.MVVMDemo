@@ -36,6 +36,7 @@ var webpackConfig = {
         new CopyWebpackPlugin([
             { from: path.resolve(__dirname, "./src/vendor/images/favicon.ico"), to: "favicon.ico" },
             { from: path.resolve(__dirname, "./src/vendor/styles/preloader/preloader.css"), to: "preloader.css" },
+            { from: path.resolve(__dirname, "./src/app-config.json"), to: "app-config.json" }
         ]),
         new NamedModulesPlugin(),
         new webpack.DllReferencePlugin({

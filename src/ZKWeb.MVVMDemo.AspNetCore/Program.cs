@@ -31,6 +31,7 @@ namespace ZKWeb.MVVMDemo.AspNetCore
                                     .AllowAnyMethod()
                                     .AllowAnyHeader()
                                     .AllowCredentials()
+                                    .WithExposedHeaders("x-set-zkweb-sessionid")
                         ));
                         // 添加Mvc组件
                         s.AddMvcCore().AddApiExplorer();

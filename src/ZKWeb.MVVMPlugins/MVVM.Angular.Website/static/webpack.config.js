@@ -92,54 +92,55 @@ var webpackConfig = {
         new CopyWebpackPlugin([
             { from: path.resolve(__dirname, "./src/vendor/images/favicon.ico"), to: "favicon.ico" },
             { from: path.resolve(__dirname, "./src/vendor/styles/preloader/preloader.css"), to: "preloader.css" },
+            { from: path.resolve(__dirname, "./src/app-config.json"), to: "." }
         ]),
     ],
     module: {
         rules: [{
-            test: /\.ts$/,
-            loaders: ['@ngtools/webpack'],
-        },
-        {
-            test: /\.js$/,
-            loaders: ['babel-loader'],
-            exclude: [/node_modules/, /dist/]
-        },
-        {
-            test: /\.css$/,
-            loaders: ['style-loader', 'css-loader']
-        },
-        {
-            test: /\.scss$/,
-            use: ['to-string-loader', 'css-loader', 'sass-loader']
-        },
-        {
-            test: /\.html$/,
-            loader: 'raw-loader'
-        },
-        {
-            test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url-loader?limit=10000&mimetype=application/font-woff'
-        },
-        {
-            test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url-loader?limit=10000&mimetype=application/font-woff'
-        },
-        {
-            test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
-        },
-        {
-            test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'file-loader'
-        },
-        {
-            test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
-        },
-        {
-            test: /\.(jpg|jpeg|bmp|png|gif)$/,
-            loader: "file-loader"
-        },
+                test: /\.ts$/,
+                loaders: ['@ngtools/webpack'],
+            },
+            {
+                test: /\.js$/,
+                loaders: ['babel-loader'],
+                exclude: [/node_modules/, /dist/]
+            },
+            {
+                test: /\.css$/,
+                loaders: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.scss$/,
+                use: ['to-string-loader', 'css-loader', 'sass-loader']
+            },
+            {
+                test: /\.html$/,
+                loader: 'raw-loader'
+            },
+            {
+                test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+            },
+            {
+                test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+            },
+            {
+                test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
+            },
+            {
+                test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'file-loader'
+            },
+            {
+                test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+            },
+            {
+                test: /\.(jpg|jpeg|bmp|png|gif)$/,
+                loader: "file-loader"
+            },
         ]
     }
 };

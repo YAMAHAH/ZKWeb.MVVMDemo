@@ -1,4 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
+import { AppStoreService } from './app-store-service';
 
 /** 保存全局配置的服务 */
 @Injectable()
@@ -32,22 +33,26 @@ export class AppConfigService {
     /** 会话Id储存在本地储存的key */
     private sessionIdKey: string;
 
-    constructor() {
-        let appConfig = window["appConfig"] || {};
-        this.apiUrlBase = appConfig.apiUrlBase ||
-            (location.protocol + "//" + location.host);
-        this.language = appConfig.language || null;
-        this.defaultLanguage = appConfig.defaultLnaguage || "zh-CN";
-        this.languageHeader = appConfig.languageHeader || "X-ZKWeb-Language";
-        this.languageKey = appConfig.languageKey || "ZKWeb-Language";
-        this.timezone = appConfig.timezone || null;
-        this.defaultTimezone = appConfig.defaultTimezone || "Asia/Shanghai";
-        this.timezoneHeader = appConfig.timezoneHeader || "X-ZKWeb-Timezone";
-        this.timezoneKey = appConfig.timezoneKey || "ZKWeb-Timezone";
-        this.loginUrl = appConfig.loginUrl || ["/admin", "login"];
-        this.sessionIdHeader = appConfig.sessionIdHeader || "X-ZKWeb-SessionId";
-        this.sessionIdSetHeader = appConfig.sessionIdSetHeader || "X-Set-ZKWeb-SessionId";
-        this.sessionIdKey = appConfig.sessionIdKey || "ZKWeb-SessionId";
+    constructor(private store: AppStoreService) {
+        this.initConfig(store.getData('appConfig'));
+    }
+
+    /** 初始应用配置  */
+    initConfig(config) {
+        let conf = config || {}; //window['appConfig'] ||
+        this.apiUrlBase = conf.apiUrlBase || (location.protocol + "//" + location.host);
+        this.language = conf.language || null;
+        this.defaultLanguage = conf.defaultLnaguage || "zh-CN";
+        this.languageHeader = conf.languageHeader || "X-ZKWeb-Language";
+        this.languageKey = conf.languageKey || "ZKWeb-Language";
+        this.timezone = conf.timezone || null;
+        this.defaultTimezone = conf.defaultTimezone || "Asia/Shanghai";
+        this.timezoneHeader = conf.timezoneHeader || "X-ZKWeb-Timezone";
+        this.timezoneKey = conf.timezoneKey || "ZKWeb-Timezone";
+        this.loginUrl = conf.loginUrl || ["/admin", "login"];
+        this.sessionIdHeader = conf.sessionIdHeader || "X-ZKWeb-SessionId";
+        this.sessionIdSetHeader = conf.sessionIdSetHeader || "X-Set-ZKWeb-SessionId";
+        this.sessionIdKey = conf.sessionIdKey || "ZKWeb-SessionId";
     }
 
     /** 获取Api的基础地址 */
