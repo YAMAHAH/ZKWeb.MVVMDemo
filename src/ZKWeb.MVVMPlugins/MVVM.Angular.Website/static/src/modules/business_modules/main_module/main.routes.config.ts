@@ -21,5 +21,4 @@ export const applicationMainRoutesConfig: Routes = [
         outlet: "sale-o-q",
         loadChildren: "../sale_module/sale-order-query/sale-order-query.module#SaleOrderQueryModule"
     }
-
 ];

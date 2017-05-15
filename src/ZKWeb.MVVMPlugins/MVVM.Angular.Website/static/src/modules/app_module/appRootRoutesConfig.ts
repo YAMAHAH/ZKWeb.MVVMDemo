@@ -6,9 +6,9 @@ export const appRootRoutesConfig: Routes = [
     { path: '', redirectTo: '/admin', pathMatch: 'full' },
     { path: 'admin', loadChildren: '../admin_modules/admin_module/admin.module#AdminModule' },
     {
-        path: 'application',
+        path: '',
         component: RouterOutletComponent,
-        loadChildren: '../application_modules/main_module/main.module#MainModule'
+        loadChildren: '../business_modules/main_module/main.module#MainModule'
     },
     { path: '**', component: PageNotFoundComponent }
 ];

@@ -31,8 +31,8 @@
             "@admin_modules/*": [
                 "src/modules/admin_modules/*"
             ],
-            "@application_modules/*": [
-                "src/modules/application_modules/*"
+            "@business_modules/*": [
+                "src/modules/business/*"
             ],
             "@vendor/*": [
                 "src/vendor/*"
