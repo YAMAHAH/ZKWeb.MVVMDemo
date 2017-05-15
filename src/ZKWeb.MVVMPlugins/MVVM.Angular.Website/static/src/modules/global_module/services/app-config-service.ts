@@ -34,12 +34,13 @@ export class AppConfigService {
     private sessionIdKey: string;
 
     constructor(private store: AppStoreService) {
-        this.initConfig(store.getData('appConfig'));
+        let conf = store.getData('appConfig') || window['appConfig'];
+        this.initConfig(conf);
     }
 
     /** 初始应用配置  */
     initConfig(config) {
-        let conf = config || {}; //window['appConfig'] ||
+        let conf = config || {};
         this.apiUrlBase = conf.apiUrlBase || (location.protocol + "//" + location.host);
         this.language = conf.language || null;
         this.defaultLanguage = conf.defaultLnaguage || "zh-CN";

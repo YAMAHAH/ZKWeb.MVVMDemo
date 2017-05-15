@@ -18,14 +18,17 @@ export abstract class AppComponentBase {
         this.router.events.subscribe(e => {
             this.routerActivated = (e instanceof NavigationEnd);
         });
-        this.initAppConfig();
+        this.getAppConfig();
     }
-    async initAppConfig() {
+    async getAppConfig() {
         return new Promise(resolve => {
             this.http.get("app-config.json")
                 .toPromise()
-                .then(config => {
-                    this.store.setData('appConfig', config.json());
+                .then(res => {
+                    let conf = res.json();
+                    window['appConfig'] = conf;
+                    this.store.setData('appConfig', conf);
+                    this.appConfigService.initConfig(conf);
                 });
         });
     }
