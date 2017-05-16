@@ -8,7 +8,7 @@ export class AppStoreService {
         this.store = new Map<string, any>();
     }
     getData(key: string) {
-        return this.store.has(key) && this.store.get(key);
+        return this.store.has(key) ? this.store.get(key) : null;
     }
 
     setData(key: string, value: any) {

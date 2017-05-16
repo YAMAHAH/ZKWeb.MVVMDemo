@@ -60,7 +60,7 @@ export class AdminContainerComponent implements OnInit {
                 };
                 (group.items || []).forEach(item => {
                     // 检查菜单项权限
-                    console.log("check", item.auth);
+                    //console.log("check", item.auth);
                     if (item.auth != null &&
                         !this.appPrivilegeService.isAuthorized(user, item.auth).success) {
                         return;

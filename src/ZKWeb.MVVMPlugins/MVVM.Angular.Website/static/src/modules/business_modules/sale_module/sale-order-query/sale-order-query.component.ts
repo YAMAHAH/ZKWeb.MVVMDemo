@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
     styleUrls: ['sale-order-query.component.scss']
 })
 export class SaleOrderQueryComponent {
-    saleOrderQuery="Sale-Order-Query";
+    saleOrderQuery="Sale-Order-Query-Modules";
 }

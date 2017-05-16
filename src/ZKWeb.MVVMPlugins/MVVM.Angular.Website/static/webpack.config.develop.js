@@ -12,8 +12,8 @@ const NamedModulesPlugin = require('webpack/lib/NamedModulesPlugin');
 var webpackConfig = {
     entry: {
         polyfills: './src/polyfills.ts',
-        resources: './src/dev/resources.dev.dll.ts',
-        app: './src/dev/main-hmr.module.ts'
+        vendor: './src/dev/vendor.ts',
+        app: './src/main.ts'
     },
     output: {
         publicPath: '/',
@@ -22,35 +22,29 @@ var webpackConfig = {
     plugins: [
         new CheckerPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
-            names: ["resources", 'manifest']
+            names: ['vendor', 'manifest']
         }),
         new webpack.ContextReplacementPlugin(/angular(\\|\/)core(\\|\/)@angular/,
             path.resolve(__dirname, '../src')
         ),
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: './src/dev/index.dev.dll.html',
+            template: './src/dev/index.dev.html',
             inject: true,
             chunksSortMode: 'dependency'
         }),
         new CopyWebpackPlugin([
             { from: path.resolve(__dirname, "./src/vendor/images/favicon.ico"), to: "favicon.ico" },
             { from: path.resolve(__dirname, "./src/vendor/styles/preloader/preloader.css"), to: "preloader.css" },
-            { from: path.resolve(__dirname, "./src/app-config.json"), to: "app-config.json" }
+            { from: path.resolve(__dirname, "./src/app-config.json"), to: "." }
         ]),
         new NamedModulesPlugin(),
-        new webpack.DllReferencePlugin({
-            context: '.',
-            manifest: require('./bin/debug/dll/manifest/vendor-manifest-dev.json'),
-            sourceType: 'var'
-        })
     ],
     module: {
         rules: [{
                 test: /\.ts$/,
                 loaders: [
                     "awesome-typescript-loader",
-                    "@angularclass/hmr-loader",
                     "angular-router-loader",
                     "angular2-template-loader"
                 ]
@@ -101,7 +95,6 @@ var webpackConfig = {
 };
 
 var defaultConfig = {
-    // devtool: 'inline-source-map',
     devtool: 'source-map',
     output: {
         filename: '[name].bundle.js',
@@ -121,9 +114,9 @@ var defaultConfig = {
         stats: "normal",
         historyApiFallback: true,
         compress: true,
-        // proxy: {
-        //     "/api": "http://localhost:53128"
-        // }
+        proxy: {
+            "/api": "http://localhost:53128"
+        }
     },
     node: {
         global: true,

@@ -1,6 +1,3 @@
-//RXJS
-
-
 // Styles
 import '../vendor/styles/primeng/primeng.min.css';
 import '../vendor/styles/primeng/theme.css';

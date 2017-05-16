@@ -21,6 +21,7 @@ import { DropdownModule } from 'primeng/components/dropdown/dropdown';
 import { MultiSelectModule } from 'primeng/components/multiselect/multiselect';
 import { ButtonModule } from 'primeng/components/button/button';
 import { InputTextareaModule } from "primeng/components/inputtextarea/inputtextarea";
+import { GlobalModule } from '@global_module/global.module';
 
 @NgModule({
     imports: [
@@ -32,7 +33,8 @@ import { InputTextareaModule } from "primeng/components/inputtextarea/inputtexta
         InputTextareaModule,
         DropdownModule,
         MultiSelectModule,
-        ButtonModule
+        ButtonModule,
+        GlobalModule
     ],
     declarations: [
         FormGridComponent,
@@ -45,11 +47,11 @@ import { InputTextareaModule } from "primeng/components/inputtextarea/inputtexta
         FormPasswordComponent,
         FormCaptchaComponent,
         FormUploadComponent,
-        FormSubmitButtonComponent,
-        TransPipe
+        FormSubmitButtonComponent
     ],
     exports: [
         HttpModule,
+        GlobalModule,
         FormGridComponent,
         FormValidationMessagesComponent,
         FormTextComponent,
@@ -61,7 +63,6 @@ import { InputTextareaModule } from "primeng/components/inputtextarea/inputtexta
         FormCaptchaComponent,
         FormUploadComponent,
         FormSubmitButtonComponent,
-        TransPipe
     ]
 })
 export class BaseModule { }

@@ -1,5 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { AppStoreService } from './app-store-service';
+import { AppStore } from '../../../dev/app-store';
 
 /** 保存全局配置的服务 */
 @Injectable()
@@ -34,11 +35,12 @@ export class AppConfigService {
     private sessionIdKey: string;
 
     constructor(private store: AppStoreService) {
-        let conf = store.getData('appConfig') || window['appConfig'];
+        let localConfig = localStorage.getItem('appConfig');
+        let conf = localConfig ? JSON.parse(localConfig) : null || store.getData('appConfig') || window['appConfig'];
         this.initConfig(conf);
     }
 
-    /** 初始应用配置  */
+    /** 初始应用配置 */
     initConfig(config) {
         let conf = config || {};
         this.apiUrlBase = conf.apiUrlBase || (location.protocol + "//" + location.host);

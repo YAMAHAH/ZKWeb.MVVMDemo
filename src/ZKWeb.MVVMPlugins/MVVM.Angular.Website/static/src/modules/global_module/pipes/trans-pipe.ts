@@ -3,8 +3,8 @@ import { AppTranslationService } from '../../global_module/services/app-translat
 
 // 翻译文本的管道
 // 例: {{ "text" | trans }}
-@Pipe({ name: 'gtrans' })
-export class GTransPipe implements PipeTransform {
+@Pipe({ name: 'trans' })
+export class TransPipe implements PipeTransform {
     constructor(private appTranslationService: AppTranslationService) { }
     transform(value: string): string {
         return this.appTranslationService.translate(value);

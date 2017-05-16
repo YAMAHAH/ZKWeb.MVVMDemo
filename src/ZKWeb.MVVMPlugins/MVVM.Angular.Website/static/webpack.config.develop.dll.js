@@ -13,7 +13,7 @@ var webpackConfig = {
     entry: {
         polyfills: './src/polyfills.ts',
         resources: './src/dev/resources.dev.dll.ts',
-        app: './src/dev/main-hmr.module.ts'
+        app: './src/main.ts'
     },
     output: {
         publicPath: '/',
@@ -22,7 +22,7 @@ var webpackConfig = {
     plugins: [
         new CheckerPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
-            names: ["resources", 'manifest']
+            names: ['resources', 'manifest']
         }),
         new webpack.ContextReplacementPlugin(/angular(\\|\/)core(\\|\/)@angular/,
             path.resolve(__dirname, '../src')
@@ -39,18 +39,12 @@ var webpackConfig = {
             { from: path.resolve(__dirname, "./src/app-config.json"), to: "app-config.json" }
         ]),
         new NamedModulesPlugin(),
-        new webpack.DllReferencePlugin({
-            context: '.',
-            manifest: require('./bin/debug/dll/manifest/vendor-manifest-dev.json'),
-            sourceType: 'var'
-        })
     ],
     module: {
         rules: [{
                 test: /\.ts$/,
                 loaders: [
                     "awesome-typescript-loader",
-                    "@angularclass/hmr-loader",
                     "angular-router-loader",
                     "angular2-template-loader"
                 ]
@@ -121,9 +115,9 @@ var defaultConfig = {
         stats: "normal",
         historyApiFallback: true,
         compress: true,
-        // proxy: {
-        //     "/api": "http://localhost:53128"
-        // }
+        proxy: {
+            "/api": "http://localhost:53128"
+        }
     },
     node: {
         global: true,

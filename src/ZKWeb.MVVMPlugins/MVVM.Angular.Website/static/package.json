@@ -4,7 +4,9 @@
     "scripts": {
         "start": " npm run dev:dll",
         "predev": "npm run clean:debug",
-        "dev": " webpack-dev-server --config webpack.config.dev.js --watch --colors --progress --hot --compress --port 9000 --host 0.0.0.0",
+        "dev": " webpack-dev-server --config webpack.config.dev.js --colors --progress --hot --compress --port 9000 --host 0.0.0.0",
+        "predevelop": "npm run clean:debug",
+        "develop": " webpack-dev-server --config webpack.config.develop.js --colors --progress --hot --compress --port 9000 --host 0.0.0.0",
         "prebuild": "npm run clean:dist",
         "build": "./node_modules/.bin/webpack --config webpack.config.js --colors --progress",
         "clean:dist": "rimraf -- dist/*.*",
@@ -13,7 +15,9 @@
         "prewatch": "npm run clean:dist",
         "watch": "./node_modules/.bin/webpack --config webpack.config.js --colors --progress --watch",
         "predev:dll": "npm run clean:debug",
-        "dev:dll": "webpack-dev-server --config webpack.config.dev.dll.js --watch --colors --progress --hot  --compress --port 9000 --host 0.0.0.0",
+        "dev:dll": "webpack-dev-server --config webpack.config.dev.dll.js --colors --progress --hot  --compress --port 9000 --host 0.0.0.0",
+        "predevelop:dll": "npm run clean:debug",
+        "develop:dll": "webpack-dev-server --config webpack.config.develop.dll.js --colors --progress --hot  --compress --port 9000 --host 0.0.0.0",
         "build:dll": "rimraf -- bin/dll/**/*.* && webpack --config webpack.config.dll.js --colors --progress",
         "lint": "./node_modules/.bin/tslint ./src/**/*.ts -t verbose"
     },

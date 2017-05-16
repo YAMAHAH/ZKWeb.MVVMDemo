@@ -12,6 +12,7 @@ import { UserOutputDto } from "@generated_module/dtos/user-output-dto";
 import { GridSearchRequestDto } from "@generated_module/dtos/grid-search-request-dto";
 import { UserTypes } from "@generated_module/privileges/user-types";
 import { Privileges } from "@generated_module/privileges/privileges";
+import { TestInput } from "@generated_module/dtos/test-input";
 
 @Component({
     moduleId: module.id,
@@ -51,11 +52,11 @@ export class AdminUserListComponent extends CrudWithDialogBaseComponent {
             });
         });
 
-        // this.userManageService.Test("2019").subscribe(res => console.log(res));
-        // let inputDto = new TestInput();
-        // inputDto.param1 = "myobject";
-        // inputDto.param2 = 2018;
-        // this.userManageService.TestObject("myname", inputDto).subscribe(res => console.log(res));
+        this.userManageService.Test("2019").subscribe(res => console.log(res));
+        let inputDto = new TestInput();
+        inputDto.param1 = "myobject";
+        inputDto.param2 = 29199000;
+        this.userManageService.TestObject("myname", inputDto).subscribe(res => console.log(res));
         this.editForm.addControl("Id", new FormControl(""));
         this.editForm.addControl("Type", new FormControl("", Validators.required));
         this.editForm.addControl("Username", new FormControl("", Validators.required));
