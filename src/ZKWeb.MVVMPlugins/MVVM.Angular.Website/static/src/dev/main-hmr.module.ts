@@ -3,9 +3,8 @@ import { NgModule, ApplicationRef } from '@angular/core';
 import { removeNgStyles, createNewHosts, createInputTransfer, bootloader } from '@angularclass/hmr';
 
 import { AppStore, State } from './app-store';
-
-import { AppHmrModule } from '../modules/app_module/app-hmr.module';
-import { AppHMRComponent } from '../modules/app_module/components/app-hmr.component';
+import { AppHmrModule } from "@main_module/app-hmr.module";
+import { AppHMRComponent } from "@main_module/components/app-hmr.component";
 
 @NgModule({
     bootstrap: [

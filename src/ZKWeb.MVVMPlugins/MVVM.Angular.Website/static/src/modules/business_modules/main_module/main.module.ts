@@ -5,8 +5,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MainComponent } from './main.component';
 import { LazyLoadContainer } from './lazy-load-container';
-import { GeneratedModule } from '../../generated_module/generated.module';
-import { AuthModule } from '../../auth_module/auth.module';
+import { GeneratedModule } from '@generated_module/generated.module';
+import { AuthModule } from '@auth_module/auth.module';
 import { applicationMainRoutesConfig } from './main.routes.config';
 
 @NgModule({

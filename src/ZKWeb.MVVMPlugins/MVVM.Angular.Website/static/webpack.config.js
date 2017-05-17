@@ -80,8 +80,14 @@ var webpackConfig = {
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: './src/prod/index.html',
+            minify: {
+                removeComments: false,
+                collapseWihitespace: true,
+                minifyJS: false
+            },
             inject: true,
-            chunksSortMode: 'dependency'
+            chunksSortMode: 'dependency',
+            favicon: "./src/vendor/images/favicon.ico"
         }),
         new CompressionPlugin({
             asset: "[path].gz[query]",
@@ -90,7 +96,7 @@ var webpackConfig = {
         }),
         new webpack.optimize.UglifyJsPlugin({ minimize: false }),
         new CopyWebpackPlugin([
-            { from: path.resolve(__dirname, "./src/vendor/images/favicon.ico"), to: "favicon.ico" },
+            //  { from: path.resolve(__dirname, "./src/vendor/images/favicon.ico"), to: "favicon.ico" },
             { from: path.resolve(__dirname, "./src/vendor/styles/preloader/preloader.css"), to: "preloader.css" },
             { from: path.resolve(__dirname, "./src/app-config.json"), to: "." }
         ]),

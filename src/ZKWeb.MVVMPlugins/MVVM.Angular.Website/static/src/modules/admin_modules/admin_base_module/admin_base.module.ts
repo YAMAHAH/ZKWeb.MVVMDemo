@@ -12,7 +12,7 @@ import { MessagesModule } from 'primeng/components/messages/messages';
 import { BlockUIModule } from 'primeng/components/blockui/blockui';
 import { GrowlModule } from "primeng/components/growl/growl";
 import { SlideMenuModule } from "primeng/components/slidemenu/slidemenu";
-import { BaseModule } from "@base_module/base.module";
+import { BaseModule } from "@business_bases/desktop/base_module/base.module";
 
 @NgModule({
     imports: [
@@ -27,7 +27,7 @@ import { BaseModule } from "@base_module/base.module";
         GrowlModule,
         SlideMenuModule,
         BaseModule,
-        RouterModule 
+        RouterModule
     ],
     declarations: [
         AdminContainerComponent,

@@ -16,20 +16,32 @@
             "dom"
         ],
         "paths": {
-            "@base_module/*": [
-                "src/modules/base_module/*"
+            "@core/*": [
+                "src/core/*"
+            ],
+            "@ui_components/*": [
+                "src/ui_components/*"
+            ],
+            "@business_bases/*": [
+                "src/business_bases/*"
             ],
             "@generated_module/*": [
                 "src/modules/generated_module/*"
             ],
             "@global_module/*": [
-                "src/modules/global_module/*"
+                "src/business_bases/desktop/global_module/*"
+            ],
+            "@base_module/*": [
+                "src/business_bases/desktop/base_module/*"
             ],
             "@auth_module/*": [
-                "src/modules/auth_module/*"
+                "src/business_bases/desktop/auth_module/*"
             ],
             "@admin_modules/*": [
                 "src/modules/admin_modules/*"
+            ],
+            "@main_module/*": [
+                "src/app_module/*"
             ],
             "@business_modules/*": [
                 "src/modules/business/*"

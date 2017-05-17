@@ -19,7 +19,7 @@ import { ConfirmDialogModule } from 'primeng/components/confirmdialog/confirmdia
 import { UserTypes } from '@generated_module/privileges/user-types';
 import { AuthGuard } from '@auth_module/auth/auth-guard';
 import { Privileges } from '@generated_module/privileges/privileges';
-import { BaseModule } from '@base_module/base.module';
+import { BaseModule } from '@business_bases/desktop/base_module/base.module';
 
 const routes: Routes = [
     {

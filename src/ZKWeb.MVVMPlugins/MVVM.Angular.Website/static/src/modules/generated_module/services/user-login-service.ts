@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AppApiService } from '../../global_module/services/app-api-service';
+import { AppApiService } from '@global_module/services/app-api-service';
 import { ActionResponseDto } from '../dtos/action-response-dto';
 import { UserLoginRequestDto } from '../dtos/user-login-request-dto';
 

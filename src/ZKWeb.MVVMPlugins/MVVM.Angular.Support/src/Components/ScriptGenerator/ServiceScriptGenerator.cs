@@ -36,7 +36,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
                 .GetCustomAttribute<DescriptionAttribute>()?.Description ?? className;
             includeBuilder.AppendLine("import { Injectable } from '@angular/core';");
             includeBuilder.AppendLine("import { Observable } from 'rxjs/Observable';");
-            includeBuilder.AppendLine("import { AppApiService } from '../../global_module/services/app-api-service';");
+            includeBuilder.AppendLine("import { AppApiService } from '@global_module/services/app-api-service';");
             classBuilder.AppendLine("@Injectable()");
             classBuilder.AppendLine($"/** {classDescription} */");
             classBuilder.AppendLine($"export class {className} {{");

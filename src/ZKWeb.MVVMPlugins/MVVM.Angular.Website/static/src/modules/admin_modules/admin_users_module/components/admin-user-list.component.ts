@@ -1,7 +1,6 @@
 ﻿import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ConfirmationService, SelectItem } from "primeng/components/common/api";
-import { CrudWithDialogBaseComponent } from "@base_module/components/crud-with-dialog-base.component";
 import { AppSessionService } from '@auth_module/services/app-session-service';
 import { AppPrivilegeService } from '@auth_module/services/app-privilege-service';
 import { AppTranslationService } from '@global_module/services/app-translation-service';
@@ -13,6 +12,7 @@ import { GridSearchRequestDto } from "@generated_module/dtos/grid-search-request
 import { UserTypes } from "@generated_module/privileges/user-types";
 import { Privileges } from "@generated_module/privileges/privileges";
 import { TestInput } from "@generated_module/dtos/test-input";
+import { CrudWithDialogBaseComponent } from '@business_bases/desktop/base_module/components/crud-with-dialog-base.component';
 
 @Component({
     moduleId: module.id,

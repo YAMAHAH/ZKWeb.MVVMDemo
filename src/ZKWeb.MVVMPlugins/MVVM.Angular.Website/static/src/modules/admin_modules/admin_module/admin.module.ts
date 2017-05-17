@@ -17,11 +17,11 @@ import { DataTableModule } from 'primeng/components/datatable/datatable';
 import { TabViewModule } from "primeng/components/tabview/tabview";
 import { AuthGuard } from "@auth_module/auth/auth-guard";
 import { UserTypes } from "@generated_module/privileges/user-types";
-import { BaseModule } from "@base_module/base.module";
 import { AdminBaseModule } from "@admin_modules/admin_base_module/admin_base.module";
 import { GeneratedModule } from "@generated_module/generated.module";
 import { AuthModule } from "@auth_module/auth.module";
 import { adminRoutesConfig } from './admin.routes.config';
+import { BaseModule } from "@business_bases/desktop/base_module/base.module";
 
 @NgModule({
     imports: [

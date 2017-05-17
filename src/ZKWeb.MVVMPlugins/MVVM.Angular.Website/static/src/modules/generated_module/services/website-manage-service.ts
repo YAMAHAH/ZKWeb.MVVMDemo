@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AppApiService } from '../../global_module/services/app-api-service';
+import { AppApiService } from '@global_module/services/app-api-service';
 import { ActionResponseDto } from '../dtos/action-response-dto';
 import { WebsiteInfoOutputDto } from '../dtos/website-info-output-dto';
 import { WebsiteSettingsDto } from '../dtos/website-settings-dto';

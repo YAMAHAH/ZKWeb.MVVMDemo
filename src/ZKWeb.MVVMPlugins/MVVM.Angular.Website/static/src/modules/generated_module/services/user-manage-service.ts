@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AppApiService } from '../../global_module/services/app-api-service';
+import { AppApiService } from '@global_module/services/app-api-service';
 import { GridSearchResponseDto } from '../dtos/grid-search-response-dto';
 import { GridSearchRequestDto } from '../dtos/grid-search-request-dto';
 import { TestInput } from '../dtos/test-input';

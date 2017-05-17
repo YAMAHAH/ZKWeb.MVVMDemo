@@ -20,7 +20,7 @@ import { UserTypes } from "@generated_module/privileges/user-types";
 import { Privileges } from "@generated_module/privileges/privileges";
 import { AdminScheduledTaskListComponent } from './components/admin-scheduled-task-list.component';
 import { AdminScheduledTaskLogListComponent } from './components/admin-scheduled-task-log-list.component';
-import { BaseModule } from "@base_module/base.module";
+import { BaseModule } from '@business_bases/desktop/base_module/base.module';
 
 const routes: Routes = [
     {
