@@ -10,7 +10,7 @@ var webpackConfig = {
     entry: {
         polyfills: './src/polyfills.ts',
         vendor: './src/prod/vendor.ts',
-        app: './src/prod/main.ts'
+        app: './src/main.ts'
     },
     output: {
         publicPath: '/',
