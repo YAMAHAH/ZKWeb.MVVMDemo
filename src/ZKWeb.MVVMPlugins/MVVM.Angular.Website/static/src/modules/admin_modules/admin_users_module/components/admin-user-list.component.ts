@@ -54,8 +54,8 @@ export class AdminUserListComponent extends CrudWithDialogBaseComponent {
 
         this.userManageService.Test("2019").subscribe(res => console.log(res));
         let inputDto = new TestInput();
-        inputDto.param1 = "myobject";
-        inputDto.param2 = 29199000;
+        inputDto.param1 = "myosdbject";
+        inputDto.param2 = 21009199000;
         this.userManageService.TestObject("myname", inputDto).subscribe(res => console.log(res));
         this.editForm.addControl("Id", new FormControl(""));
         this.editForm.addControl("Type", new FormControl("", Validators.required));

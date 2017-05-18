@@ -4,6 +4,10 @@ import { Http } from '@angular/http';
 import { AppConfigService } from '@global_module/services/app-config-service';
 import 'rxjs/add/operator/toPromise';
 import { AppStoreService } from "@business_bases/desktop/global_module/services/app-store-service";
+import { AppConsts } from '@business_bases/desktop/global_module/app-consts';
+import { GuidUtils } from '@core/utils/guid-utils';
+import { RSAUtils } from '@core/utils/rsa-utils';
+
 export abstract class AppComponentBase {
     private http: Http;
     private router: Router;
@@ -19,7 +23,22 @@ export abstract class AppComponentBase {
         this.router.events.subscribe(e => {
             this.routerActivated = (e instanceof NavigationEnd);
         });
+        this.appInit();
         this.getAppConfig();
+
+    }
+
+    appInit() {
+        //随机生成密钥
+        let randomKey = GuidUtils.uuid(16, 16);
+        this.store.setData(AppConsts.SecretKey, randomKey);
+        localStorage.setItem(AppConsts.SecretKey, randomKey);
+        //RSA公钥密钥
+        let rsaKey = RSAUtils.genRSAKey();
+        this.store.setData(AppConsts.RsaPrivateKey, rsaKey.privateKey);
+        localStorage.setItem(AppConsts.RsaPrivateKey, rsaKey.privateKey);
+        this.store.setData(AppConsts.RsaPublicKey, rsaKey.publicKey);
+        localStorage.setItem(AppConsts.RsaPublicKey, rsaKey.publicKey);
     }
     async getAppConfig() {
         return new Promise(resolve => {

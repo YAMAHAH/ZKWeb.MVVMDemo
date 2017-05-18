@@ -5,33 +5,35 @@ import { AppStoreService } from './app-store-service';
 @Injectable()
 export class AppConfigService {
     /** Api的基础地址 */
-    private apiUrlBase: string;
+    private _apiUrlBase: string;
     /** 当前使用的语言，例如"en-US" */
-    private language: string;
+    private _language: string;
     /** 默认使用的语言 */
-    private defaultLanguage: string;
+    private _defaultLanguage: string;
     /** 客户端传给服务端使用的语言头 */
-    private languageHeader: string;
+    private _languageHeader: string;
     /** 当前使用的语言在本地储存的key */
-    private languageKey: string;
+    private _languageKey: string;
     /** 当前使用的时区，例如"America/Los_Angeles" */
-    private timezone: string;
+    private _timezone: string;
     /** 默认使用的时区 */
-    private defaultTimezone: string;
+    private _defaultTimezone: string;
     /** 客户端传给服务端使用的语言头 */
-    private timezoneHeader: string;
+    private _timezoneHeader: string;
     /** 当前使用的时区在本地储存的key */
-    private timezoneKey: string;
+    private _timezoneKey: string;
     /** 登录地址 */
-    private loginUrl: string[];
+    private _loginUrl: string[];
     /** 当前会话Id */
-    private sessionId: string;
+    private _sessionId: string;
     /** 客户端传给服务端使用的会话Id头 */
-    private sessionIdHeader: string;
+    private _sessionIdHeader: string;
     /** 服务端传给客户端使用的会话Id头 */
-    private sessionIdSetHeader: string;
+    private _sessionIdSetHeader: string;
     /** 会话Id储存在本地储存的key */
-    private sessionIdKey: string;
+    private _sessionIdKey: string;
+
+    private _isEncryptData: boolean;
 
     constructor(private store: AppStoreService) {
         let localConfig = localStorage.getItem('appConfig');
@@ -42,90 +44,94 @@ export class AppConfigService {
     /** 初始应用配置 */
     initConfig(config) {
         let conf = config || {};
-        this.apiUrlBase = conf.apiUrlBase || (location.protocol + "//" + location.host);
-        this.language = conf.language || null;
-        this.defaultLanguage = conf.defaultLnaguage || "zh-CN";
-        this.languageHeader = conf.languageHeader || "X-ZKWeb-Language";
-        this.languageKey = conf.languageKey || "ZKWeb-Language";
-        this.timezone = conf.timezone || null;
-        this.defaultTimezone = conf.defaultTimezone || "Asia/Shanghai";
-        this.timezoneHeader = conf.timezoneHeader || "X-ZKWeb-Timezone";
-        this.timezoneKey = conf.timezoneKey || "ZKWeb-Timezone";
-        this.loginUrl = conf.loginUrl || ["/admin", "login"];
-        this.sessionIdHeader = conf.sessionIdHeader || "X-ZKWeb-SessionId";
-        this.sessionIdSetHeader = conf.sessionIdSetHeader || "X-Set-ZKWeb-SessionId";
-        this.sessionIdKey = conf.sessionIdKey || "ZKWeb-SessionId";
+        this._apiUrlBase = conf.apiUrlBase || (location.protocol + "//" + location.host);
+        this._language = conf.language || null;
+        this._defaultLanguage = conf.defaultLnaguage || "zh-CN";
+        this._languageHeader = conf.languageHeader || "X-ZKWeb-Language";
+        this._languageKey = conf.languageKey || "ZKWeb-Language";
+        this._timezone = conf.timezone || null;
+        this._defaultTimezone = conf.defaultTimezone || "Asia/Shanghai";
+        this._timezoneHeader = conf.timezoneHeader || "X-ZKWeb-Timezone";
+        this._timezoneKey = conf.timezoneKey || "ZKWeb-Timezone";
+        this._loginUrl = conf.loginUrl || ["/admin", "login"];
+        this._sessionIdHeader = conf.sessionIdHeader || "X-ZKWeb-SessionId";
+        this._sessionIdSetHeader = conf.sessionIdSetHeader || "X-Set-ZKWeb-SessionId";
+        this._sessionIdKey = conf.sessionIdKey || "ZKWeb-SessionId";
+        this._isEncryptData = conf.isEncryptData || false;
     }
 
     /** 获取Api的基础地址 */
-    getApiUrlBase(): string {
-        return this.apiUrlBase;
+    get apiUrlBase(): string {
+        return this._apiUrlBase;
     }
 
     /** 获取当前使用的语言 */
-    getLanguage(): string {
-        if (!this.language) {
-            this.language = localStorage.getItem(this.languageKey) || this.defaultLanguage;
+    get language(): string {
+        if (!this._language) {
+            this._language = localStorage.getItem(this._languageKey) || this._defaultLanguage;
         }
-        return this.language;
+        return this._language;
     }
 
     /** 设置当前使用的语言 */
     setLanguage(language: string) {
-        this.language = language;
-        localStorage.setItem(this.languageKey, language);
+        this._language = language;
+        localStorage.setItem(this._languageKey, language);
     }
 
     // 获取客户端传给服务端使用的语言头
-    getLanguageHeader(): string {
-        return this.languageHeader;
+    get languageHeader(): string {
+        return this._languageHeader;
     }
 
     // 获取当前使用的时区
-    getTimezone(): string {
-        if (!this.timezone) {
-            this.timezone = localStorage.getItem(this.timezone) || this.defaultTimezone;
+    get timezone(): string {
+        if (!this._timezone) {
+            this._timezone = localStorage.getItem(this._timezone) || this._defaultTimezone;
         }
-        return this.timezone;
+        return this._timezone;
     }
 
     /** 设置当前使用的时区 */
     setTimezone(timezone: string) {
-        this.timezone = timezone;
-        localStorage.setItem(this.timezoneKey, timezone);
+        this._timezone = timezone;
+        localStorage.setItem(this._timezoneKey, timezone);
     }
 
     // 获取客户端传给服务端使用的语言头
-    getTimezoneHeader(): string {
-        return this.timezoneHeader;
+    get timezoneHeader(): string {
+        return this._timezoneHeader;
     }
 
     // 获取登录地址
-    getLoginUrl(): string[] {
-        return this.loginUrl;
+    get loginUrl() {
+        return this._loginUrl;
     }
 
+    get isEncryptData(): boolean {
+        return this._isEncryptData;
+    }
     // 获取当前会话Id
-    getSessionId(): string {
-        if (!this.sessionId) {
-            this.sessionId = localStorage.getItem(this.sessionIdKey);
+    get sessionId() {
+        if (!this._sessionId) {
+            this._sessionId = localStorage.getItem(this._sessionIdKey);
         }
-        return this.sessionId;
+        return this._sessionId;
     }
 
     // 设置当前会话Id
     setSessionId(sessionId: string): void {
-        this.sessionId = sessionId;
-        localStorage.setItem(this.sessionIdKey, sessionId);
+        this._sessionId = sessionId;
+        localStorage.setItem(this._sessionIdKey, sessionId);
     }
 
     // 获取客户端传给服务端使用的会话Id头
-    getSessionIdHeader(): string {
-        return this.sessionIdHeader;
+    get sessionIdHeader(): string {
+        return this._sessionIdHeader;
     }
 
     // 获取服务端传给客户端使用的会话Id头
-    getSessionIdSetHeader(): string {
-        return this.sessionIdSetHeader;
+    get sessionIdSetHeader(): string {
+        return this._sessionIdSetHeader;
     }
 }

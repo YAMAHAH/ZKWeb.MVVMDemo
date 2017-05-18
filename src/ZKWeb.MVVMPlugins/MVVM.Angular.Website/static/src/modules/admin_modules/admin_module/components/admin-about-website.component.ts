@@ -26,9 +26,9 @@ export class AdminAboutWebsiteComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.language = this.appTranslationService.translate(this.appConfigService.getLanguage());
-        this.timezone = this.appTranslationService.translate(this.appConfigService.getTimezone());
-        this.apiUrlBase = this.appConfigService.getApiUrlBase();
+        this.language = this.appTranslationService.translate(this.appConfigService.language);
+        this.timezone = this.appTranslationService.translate(this.appConfigService.timezone);
+        this.apiUrlBase = this.appConfigService.apiUrlBase;
         this.websiteManagerService.GetWebsiteInfo().subscribe(
             s => this.websiteInfo = s,
             e => this.adminToastService.showToastMessage("error", e));

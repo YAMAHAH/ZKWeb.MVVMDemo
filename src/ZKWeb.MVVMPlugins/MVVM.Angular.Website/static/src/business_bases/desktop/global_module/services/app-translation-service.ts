@@ -8,7 +8,7 @@ export class AppTranslationService {
     protected translation: any;
 
     constructor(protected appConfigService: AppConfigService) {
-        let language = appConfigService.getLanguage();
+        let language = appConfigService.language;
         TranslationIndex.translationModules.forEach(translation => {
             if (translation.language === language) {
                 this.translation = translation;
