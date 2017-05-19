@@ -7,7 +7,8 @@ import 'rxjs/add/operator/publishLast';
 import { AppConfigService } from './app-config-service';
 import { AppConsts } from '@business_bases/desktop/global_module/app-consts';
 import { AESUtils } from '@core/utils/aes-utils';
-import { GuidUtils } from '../../../../core/utils/guid-utils';
+import { GuidUtils } from '@core/utils/guid-utils';
+import { rxResultConverter, rxErrorConverter } from '@core/utils/type-utils';
 
 // 调用远程Api的服务
 @Injectable()
@@ -186,8 +187,8 @@ export class AppApiService {
     call<T>(
         url: string,
         options?: RequestOptionsArgs,
-        resultConverter?: (Response) => any,
-        errorConverter?: (any) => any): Observable<T> {
+        resultConverter?: rxResultConverter,
+        errorConverter?: rxErrorConverter): Observable<T> {
         // 构建完整url，可能不在同一个host
         let fullUrl = this.appConfigService.apiUrlBase + url;
         this.urlFilters.forEach(h => { fullUrl = h(fullUrl); });
@@ -216,8 +217,11 @@ export class AppApiService {
                     if (resData.indexOf(AppConsts.responseDataKey) > -1 && resData.indexOf(AppConsts.responseEncryptKey) > -1) {
                         let _body = res.json();
                         response[AppConsts.responseBodyKey] = AESUtils.decryptToUtf8String(this.secretKey, _body.data);
+                    } else {
+                        response[AppConsts.responseBodyKey] = AESUtils.decryptToUtf8String(this.secretKey, resData);
                     }
                 }
+                console.debug(response);
                 // 过滤返回的结果
                 this.resultFilters.forEach(f => { response = f(response); });
                 // 转换返回的结果

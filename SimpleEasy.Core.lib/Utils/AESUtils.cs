@@ -10,6 +10,7 @@ namespace SimpleEasy.Core.lib.Utils
 {
     public class AESUtils
     {
+        public static string pin = "99b3ad6e8dfjpe4c";
         /// <summary>
         /// ASE加密
         /// </summary>
@@ -55,9 +56,9 @@ namespace SimpleEasy.Core.lib.Utils
         /// <param name="pin">密钥向量</param>
         /// <param name="data">加密数据字符串</param>
         /// <returns>BASE64字符串</returns>
-        public static string EncryptToBase64String(string privateKey, string pin, string data)
+        public static string EncryptToBase64String(string privateKey, string data, string pin=null)
         {
-            return Convert.ToBase64String(Encrypt(privateKey, pin, Encoding.UTF8.GetBytes(data)).Result);
+            return Convert.ToBase64String(Encrypt(privateKey, pin ?? AESUtils.pin, Encoding.UTF8.GetBytes(data)).Result);
         }
         /// <summary>
         /// ASE加密
@@ -66,9 +67,9 @@ namespace SimpleEasy.Core.lib.Utils
         /// <param name="pin">密钥向量</param>
         /// <param name="data">加密数据对象</param>
         /// <returns>BASE64字符串</returns>
-        public static string EncryptToBase64String(string privateKey, string pin, object data)
+        public static string EncryptToBase64String(string privateKey, object data, string pin=null)
         {
-            return Convert.ToBase64String(Encrypt(privateKey, pin, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data))).Result);
+            return Convert.ToBase64String(Encrypt(privateKey, pin ?? AESUtils.pin, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data))).Result);
         }
 
         /// <summary>
@@ -116,9 +117,9 @@ namespace SimpleEasy.Core.lib.Utils
         /// <param name="pin">密钥向量</param>
         /// <param name="data"加密BASE64字符串></param>
         /// <returns>UTF8字符串</returns>
-        public async static Task<string> DecryptToUtf8String(string privateKey, string pin, string data)
+        public async static Task<string> DecryptToUtf8String(string privateKey, string data, string pin=null)
         {
-            return await Task.FromResult<string>(Encoding.UTF8.GetString(Decrypt(privateKey, pin, data).Result).TrimEnd('\0')); //Replace("\0", "")
+            return await Task.FromResult<string>(Encoding.UTF8.GetString(Decrypt(privateKey, pin ?? AESUtils.pin, data).Result).TrimEnd('\0')); //Replace("\0", "")
         }
         /// <summary>
         /// AES解密
@@ -127,9 +128,9 @@ namespace SimpleEasy.Core.lib.Utils
         /// <param name="pin">密钥向量</param>
         /// <param name="data"加密BASE64字符串></param>
         /// <returns>反序列化对象</returns>
-        public async static Task<T> DecryptToModel<T>(string privateKey, string pin, string data)
+        public async static Task<T> DecryptToModel<T>(string privateKey, string data, string pin = null)
         {
-            return await Task.FromResult<T>(JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(Decrypt(privateKey, pin, data).Result).TrimEnd('\0'))); //Replace("\0", "")
+            return await Task.FromResult<T>(JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(Decrypt(privateKey, pin ?? AESUtils.pin, data).Result).TrimEnd('\0'))); //Replace("\0", "")
         }
     }
 }

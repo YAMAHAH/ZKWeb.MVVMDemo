@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace ZKWeb.MVVMDemo.AspNetCore.TokenManagement
 {
-  
+  /// <summary>
+  /// 
+  /// </summary>
     public static class TokenAuthExtensions
     {
         /// <summary>

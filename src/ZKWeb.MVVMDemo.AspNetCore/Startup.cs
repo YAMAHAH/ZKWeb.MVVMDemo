@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using SimpleEasy.Core.lib.AspNetCore.MiddleWares;
 
 namespace ZKWeb.MVVMDemo.AspNetCore
 {
@@ -23,6 +24,7 @@ namespace ZKWeb.MVVMDemo.AspNetCore
             {
                 app.UseStatusCodePages();
             }
+ 
             app.UseCors("defaultCors");
 
             // 使用Swagger中间件

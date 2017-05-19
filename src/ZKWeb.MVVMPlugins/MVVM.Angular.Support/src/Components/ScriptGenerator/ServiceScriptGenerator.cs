@@ -37,12 +37,15 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
             includeBuilder.AppendLine("import { Injectable } from '@angular/core';");
             includeBuilder.AppendLine("import { Observable } from 'rxjs/Observable';");
             includeBuilder.AppendLine("import { AppApiService } from '@global_module/services/app-api-service';");
+            includeBuilder.AppendLine("import { rxResultConverter, rxErrorConverter } from '@core/utils/type-utils';");
             classBuilder.AppendLine("@Injectable()");
             classBuilder.AppendLine($"/** {classDescription} */");
             classBuilder.AppendLine($"export class {className} {{");
             classBuilder.AppendLine("    constructor(private appApiService: AppApiService) { }");
             classBuilder.AppendLine();
             var methods = service.GetApiMethods().ToList();
+            var apiCallParamStr = "resultConverter, errorConverter";
+            var actionParamStr = "resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter";
             foreach (var method in methods)
             {
                 // 获取方法信息
@@ -67,7 +70,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
                     {
                         var importName = pathConfig.NormalizeClassName(newDiscoveredType);
                         var importFile = pathConfig.NormalizeFilename(importName);
-                        includeBuilder.AppendLine($"import {{ {importName} }} from '../dtos/{importFile}';");
+                        includeBuilder.AppendLine($"import {{ {importName} }} from '@generated_module/dtos/{importFile}';");
                         includedTypes.Add(newDiscoveredType);
                     }
                 }
@@ -77,12 +80,12 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
                 foreach (var parameter in methodParameters)
                 {
                     classBuilder.Append($"{parameter.name}: {parameter.type}");
-                    if (parameter != methodParameters.Last())
-                    {
-                        classBuilder.Append(", ");
-                    }
+                    // if (parameter != methodParameters.Last())
+                    //  {
+                    classBuilder.Append(", ");
+                    //  }
                 }
-                classBuilder.AppendLine($"): Observable<{methodReturnType}> {{");
+                classBuilder.AppendLine($"{actionParamStr}): Observable<{methodReturnType}> {{");
                 //序列化参数
                 string[] requireBodyMethods = { "post", "put", "patch" }; //head,options,get
                 string requestMethod = method.Method.ToLower();
@@ -122,27 +125,30 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
 
                 //添加BODY
                 //body:{ inputdtoA, inputdtoB } //按照约定只有一个输入参数，封装所有的信息
- 
+
                 //根据API的method,生成相应的请求选项
                 // classBuilder.AppendLine($"            }},");
+
                 if (requireBodyMethods.Contains(requestMethod) || methodParameters.Count == 0)
                 {
                     if (methodParameters.Count > 0)
                     {
                         classBuilder.AppendLine("            {\n                method: \"" + $"{method.Method}\"," +
                                                              "\n                body: " + $"{requestBody}" +
-                                                             "\n            });");
+                                                             "\n            }" +
+                                                              $", {apiCallParamStr}" + ");");
                     }
                     else
                     {
-                        classBuilder.AppendLine("            {\n                method: \"" + $"{method.Method}" + "\"\n            });");
+                        classBuilder.AppendLine("            {\n                method: \"" + $"{method.Method}" + "\"\n            }"
+                                                                                + $", {apiCallParamStr}" + ");");
                     }
                 }
                 else
                 {
                     classBuilder.AppendLine("            {\n                method: \"" + $"{method.Method}\"," +
                                                          "\n                params: urlParams" +
-                                           "\n            });");
+                                           "\n            }" + $", {apiCallParamStr}" + ");");
                 }
 
                 classBuilder.AppendLine($"    }}");

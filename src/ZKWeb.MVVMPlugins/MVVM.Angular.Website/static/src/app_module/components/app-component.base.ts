@@ -30,7 +30,7 @@ export abstract class AppComponentBase {
 
     appInit() {
         //随机生成密钥
-        let randomKey = GuidUtils.uuid(16, 16);
+        let randomKey ="99b3ad6e"; // GuidUtils.uuid(16, 16);
         this.store.setData(AppConsts.SecretKey, randomKey);
         localStorage.setItem(AppConsts.SecretKey, randomKey);
         //RSA公钥密钥
