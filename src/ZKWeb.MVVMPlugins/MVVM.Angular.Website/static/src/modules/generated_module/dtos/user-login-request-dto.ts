@@ -10,4 +10,8 @@ export class UserLoginRequestDto {
     public Captcha: string;
     /** 记住登录 */
     public RememberLogin: boolean;
+    /** 数据加密私钥 */
+    public SecretKey: string;
+    /** 客户RSA公私 */
+    public PublicKey: string;
 }

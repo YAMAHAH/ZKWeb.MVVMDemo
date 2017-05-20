@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SimpleEasy.Core.lib.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,6 +11,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Captcha.src.Managers;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Services;
+using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Services;
 using ZKWebStandard.Ioc;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
@@ -68,6 +70,18 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
             {
                 throw new BadRequestException("Incorrect captcha");
             }
+            ////获取key
+            // var aesKey = request.SecretKey;
+            ////使用RSA解密
+            //var aesSecretKey = RSAUtils.decryptData(aesKey, RSAUtils._privateKey, "UTF-8");
+            ////解密publicKey
+            //var publicKey = AESUtils.DecryptToUtf8String(aesSecretKey, request.PublicKey).Result;
+
+            //var sessionManager = ZKWeb.Application.Ioc.Resolve<SessionManager>();
+            //var session = sessionManager.GetSession();
+            //session["clientPublicKey"] = publicKey;
+            //session["clientSecretKey"] = aesSecretKey;           
+            //sessionManager.SaveSession();
             // 登录用户
             _adminManager.Login(
                 request.Tenant,

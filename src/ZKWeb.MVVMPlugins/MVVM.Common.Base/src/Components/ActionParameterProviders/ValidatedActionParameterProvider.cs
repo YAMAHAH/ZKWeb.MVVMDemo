@@ -8,6 +8,7 @@ using ZKWebStandard.Web;
 using Newtonsoft.Json;
 using SimpleEasy.Core.lib;
 using SimpleEasy.Core.lib.Utils;
+using System.Collections.Generic;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.ActionParameterProviders
 {
@@ -25,26 +26,28 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.ActionParameterProvi
 
         public T GetParameter<T>(string name, MethodInfo method, ParameterInfo parameterInfo)
         {
-            var x = HttpManager.CurrentContext.Request.Get<object>(name);
-            var xx = HttpManager.CurrentContext.Request.GetJsonBodyDictionary();
-            dynamic result;
-            //如果启用加密，则取出
-            if (xx.Count > 0)
+            var httpContext = HttpManager.CurrentContext;
+            dynamic result = default(T);
+            //如果启用加密，则取出并缓存
+            var bodyDict = httpContext.GetOrCreateData("bodyDict", () =>
             {
-                var json = HttpManager.CurrentContext.Request.GetJsonBody();
-                var encryptObject = JsonConvert.DeserializeObject<EncryptInput>(json);
-                //typeof(IEncryptInput).GetTypeInfo().IsAssignableFrom(encryptObject.GetType())
-                if (encryptObject != null)
+                var jsonBody = httpContext.Request.GetJsonBody();
+                var encryptObj = JsonConvert.DeserializeObject<EncryptInput>(jsonBody);
+                if (encryptObj != null && encryptObj.data != null)
                 {
-                    //解密
-                    result = AESUtils.DecryptToModel<object>("99b3ad6e", encryptObject.data).Result;
-                    //把解密的对象放入上下文中
-                    HttpManager.CurrentContext.PutData<object>(name, (result as object));
+                    //从会话中取出客户端密钥
+                    //使用密钥解密
+                    jsonBody = AESUtils.DecryptToUtf8String("99b3ad6e", encryptObj.data).Result;
+                    return JsonConvert.DeserializeObject<IDictionary<string, object>>(jsonBody);
                 }
+                return new Dictionary<string, object>();
+            });
+            if (bodyDict.ContainsKey(name)) result = bodyDict[name].ConvertOrDefault<T>();
+
+            if (result == null)
+            {
+                result = _originalProvider.GetParameter<T>(name, method, parameterInfo);
             }
-
-            result = _originalProvider.GetParameter<T>(name, method, parameterInfo);
-
             // 如果结果是IInputDto并且函数未标记不验证的属性则执行验证
             if (result is IInputDto &&
                 method.GetCustomAttribute<NoParameterValidationAttribute>() == null)

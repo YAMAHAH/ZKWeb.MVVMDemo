@@ -200,10 +200,10 @@ export class AppApiService {
         // 构建提交内容
         this.bodyFilters.forEach(h => { body = h(body); });
 
-        if (this.appConfigService.isEncryptData) { // 分析请求和服务端IP地址，如果是同一网端则不加密数据,否则加密
+        if (this.appConfigService.isEncryptData && url != "/api/CaptchaService/HandshakeRequest") { // 分析请求和服务端IP地址，如果是同一网端则不加密数据,否则加密
             if (!!!this.secretKey) this.secretKey = localStorage.getItem(AppConsts.SecretKey);
             let chiperText = AESUtils.EncryptToBase64String(this.secretKey, JSON.stringify(options.body));
-            body = { requestId: GuidUtils.uuid(16, 10), data: chiperText, encrypt: true };
+            body = { requestId: GuidUtils.uuid(16, 10), data: chiperText, encrypt: true, signature: "" };
         }
         options.body = body;
         return this.http
@@ -221,7 +221,6 @@ export class AppApiService {
                         response[AppConsts.responseBodyKey] = AESUtils.decryptToUtf8String(this.secretKey, resData);
                     }
                 }
-                console.debug(response);
                 // 过滤返回的结果
                 this.resultFilters.forEach(f => { response = f(response); });
                 // 转换返回的结果

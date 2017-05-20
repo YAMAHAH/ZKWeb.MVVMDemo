@@ -9,6 +9,7 @@ namespace SimpleEasy.Core.lib
         string requestId { get; set; }
         string data { get; set; }
         bool encrypt { get; set; }
+        string signature { get; set; }
     }
 
     public class EncryptInput : IEncryptInput
@@ -16,5 +17,6 @@ namespace SimpleEasy.Core.lib
         public string requestId { get; set; }
         public string data { get; set; }
         public bool encrypt { get; set; }
+        public string signature { get; set; }
     }
 }

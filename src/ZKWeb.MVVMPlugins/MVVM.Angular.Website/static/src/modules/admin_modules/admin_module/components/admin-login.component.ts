@@ -3,6 +3,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Message } from 'primeng/primeng';
 import { UserLoginService } from "@generated_module/services/user-login-service";
+import { UserLoginRequestDto } from '@generated_module/dtos/user-login-request-dto';
+import { AppConsts } from '@business_bases/desktop/global_module/app-consts';
+import { RSAUtils } from '@core/utils/rsa-utils';
+import { AESUtils } from '@core/utils/aes-utils';
 
 @Component({
     moduleId: module.id,
@@ -42,7 +46,14 @@ export class AdminLoginComponent implements OnInit {
 
     onSubmit() {
         this.isSubmitting = true;
-        this.userLoginService.LoginAdmin(this.adminLoginForm.value).subscribe(
+        let requestDto: UserLoginRequestDto = this.adminLoginForm.value;
+        //获取加密密钥
+        //使用RSA公钥加密密钥
+        requestDto.SecretKey = RSAUtils.RSAEncrypt(localStorage.getItem(AppConsts.SrvRsaPublicKey), localStorage.getItem(AppConsts.SecretKey));
+        //使用AES加密公钥
+        requestDto.PublicKey = AESUtils.EncryptToBase64String(localStorage.getItem(AppConsts.SecretKey), localStorage.getItem(AppConsts.RsaPublicKey));
+
+        this.userLoginService.LoginAdmin(requestDto).subscribe(
             result => {
                 this.isSubmitting = false;
                 this.gotoUrl("/admin", "/");

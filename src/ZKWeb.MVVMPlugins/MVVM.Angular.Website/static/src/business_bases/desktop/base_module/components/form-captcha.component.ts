@@ -1,7 +1,7 @@
 ﻿import { Component, Input, EventEmitter } from '@angular/core';
 import { FormFieldBaseComponent } from './form-field-base.component';
 import { CaptchaService } from '@generated_module/services/captcha-service';
-import { AppTranslationService } from '../../global_module/services/app-translation-service';
+import { AppTranslationService } from '@global_module/services/app-translation-service';
 
 @Component({
     moduleId: module.id,
