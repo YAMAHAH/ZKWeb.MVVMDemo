@@ -33,7 +33,8 @@ export class AppConfigService {
     /** 会话Id储存在本地储存的key */
     private _sessionIdKey: string;
 
-    private _isEncryptData: boolean;
+    private _enableEncrypt: boolean;
+    private _enableSignature:boolean;
 
     constructor(private store: AppStoreService) {
         let localConfig = localStorage.getItem('appConfig');
@@ -57,7 +58,8 @@ export class AppConfigService {
         this._sessionIdHeader = conf.sessionIdHeader || "X-ZKWeb-SessionId";
         this._sessionIdSetHeader = conf.sessionIdSetHeader || "X-Set-ZKWeb-SessionId";
         this._sessionIdKey = conf.sessionIdKey || "ZKWeb-SessionId";
-        this._isEncryptData = conf.isEncryptData || false;
+        this._enableEncrypt = conf.enableEncrypt || false;
+        this._enableSignature = conf.enableSignature || false;
     }
 
     /** 获取Api的基础地址 */
@@ -108,8 +110,12 @@ export class AppConfigService {
         return this._loginUrl;
     }
 
-    get isEncryptData(): boolean {
-        return this._isEncryptData;
+    get enableEncrypt(): boolean {
+        return this._enableEncrypt;
+    }
+
+    get enableSignature():boolean{
+        return this._enableSignature;
     }
     // 获取当前会话Id
     get sessionId() {

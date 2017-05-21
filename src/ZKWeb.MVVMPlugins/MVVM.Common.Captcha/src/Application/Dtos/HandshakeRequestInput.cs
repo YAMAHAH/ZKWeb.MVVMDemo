@@ -8,7 +8,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Captcha.src.Application.Dtos
     /// 服务器握手请求
     /// </summary>
     [Description("握手请求")]
-    public class HandshakeRequestInput : IInputDto
+    public class HandshakeRequestInput : IInputDto, IHandshakeRequestInput
     {
         [Description("数据加密私钥")]
         public string SecretKey { get; set; }

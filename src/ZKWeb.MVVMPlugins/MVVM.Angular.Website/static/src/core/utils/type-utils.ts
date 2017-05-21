@@ -1,6 +1,4 @@
 
-export type rxResultConverter = (response) => any;
-export type rxErrorConverter = (err) => any;
 export const Type = Function;
 export function isType(v: any): v is Type<any> {
     return typeof v === 'function';

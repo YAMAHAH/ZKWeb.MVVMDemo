@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './components/page_not_found.component';
 import { AppStoreService } from './services/app-store-service';
+import { AppScriptService } from './services/app-script-service';
 
 @NgModule({
     imports: [
@@ -38,7 +39,9 @@ export class GlobalModule {
                 AppApiService,
                 AppConfigService,
                 AppTranslationService,
-                AppStoreService
+                AppStoreService,
+                AppScriptService
+
             ]
         };
     }

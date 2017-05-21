@@ -1,4 +1,5 @@
-﻿using SimpleEasy.Core.lib.Utils;
+﻿using SimpleEasy.Core.lib;
+using SimpleEasy.Core.lib.Utils;
 using System;
 using System.ComponentModel;
 using System.DrawingCore.Imaging;
@@ -59,13 +60,16 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Captcha.src.Application.Services
 
             var sessionManager = ZKWeb.Application.Ioc.Resolve<SessionManager>();
             var session = sessionManager.GetSession();
-            session["clientPublicKey"] = publicKey;
-            session["clientSecretKey"] = aesSecretKey;
+            session[AppConts.ClientPublicKey] = publicKey;
+            session[AppConts.ClientSecretKey] = aesSecretKey;
+            ClientData clientData = new ClientData() { PublickKey = publicKey, SecretKey = aesSecretKey };
+            ClientDataManager.SetData(session.Id.ToString(), clientData);
             session.SetExpiresAtLeast(TimeSpan.FromMinutes(MakeSessionAliveAtLeast));
             sessionManager.SaveSession();
             //生成使用密钥加密的测试数据
             var testData = "Hello!";
-            var result = AESUtils.EncryptToBase64String(aesKey, testData);
+            var getSecretKey = sessionManager.GetSession()[AppConts.ClientSecretKey] as string;
+            var result = AESUtils.EncryptToBase64String(getSecretKey, testData);
             return new HandshakeRequestOutput() { ProcessResult = result, TestData = testData };
         }
     }

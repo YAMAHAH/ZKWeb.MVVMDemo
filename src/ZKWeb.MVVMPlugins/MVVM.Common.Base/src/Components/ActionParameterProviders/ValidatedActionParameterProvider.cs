@@ -1,14 +1,14 @@
-﻿using System.Reflection;
+﻿using Newtonsoft.Json;
+using SimpleEasy.Core.lib;
+using SimpleEasy.Core.lib.Utils;
+using System.Collections.Generic;
+using System.Reflection;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Extensions;
 using ZKWeb.Web;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Web;
-using Newtonsoft.Json;
-using SimpleEasy.Core.lib;
-using SimpleEasy.Core.lib.Utils;
-using System.Collections.Generic;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.ActionParameterProviders
 {
@@ -33,11 +33,13 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.ActionParameterProvi
             {
                 var jsonBody = httpContext.Request.GetJsonBody();
                 var encryptObj = JsonConvert.DeserializeObject<EncryptInput>(jsonBody);
-                if (encryptObj != null && encryptObj.data != null)
+                if (encryptObj != null && encryptObj is IEncryptInput && ((IEncryptInput)encryptObj).data != null)
                 {
-                    //从会话中取出客户端密钥
+                    //从会话中取出客户端密钥 上下文->会话ID->密钥
                     //使用密钥解密
-                    jsonBody = AESUtils.DecryptToUtf8String("99b3ad6e", encryptObj.data).Result;
+                    var seesionId = httpContext.Request.GetHeader(AppConts.SessionHeaderIn);
+                    var secretKey = ClientDataManager.GetData(seesionId)?.SecretKey ?? AppConts.DefaultSecretKey;
+                    jsonBody = AESUtils.DecryptToUtf8String(secretKey, ((IEncryptInput)encryptObj).data).Result;
                     return JsonConvert.DeserializeObject<IDictionary<string, object>>(jsonBody);
                 }
                 return new Dictionary<string, object>();

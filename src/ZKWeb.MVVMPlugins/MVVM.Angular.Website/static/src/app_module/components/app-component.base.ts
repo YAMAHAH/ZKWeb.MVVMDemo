@@ -10,6 +10,7 @@ import { RSAUtils } from '@core/utils/rsa-utils';
 import { AppApiService } from '@global_module/services/app-api-service';
 import { HandshakeRequestInput } from '../../modules/generated_module/dtos/handshake-request-input';
 import { AESUtils } from '@core/utils/aes-utils';
+import { HandshakeRequestOutput } from "@generated_module/dtos/handshake-request-output";
 
 export abstract class AppComponentBase {
     private http: Http;
@@ -37,10 +38,9 @@ export abstract class AppComponentBase {
                                                  ZWE0xfUeTA4Nx4PrXEfDvybJEIjbU\/rgANAty1yp7g20J7+wVMPCusxftl/d0rPQ
                                                  iCLjeZ3HtlRKld+9htAZtHFZosV29h/hNE9JkxzGXstaSeXIUIWquMZQ8XyscIHh
                                                  qoOmjXaCv58CSRAlAQIDAQAB`;
-
     appInit() {
         //随机生成密钥
-        let randomKey = "99b3ad6e"; // GuidUtils.uuid(16, 16);
+        let randomKey = GuidUtils.uuid(16, 16);
         this.store.setData(AppConsts.SecretKey, randomKey);
         localStorage.setItem(AppConsts.SecretKey, randomKey);
 
@@ -62,9 +62,13 @@ export abstract class AppComponentBase {
         request.SecretKey = RSAUtils.RSAEncrypt(localStorage.getItem(AppConsts.SrvRsaPublicKey), localStorage.getItem(AppConsts.SecretKey));
         //使用AES加密公钥
         request.PublicKey = AESUtils.EncryptToBase64String(localStorage.getItem(AppConsts.SecretKey), localStorage.getItem(AppConsts.RsaPublicKey));
-        this.apiService.call("/api/CaptchaService/HandshakeRequest", { method: "POST", body: request }).subscribe(res => {
-            console.debug(res);
-        });
+        this.apiService.call<HandshakeRequestOutput>("/api/CaptchaService/HandshakeRequest",
+            { method: "POST", body: request }, { enableEncrypt: false })
+            .subscribe(res => {
+                console.debug(res);
+                let chiperText = AESUtils.EncryptToBase64String(localStorage.getItem(AppConsts.SecretKey), res.TestData);
+                console.debug(chiperText === res.ProcessResult);
+            });
     }
 
     async getAppConfig() {

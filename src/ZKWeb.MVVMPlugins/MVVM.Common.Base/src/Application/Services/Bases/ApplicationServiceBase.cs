@@ -66,10 +66,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases
                 {
                     action = new UnitOfWorkAttribute().Filter(action);
                 }
-                //如果函数未标记[Security]则手动包装该函数
-                if (method.GetCustomAttribute<SecurityAttribute>() == null)
+                //如果函数未标记[DataSecurity]则手动包装该函数
+                if (method.GetCustomAttribute<DataSecurityAttribute>() == null)
                 {
-                    action = new SecurityAttribute().Filter(action);
+                    action = new DataSecurityAttribute().Filter(action);
                 }
                 // 包装过滤器
                 var filterAttributes = method.GetCustomAttributes<ActionFilterAttribute>();

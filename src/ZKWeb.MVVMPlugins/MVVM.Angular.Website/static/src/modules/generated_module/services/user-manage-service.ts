@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AppApiService } from '@global_module/services/app-api-service';
-import { rxResultConverter, rxErrorConverter } from '@core/utils/type-utils';
+import { ApiCallExtra } from '@global_module/models/api-call-extra';
 import { GridSearchResponseDto } from '@generated_module/dtos/grid-search-response-dto';
 import { GridSearchRequestDto } from '@generated_module/dtos/grid-search-request-dto';
 import { TestInput } from '@generated_module/dtos/test-input';
@@ -15,72 +15,72 @@ export class UserManageService {
     constructor(private appApiService: AppApiService) { }
 
     /** 搜索用户 */
-    Search(request: GridSearchRequestDto, resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<GridSearchResponseDto> {
+    Search(request: GridSearchRequestDto, extra?: ApiCallExtra): Observable<GridSearchResponseDto> {
         return this.appApiService.call<GridSearchResponseDto>(
             "/api/UserManageService/Search",
             {
                 method: "POST",
                 body: { request }
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 
     /** 测试基本数据类型 */
-    Test(testid: string, resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<GridSearchResponseDto> {
+    Test(testid: string, extra?: ApiCallExtra): Observable<GridSearchResponseDto> {
         let urlParams = this.appApiService.getRequestQueryString([{ testid }]);
         return this.appApiService.call<GridSearchResponseDto>(
             "/api/UserManageService/test",
             {
                 method: "GET",
                 params: urlParams
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 
     /** 测试空参数 */
-    TestGet(resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<GridSearchResponseDto> {
+    TestGet(extra?: ApiCallExtra): Observable<GridSearchResponseDto> {
         return this.appApiService.call<GridSearchResponseDto>(
             "/api/UserManageService/TestGet",
             {
                 method: "GET"
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 
     /** 测试复杂对象 */
-    TestObject(name: string, testInputDto: TestInput, resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<GridSearchResponseDto> {
+    TestObject(name: string, testInputDto: TestInput, extra?: ApiCallExtra): Observable<GridSearchResponseDto> {
         let urlParams = this.appApiService.getRequestQueryString([{ name }, { testInputDto }]);
         return this.appApiService.call<GridSearchResponseDto>(
             "/api/UserManageService/TestObject",
             {
                 method: "GET",
                 params: urlParams
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 
     /** 编辑用户 */
-    Edit(dto: UserInputDto, resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<ActionResponseDto> {
+    Edit(dto: UserInputDto, extra?: ApiCallExtra): Observable<ActionResponseDto> {
         return this.appApiService.call<ActionResponseDto>(
             "/api/UserManageService/customEdit",
             {
                 method: "POST",
                 body: { dto }
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 
     /** 删除用户 */
-    Remove(id: string, resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<ActionResponseDto> {
+    Remove(id: string, extra?: ApiCallExtra): Observable<ActionResponseDto> {
         return this.appApiService.call<ActionResponseDto>(
             "/api/UserManageService/Remove",
             {
                 method: "POST",
                 body: { id }
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 
     /** 获取所有用户类型 */
-    GetAllUserTypes(resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<UserTypeOutputDto[]> {
+    GetAllUserTypes(extra?: ApiCallExtra): Observable<UserTypeOutputDto[]> {
         return this.appApiService.call<UserTypeOutputDto[]>(
             "/api/UserManageService/GetAllUserTypes",
             {
                 method: "GET"
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AppApiService } from '@global_module/services/app-api-service';
-import { rxResultConverter, rxErrorConverter } from '@core/utils/type-utils';
+import { ApiCallExtra } from '@global_module/models/api-call-extra';
 import { ActionResponseDto } from '@generated_module/dtos/action-response-dto';
 import { WebsiteInfoOutputDto } from '@generated_module/dtos/website-info-output-dto';
 import { WebsiteSettingsDto } from '@generated_module/dtos/website-settings-dto';
@@ -14,59 +14,59 @@ export class WebsiteManageService {
     constructor(private appApiService: AppApiService) { }
 
     /** 清理缓存 */
-    ClearCache(resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<ActionResponseDto> {
+    ClearCache(extra?: ApiCallExtra): Observable<ActionResponseDto> {
         return this.appApiService.call<ActionResponseDto>(
             "/api/WebsiteManageService/ClearCache",
             {
                 method: "POST"
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 
     /** 获取网站信息 */
-    GetWebsiteInfo(resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<WebsiteInfoOutputDto> {
+    GetWebsiteInfo(extra?: ApiCallExtra): Observable<WebsiteInfoOutputDto> {
         return this.appApiService.call<WebsiteInfoOutputDto>(
             "/api/WebsiteManageService/GetWebsiteInfo",
             {
                 method: "POST"
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 
     /** 获取网站信息 */
-    GetWebsiteSettings(resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<WebsiteSettingsDto> {
+    GetWebsiteSettings(extra?: ApiCallExtra): Observable<WebsiteSettingsDto> {
         return this.appApiService.call<WebsiteSettingsDto>(
             "/api/WebsiteManageService/GetWebsiteSettings",
             {
                 method: "POST"
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 
     /** 保存网站信息 */
-    SaveWebsiteSettings(dto: WebsiteSettingsDto, resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<ActionResponseDto> {
+    SaveWebsiteSettings(dto: WebsiteSettingsDto, extra?: ApiCallExtra): Observable<ActionResponseDto> {
         return this.appApiService.call<ActionResponseDto>(
             "/api/WebsiteManageService/SaveWebsiteSettings",
             {
                 method: "POST",
                 body: { dto }
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 
     /** 搜索定时任务 */
-    SearchScheduledTasks(request: GridSearchRequestDto, resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<GridSearchResponseDto> {
+    SearchScheduledTasks(request: GridSearchRequestDto, extra?: ApiCallExtra): Observable<GridSearchResponseDto> {
         return this.appApiService.call<GridSearchResponseDto>(
             "/api/WebsiteManageService/SearchScheduledTasks",
             {
                 method: "POST",
                 body: { request }
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 
     /** 搜索定时任务记录 */
-    SearchScheduledTaskLogs(request: GridSearchRequestDto, resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter): Observable<GridSearchResponseDto> {
+    SearchScheduledTaskLogs(request: GridSearchRequestDto, extra?: ApiCallExtra): Observable<GridSearchResponseDto> {
         return this.appApiService.call<GridSearchResponseDto>(
             "/api/WebsiteManageService/SearchScheduledTaskLogs",
             {
                 method: "POST",
                 body: { request }
-            }, resultConverter, errorConverter);
+            }, extra);
     }
 }

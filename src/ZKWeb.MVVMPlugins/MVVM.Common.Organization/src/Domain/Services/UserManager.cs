@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleEasy.Core.lib;
+using System;
 using System.Collections.Generic;
 using System.DrawingCore;
 using System.IO;
@@ -153,8 +154,15 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Services
             handlers.ForEach(c => c.BeforeLogin(user));
             // 设置会话
             var sessionManager = ZKWeb.Application.Ioc.Resolve<SessionManager>();
-            sessionManager.RemoveSession(false);
+
             var session = sessionManager.GetSession();
+            var oldSessionId = session.Id.ToString();
+            sessionManager.RemoveSession(false);
+            //从当前会话获取客户端公钥,密钥取出,并保存在新的会话中
+            ClientData oldClientCata = ClientDataManager.GetData(oldSessionId);
+            //重新获取会话
+            session = sessionManager.GetSession();
+
             session.ReGenerateId();
             session.UserId = user.Id;
             session.TenantId = user.OwnerTenantId;
@@ -166,6 +174,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Services
             sessionManager.SaveSession();
             // 登陆后的处理
             handlers.ForEach(c => c.AfterLogin(user));
+            //设置登录后的ID客户数据
+            ClientDataManager.SetData(session.Id.ToString(), oldClientCata);
+            //删除旧的会话数据
+            ClientDataManager.RemoveData(oldSessionId);
         }
 
         /// <summary>

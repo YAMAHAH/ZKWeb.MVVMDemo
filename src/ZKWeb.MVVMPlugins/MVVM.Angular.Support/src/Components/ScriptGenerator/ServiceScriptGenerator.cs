@@ -37,15 +37,15 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
             includeBuilder.AppendLine("import { Injectable } from '@angular/core';");
             includeBuilder.AppendLine("import { Observable } from 'rxjs/Observable';");
             includeBuilder.AppendLine("import { AppApiService } from '@global_module/services/app-api-service';");
-            includeBuilder.AppendLine("import { rxResultConverter, rxErrorConverter } from '@core/utils/type-utils';");
+            includeBuilder.AppendLine("import { ApiCallExtra } from '@global_module/models/api-call-extra';");
             classBuilder.AppendLine("@Injectable()");
             classBuilder.AppendLine($"/** {classDescription} */");
             classBuilder.AppendLine($"export class {className} {{");
             classBuilder.AppendLine("    constructor(private appApiService: AppApiService) { }");
             classBuilder.AppendLine();
             var methods = service.GetApiMethods().ToList();
-            var apiCallParamStr = "resultConverter, errorConverter";
-            var actionParamStr = "resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter";
+            var apiCallParamStr = "extra"; // "resultConverter, errorConverter";
+            var actionParamStr = "extra?: ApiCallExtra"; //"resultConverter?: rxResultConverter, errorConverter?: rxErrorConverter";
             foreach (var method in methods)
             {
                 // 获取方法信息
