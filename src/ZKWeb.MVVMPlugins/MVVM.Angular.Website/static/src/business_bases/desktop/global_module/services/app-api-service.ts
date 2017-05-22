@@ -11,6 +11,8 @@ import { AESUtils } from '@core/utils/aes-utils';
 import { GuidUtils } from '@core/utils/guid-utils';
 import { ApiCallExtra } from "@business_bases/desktop/global_module/models/api-call-extra";
 import { EncryptOutput } from "@business_bases/desktop/global_module/models/encrypt-output";
+import { AppStoreService } from './app-store-service';
+import { ClientDataModel } from '../models/client-data-model';
 
 // 调用远程Api的服务
 @Injectable()
@@ -66,7 +68,9 @@ export class AppApiService {
 
     constructor(
         protected http: Http,
-        protected appConfigService: AppConfigService) {
+        protected appConfigService: AppConfigService,
+        protected appStoreService: AppStoreService
+    ) {
         // 设置http头
         this.registerOptionsFilter(options => {
             // 让服务端把请求当作ajax请求
@@ -188,7 +192,7 @@ export class AppApiService {
         });
         return urlSearchParams;
     }
-    secretKey: string;
+    clientData: ClientDataModel;
     // 调用Api函数
     call<T>(url: string, options?: RequestOptionsArgs, extra?: ApiCallExtra): Observable<T> {
         // 构建完整url，可能不在同一个host
@@ -201,12 +205,12 @@ export class AppApiService {
         let body = options.body;
         // 构建提交内容
         this.bodyFilters.forEach(h => { body = h(body); });
-        if (!!!this.secretKey) this.secretKey = localStorage.getItem(AppConsts.SecretKey);
+        if (!!!this.clientData) this.clientData = this.appStoreService.getData(AppConsts.ClientDataKey);
         let enableEncrypt = this.appConfigService.enableEncrypt;
         //typeof 返回的是字符串,有六种可能:"number" "String" "boolean" "object" "function" "undefined"
         if (extra && typeof (extra.enableEncrypt) != 'undefined') enableEncrypt = extra.enableEncrypt;
         if (enableEncrypt) { // 分析请求和服务端IP地址，如果是同一网端则不加密数据,否则加密
-            let chiperText = AESUtils.EncryptToBase64String(this.secretKey, JSON.stringify(options.body));
+            let chiperText = AESUtils.EncryptToBase64String(this.clientData.SecretKey, JSON.stringify(options.body));
             body = { requestId: GuidUtils.uuid(16, 10), data: chiperText, encrypt: true, signature: "" };
         }
         //默认全局选项决定是否启用签名，如果有传递enableSignature选项，则以传递的选项为准
@@ -214,7 +218,7 @@ export class AppApiService {
         if (extra && typeof (extra.enableSignature) != 'undefined') enableSign = extra.enableSignature;
         if (enableSign) {
             let signStr = enableEncrypt ? body.data + "\n" : JSON.stringify(options.body);
-            let sign = this.cryptojs.HmacSHA256(signStr, this.secretKey).toString(this.cryptojs.enc.Base64);
+            let sign = this.cryptojs.HmacSHA256(signStr, this.clientData.SecretKey).toString(this.cryptojs.enc.Base64);
             body.signature = sign;
         }
         options.body = body;
@@ -233,7 +237,7 @@ export class AppApiService {
                     //计算签名
                     if (bodyObj && bodyObj.hasOwnProperty("signature") && bodyObj['signature']) {
                         let srvSign = bodyObj.signature;
-                        let clientSign = this.cryptojs.HmacSHA256(bodyObj.data, this.secretKey).toString(this.cryptojs.enc.Base64);
+                        let clientSign = this.cryptojs.HmacSHA256(bodyObj.data, this.clientData.SecretKey).toString(this.cryptojs.enc.Base64);
                         if (srvSign === clientSign) {
                             //签名验证通过
                         } else {
@@ -243,17 +247,9 @@ export class AppApiService {
                     }
                     //解密
                     if (bodyObj && bodyObj.hasOwnProperty("data") && bodyObj['data']) {
-                        response[AppConsts.responseBodyKey] = AESUtils.decryptToUtf8String(this.secretKey, bodyObj.data);
+                        response[AppConsts.responseBodyKey] = AESUtils.decryptToUtf8String(this.clientData.SecretKey, bodyObj.data);
                     }
-                } else {
                 }
-                // if (resData.indexOf(AppConsts.responseDataKey) > -1 && resData.indexOf(AppConsts.responseEncryptKey) > -1) {
-                //     let _body = res.json();
-                //     response[AppConsts.responseBodyKey] = AESUtils.decryptToUtf8String(this.secretKey, _body.data);
-                // } else {
-                //     response[AppConsts.responseBodyKey] = AESUtils.decryptToUtf8String(this.secretKey, resData);
-                // }
-                // }
                 // 过滤返回的结果
                 this.resultFilters.forEach(f => { response = f(response); });
                 // 转换返回的结果

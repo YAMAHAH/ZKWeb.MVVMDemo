@@ -1,4 +1,5 @@
 export class AppConsts {
+    static ClientDataKey = "clientData";
     static RsaPrivateKey = "RsaPrivateKey";
     static RsaPublicKey = "RsaPublicKey";
     static SrvRsaPublicKey = "SrvRsaPublicKey";

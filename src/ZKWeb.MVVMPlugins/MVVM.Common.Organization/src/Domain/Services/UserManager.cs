@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Global;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
@@ -159,7 +160,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Services
             var oldSessionId = session.Id.ToString();
             sessionManager.RemoveSession(false);
             //从当前会话获取客户端公钥,密钥取出,并保存在新的会话中
-            ClientData oldClientCata = ClientDataManager.GetData(oldSessionId);
+            IClientDataManager clientDataMan = ZKWeb.Application.Ioc.Resolve<IClientDataManager>();
+            ClientData oldClientData = clientDataMan.GetData(oldSessionId);
             //重新获取会话
             session = sessionManager.GetSession();
 
@@ -171,13 +173,14 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Services
                 session.RememberLogin ?
                 SessionExpireDaysWithRememebrLogin :
                 SessionExpireDaysWithoutRememberLogin);
+            session[AppConsts.ClientDataKey] =oldClientData ;
             sessionManager.SaveSession();
             // 登陆后的处理
             handlers.ForEach(c => c.AfterLogin(user));
             //设置登录后的ID客户数据
-            ClientDataManager.SetData(session.Id.ToString(), oldClientCata);
+            clientDataMan.SetData(session.Id.ToString(), oldClientData);
             //删除旧的会话数据
-            ClientDataManager.RemoveData(oldSessionId);
+            clientDataMan.RemoveData(oldSessionId);
         }
 
         /// <summary>

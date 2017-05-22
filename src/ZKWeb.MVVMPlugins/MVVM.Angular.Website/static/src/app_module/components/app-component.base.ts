@@ -11,6 +11,7 @@ import { AppApiService } from '@global_module/services/app-api-service';
 import { HandshakeRequestInput } from '../../modules/generated_module/dtos/handshake-request-input';
 import { AESUtils } from '@core/utils/aes-utils';
 import { HandshakeRequestOutput } from "@generated_module/dtos/handshake-request-output";
+import { ClientDataModel } from "@global_module/models/client-data-model";
 
 export abstract class AppComponentBase {
     private http: Http;
@@ -35,39 +36,31 @@ export abstract class AppComponentBase {
 
     }
     public readonly publicKey: string = `MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC0xP5HcfThSQr43bAMoopbzcCy
-                                                 ZWE0xfUeTA4Nx4PrXEfDvybJEIjbU\/rgANAty1yp7g20J7+wVMPCusxftl/d0rPQ
-                                                 iCLjeZ3HtlRKld+9htAZtHFZosV29h/hNE9JkxzGXstaSeXIUIWquMZQ8XyscIHh
-                                                 qoOmjXaCv58CSRAlAQIDAQAB`;
+                                         ZWE0xfUeTA4Nx4PrXEfDvybJEIjbU\/rgANAty1yp7g20J7+wVMPCusxftl/d0rPQ
+                                         iCLjeZ3HtlRKld+9htAZtHFZosV29h/hNE9JkxzGXstaSeXIUIWquMZQ8XyscIHh
+                                         qoOmjXaCv58CSRAlAQIDAQAB`;
     appInit() {
         //随机生成密钥
         let randomKey = GuidUtils.uuid(16, 16);
-        this.store.setData(AppConsts.SecretKey, randomKey);
-        localStorage.setItem(AppConsts.SecretKey, randomKey);
-
-        this.store.setData(AppConsts.SrvRsaPublicKey, this.publicKey);
-        localStorage.setItem(AppConsts.SrvRsaPublicKey, this.publicKey);
-
         //RSA公钥密钥
         let rsaKey = RSAUtils.genRSAKey();
-        this.store.setData(AppConsts.RsaPrivateKey, rsaKey.privateKey);
-        localStorage.setItem(AppConsts.RsaPrivateKey, rsaKey.privateKey);
-        this.store.setData(AppConsts.RsaPublicKey, rsaKey.publicKey);
-        localStorage.setItem(AppConsts.RsaPublicKey, rsaKey.publicKey);
+        let clientDataModel = new ClientDataModel(randomKey, rsaKey.publicKey, rsaKey.privateKey, this.publicKey);
+        this.store.setData(AppConsts.ClientDataKey, clientDataModel);
     }
 
     handshakeRequest() {
         let request = new HandshakeRequestInput();
         //获取加密密钥
+        let clientData: ClientDataModel = this.store.getData(AppConsts.ClientDataKey);
         //使用RSA公钥加密密钥
-        request.SecretKey = RSAUtils.RSAEncrypt(localStorage.getItem(AppConsts.SrvRsaPublicKey), localStorage.getItem(AppConsts.SecretKey));
+        request.SecretKey = RSAUtils.RSAEncrypt(clientData.ServerRsaPublicKey, clientData.SecretKey);
         //使用AES加密公钥
-        request.PublicKey = AESUtils.EncryptToBase64String(localStorage.getItem(AppConsts.SecretKey), localStorage.getItem(AppConsts.RsaPublicKey));
+        request.PublicKey = AESUtils.EncryptToBase64String(clientData.SecretKey, clientData.RsaPublickKey);
         this.apiService.call<HandshakeRequestOutput>("/api/CaptchaService/HandshakeRequest",
             { method: "POST", body: request }, { enableEncrypt: false })
             .subscribe(res => {
-                console.debug(res);
-                let chiperText = AESUtils.EncryptToBase64String(localStorage.getItem(AppConsts.SecretKey), res.TestData);
-                console.debug(chiperText === res.ProcessResult);
+                let chiperText = AESUtils.EncryptToBase64String(clientData.SecretKey, res.TestData);
+                if (chiperText === res.ProcessResult) console.debug("HandshakeReuest Sucessful");
             });
     }
 

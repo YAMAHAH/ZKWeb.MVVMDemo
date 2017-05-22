@@ -25,6 +25,7 @@ export class FormCaptchaComponent extends FormFieldBaseComponent {
     ngOnInit() {
         super.ngOnInit();
         // 加载时刷新验证码
+        setTimeout(()=>this.refreshCaptcha(),10);
         this.refreshCaptcha();
         // 外部刷新验证码
         if (this.captchaRefreshEvent) {

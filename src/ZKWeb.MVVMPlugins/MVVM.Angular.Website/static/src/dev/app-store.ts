@@ -1,13 +1,18 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/distinctUntilChanged';
+import { ClientDataModel } from '../business_bases/desktop/global_module/models/client-data-model';
 
 export interface State {
     // define your state here
+    clientData?: ClientDataModel;
+    accessToken?: string;
 }
 
 const defaultState: State = {
     // define your initial state here
+    clientData: null,
+    accessToken: ""
 }
 
 const _store = new BehaviorSubject<State>(defaultState);

@@ -20,6 +20,7 @@
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="6.0.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
+		<PackageReference Include="System.Security.Cryptography.Csp" Version="4.3.0" />
 		<PackageReference Include="ZKWeb" Version="1.8.0" />
 		<PackageReference Include="ZKWeb.ORM.EFCore" Version="1.8.0" />
 	</ItemGroup>
@@ -27,10 +28,6 @@
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
 		<Reference Include="System" />
 		<Reference Include="Microsoft.CSharp" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\SimpleEasy.Core.lib\SimpleEasy.Core.lib.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">

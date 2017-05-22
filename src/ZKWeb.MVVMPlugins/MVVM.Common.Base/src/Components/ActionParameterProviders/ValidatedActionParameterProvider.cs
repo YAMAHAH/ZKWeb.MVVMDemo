@@ -1,11 +1,14 @@
 ﻿using Newtonsoft.Json;
 using SimpleEasy.Core.lib;
 using SimpleEasy.Core.lib.Utils;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Extensions;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Global;
 using ZKWeb.Web;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Web;
@@ -37,9 +40,19 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.ActionParameterProvi
                 {
                     //从会话中取出客户端密钥 上下文->会话ID->密钥
                     //使用密钥解密
-                    var seesionId = httpContext.Request.GetHeader(AppConts.SessionHeaderIn);
-                    var secretKey = ClientDataManager.GetData(seesionId)?.SecretKey ?? AppConts.DefaultSecretKey;
-                    jsonBody = AESUtils.DecryptToUtf8String(secretKey, ((IEncryptInput)encryptObj).data).Result;
+                    var sessionId = httpContext.Request.GetHeader(AppConsts.SessionHeaderIn);
+                    if (sessionId == null) throw new BadRequestException("会话不充许为空");
+                    IClientDataManager clientDataMan = ZKWeb.Application.Ioc.Resolve<IClientDataManager>();
+
+                    var secretKey = clientDataMan.GetData(sessionId)?.SecretKey;
+                    try
+                    {
+                        jsonBody = AESUtils.DecryptToUtf8String(secretKey, ((IEncryptInput)encryptObj).data).Result;
+                    }
+                    catch (Exception)
+                    {
+                        throw new BadRequestException("解密错误：前端与后端的加密密钥不一致.");
+                    }
                     return JsonConvert.DeserializeObject<IDictionary<string, object>>(jsonBody);
                 }
                 return new Dictionary<string, object>();

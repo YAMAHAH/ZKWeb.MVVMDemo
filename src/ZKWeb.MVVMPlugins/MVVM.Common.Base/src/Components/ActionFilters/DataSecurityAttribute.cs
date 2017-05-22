@@ -2,6 +2,8 @@
 using SimpleEasy.Core.lib;
 using SimpleEasy.Core.lib.Utils;
 using System;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Global;
 using ZKWeb.Web;
 using ZKWeb.Web.ActionResults;
 using ZKWebStandard.Web;
@@ -33,8 +35,13 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Attributes
             {
                 var actionResult = action();
                 var httpContext = HttpManager.CurrentContext;
-                var seesionId = httpContext.Request.GetHeader(AppConts.SessionHeaderIn);
-                var secretKey = ClientDataManager.GetData(seesionId)?.SecretKey ?? AppConts.DefaultSecretKey;
+                var sessionId = httpContext.Request.GetHeader(AppConsts.SessionHeaderIn);
+                string secretKey = string.Empty;
+                IClientDataManager clientDataMan = ZKWeb.Application.Ioc.Resolve<IClientDataManager>();
+                //从本地字典取
+                secretKey = clientDataMan.GetData(sessionId)?.SecretKey;
+                if (secretKey == null) throw new BadRequestException("前端与后端的加密密钥不一致.");
+
                 dynamic content;
                 if (actionResult is PlainResult)
                 {

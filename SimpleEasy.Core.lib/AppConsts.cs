@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SimpleEasy.Core.lib
 {
-    public static class AppConts
+    public static class AppConsts
     {
         /// <summary>
         /// 客户端默认的AES密钥
@@ -26,5 +26,7 @@ namespace SimpleEasy.Core.lib
         /// 发送给客户端的会话Id
         /// </summary>
         public static string SessionHeaderOut = "X-Set-ZKWeb-SessionId";
+
+        public static string ClientDataKey = "ClientData";
     }
 }

@@ -37,10 +37,6 @@
 		<Reference Include="Microsoft.CSharp" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\..\SimpleEasy.Core.lib\SimpleEasy.Core.lib.csproj" />
-	</ItemGroup>
-
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">
 		<DefineConstants>$(DefineConstants);NETCORE</DefineConstants>
 	</PropertyGroup>

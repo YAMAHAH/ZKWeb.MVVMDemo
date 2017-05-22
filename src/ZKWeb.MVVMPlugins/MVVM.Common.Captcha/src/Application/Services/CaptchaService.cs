@@ -1,10 +1,10 @@
-﻿using SimpleEasy.Core.lib;
-using SimpleEasy.Core.lib.Utils;
+﻿using SimpleEasy.Core.lib.Utils;
 using System;
 using System.ComponentModel;
 using System.DrawingCore.Imaging;
 using System.IO;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Global;
 using ZKWeb.MVVMPlugins.MVVM.Common.Captcha.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Captcha.src.Managers;
 using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Extensions;
@@ -50,6 +50,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Captcha.src.Application.Services
         [Description("客户端与服务端第一次连接握手请求")]
         public HandshakeRequestOutput HandshakeRequest(HandshakeRequestInput handshakeRequest)
         {
+            IClientDataManager clientDataMan = ZKWeb.Application.Ioc.Resolve<IClientDataManager>();
             var MakeSessionAliveAtLeast = 30;
             //读取客户端密钥
             var aesKey = handshakeRequest.SecretKey;
@@ -58,18 +59,18 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Captcha.src.Application.Services
             //读取客户端公钥
             var publicKey = AESUtils.DecryptToUtf8String(aesSecretKey, handshakeRequest.PublicKey).Result;
 
+            ClientData clientData = new ClientData() { PublickKey = publicKey, SecretKey = aesSecretKey };
             var sessionManager = ZKWeb.Application.Ioc.Resolve<SessionManager>();
             var session = sessionManager.GetSession();
-            session[AppConts.ClientPublicKey] = publicKey;
-            session[AppConts.ClientSecretKey] = aesSecretKey;
-            ClientData clientData = new ClientData() { PublickKey = publicKey, SecretKey = aesSecretKey };
-            ClientDataManager.SetData(session.Id.ToString(), clientData);
+            clientDataMan.SetData(session.Id.ToString(), clientData);
+            session[AppConsts.ClientDataKey] = clientData;
             session.SetExpiresAtLeast(TimeSpan.FromMinutes(MakeSessionAliveAtLeast));
             sessionManager.SaveSession();
+
             //生成使用密钥加密的测试数据
             var testData = "Hello!";
-            var getSecretKey = sessionManager.GetSession()[AppConts.ClientSecretKey] as string;
-            var result = AESUtils.EncryptToBase64String(getSecretKey, testData);
+            var secretKey = clientData.SecretKey;
+            var result = AESUtils.EncryptToBase64String(secretKey, testData);
             return new HandshakeRequestOutput() { ProcessResult = result, TestData = testData };
         }
     }

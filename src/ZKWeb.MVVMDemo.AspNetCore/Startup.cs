@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using SimpleEasy.Core.lib.AspNetCore.MiddleWares;
 
 namespace ZKWeb.MVVMDemo.AspNetCore
 {

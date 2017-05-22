@@ -1,0 +1,6 @@
+{
+  "Name": "基础类库",
+  "Version": "1.0",
+  "Description": "基础公用类库",
+  "Dependencies": [ "MVVM.Common.Base", "MVVM.Common.SessionState" ]
+}

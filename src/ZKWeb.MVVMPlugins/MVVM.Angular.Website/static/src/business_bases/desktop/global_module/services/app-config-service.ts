@@ -1,5 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { AppStoreService } from './app-store-service';
+import { AppConsts } from '@global_module/app-consts';
 
 /** 保存全局配置的服务 */
 @Injectable()
@@ -34,7 +35,7 @@ export class AppConfigService {
     private _sessionIdKey: string;
 
     private _enableEncrypt: boolean;
-    private _enableSignature:boolean;
+    private _enableSignature: boolean;
 
     constructor(private store: AppStoreService) {
         let localConfig = localStorage.getItem('appConfig');
@@ -114,13 +115,13 @@ export class AppConfigService {
         return this._enableEncrypt;
     }
 
-    get enableSignature():boolean{
+    get enableSignature(): boolean {
         return this._enableSignature;
     }
     // 获取当前会话Id
     get sessionId() {
         if (!this._sessionId) {
-            this._sessionId = localStorage.getItem(this._sessionIdKey);
+            this._sessionId = this.store.getData(AppConsts.AccessToken);//  localStorage.getItem(this._sessionIdKey);
         }
         return this._sessionId;
     }
@@ -128,7 +129,8 @@ export class AppConfigService {
     // 设置当前会话Id
     setSessionId(sessionId: string): void {
         this._sessionId = sessionId;
-        localStorage.setItem(this._sessionIdKey, sessionId);
+        //localStorage.setItem(this._sessionIdKey, sessionId);
+        this.store.setData(AppConsts.AccessToken, sessionId);
     }
 
     // 获取客户端传给服务端使用的会话Id头
