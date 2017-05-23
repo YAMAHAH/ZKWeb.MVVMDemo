@@ -206,7 +206,7 @@ export class AppApiService {
         let body = options.body;
         // 构建提交内容
         this.bodyFilters.forEach(h => { body = h(body); });
-        if (!!!this.clientData) this.clientData = this.appStoreService.getData(AppConsts.ClientDataKey);
+        if (!!!this.clientData) this.clientData = this.appStoreService.getData<ClientDataModel>(AppConsts.ClientDataKey);
         let enableEncrypt = this.appConfigService.enableEncrypt;
         //typeof 返回的是字符串,有六种可能:"number" "String" "boolean" "object" "function" "undefined"
         if (extra && typeof (extra.enableEncrypt) != 'undefined') enableEncrypt = extra.enableEncrypt;

@@ -61,8 +61,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Mappers
                 .ForMember(d => d.OwnerTenantName, m => m.ResolveUsing(r => r.OwnerTenant?.Name));
 
             // 网站设置
-            CreateMap<WebsiteSettingsDto, WebsiteSettings>();
-            CreateMap<WebsiteSettings, WebsiteSettingsDto>();
+           // CreateMap<WebsiteSettingsDto, WebsiteSettings>();
+           // CreateMap<WebsiteSettings, WebsiteSettingsDto>();
         }
     }
 }

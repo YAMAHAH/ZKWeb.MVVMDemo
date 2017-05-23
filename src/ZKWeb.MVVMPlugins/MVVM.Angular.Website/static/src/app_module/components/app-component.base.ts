@@ -8,7 +8,7 @@ import { AppConsts } from '@business_bases/desktop/global_module/app-consts';
 import { GuidUtils } from '@core/utils/guid-utils';
 import { RSAUtils } from '@core/utils/rsa-utils';
 import { AppApiService } from '@global_module/services/app-api-service';
-import { HandshakeRequestInput } from '../../modules/generated_module/dtos/handshake-request-input';
+import { HandshakeRequestInput } from '@generated_module/dtos/handshake-request-input';
 import { AESUtils } from '@core/utils/aes-utils';
 import { HandshakeRequestOutput } from "@generated_module/dtos/handshake-request-output";
 import { ClientDataModel } from "@global_module/models/client-data-model";
@@ -41,10 +41,10 @@ export abstract class AppComponentBase {
      * 程序初始化
      */
     async appInit() {
-        let conf: any = await this.getAppConfig();
+        let conf = await this.getAppConfig();
         let saveToLocal = conf && !!conf.saveToLocal;
         if (!!!saveToLocal) localStorage.clear();
-        let clientDataModel = this.store.getData(AppConsts.ClientDataKey);
+        let clientDataModel = this.store.getData<ClientDataModel>(AppConsts.ClientDataKey);
         if (!!!clientDataModel) {
             //随机生成密钥
             let randomKey = GuidUtils.uuid(16, 16);
@@ -62,7 +62,7 @@ export abstract class AppComponentBase {
     async handshakeRequest(): Promise<boolean> {
         let request = new HandshakeRequestInput();
         //获取加密密钥
-        let clientData: ClientDataModel = this.store.getData(AppConsts.ClientDataKey);
+        let clientData = this.store.getData<ClientDataModel>(AppConsts.ClientDataKey);
         //使用RSA公钥加密密钥
         request.SecretKey = RSAUtils.RSAEncrypt(clientData.ServerRsaPublicKey, clientData.SecretKey);
         //使用AES加密公钥
@@ -74,6 +74,8 @@ export abstract class AppComponentBase {
                     let chiperText = AESUtils.EncryptToBase64String(clientData.SecretKey, res.TestData);
                     if (chiperText === res.ProcessResult) {
                         resolve(true);
+                    } else {
+                        resolve(false);
                     }
                 });
         });
@@ -83,7 +85,7 @@ export abstract class AppComponentBase {
      * 获取应用程序配置文件
      */
     async getAppConfig() {
-        return new Promise(resolve => {
+        return new Promise<any>(resolve => {
             this.http.get("app-config.json")
                 .toPromise()
                 .then(res => {

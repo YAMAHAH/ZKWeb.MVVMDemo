@@ -9,7 +9,7 @@ export class AppStoreService {
     protected store: Map<string, any> = new Map<string, any>();
     constructor() {
     }
-    getData(key: string) {
+    getData<T>(key: string) {
         let value = this.store.has(key) ? this.store.get(key) : null;
         if (!!!value) {
             value = localStorage.getItem(key);
@@ -20,7 +20,7 @@ export class AppStoreService {
         if (!!!value) {
             value = window[key];
         }
-        return value;
+        return value ? <T>value : null;
     }
 
     setData(key: string, value: any, saveToLocal: boolean = false) {
@@ -34,8 +34,7 @@ export class AppStoreService {
         }
     }
     saveData(key: string, value: any) {
-        let conf = this.getData(AppConsts.AppConfigKey);
-        console.log(conf);
+        let conf = this.getData<any>(AppConsts.AppConfigKey);
         this.store.set(key, value);
         if (conf && conf.saveToLocal) {
             if (typeof value == "object") {

@@ -1,6 +1,7 @@
 ﻿import { Injectable } from '@angular/core';
 import { AppStoreService } from './app-store-service';
 import { AppConsts } from '@global_module/app-consts';
+import { AppConfig } from '../models/app-config';
 
 /** 保存全局配置的服务 */
 @Injectable()
@@ -33,9 +34,7 @@ export class AppConfigService {
     private _sessionIdSetHeader: string;
     /** 会话Id储存在本地储存的key */
     private _sessionIdKey: string;
-    /**
-     * 启用加密
-     */
+    /** 启用加密 */
     private _enableEncrypt: boolean;
     /**启用签名 */
     private _enableSignature: boolean;
@@ -43,30 +42,28 @@ export class AppConfigService {
     private _saveToLocal: boolean;
 
     constructor(private store: AppStoreService) {
-        // let localConfig = localStorage.getItem();
-        let conf = store.getData(AppConsts.AppConfigKey);
+        let conf = store.getData<AppConfig>(AppConsts.AppConfigKey) || new AppConfig();
         this.initConfig(conf);
     }
 
     /** 初始应用配置 */
-    initConfig(config) {
-        let conf = config || {};
-        this._apiUrlBase = conf.apiUrlBase || (location.protocol + "//" + location.host);
-        this._language = conf.language || null;
-        this._defaultLanguage = conf.defaultLnaguage || "zh-CN";
-        this._languageHeader = conf.languageHeader || "X-ZKWeb-Language";
-        this._languageKey = conf.languageKey || "ZKWeb-Language";
-        this._timezone = conf.timezone || null;
-        this._defaultTimezone = conf.defaultTimezone || "Asia/Shanghai";
-        this._timezoneHeader = conf.timezoneHeader || "X-ZKWeb-Timezone";
-        this._timezoneKey = conf.timezoneKey || "ZKWeb-Timezone";
-        this._loginUrl = conf.loginUrl || ["/admin", "login"];
-        this._sessionIdHeader = conf.sessionIdHeader || "X-ZKWeb-SessionId";
-        this._sessionIdSetHeader = conf.sessionIdSetHeader || "X-Set-ZKWeb-SessionId";
-        this._sessionIdKey = conf.sessionIdKey || "ZKWeb-SessionId";
-        this._enableEncrypt = conf.enableEncrypt || false;
-        this._enableSignature = conf.enableSignature || false;
-        this._saveToLocal = conf.saveToLocal || false;
+    initConfig(confifg: AppConfig) {
+        this._apiUrlBase = confifg.apiUrlBase || (location.protocol + "//" + location.host);
+        this._language = confifg.language || null;
+        this._defaultLanguage = confifg.defaultLanguage || "zh-CN";
+        this._languageHeader = confifg.languageHeader || "X-ZKWeb-Language";
+        this._languageKey = confifg.languageKey || "ZKWeb-Language";
+        this._timezone = confifg.timezone || null;
+        this._defaultTimezone = confifg.defaultTimezone || "Asia/Shanghai";
+        this._timezoneHeader = confifg.timezoneHeader || "X-ZKWeb-Timezone";
+        this._timezoneKey = confifg.timezoneKey || "ZKWeb-Timezone";
+        this._loginUrl = confifg.loginUrl || ["/admin", "login"];
+        this._sessionIdHeader = confifg.sessionIdHeader || "X-ZKWeb-SessionId";
+        this._sessionIdSetHeader = confifg.sessionIdSetHeader || "X-Set-ZKWeb-SessionId";
+        this._sessionIdKey = confifg.sessionIdKey || "ZKWeb-SessionId";
+        this._enableEncrypt = confifg.enableEncrypt || false;
+        this._enableSignature = confifg.enableSignature || false;
+        this._saveToLocal = confifg.saveToLocal || false;
     }
 
     /** 获取Api的基础地址 */
@@ -77,7 +74,7 @@ export class AppConfigService {
     /** 获取当前使用的语言 */
     get language(): string {
         if (!this._language) {
-            this._language = localStorage.getItem(this._languageKey) || this._defaultLanguage;
+            this._language = this.store.getData<string>(this._languageKey) || this._defaultLanguage;
         }
         return this._language;
     }
@@ -85,7 +82,7 @@ export class AppConfigService {
     /** 设置当前使用的语言 */
     setLanguage(language: string) {
         this._language = language;
-        localStorage.setItem(this._languageKey, language);
+        this.store.saveData(this._languageKey, language);
     }
 
     // 获取客户端传给服务端使用的语言头
@@ -96,7 +93,7 @@ export class AppConfigService {
     // 获取当前使用的时区
     get timezone(): string {
         if (!this._timezone) {
-            this._timezone = localStorage.getItem(this._timezone) || this._defaultTimezone;
+            this._timezone = this.store.getData<string>(this._timezoneKey) || this._defaultTimezone;
         }
         return this._timezone;
     }
@@ -104,7 +101,7 @@ export class AppConfigService {
     /** 设置当前使用的时区 */
     setTimezone(timezone: string) {
         this._timezone = timezone;
-        localStorage.setItem(this._timezoneKey, timezone);
+        this.store.saveData(this._timezoneKey, timezone);
     }
 
     // 获取客户端传给服务端使用的语言头
@@ -127,7 +124,8 @@ export class AppConfigService {
     // 获取当前会话Id
     get sessionId() {
         if (!this._sessionId) {
-            this._sessionId = this.store.getData(AppConsts.AccessToken);//  localStorage.getItem(this._sessionIdKey);
+            this._sessionId = this.store.getData<string>(AppConsts.AccessToken);
+            //localStorage.getItem(this._sessionIdKey);
         }
         return this._sessionId;
     }
