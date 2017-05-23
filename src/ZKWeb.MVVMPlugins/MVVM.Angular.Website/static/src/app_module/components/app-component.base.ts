@@ -31,24 +31,35 @@ export abstract class AppComponentBase {
             this.routerActivated = (e instanceof NavigationEnd);
         });
         this.appInit();
-        this.getAppConfig();
-        this.handshakeRequest();
-
     }
     public readonly publicKey: string = `MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC0xP5HcfThSQr43bAMoopbzcCy
                                          ZWE0xfUeTA4Nx4PrXEfDvybJEIjbU\/rgANAty1yp7g20J7+wVMPCusxftl/d0rPQ
                                          iCLjeZ3HtlRKld+9htAZtHFZosV29h/hNE9JkxzGXstaSeXIUIWquMZQ8XyscIHh
                                          qoOmjXaCv58CSRAlAQIDAQAB`;
-    appInit() {
-        //随机生成密钥
-        let randomKey = GuidUtils.uuid(16, 16);
-        //RSA公钥密钥
-        let rsaKey = RSAUtils.genRSAKey();
-        let clientDataModel = new ClientDataModel(randomKey, rsaKey.publicKey, rsaKey.privateKey, this.publicKey);
-        this.store.setData(AppConsts.ClientDataKey, clientDataModel);
+
+    /**
+     * 程序初始化
+     */
+    async appInit() {
+        let conf: any = await this.getAppConfig();
+        let saveToLocal = conf && !!conf.saveToLocal;
+        if (!!!saveToLocal) localStorage.clear();
+        let clientDataModel = this.store.getData(AppConsts.ClientDataKey);
+        if (!!!clientDataModel) {
+            //随机生成密钥
+            let randomKey = GuidUtils.uuid(16, 16);
+            //RSA公钥密钥
+            let rsaKey = RSAUtils.genRSAKey();
+            clientDataModel = new ClientDataModel(randomKey, rsaKey.publicKey, rsaKey.privateKey, this.publicKey);
+            this.store.saveData(AppConsts.ClientDataKey, clientDataModel);
+        }
+        await this.handshakeRequest();
     }
 
-    handshakeRequest() {
+    /**
+     * 程序首次启动时与服务器握手交换信息
+     */
+    async handshakeRequest(): Promise<boolean> {
         let request = new HandshakeRequestInput();
         //获取加密密钥
         let clientData: ClientDataModel = this.store.getData(AppConsts.ClientDataKey);
@@ -56,24 +67,31 @@ export abstract class AppComponentBase {
         request.SecretKey = RSAUtils.RSAEncrypt(clientData.ServerRsaPublicKey, clientData.SecretKey);
         //使用AES加密公钥
         request.PublicKey = AESUtils.EncryptToBase64String(clientData.SecretKey, clientData.RsaPublickKey);
-        this.apiService.call<HandshakeRequestOutput>("/api/CaptchaService/HandshakeRequest",
-            { method: "POST", body: request }, { enableEncrypt: false })
-            .subscribe(res => {
-                let chiperText = AESUtils.EncryptToBase64String(clientData.SecretKey, res.TestData);
-                if (chiperText === res.ProcessResult) console.debug("HandshakeReuest Sucessful");
-            });
+        return new Promise<boolean>(resolve => {
+            this.apiService.call<HandshakeRequestOutput>("/api/CaptchaService/HandshakeRequest",
+                { method: "POST", body: request }, { enableEncrypt: false })
+                .subscribe(res => {
+                    let chiperText = AESUtils.EncryptToBase64String(clientData.SecretKey, res.TestData);
+                    if (chiperText === res.ProcessResult) {
+                        resolve(true);
+                    }
+                });
+        });
     }
 
+    /**
+     * 获取应用程序配置文件
+     */
     async getAppConfig() {
         return new Promise(resolve => {
             this.http.get("app-config.json")
                 .toPromise()
                 .then(res => {
                     let conf = res.json();
-                    window['appConfig'] = conf;
-                    this.store.setData('appConfig', conf);
-                    localStorage.setItem('appConfig', JSON.stringify(conf));
+                    window[AppConsts.AppConfigKey] = conf;
+                    this.store.saveData(AppConsts.AppConfigKey, conf);
                     this.appConfigService.initConfig(conf);
+                    resolve(conf);
                 });
         });
     }

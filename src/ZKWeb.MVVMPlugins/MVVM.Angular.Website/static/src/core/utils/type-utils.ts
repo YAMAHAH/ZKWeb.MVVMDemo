@@ -25,3 +25,9 @@ export function isNumber(obj: any) {
 export function isFunction(obj: any) {
     return typeof obj === "function";
 }
+
+export function isJson(jsonStr: string) {
+    return /^[\],:{}\s]*$/.test(jsonStr.replace(/\\["\\\/bfnrtu]/g, '@')
+        .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+        .replace(/(?:^|:|,)(?:\s*\[)+/g, ''));
+}

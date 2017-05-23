@@ -1,5 +1,6 @@
 {
     "apiUrlBase": "http://localhost:53128",
     "enableEncrypt": true,
-    "enableSignature": true
+    "enableSignature": true,
+    "saveToLocal": true
 }

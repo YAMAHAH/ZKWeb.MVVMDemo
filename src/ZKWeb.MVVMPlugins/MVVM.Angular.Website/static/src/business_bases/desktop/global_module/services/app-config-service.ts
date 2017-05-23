@@ -33,13 +33,18 @@ export class AppConfigService {
     private _sessionIdSetHeader: string;
     /** 会话Id储存在本地储存的key */
     private _sessionIdKey: string;
-
+    /**
+     * 启用加密
+     */
     private _enableEncrypt: boolean;
+    /**启用签名 */
     private _enableSignature: boolean;
+    /**保存到本地 */
+    private _saveToLocal: boolean;
 
     constructor(private store: AppStoreService) {
-        let localConfig = localStorage.getItem('appConfig');
-        let conf = localConfig ? JSON.parse(localConfig) : null || store.getData('appConfig') || window['appConfig'];
+        // let localConfig = localStorage.getItem();
+        let conf = store.getData(AppConsts.AppConfigKey);
         this.initConfig(conf);
     }
 
@@ -61,6 +66,7 @@ export class AppConfigService {
         this._sessionIdKey = conf.sessionIdKey || "ZKWeb-SessionId";
         this._enableEncrypt = conf.enableEncrypt || false;
         this._enableSignature = conf.enableSignature || false;
+        this._saveToLocal = conf.saveToLocal || false;
     }
 
     /** 获取Api的基础地址 */
@@ -130,7 +136,7 @@ export class AppConfigService {
     setSessionId(sessionId: string): void {
         this._sessionId = sessionId;
         //localStorage.setItem(this._sessionIdKey, sessionId);
-        this.store.setData(AppConsts.AccessToken, sessionId);
+        this.store.saveData(AppConsts.AccessToken, sessionId);
     }
 
     // 获取客户端传给服务端使用的会话Id头
@@ -141,5 +147,8 @@ export class AppConfigService {
     // 获取服务端传给客户端使用的会话Id头
     get sessionIdSetHeader(): string {
         return this._sessionIdSetHeader;
+    }
+    get saveToLocal(): boolean {
+        return this._saveToLocal;
     }
 }

@@ -13,6 +13,7 @@ import { ApiCallExtra } from "@business_bases/desktop/global_module/models/api-c
 import { EncryptOutput } from "@business_bases/desktop/global_module/models/encrypt-output";
 import { AppStoreService } from './app-store-service';
 import { ClientDataModel } from '../models/client-data-model';
+import { isJson } from '@core/utils/type-utils';
 
 // 调用远程Api的服务
 @Injectable()
@@ -230,9 +231,7 @@ export class AppApiService {
                 //转换成对象，如果是加密接口，则解密
                 let res = response;
                 let resData = res[AppConsts.responseBodyKey] as string;
-                if (/^[\],:{}\s]*$/.test(resData.replace(/\\["\\\/bfnrtu]/g, '@').
-                    replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
-                    replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+                if (isJson(resData)) {
                     let bodyObj = res.json() as EncryptOutput;
                     //计算签名
                     if (bodyObj && bodyObj.hasOwnProperty("signature") && bodyObj['signature']) {

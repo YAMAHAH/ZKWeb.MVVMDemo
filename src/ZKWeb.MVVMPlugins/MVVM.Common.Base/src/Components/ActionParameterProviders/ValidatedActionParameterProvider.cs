@@ -43,8 +43,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.ActionParameterProvi
                     var sessionId = httpContext.Request.GetHeader(AppConsts.SessionHeaderIn);
                     if (sessionId == null) throw new BadRequestException("会话不充许为空");
                     IClientDataManager clientDataMan = ZKWeb.Application.Ioc.Resolve<IClientDataManager>();
-
                     var secretKey = clientDataMan.GetData(sessionId)?.SecretKey;
+
                     try
                     {
                         jsonBody = AESUtils.DecryptToUtf8String(secretKey, ((IEncryptInput)encryptObj).data).Result;
