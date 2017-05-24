@@ -17,6 +17,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
         IDatabaseContext Context { get; }
 
         /// <summary>
+        /// 获取当前活动的UnitOfWork
+        /// </summary>
+        IActiveUnitOfWork Current { get; }
+        /// <summary>
         /// 当前的查询过滤器列表
         /// 不存在时抛出错误
         /// </summary>
@@ -34,6 +38,9 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
         /// 这个函数可以嵌套使用，嵌套使用时都使用最上层的数据库上下文
         /// </summary>
         /// <returns></returns>
-        IDisposable Scope();
+        IDisposable Scope(bool forceNewScope = false);
+
+        void CreateTransactionScope(Action postAction, UnitOfWorkOptions unitOfWorkOptions = null);
+        IUnitOfWorkCompleteHandler CreateTransactionScope(UnitOfWorkOptions unitOfWorkOptions = null);
     }
 }

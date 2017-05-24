@@ -1,5 +1,5 @@
 
-var cryptoJS = require('crypto-js');
+var cryptoJS:  CryptoJS.CryptoJSStatic  = require('crypto-js');
 export class AESUtils {
     static pin = "99b3ad6e8dfjpe4c";
     static Encrypt(privateKey, pin, data) {

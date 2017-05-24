@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using ZKWeb.Database;
+using ZKWeb.Localize;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters.Interfaces;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
 using ZKWebStandard.Collections;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
+namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
 {
     /// <summary>
     /// 工作单元
@@ -23,8 +27,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <summary>
         /// 同一个工作单元区域使用的数据
         /// </summary>
-        private class ScopeData : IDisposable
+        private class ScopeData : IDisposable, IActiveUnitOfWork, IUnitOfWorkCompleteHandler
         {
+            public string Id { get; set; }
+
             /// <summary>
             /// 数据库上下文
             /// </summary>
@@ -38,17 +44,35 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             /// </summary>
             public IList<IEntityOperationFilter> OperationFilters { get; set; }
 
+            private UnitOfWorkOptions _Options;
+            public UnitOfWorkOptions Options => _Options;
+
             /// <summary>
             /// 初始化
             /// </summary>
-            public ScopeData()
+            public ScopeData(UnitOfWorkOptions unitOfWorkOptions)
             {
-                var databaseManager = ZKWeb.Application.Ioc.Resolve<DatabaseManager>();
+                _Options = unitOfWorkOptions;
+                Id = Guid.NewGuid().ToString();
+                var databaseManager = Application.Ioc.Resolve<DatabaseManager>();
                 Context = databaseManager.CreateContext();
-                QueryFilters = ZKWeb.Application.Ioc.ResolveMany<IEntityQueryFilter>().ToList();
-                OperationFilters = ZKWeb.Application.Ioc.ResolveMany<IEntityOperationFilter>().ToList();
+                if (unitOfWorkOptions.IsTransactional)
+                {
+                    Context.BeginTransaction(_Options.IsolationLevel);
+                }
+
+                QueryFilters = Application.Ioc.ResolveMany<IEntityQueryFilter>().ToList();
+                OperationFilters = Application.Ioc.ResolveMany<IEntityOperationFilter>().ToList();
             }
 
+            public ScopeData()
+            {
+                Id = Guid.NewGuid().ToString();
+                var databaseManager = Application.Ioc.Resolve<DatabaseManager>();
+                Context = databaseManager.CreateContext();
+                QueryFilters = Application.Ioc.ResolveMany<IEntityQueryFilter>().ToList();
+                OperationFilters = Application.Ioc.ResolveMany<IEntityOperationFilter>().ToList();
+            }
             /// <summary>
             /// 释放数据
             /// </summary>
@@ -64,13 +88,37 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             {
                 Context?.Dispose();
                 Context = null;
+                SimpleDisposable?.Dispose();
+            }
+
+            public SimpleDisposable SimpleDisposable;
+            public void Complete()
+            {
+                Context.FinishTransaction();
+            }
+
+            public Task CompleteAsync()
+            {
+                this.Complete();
+                return Task.FromResult(0);
+            }
+
+            public void SaveChanges()
+            {
+
+            }
+
+            public Task SaveChangesAsync()
+            {
+
+                return Task.FromResult(0);
             }
         }
 
         /// <summary>
         /// 同一个工作单元区域使用的数据
         /// </summary>
-        private ThreadLocal<ScopeData> Data { get; set; }
+        private AsyncLocal<ScopeData> Data { get; set; }
 
         /// <summary>
         /// 当前的数据库上下文
@@ -82,7 +130,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
                 var context = Data.Value?.Context;
                 if (context == null)
                 {
-                    throw new InvalidOperationException("Please call UnitOfWork.Scope() first");
+                    throw new InvalidOperationException("Please call Scope() first");
                 }
                 return context;
             }
@@ -98,21 +146,17 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
                 var filters = Data.Value?.QueryFilters;
                 if (filters == null)
                 {
-                    throw new InvalidOperationException("Please call UnitOfWork.Scope() first");
+                    throw new InvalidOperationException("Please call Scope() first");
                 }
                 return filters;
             }
             set
             {
-                if (value == null)
+                if (Data.Value == null)
                 {
-                    throw new ArgumentNullException("value");
+                    throw new InvalidOperationException("Please call Scope() first");
                 }
-                else if (Data.Value == null)
-                {
-                    throw new InvalidOperationException("Please call UnitOfWork.Scope() first");
-                }
-                Data.Value.QueryFilters = value;
+                Data.Value.QueryFilters = value ?? throw new ArgumentNullException("value");
             }
         }
 
@@ -126,21 +170,17 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
                 var filters = Data.Value?.OperationFilters;
                 if (filters == null)
                 {
-                    throw new InvalidOperationException("Please call UnitOfWork.Scope() first");
+                    throw new InvalidOperationException("Please call Scope() first");
                 }
                 return filters;
             }
             set
             {
-                if (value == null)
+                if (Data.Value == null)
                 {
-                    throw new ArgumentNullException("value");
+                    throw new InvalidOperationException("Please call Scope() first");
                 }
-                else if (Data.Value == null)
-                {
-                    throw new InvalidOperationException("Please call UnitOfWork.Scope() first");
-                }
-                Data.Value.OperationFilters = value;
+                Data.Value.OperationFilters = value ?? throw new ArgumentNullException("value");
             }
         }
 
@@ -149,15 +189,16 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// </summary>
         public UnitOfWork()
         {
-            Data = new ThreadLocal<ScopeData>();
+            //线程内异步数据共享
+            Data = new AsyncLocal<ScopeData>();  //ThreadLocal 同步线程本地数据
         }
-
         /// <summary>
-        /// 在指定的范围内使用工作单元
-        /// 最外层的工作单元负责创建和销毁数据
+        ///  在指定的范围内使用工作单元
+        /// 最外层的工作单元负责创建和销毁数据 
         /// </summary>
+        /// <param name="forceNewScope">强制创建新范围</param>
         /// <returns></returns>
-        public IDisposable Scope()
+        public IDisposable Scope(bool forceNewScope = false)
         {
             var isRootUow = Data.Value == null;
             if (isRootUow)
@@ -170,7 +211,138 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
                     Data.Value = null;
                 });
             }
+
+            if (forceNewScope)
+            {
+                var oldData = Data.Value;
+                var data = new ScopeData();
+                Data.Value = data;
+                return new SimpleDisposable(() =>
+                {
+                    data.Dispose();
+                    if (isRootUow) Data.Value = null; else Data.Value = oldData;
+                });
+            }
             return new SimpleDisposable(() => { });
         }
+
+
+        /// <summary>
+        /// 根据工作单元配置选项创建范围内使用工作单元,
+        /// 如配置选项为空则使用默认选项
+        /// </summary>
+        /// <param name="unitOfWorkOptions">工作单元选项</param>
+        /// <returns></returns>
+        public IUnitOfWorkCompleteHandler CreateTransactionScope(UnitOfWorkOptions unitOfWorkOptions = null)
+        {
+            if (unitOfWorkOptions == null) { unitOfWorkOptions = DefaultUnitOfWorkOptions(); }
+            unitOfWorkOptions.IsTransactional = true;
+            var isRootUow = Data.Value == null;
+            //根工作单元为空则创建新的scopeData实例
+            if (isRootUow)
+            {
+                var data = new ScopeData(unitOfWorkOptions);
+                if (isRootUow) Data.Value = data;
+                data.SimpleDisposable = new SimpleDisposable(() =>
+                {
+                    if (isRootUow) Data.Value = null;
+                });
+                return data;
+            }
+            //内嵌工作单元开启新的工作单元
+            if (unitOfWorkOptions.IsStandalone)
+            {
+                var oldData = Data.Value;
+                var data = new ScopeData(unitOfWorkOptions);
+                Data.Value = data;
+                data.SimpleDisposable = new SimpleDisposable(() =>
+                {
+                    if (isRootUow) Data.Value = null; else Data.Value = oldData;
+                });
+                return data;
+            }
+
+            return Data.Value;
+        }
+
+        /// <summary>
+        /// 根据工作单元配置选项创建范围工作单元,
+        /// 在调用传递的方法执行完毕,则提交事务,
+        /// 如配置选项为空则使用默认选项
+        /// </summary>
+        /// <param name="postAction">包装的方法</param>
+        /// <param name="unitOfWorkOptions">工作单元选项</param>
+        public void CreateTransactionScope(Action postAction, UnitOfWorkOptions unitOfWorkOptions = null)
+        {
+            if (unitOfWorkOptions == null) { unitOfWorkOptions = DefaultUnitOfWorkOptions(); }
+            var isRootUow = Data.Value == null;
+            SimpleDisposable simpleDisposable = new SimpleDisposable(() => { });
+            try
+            {
+                if (unitOfWorkOptions == null) { unitOfWorkOptions = DefaultUnitOfWorkOptions(); }
+                unitOfWorkOptions.IsTransactional = true;
+                if (isRootUow)
+                {
+                    var data = new ScopeData(unitOfWorkOptions);
+                    Data.Value = data;
+                    postAction();
+                    simpleDisposable = new SimpleDisposable(() =>
+                    {
+                        data.Dispose();
+                        Data.Value = null;
+                    });
+                }
+
+                if (unitOfWorkOptions.IsStandalone)
+                {
+                    var oldData = Data.Value;
+                    var data = new ScopeData(unitOfWorkOptions);
+                    Data.Value = data;
+                    postAction();
+                    simpleDisposable = new SimpleDisposable(() =>
+                    {
+                        data.Dispose();
+                        if (isRootUow) Data.Value = null; else Data.Value = oldData;
+                    });
+                }
+
+                if (unitOfWorkOptions.IsTransactional)
+                {
+                    Data.Value.Context.FinishTransaction();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException(new T("工作单元异常."));
+            }
+            finally
+            {
+                simpleDisposable?.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// 获取当前线程下的ScopeData,如果一个线程下开启多个实例，则可能会出错
+        /// </summary>
+
+        public IActiveUnitOfWork Current => Data.Value;
+
+        /// <summary>
+        /// 默认的工作单元选项
+        /// </summary>
+        /// <returns></returns>
+
+        private UnitOfWorkOptions DefaultUnitOfWorkOptions()
+        {
+            return new UnitOfWorkOptions()
+            {
+                IsStandalone = false,
+                Timeout = TimeSpan.FromSeconds(3),
+                IsTransactional = true
+            };
+        }
+
     }
 }
+
+

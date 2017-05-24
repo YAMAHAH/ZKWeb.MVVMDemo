@@ -19,11 +19,30 @@ export function isNumber(obj: any) {
     return typeof obj === "number";
 }
 
+export function isBool(obj: any) {
+    return typeof obj === "boolean";
+}
+
+export function isBlank(obj: any) {
+    return typeof obj === "undefined" || obj === null;
+}
+
+/**参数对象为数组返回TRUE,否则返回FALSE */
+export function isArray(obj: any) {
+    return Array.isArray(obj);
+}
+
 /**
  * Check and return true if an object is type of Function
  */
 export function isFunction(obj: any) {
-    return typeof obj === "function";
+    //alternative for $.isFunction
+    return typeof obj === "function" || !!(obj && obj.constructor && obj.call && obj.apply);
+}
+
+
+export function isObject(obj: any) {
+    return typeof obj === "object";
 }
 
 export function isJson(jsonStr: string) {

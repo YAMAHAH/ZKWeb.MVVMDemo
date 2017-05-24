@@ -30,6 +30,19 @@
 		<Reference Include="Microsoft.CSharp" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="MVVM.Angular.Support\bin\" />
+	  <Folder Include="MVVM.Common.ApiExplorer\bin\" />
+	  <Folder Include="MVVM.Common.Base\bin\" />
+	  <Folder Include="MVVM.Common.Captcha\bin\" />
+	  <Folder Include="MVVM.Common.MultiTenant\bin\" />
+	  <Folder Include="MVVM.Common.Organization\bin\" />
+	  <Folder Include="MVVM.Common.SessionState\bin\" />
+	  <Folder Include="MVVM.Common.TaskScheduler\bin\" />
+	  <Folder Include="MVVM.Example.CrudExample\bin\" />
+	  <Folder Include="SimpleEasy.Core.lib\bin\" />
+	</ItemGroup>
+
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
 		<DefineConstants>$(DefineConstants);NETCORE</DefineConstants>
 	</PropertyGroup>

@@ -79,15 +79,20 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Captcha.src.Managers
             var image = new Bitmap(ImageWidthPerChar * digits + ImagePadding * 2, ImageHeight);
             var font = new Font("Arial", ImageWidthPerChar, FontStyle.Bold);
             var rand = RandomUtils.Generator;
+            Random rnd = new Random();
+            //颜色列表，用于验证码、噪线、噪点 
+            Color[] color = { Color.Black, Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Brown, Color.Brown, Color.DarkBlue };
             using (var graphic = Graphics.FromImage(image))
             {
                 // 描画背景
                 var backgroundBrush = new SolidBrush(Color.White);
                 graphic.FillRectangle(backgroundBrush, new RectangleF(0, 0, image.Width, image.Height));
                 // 添加干扰线
-                var pen = new Pen(Color.Black);
+                // var pen = new Pen(Color.Black);
                 for (int x = 0; x < InterferenceLines; ++x)
                 {
+                    Color clr = color[rnd.Next(color.Length)];
+                    var pen = new Pen(clr);
                     var pointStart = new Point(rand.Next(image.Width), rand.Next(image.Height));
                     var pointFinish = new Point(rand.Next(image.Width), rand.Next(image.Height));
                     graphic.DrawLine(pen, pointStart, pointFinish);
@@ -95,9 +100,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Captcha.src.Managers
                 // 逐个字符描画，并进行不规则拉伸
                 var stringFormat = StringFormat.GenericDefault;
                 var randomPadding = new Func<int>(() => rand.Next(CharGraphicMaxPadding));
-                var textBrush = new SolidBrush(Color.Black);
+                //var textBrush = new SolidBrush(Color.Black);
                 for (int x = 0; x < captchaCode.Length; ++x)
                 {
+                    Color clr = color[rnd.Next(color.Length)];
+                    var textBrush = new SolidBrush(clr); //Color.Black
                     var path = new GraphicsPath();
                     var rect = new RectangleF(
                         ImageWidthPerChar * x + ImagePadding, ImagePadding,

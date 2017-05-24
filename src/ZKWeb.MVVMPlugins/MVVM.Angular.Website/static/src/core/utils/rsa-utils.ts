@@ -1,7 +1,9 @@
 
 import { JSEncrypt } from 'jsencrypt';
-var CryptoJS = require('crypto-js');
+//var CryptoJS : = require('crypto-js');
 export class RSAUtils {
+     //CryptoJS = CryptoJS.CryptoJSStatic = require("@vendor/scripts/crypto-js.js");
+
     /**
      * @param  {string} publickey 公钥
      * @param  {string} inputString 加密字符串
