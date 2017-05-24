@@ -8,6 +8,7 @@ import { AppPrivilegeService } from "@auth_module/services/app-privilege-service
 import { WebsiteManageService } from "@generated_module/services/website-manage-service";
 import { AdminToastService } from "@admin_modules/admin_base_module/services/admin-toast-service";
 import { AdminNavMenu } from '../navigation/admin-nav-menu';
+import { Router } from '@angular/router';
 
 @Component({
     moduleId: module.id,
@@ -33,7 +34,8 @@ export class AdminContainerComponent implements OnInit {
         private appSessionService: AppSessionService,
         private appPrivilegeService: AppPrivilegeService,
         private websiteManageService: WebsiteManageService,
-        private adminToastService: AdminToastService) { }
+        private adminToastService: AdminToastService,
+        private router: Router) { }
 
     ngOnInit() {
         // 更新当前登录用户的信息
@@ -134,8 +136,12 @@ export class AdminContainerComponent implements OnInit {
 
     /** 退出登录 */
     logout(e) {
-        this.appConfigService.setSessionId("");
-        location.href = location.href;
+        if (!this.appConfigService.saveToLocal) {
+            this.appConfigService.setSessionId("");
+        }
+        //导航到登录
+        this.router.navigateByUrl(this.appConfigService.loginUrl.join("/"));
+        // location.href = location.href;
         e.preventDefault();
     }
 

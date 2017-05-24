@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.DrawingCore.Imaging;
 using System.IO;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Global;
 using ZKWeb.MVVMPlugins.MVVM.Common.Captcha.src.Application.Dtos;
