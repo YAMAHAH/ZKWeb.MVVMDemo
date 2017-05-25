@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using ZKWeb.Database;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
@@ -25,6 +28,14 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Bases
         protected virtual IUnitOfWork UnitOfWork
         {
             get { return ZKWeb.Application.Ioc.Resolve<IUnitOfWork>(); }
+        }
+
+        /// <summary>
+        /// 获取数据库上下文
+        /// </summary>
+        protected virtual DbContext DbContextBase
+        {
+            get { return (DbContext)ZKWeb.Application.Ioc.Resolve<IUnitOfWork>().Context; }
         }
 
         /// <summary>

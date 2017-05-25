@@ -15,6 +15,7 @@
     "MVVM.Common.Organization",
     "MVVM.Example.CrudExample",
     "SimpleEasy.Core.lib",
+    "SimpleEasy.Business.Product",
     "MVVM.Angular.Support",
     "MVVM.Angular.Website"
   ]
