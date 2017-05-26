@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Entities
 {
     /// <summary>
-    /// 用户
+    /// 产品
     /// </summary>
     [ExportMany]
     public class Product :

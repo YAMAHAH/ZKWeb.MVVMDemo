@@ -3,6 +3,9 @@ using ZKWebStandard.Ioc;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes
 {
+    /// <summary>
+    /// 测试自定义特性,直接使用export,可以注册单个类型
+    /// </summary>
     [AttributeUsage(
         AttributeTargets.Class | AttributeTargets.Struct,
         Inherited = false,

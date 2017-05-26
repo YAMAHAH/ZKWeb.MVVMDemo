@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -105,13 +106,13 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
 
             public void SaveChanges()
             {
-
+                ((DbContext)Context).SaveChanges();
             }
 
             public Task SaveChangesAsync()
             {
 
-                return Task.FromResult(0);
+                return ((DbContext)Context).SaveChangesAsync();
             }
         }
 
