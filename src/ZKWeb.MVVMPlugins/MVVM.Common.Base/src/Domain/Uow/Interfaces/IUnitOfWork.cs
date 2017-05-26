@@ -42,5 +42,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
 
         void CreateTransactionScope(Action postAction, UnitOfWorkOptions unitOfWorkOptions = null);
         IUnitOfWorkCompleteHandler CreateTransactionScope(UnitOfWorkOptions unitOfWorkOptions = null);
+
+
     }
 }

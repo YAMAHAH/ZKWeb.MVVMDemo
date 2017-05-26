@@ -7,7 +7,7 @@ using ZKWeb.Database;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
 {
-    public interface IUnitOfWorkRepository
+    public interface IUnitOfWorkRepository<TEntity1, TPrimaryKey1> where TEntity1 : class, IEntity<TPrimaryKey1>
     {
         /// <summary>
         /// 获取能跟踪上下文的实体集合

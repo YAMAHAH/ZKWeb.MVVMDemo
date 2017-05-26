@@ -8,6 +8,7 @@ using ZKWeb.Database;
 using ZKWeb.Localize;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters.Interfaces;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
 using ZKWebStandard.Collections;
@@ -327,6 +328,30 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
         /// </summary>
 
         public IActiveUnitOfWork Current => Data.Value;
+
+        private Dictionary<Type, object> repositories;
+
+        /// <summary>
+        /// Gets the specified repository for the <typeparamref name="TEntity"/>.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
+        public IUnitOfWorkRepository<TEntity, TPrimaryKey> GetRepository<TEntity, TPrimaryKey>() where TEntity : class, IEntity<TPrimaryKey>
+        {
+            if (repositories == null)
+            {
+                repositories = new Dictionary<Type, object>();
+            }
+
+            var type = typeof(TEntity);
+            if (!repositories.ContainsKey(type))
+            {
+                repositories[type] = new UnitOfWorkRepository<TEntity, TPrimaryKey>();
+            }
+
+            return (IUnitOfWorkRepository<TEntity, TPrimaryKey>)repositories[type];
+        }
+
 
         /// <summary>
         /// 默认的工作单元选项

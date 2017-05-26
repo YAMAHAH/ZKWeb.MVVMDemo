@@ -14,7 +14,7 @@ using ZKWebStandard.Ioc;
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
 {
     [ExportMany, SingletonReuse]
-    public class UnitOfWorkRepository
+    public class UnitOfWorkRepository<TEntity1,TPrimaryKey1> where TEntity1 : class, IEntity<TPrimaryKey1>
     {
         private IUnitOfWork _unitOfWork;
         private IUnitOfWork UnitOfWork
