@@ -14,21 +14,6 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
     public interface IActiveUnitOfWork
     {
         /// <summary>
-        /// This event is raised when this UOW is successfully completed.
-        /// </summary>
-        //event EventHandler Completed;
-
-        /// <summary>
-        /// This event is raised when this UOW is failed.
-        /// </summary>
-        //event EventHandler<UnitOfWorkFailedEventArgs> Failed;
-
-        /// <summary>
-        /// This event is raised when this UOW is disposed.
-        /// </summary>
-        //event EventHandler Disposed;
-
-        /// <summary>
         /// Gets if this unit of work is transactional.
         /// </summary>
         UnitOfWorkOptions Options { get; }
@@ -37,11 +22,6 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
         /// Gets data filter configurations for this unit of work.
         /// </summary>
         //IReadOnlyList<DataFilterConfiguration> Filters { get; }
-
-        /// <summary>
-        /// Is this UOW disposed?
-        /// </summary>
-        //bool IsDisposed { get; }
 
         /// <summary>
         /// Saves all changes until now in this unit of work.
@@ -93,16 +73,5 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
         /// <param name="value">Value of the parameter to be set</param>
         //IDisposable SetFilterParameter(string filterName, string parameterName, object value);
 
-        /// <summary>
-        /// Sets/Changes Tenant's Id for this UOW.
-        /// </summary>
-        /// <param name="tenantId">The tenant id.</param>
-        //IDisposable SetTenantId(int? tenantId);
-
-        /// <summary>
-        /// Gets Tenant Id for this UOW.
-        /// </summary>
-        /// <returns></returns>
-       // int? GetTenantId();
     }
 }

@@ -2,5 +2,8 @@
   "Name": "产品管理系统",
   "Version": "1.0",
   "Description": "产品管理系统",
-  "Dependencies": [ "MVVM.Common.Base", "MVVM.Common.SessionState" ]
+  "Dependencies": [
+    "MVVM.Common.Base",
+    "MVVM.Common.SessionState"
+  ]
 }

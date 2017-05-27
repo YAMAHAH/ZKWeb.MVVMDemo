@@ -1,6 +1,6 @@
 
 import { JSEncrypt } from 'jsencrypt';
-//var CryptoJS : = require('crypto-js');
+var cryptoJS:  CryptoJS.CryptoJSStatic  = require('crypto-js');
 export class RSAUtils {
      //CryptoJS = CryptoJS.CryptoJSStatic = require("@vendor/scripts/crypto-js.js");
 
@@ -35,6 +35,7 @@ export class RSAUtils {
      * @param keySize 生成的位数（512，1024，2048，4096），位数越大，加密时间越长
      */
     static genRSAKey(keySize: number = 1024) {
+        var cryptoJS:  CryptoJS.CryptoJSStatic  = require('crypto-js');
         while (true) {
             var crypt = new JSEncrypt({ default_key_size: keySize || 1024 });
             crypt.getKey();
@@ -43,7 +44,7 @@ export class RSAUtils {
                 .replace("-----END PUBLIC KEY-----", "")
                 .replace("\n", "")
                 .replace("\r", "");
-            var wordArray = CryptoJS.enc.Base64.parse(publicKey);
+            var wordArray = cryptoJS.enc.Base64.parse(publicKey);
 
             if (wordArray.sigBytes == 165) { //解析长度165，服务端API才能接受
                 return {

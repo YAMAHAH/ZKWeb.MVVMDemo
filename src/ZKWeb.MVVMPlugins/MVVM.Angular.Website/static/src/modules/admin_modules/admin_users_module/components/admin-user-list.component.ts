@@ -51,7 +51,7 @@ export class AdminUserListComponent extends CrudWithDialogBaseComponent {
                 this.userTypeOptions.push({ label: userType.Description, value: userType.Type });
             });
         });
-
+        this.userManageService.TestGet().subscribe(res => console.log(res));
         this.userManageService.Test("2019").subscribe(res => console.log(res));
         let inputDto = new TestInput();
         inputDto.param1 = "myosdbject";

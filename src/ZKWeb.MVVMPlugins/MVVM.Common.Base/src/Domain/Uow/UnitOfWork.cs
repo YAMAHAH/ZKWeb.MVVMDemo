@@ -8,7 +8,6 @@ using ZKWeb.Database;
 using ZKWeb.Localize;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters.Interfaces;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
 using ZKWebStandard.Collections;
@@ -107,13 +106,14 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
 
             public void SaveChanges()
             {
-                ((DbContext)Context).SaveChanges();
+                var nativeContext = (DbContext)Context;
+                nativeContext.SaveChanges();
             }
 
             public Task SaveChangesAsync()
             {
-
-                return ((DbContext)Context).SaveChangesAsync();
+                var nativeContext = (DbContext)Context;
+                return nativeContext.SaveChangesAsync();
             }
         }
 
@@ -336,7 +336,8 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
-        public IUnitOfWorkRepository<TEntity, TPrimaryKey> GetRepository<TEntity, TPrimaryKey>() where TEntity : class, IEntity<TPrimaryKey>
+        public IUnitOfWorkRepository<TEntity, TPrimaryKey> GetRepository<TEntity, TPrimaryKey>()
+            where TEntity : class, IEntity<TPrimaryKey>, new()
         {
             if (repositories == null)
             {
@@ -351,8 +352,6 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
 
             return (IUnitOfWorkRepository<TEntity, TPrimaryKey>)repositories[type];
         }
-
-
         /// <summary>
         /// 默认的工作单元选项
         /// </summary>
@@ -368,6 +367,30 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
             };
         }
 
+        public int SaveChanges(bool ensureAutoHistory = false)
+        {
+            var nativeContext = (DbContext)this.Context;
+            //if (ensureAutoHistory)
+            //{
+            //    nativeContext.EnsureAutoHistory();
+            //}
+            return nativeContext.SaveChanges();
+        }
+
+        public async Task<int> SaveChangesAsync(bool ensureAutoHistory = false)
+        {
+            var nativeContext = (DbContext)this.Context;
+            //if (ensureAutoHistory)
+            //{
+            //   (this.Context as DbContext).EnsureAutoHistory();
+            //}
+            return await nativeContext.SaveChangesAsync();
+        }
+
+        public long ExecuteSqlCommand(string sql, params object[] parameters) => this.Context.RawUpdate(sql, parameters);
+
+        public IQueryable<TEntity> FromSql<TEntity>(string sql, params object[] parameters)
+            where TEntity : class, IEntity, new() => this.Context.Query<TEntity>().FromSql(sql, parameters);
     }
 }
 

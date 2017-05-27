@@ -10,12 +10,20 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
+using Microsoft.EntityFrameworkCore.Query;
+using System.Threading;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.PagedList;
+using System.Threading.Tasks;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
 {
-    [ExportMany, SingletonReuse]
-    public class UnitOfWorkRepository<TEntity1,TPrimaryKey1> where TEntity1 : class, IEntity<TPrimaryKey1>
+    public class UnitOfWorkRepository<TEntity, TPrimaryKey> : IUnitOfWorkRepository<TEntity, TPrimaryKey>
+        where TEntity : class, IEntity<TPrimaryKey>, new()
     {
+        public UnitOfWorkRepository()
+        {
+        }
+
         private IUnitOfWork _unitOfWork;
         private IUnitOfWork UnitOfWork
         {
@@ -26,13 +34,6 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             }
         }
 
-        private IDatabaseContext context
-        {
-            get
-            {
-                return UnitOfWork.Context;
-            }
-        }
         /// <summary>
         /// 获取数据库上下文
         /// </summary>
@@ -50,40 +51,77 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         ///<param name="getCompareKey">实体差异比较条件回调</param>
         ///<param name="getKey">实体更新获取数据库实体的条件回调</param>
         /// <returns>VOID/returns>
-        public void UpdateValues<T, T1, TKey>(T existEntity, T nowEntity, Func<T, List<T1>> getChilds,
-         Func<T1, TKey> getCompareKey, Func<T1, T1, bool> getKey) where T : class, IEntity where T1 : class, IEntity
+        public void UpdateMany<TDetail, TKey>(
+            TEntity existEntity,
+            TEntity nowEntity,
+            Func<TEntity, List<TDetail>> getChilds,
+            Func<TDetail, TKey> getCompareKey,
+            Func<TDetail, TDetail, bool> getKey) where TDetail : class, IEntity<TPrimaryKey>, new()
         {
-            UpdateEntityValues(existEntity, nowEntity);
-            var entityDiff = new EntityDiff<T1, TKey>(getChilds(existEntity), getChilds(nowEntity), getCompareKey);
-            entityDiff.DeletedEntities.ForEach(p => UpdateEntityState(p, EntityState.Deleted));
+            //更新主体实体
+            UpdateValues(existEntity, nowEntity);
+            //实体差异比较
+            var entityDiff = new EntityDiff<TDetail, TKey>(getChilds(existEntity), getChilds(nowEntity), getCompareKey);
+            //实体删除
+            entityDiff.DeletedEntities.ForEach(p => UpdateState(p, EntityState.Deleted));
+            //实体新增
             getChilds(existEntity).AddRange(entityDiff.AddedEntities);
+            //实体修改
             foreach (var modEntity in entityDiff.ModifiedEntities)
             {
                 var oldEntity = getChilds(existEntity).Where(p => getKey(modEntity, p)).FirstOrDefault();
-                UpdateEntityValues(oldEntity, modEntity);
+                UpdateValues(oldEntity, modEntity);
             }
         }
 
-        public void UpdateValues<T, TKey>(List<T> getExistLists, List<T> getNowLists, Func<T, TKey> getCompareKey,
-         Func<T, T, bool> getKey) where T : class, IEntity
+        /// <summary>
+        /// 更新集合实体
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="getExistLists">已存在的实体集合</param>
+        /// <param name="getNowLists">最新的实体令集合</param>
+        /// <param name="getCompareKey">集合实体比较的KEY</param>
+        /// <param name="getKey">获取实体的KEY</param>
+        public void UpdateMany<T, TKey>(
+            List<T> getExistLists, List<T> getNowLists,
+            Func<T, TKey> getCompareKey,
+            Func<T, T, bool> getKey) where T : class, IEntity<TPrimaryKey>, new()
         {
             var entityDiff = new EntityDiff<T, TKey>(getExistLists, getNowLists, getCompareKey);
-            entityDiff.DeletedEntities.ForEach(p => UpdateEntityState(p, EntityState.Deleted));
+            //删除实体
+            entityDiff.DeletedEntities.ForEach(p => UpdateState(p, EntityState.Deleted));
+            //新增实体
             getExistLists.AddRange(entityDiff.AddedEntities);
+            //修改实体
             foreach (var modEntity in entityDiff.ModifiedEntities)
             {
                 var oldEntity = getExistLists.Where(p => getKey(modEntity, p)).FirstOrDefault();
-                UpdateEntityValues(oldEntity, modEntity);
+                UpdateValues(oldEntity, modEntity);
             }
         }
-        public void UpdateValues<TEntity, TPrimaryKey, T, TListEntity, TKey>(T existEntity, T nowEntity, List<Func<T, List<TListEntity>>> getLists,
-         List<Func<TListEntity, TKey>> getListCompareKey, List<Func<TListEntity, TListEntity, bool>> getListKey)
-         where T : class, IEntity where TListEntity : class, IEntity
-            where TEntity : class
+        /// <summary>
+        /// 更新主从表实体
+        /// </summary>
+        /// <typeparam name="TMaster">主体类型</typeparam>
+        /// <typeparam name="TDetail">明细实体类型</typeparam>
+        /// <typeparam name="TKey">明细比较的键值类型</typeparam>
+        /// <param name="existEntity">存在数据库的实体</param>
+        /// <param name="nowEntity">最新实体</param>
+        /// <param name="getLists">获取实体明细的回调函数</param>
+        /// <param name="getListCompareKey">实体明细比较的KEY</param>
+        /// <param name="getListKey">获取明细的键值</param>
+        public void UpdateMany<TDetail, TKey>(
+            TEntity existEntity,
+            TEntity nowEntity,
+            List<Func<TEntity, List<TDetail>>> getLists,
+            List<Func<TDetail, TKey>> getListCompareKey,
+            List<Func<TDetail, TDetail, bool>> getListKey)
+            where TDetail : class, IEntity<TPrimaryKey>, new()
         {
             for (int i = 0; i < getLists.Count; i++)
             {
-                UpdateValues(getLists[i](existEntity), getLists[i](nowEntity), getListCompareKey[i], getListKey[i]);
+                UpdateMany(getLists[i](existEntity), getLists[i](nowEntity), getListCompareKey[i], getListKey[i]);
             }
         }
 
@@ -104,72 +142,90 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <param name="getEntityKey"></param>
         /// <param name="getNewNode"></param>
         /// <param name="getConfig"></param>
-        public void UpdateNodeValues<T, TKey>(T existNode, T nowNode, Func<T, List<T>> getChilds, Func<T, TKey> getCompareKey,
-         Func<T, T, bool> getEntityKey, Func<T, T> getNewNode, Action<T, T> getConfig) where T : class, IEntity
+        public void UpdateTreeNode<TKey>(
+            TEntity existNode,
+            TEntity nowNode,
+            Func<TEntity, List<TEntity>> getChilds,
+            Func<TEntity, TKey> getCompareKey,
+            Func<TEntity, TEntity, bool> getEntityKey,
+            Func<TEntity, TEntity> getNewNode,
+            Action<TEntity, TEntity> getConfig) //where T : class, IEntity<TPrimaryKey1>,new()
         {
-            UpdateEntityValues(existNode, nowNode);
-            var entityDiff = new EntityDiff<T, TKey>(getChilds(existNode), getChilds(nowNode), getCompareKey);
+            UpdateValues(existNode, nowNode);
+            //比较实体
+            var entityDiff = new EntityDiff<TEntity, TKey>(getChilds(existNode), getChilds(nowNode), getCompareKey);
             //删除
-            entityDiff.DeletedEntities.ForEach(node => DeleteNode(node, getChilds));
+            entityDiff.DeletedEntities.ForEach(node => DeleteTreeNode(node, getChilds));
             //新增
             entityDiff.AddedEntities.ForEach(node =>
             {
                 var newChildNode = getNewNode(existNode);
                 // getConfig(newChildNode, node);
-                InsertEntity(newChildNode);
+                FastInsert(newChildNode);
                 getChilds(existNode).Add(newChildNode);
-                AddNodeValues(newChildNode, node, getChilds, getNewNode, getConfig);
+                AddTreeNode(newChildNode, node, getChilds, getNewNode, getConfig);
             });
-            //更新
+            //更新实体
             entityDiff.ModifiedEntities.ForEach(modNode =>
             {
                 var existEntity = getChilds(existNode).Where(n => getEntityKey(modNode, n)).FirstOrDefault();
-                UpdateNodeValues(existEntity, modNode, getChilds, getCompareKey, getEntityKey, getNewNode, getConfig);
+                UpdateTreeNode(existEntity, modNode, getChilds, getCompareKey, getEntityKey, getNewNode, getConfig);
             });
         }
 
-        public void UpdateNodeDetailValues<T, TDetail, TKey>(T existNode, T nowNode, Func<T, List<T>> getChilds,
-         List<Func<T, List<TDetail>>> getDetails, List<Func<TDetail, TKey>> getDetailCompareKey, Func<T, T, bool> getChildKey,
-          List<Func<TDetail, TDetail, bool>> getDetailKey) where T : class, IEntity where TDetail : class, IEntity
+        public void UpdateTreeNode<TDetail, TKey>(
+            TEntity existNode,
+            TEntity nowNode,
+            Func<TEntity, List<TEntity>> getChilds,
+            List<Func<TEntity, List<TDetail>>> getDetails,
+            List<Func<TDetail, TKey>> getDetailCompareKey,
+            Func<TEntity, TEntity, bool> getChildKey,
+            List<Func<TDetail, TDetail, bool>> getDetailKey) where TDetail : class, IEntity<TPrimaryKey>, new()
         {
             for (int i = 0; i < getDetails.Count; i++)
             {
-                UpdateValues(existNode, nowNode, getDetails[i], getDetailCompareKey[i], getDetailKey[i]);
+                UpdateMany(existNode, nowNode, getDetails[i], getDetailCompareKey[i], getDetailKey[i]);
             }
             foreach (var childNode in getChilds(existNode))
             {
                 var newNode = getChilds(nowNode).Find(nd => getChildKey(childNode, nd));
-                UpdateNodeDetailValues(childNode, newNode, getChilds, getDetails, getDetailCompareKey, getChildKey, getDetailKey);
+                UpdateTreeNode(childNode, newNode, getChilds, getDetails, getDetailCompareKey, getChildKey, getDetailKey);
             }
         }
 
-        public void AddNodeValues<T>(T existNode, T nowNode, Func<T, IList<T>> getChilds,
-         Func<T, T> getNewNode, Action<T, T> getConfig) where T : class, IEntity
+        public void AddTreeNode(
+            TEntity existNode,
+            TEntity nowNode,
+            Func<TEntity, IList<TEntity>> getChilds,
+            Func<TEntity, TEntity> getNewNode,
+            Action<TEntity, TEntity> getConfig)
         {
             //排除主键
             getConfig(existNode, nowNode);
-            UpdateEntityValues(existNode, nowNode);
+            UpdateValues(existNode, nowNode);
 
             foreach (var addNode in getChilds(nowNode))
             {
                 var newChildNode = getNewNode(existNode);
-                InsertEntity(newChildNode);
+                FastInsert(newChildNode);
                 getChilds(existNode).Add(newChildNode);
-                AddNodeValues(newChildNode, addNode, getChilds, getNewNode, getConfig);
+                AddTreeNode(newChildNode, addNode, getChilds, getNewNode, getConfig);
             }
         }
-        public void DeleteNode<T>(T node, Func<T, IEnumerable<T>> getChilds) where T : class, IEntity
+        public void DeleteTreeNode(
+            TEntity node,
+            Func<TEntity,
+            IEnumerable<TEntity>> getChilds)
         {
             foreach (var delNode in GetAllNodes(node, getChilds))
             {
-                UpdateEntityState(delNode, EntityState.Deleted);
-                //DbContext.Entry(delNode).State = EntityState.Deleted;
+                UpdateState(delNode, EntityState.Deleted);
             }
         }
 
-        public List<T> GetAllNodes<T>(T node, Func<T, IEnumerable<T>> getChilds) where T : class, IEntity
+        public List<TEntity> GetAllNodes(TEntity node, Func<TEntity, IEnumerable<TEntity>> getChilds)
         {
-            var allNodes = new List<T>();
+            var allNodes = new List<TEntity>();
             allNodes.Add(node);
             foreach (var childNode in getChilds(node))
             {
@@ -178,11 +234,13 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             return allNodes;
         }
 
-        public List<T> GetTreeNodes<T>(T node, Expression<Func<T, IEnumerable<T>>> getCollection, Func<T, IEnumerable<T>> getChilds)
-            where T : class, IEntity
+        public List<TEntity> GetTreeNodes(
+            TEntity node,
+            Expression<Func<TEntity, IEnumerable<TEntity>>> getCollection,
+            Func<TEntity, IEnumerable<TEntity>> getChilds)
         {
-            List<T> treeNodes = new List<T>();
-            DbContext.Entry(node).Collection<T>(getCollection).Load();
+            List<TEntity> treeNodes = new List<TEntity>();
+            DbContext.Entry(node).Collection<TEntity>(getCollection).Load();
             treeNodes.Add(node);
             foreach (var childNode in getChilds(node))
             {
@@ -190,8 +248,13 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             }
             return treeNodes;
         }
-        public NodeOrderInfo CalaOrd<T>(T node, Action<T, NodeOrderInfo> headerConfig, Action<T, T> middleConfig,
-        Action<T, int> footerConfig, Func<T, IEnumerable<T>> getChilds, NodeOrderInfo nodeOrderInfo)
+        public NodeOrderInfo CalaOrd(
+            TEntity node,
+            Action<TEntity, NodeOrderInfo> headerConfig,
+            Action<TEntity, TEntity> middleConfig,
+            Action<TEntity, int> footerConfig,
+            Func<TEntity, IEnumerable<TEntity>> getChilds,
+            NodeOrderInfo nodeOrderInfo)
         {
             headerConfig(node, nodeOrderInfo);
             getChilds(node).ForEach(nd =>
@@ -205,7 +268,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             footerConfig(node, nodeOrderInfo.InitNum);
             return nodeOrderInfo;
         }
-        public void UpdateLocalNodeValues<T>(T node, Func<T, List<T>> getChilds, Action<T> setPropertyValue)
+        public void UpdateLocalNodeValues(
+            TEntity node,
+            Func<TEntity, List<TEntity>> getChilds,
+            Action<TEntity> setPropertyValue)
         {
             setPropertyValue(node);
             foreach (var child in getChilds(node))
@@ -222,9 +288,9 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public DbSet<T> EntitySet<T>() where T : class, IEntity
+        public DbSet<TEntity> EntitySet()
         {
-            return DbContext.Set<T>();
+            return DbContext.Set<TEntity>();
         }
         /// <summary>
         /// 从上下文中获取指定主键值且没有跟踪上下文的实体
@@ -232,9 +298,9 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T"></typeparam>
         /// <param name="getKey"></param>
         /// <returns></returns>
-        public T FastGetByKeyReadOnly<T>(Func<T, bool> getKey) where T : class, IEntity
+        public TEntity FastGetByKeyReadOnly(Func<TEntity, bool> getKey)
         {
-            return DbContext.Set<T>().AsNoTracking().FirstOrDefault(getKey);
+            return DbContext.Set<TEntity>().AsNoTracking().FirstOrDefault(getKey);
         }
         /// <summary>
         /// 从上下文中获取指定主键值且没有跟踪上下文的实体
@@ -242,9 +308,9 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T"></typeparam>
         /// <param name="getKey"></param>
         /// <returns></returns>
-        public T GetByKeyReadOnly<T, TPrimaryKey>(Func<T, bool> getKey) where T : class, IEntity<TPrimaryKey>
+        public TEntity GetByKeyReadOnly(Func<TEntity, bool> getKey)
         {
-            return QueryAsReadOnly<T, TPrimaryKey>().FirstOrDefault(getKey);
+            return QueryAsReadOnly().FirstOrDefault(getKey);
         }
         /// <summary>
         /// 从上下文中获取指定主键的实体
@@ -252,9 +318,9 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T"></typeparam>
         /// <param name="key">查询主键</param>
         /// <returns></returns>
-        public T FastGetByKey<T>(object key) where T : class, IEntity
+        public TEntity FastGetByKey(object key)
         {
-            return DbContext.Set<T>().Find(key);
+            return DbContext.Set<TEntity>().Find(key);
         }
 
         /// <summary>
@@ -263,9 +329,9 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T"></typeparam>
         /// <param name="key">查询主键</param>
         /// <returns></returns>
-        public T GetByKey<T, TPrimaryKey>(object key) where T : class, IEntity<TPrimaryKey>
+        public TEntity GetByKey(object key)
         {
-            return (Query<T, TPrimaryKey>() as DbSet<T>).Find(key);
+            return (Query() as DbSet<TEntity>).Find(key);
         }
         /// <summary>
         /// 查询指定类型和主键的实体
@@ -283,7 +349,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         ///<param name="entity">数据库存在的实体</param>
         ///<param name="nowEntity">当前的实体</param>
         /// <returns>Void</returns>
-        public void UpdateEntityValues<T>(T existEntity, T nowEntity) where T : class, IEntity
+        public void UpdateValues<T>(T existEntity, T nowEntity) where T : class, IEntity<TPrimaryKey>, new()
         {
             DbContext.Entry(existEntity).CurrentValues.SetValues(nowEntity);
         }
@@ -293,7 +359,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         ///<param name="entity">设置的实体</param>
         ///<param name="entityState">设置实体的状态</param>
         /// <returns>Void</returns>
-        public void UpdateEntityState<T>(T entity, EntityState entityState) where T : class, IEntity
+        public void UpdateState<T>(T entity, EntityState entityState) where T : class, IEntity<TPrimaryKey>, new()
         {
             DbContext.Entry(entity).State = entityState;
         }
@@ -303,18 +369,22 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T"></typeparam>
         /// <param name="entity">新增实体</param>
         /// <returns></returns>
-        public EntityEntry<T> InsertEntity<T>(T entity) where T : class, IEntity
+        public EntityEntry<TEntity> FastInsert(TEntity entity)
         {
-            return DbContext.Set<T>().Add(entity);
+            var added = DbContext.Set<TEntity>().Add(entity);
+            DbContext.SaveChanges();
+            return added;
         }
         /// <summary>
         /// 批量新增实体类型到数据库上下文
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="entities">实体集合</param>
-        public void InsertEntities<T>(params T[] entities) where T : class, IEntity
+        public void FastInsert(params TEntity[] entities)
         {
-            DbContext.Set<T>().AddRange(entities);
+            var dbCtx = DbContext;
+            dbCtx.Set<TEntity>().AddRange(entities);
+            dbCtx.SaveChanges();
         }
         /// <summary>
         /// 删除指定实体
@@ -322,18 +392,23 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T">删除实体类型</typeparam>
         /// <param name="entity">删除实体</param>
         /// <returns></returns>
-        public EntityEntry<T> DeleteEntity<T>(T entity) where T : class, IEntity
+        public EntityEntry<TEntity> FastDelete(TEntity entity)
         {
-            return DbContext.Set<T>().Remove(entity);
+            var dbCtx = DbContext;
+            var removed = DbContext.Set<TEntity>().Remove(entity);
+            dbCtx.SaveChanges();
+            return removed;
         }
         /// <summary>
         /// 批量删除实体
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="entities">删除实体集合</param>
-        public void DeleteEntities<T>(params T[] entities) where T : class, IEntity
+        public void FastDelete(params TEntity[] entities)
         {
-            DbContext.Set<T>().RemoveRange(entities);
+            var dbCtx = DbContext;
+            dbCtx.Set<TEntity>().RemoveRange(entities);
+            dbCtx.SaveChanges();
         }
         /// <summary>
         /// 更新实体
@@ -341,28 +416,33 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="entity">更新实体</param>
         /// <returns></returns>
-        public EntityEntry<T> UpdateEntity<T>(T entity) where T : class, IEntity
+        public EntityEntry<TEntity> FastUpdate(TEntity entity)
         {
-            return DbContext.Set<T>().Update(entity);
+            var dbCtx = DbContext;
+            var updated = DbContext.Set<TEntity>().Update(entity);
+            dbCtx.SaveChanges();
+            return updated;
         }
         /// <summary>
         /// 批量更新实体
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="entities">更新实体类型集合</param>
-        public void UpdateEntities<T>(params T[] entities) where T : IEntity
+        public void FastUpdate(params TEntity[] entities)
         {
+            var dbCtx = DbContext;
             DbContext.UpdateRange(entities);
+            dbCtx.SaveChanges();
         }
 
         /// <summary>
         /// 添加或更新实体
         /// 受这些过滤器的影响: 操作过滤器
         /// </summary>
-        public virtual void Save<T, TPrimaryKey>(ref T entity, Action<T> update = null) where T : class, IEntity<TPrimaryKey>
+        public virtual void Upsert(ref TEntity entity, Action<TEntity> update = null)
         {
             var uow = UnitOfWork;
-            update = uow.WrapUpdateMethod<T, TPrimaryKey>(update);
+            update = uow.WrapUpdateMethod<TEntity, TPrimaryKey>(update);
             uow.Context.Save(ref entity, update);
         }
 
@@ -370,10 +450,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// 删除实体
         /// 受这些过滤器的影响: 操作过滤器
         /// </summary>
-        public virtual void Delete<T, TPrimaryKey>(T entity) where T : class, IEntity<TPrimaryKey>
+        public virtual void Delete(TEntity entity)
         {
             var uow = UnitOfWork;
-            uow.WrapBeforeDeleteMethod<T, TPrimaryKey>(e => { })(entity);
+            uow.WrapBeforeDeleteMethod<TEntity, TPrimaryKey>(e => { })(entity);
             uow.Context.Delete(entity);
         }
 
@@ -383,22 +463,21 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T">保存实体类型</typeparam>
         /// <typeparam name="TPrimaryKey">主键类型</typeparam>
         /// <param name="entities">保存的实体集合</param>
-        public virtual void FastBatchSave<T, TPrimaryKey>(IEnumerable<T> entities)
-            where T : class, IEntity<TPrimaryKey>
+        public virtual void FastUpsert(IEnumerable<TEntity> entities)
         {
             var uow = UnitOfWork;
-            uow.Context.FastBatchSave<T, TPrimaryKey>(entities);
+            uow.Context.FastBatchSave<TEntity, TPrimaryKey>(entities);
         }
 
         /// <summary>
         /// 批量保存实体
         /// 受这些过滤器的影响: 操作过滤器
         /// </summary>
-        public virtual void BatchSave<T, TPrimaryKey>(
-            ref IEnumerable<T> entities, Action<T> update = null) where T : class, IEntity<TPrimaryKey>
+        public virtual void Upsert(
+            ref IEnumerable<TEntity> entities, Action<TEntity> update = null)
         {
             var uow = UnitOfWork;
-            update = uow.WrapUpdateMethod<T, TPrimaryKey>(update);
+            update = uow.WrapUpdateMethod<TEntity, TPrimaryKey>(update);
             uow.Context.BatchSave(ref entities, update);
         }
 
@@ -406,12 +485,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// 批量更新实体
         /// 受这些过滤器的影响: 查询过滤器, 操作过滤器
         /// </summary>
-        public virtual long BatchUpdate<T, TPrimaryKey>(
-            Expression<Func<T, bool>> predicate, Action<T> update) where T : class, IEntity<TPrimaryKey>
+        public virtual long Update(Expression<Func<TEntity, bool>> predicate, Action<TEntity> update)
         {
             var uow = UnitOfWork;
-            predicate = uow.WrapPredicate<T, TPrimaryKey>(predicate);
-            update = uow.WrapUpdateMethod<T, TPrimaryKey>(update);
+            predicate = uow.WrapPredicate<TEntity, TPrimaryKey>(predicate);
+            update = uow.WrapUpdateMethod<TEntity, TPrimaryKey>(update);
             return uow.Context.BatchUpdate(predicate, update);
         }
 
@@ -423,23 +501,21 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <param name="predicate"></param>
         /// <returns></returns>
 
-        public long FastBatchDelete<T, TPrimaryKey>(Expression<Func<T, bool>> predicate)
-            where T : class, IEntity<TPrimaryKey>, new()
+        public long FastDelete(Expression<Func<TEntity, bool>> predicate)
         {
             var uow = UnitOfWork;
-            return uow.Context.FastBatchDelete<T, TPrimaryKey>(predicate);
+            return uow.Context.FastBatchDelete<TEntity, TPrimaryKey>(predicate);
         }
 
         /// <summary>
         /// 批量删除实体
         /// 受这些过滤器的影响: 查询过滤器, 操作过滤器
         /// </summary>
-        public virtual long BatchDelete<T, TPrimaryKey>(
-            Expression<Func<T, bool>> predicate, Action<T> beforeDelete) where T : class, IEntity<TPrimaryKey>
+        public virtual long Delete(Expression<Func<TEntity, bool>> predicate, Action<TEntity> beforeDelete)
         {
             var uow = UnitOfWork;
-            predicate = uow.WrapPredicate<T, TPrimaryKey>(predicate);
-            beforeDelete = uow.WrapBeforeDeleteMethod<T, TPrimaryKey>(beforeDelete);
+            predicate = uow.WrapPredicate<TEntity, TPrimaryKey>(predicate);
+            beforeDelete = uow.WrapBeforeDeleteMethod<TEntity, TPrimaryKey>(beforeDelete);
             return uow.Context.BatchDelete(predicate, beforeDelete);
         }
         /// <summary>
@@ -448,7 +524,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T"></typeparam>
         /// <param name="entity">附加的实体</param>
         /// <returns></returns>
-        public EntityEntry<T> AttachEntity<T>(T entity) where T : class, IEntity
+        public EntityEntry<TEntity> Attach(TEntity entity)
         {
             return DbContext.Attach(entity);
         }
@@ -457,7 +533,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="entities">实体集合</param>
-        public void AttachEntities<T>(params T[] entities) where T : IEntity
+        public void Attach(params TEntity[] entities)
         {
             DbContext.AttachRange(entities);
         }
@@ -479,10 +555,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <param name="query"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public IEnumerable<T> FastRawQuery<T>(string query, params object[] parameters)
-            where T : class, IEntity
+        public IEnumerable<TEntity> FastRawQuery(string query, params object[] parameters)
+
         {
-            return FastQuery<T>().FromSql(query, parameters);
+            return FastQuery().FromSql(query, parameters);
         }
 
         /// <summary>
@@ -493,45 +569,45 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <param name="query"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public IEnumerable<T> RawQuery<T, TPrimaryKey>(string query, params object[] parameters)
-            where T : class, IEntity<TPrimaryKey>
+        public IEnumerable<TEntity> RawQuery(string query, params object[] parameters)
+
         {
-            return Query<T, TPrimaryKey>().FromSql(query, parameters);
+            return Query().FromSql(query, parameters);
         }
 
         /// <summary>
         /// 计算符合条件的实体数量
         /// 受这些过滤器的影响: 查询过滤器
         /// </summary>
-        public long FastCount<T>(Expression<Func<T, bool>> predicate) where T : class, IEntity
+        public long FastCount(Expression<Func<TEntity, bool>> predicate)
         {
-            return FastQuery<T>().LongCount();
+            return FastQuery().LongCount();
         }
 
         /// <summary>
         /// 计算符合条件的实体数量
         /// 受这些过滤器的影响: 查询过滤器
         /// </summary>
-        public long Count<T, TPrimaryKey>(Expression<Func<T, bool>> predicate) where T : class, IEntity<TPrimaryKey>
+        public long Count(Expression<Func<TEntity, bool>> predicate)
         {
-            return Query<T, TPrimaryKey>().LongCount(predicate);
+            return Query().LongCount(predicate);
         }
 
         /// <summary>
         /// 获取符合条件的单个实体
         /// 受这些过滤器的影响: 查询过滤器
         /// </summary>
-        public T FastGet<T>(Expression<Func<T, bool>> predicate) where T : class, IEntity
+        public TEntity FastGet(Expression<Func<TEntity, bool>> predicate)
         {
-            return FastQuery<T>().FirstOrDefault(predicate);
+            return FastQuery().FirstOrDefault(predicate);
         }
         /// <summary>
         /// 获取符合条件的单个实体
         /// 受这些过滤器的影响: 查询过滤器
         /// </summary>
-        public T Get<T, TPrimaryKey>(Expression<Func<T, bool>> predicate) where T : class, IEntity<TPrimaryKey>
+        public TEntity Get(Expression<Func<TEntity, bool>> predicate)
         {
-            return Query<T, TPrimaryKey>().FirstOrDefault(predicate);
+            return Query().FirstOrDefault(predicate);
         }
 
         /// <summary>
@@ -539,29 +615,29 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <returns></returns>
-        public IQueryable<T> FastQueryAsReadOnly<T>() where T : class, IEntity
+        public IQueryable<TEntity> FastQueryAsReadOnly()
         {
-            return DbContext.Set<T>().AsNoTracking().AsQueryable();
+            return DbContext.Set<TEntity>().AsNoTracking().AsQueryable();
         }
         /// <summary>
         /// 获取不跟踪上下文的查询
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <returns></returns>
-        public IQueryable<T> QueryAsReadOnly<T, TPrimaryKey>() where T : class, IEntity<TPrimaryKey>
+        public IQueryable<TEntity> QueryAsReadOnly()
         {
             var uow = UnitOfWork;
-            var query = uow.Context.Query<T>().AsNoTracking();
-            return uow.WrapQuery<T, TPrimaryKey>(query);
+            var query = uow.Context.Query<TEntity>().AsNoTracking();
+            return uow.WrapQuery<TEntity, TPrimaryKey>(query);
         }
         /// <summary>
         /// 获取具有跟踪上下文的查询
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public IQueryable<T> FastQuery<T>() where T : class, IEntity
+        public IQueryable<TEntity> FastQuery()
         {
-            return DbContext.Set<T>().AsQueryable();
+            return DbContext.Set<TEntity>().AsQueryable();
         }
         /// <summary>
         /// 获取具有包装的查询
@@ -569,11 +645,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TPrimaryKey"></typeparam>
         /// <returns></returns>
-        public IQueryable<T> Query<T, TPrimaryKey>() where T : class, IEntity<TPrimaryKey>
+        public IQueryable<TEntity> Query()
         {
             var uow = UnitOfWork;
-            var query = uow.Context.Query<T>();
-            return uow.WrapQuery<T, TPrimaryKey>(query);
+            var query = uow.Context.Query<TEntity>();
+            return uow.WrapQuery<TEntity, TPrimaryKey>(query);
         }
         /// <summary>
         /// 获取指定查询条件肯于没有跟踪上下文的查询
@@ -581,9 +657,9 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T"></typeparam>
         /// <param name="filterCondition">查询条件</param>
         /// <returns></returns>
-        public IQueryable<T> FastQuery<T>(Expression<Func<T, bool>> filterCondition) where T : class, IEntity
+        public IQueryable<TEntity> FastQuery(Expression<Func<TEntity, bool>> filterCondition)
         {
-            return DbContext.Set<T>().AsNoTracking().Where(filterCondition).AsQueryable();
+            return DbContext.Set<TEntity>().AsNoTracking().Where(filterCondition).AsQueryable();
         }
         /// <summary>
         /// 获取指定查询条件肯于没有跟踪上下文的查询
@@ -591,11 +667,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T"></typeparam>
         /// <param name="filterCondition">查询条件</param>
         /// <returns></returns>
-        public IQueryable<T> Query<T, TPrimaryKey>(Expression<Func<T, bool>> filterCondition) where T : class, IEntity<TPrimaryKey>
+        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> filterCondition)
         {
             var uow = UnitOfWork;
-            var query = uow.Context.Query<T>().AsNoTracking().Where(filterCondition);
-            return uow.WrapQuery<T, TPrimaryKey>(query);
+            var query = uow.Context.Query<TEntity>().AsNoTracking().Where(filterCondition);
+            return uow.WrapQuery<TEntity, TPrimaryKey>(query);
         }
         /// <summary>
         /// 从数据库上下文中获取实体引用
@@ -603,13 +679,13 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <typeparam name="T"></typeparam>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public EntityEntry GetEntry<T>(T entity) where T : class, IEntity
+        public EntityEntry GetEntry(TEntity entity)
         {
             return DbContext.Entry(entity);
         }
-        public PageInfo<object> Query<T, TOrderBy>(int pageIndex, int pageSize, Expression<Func<T, bool>> where,
-         Expression<Func<T, TOrderBy>> orderby, Func<IQueryable<T>, List<object>> selector)
-         where T : class, IEntity where TOrderBy : class
+        public PageInfo<object> Query<TOrderBy>(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> where,
+         Expression<Func<TEntity, TOrderBy>> orderby, Func<IQueryable<TEntity>, List<object>> selector)
+          where TOrderBy : class
         {
             if (selector == null)
             {
@@ -626,7 +702,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
                 pageSize = 10;
             }
 
-            IQueryable<T> query = DbContext.Set<T>();
+            IQueryable<TEntity> query = DbContext.Set<TEntity>();
             if (where != null)
             {
                 query = query.Where(where);
@@ -653,14 +729,14 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             }
             return new PageInfo<object>(pageIndex, pageSize, count, selector(query));
         }
-        public List<object> Query<T, TOrderBy>(Expression<Func<T, bool>> where, Expression<Func<T, TOrderBy>> orderby,
-         Func<IQueryable<T>, List<object>> selector) where T : class, IEntity
+        public List<object> Query<TOrderBy>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TOrderBy>> orderby,
+         Func<IQueryable<TEntity>, List<object>> selector)
         {
             if (selector == null)
             {
                 throw new ArgumentNullException("selector");
             }
-            IQueryable<T> query = DbContext.Set<T>();
+            IQueryable<TEntity> query = DbContext.Set<TEntity>();
             if (where != null)
             {
                 query = query.Where(where);
@@ -670,6 +746,94 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
                 query = query.OrderBy(orderby);
             }
             return selector(query);
+        }
+
+        /// <summary>
+        /// 获取页码数据
+        /// </summary>
+        /// <param name="predicate">查询条件</param>
+        /// <param name="orderBy">排序函数</param>
+        /// <param name="pageIndex">当前页码</param>
+        /// <param name="pageSize">每页数量</param>
+        /// <param name="disableTracking">禁用实体上下文追踪</param>
+        /// <param name="include">包含的导航集合</param>
+        /// <returns></returns>
+        public IPagedList<TEntity> GetPagedList(
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            int pageIndex = 0, int pageSize = 20,
+            bool disableTracking = true,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null)
+        {
+            IQueryable<TEntity> query = Query();
+            if (disableTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (orderBy != null)
+            {
+                return orderBy(query).ToPagedList(pageIndex, pageSize);
+            }
+            else
+            {
+                return query.ToPagedList(pageIndex, pageSize);
+            }
+        }
+
+        /// <summary>
+        /// 获取页码数据
+        /// </summary>
+        /// <param name="predicate">查询条件</param>
+        /// <param name="orderBy">排序函数</param>
+        /// <param name="include">包含的导航集合</param>
+        /// <param name="pageIndex">当前页码</param>
+        /// <param name="pageSize">每页的数量</param>
+        /// <param name="disableTracking">实体上下文追踪</param>
+        /// <param name="cancellationToken">任务取消</param>
+        /// <returns></returns>
+        public Task<IPagedList<TEntity>> GetPagedListAsync(
+            Expression<Func<TEntity, bool>> predicate = null,
+            Func<IQueryable<TEntity>,IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>,IIncludableQueryable<TEntity, object>> include = null,
+            int pageIndex = 0, int pageSize = 20,
+            bool disableTracking = true,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            IQueryable<TEntity> query = Query();
+            if (disableTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (orderBy != null)
+            {
+                return orderBy(query).ToPagedListAsync(pageIndex, pageSize, 0, cancellationToken);
+            }
+            else
+            {
+                return query.ToPagedListAsync(pageIndex, pageSize, 0, cancellationToken);
+            }
         }
         #endregion
     }

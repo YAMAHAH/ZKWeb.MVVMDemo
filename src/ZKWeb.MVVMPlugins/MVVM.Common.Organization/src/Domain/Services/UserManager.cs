@@ -1,5 +1,4 @@
-﻿using SimpleEasy.Core.lib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.DrawingCore;
 using System.IO;
@@ -173,7 +172,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Services
                 session.RememberLogin ?
                 SessionExpireDaysWithRememebrLogin :
                 SessionExpireDaysWithoutRememberLogin);
-            session[AppConsts.ClientDataKey] =oldClientData ;
+            session[AppConsts.ClientDataKey] = oldClientData;
             sessionManager.SaveSession();
             // 登陆后的处理
             handlers.ForEach(c => c.AfterLogin(user));

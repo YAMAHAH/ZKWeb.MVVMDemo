@@ -1,13 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using ZKWeb.Database;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities.Interfaces;
+using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
 using ZKWebStandard.Ioc;
-using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Entities
 {
@@ -40,8 +39,9 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Entities
             var nativeBuilder = ((EntityTypeBuilder<Product>)builder.NativeBuilder);
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
-            nativeBuilder.ToTable("products");
-            nativeBuilder.Property(p => p.ProductNo).IsRequired().HasColumnName("ProductName");
+            //nativeBuilder.ToTable("products");
+
+            nativeBuilder.Property(p => p.ProductNo).IsRequired();
             nativeBuilder.Property(p => p.ProductName).IsRequired();
             nativeBuilder.Property(p => p.ProductDesc).IsRequired();
             nativeBuilder.Property(p => p.Dw).IsRequired();

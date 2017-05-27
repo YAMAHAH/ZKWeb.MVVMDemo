@@ -17,6 +17,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Services;
 using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Services;
+using ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Entities;
 using ZKWeb.Web;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
@@ -75,18 +76,36 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Description("测试空参数")]
         public GridSearchResponseDto TestGet()
         {
-            return new GridSearchResponseDto(100, new List<object>() {  });
+            var productRepository = UnitOfWork.GetRepository<Product, Guid>();
+            List<Product> products = new List<Product>();
+
+            for (int i = 0; i < 100; i++)
+            {
+                Product product = new Product()
+                {
+                    ProductNo = "P010100005NK" + i.ToString(),
+                    ProductName = "华司外六角凹⊕",
+                    ProductDesc = "1/4-20*18MM白镍.￠13边10H4.6",
+                    Dw = "PC"
+                };
+                products.Add(product);
+            }
+            IEnumerable<Product> result = products;
+            productRepository.Upsert(ref result);
+
+            var pagelists = productRepository.GetPagedList();
+            return new GridSearchResponseDto(100, new List<object>() { result, pagelists });
         }
 
         [Action("TestObject", HttpMethods.GET)]
         [Description("测试复杂对象")]
         [CheckPrivilege(typeof(IAmAdmin), "User:TestObject")]
-        public GridSearchResponseDto TestObject(string name,TestInput testInputDto)
+        public GridSearchResponseDto TestObject(string name, TestInput testInputDto)
         {
             return new GridSearchResponseDto(testInputDto.param2, new List<object>() { name });
         }
 
-        [Action("customEdit",HttpMethods.POST)]
+        [Action("customEdit", HttpMethods.POST)]
         [Description("编辑用户")]
         [CheckPrivilege(typeof(IAmAdmin), "User:Edit")]
         public ActionResponseDto Edit(UserInputDto dto)
@@ -134,7 +153,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         }
     }
 
-    public class TestInput:IInputDto
+    public class TestInput : IInputDto
     {
         public string param1 { get; set; }
         public int param2 { get; set; }
