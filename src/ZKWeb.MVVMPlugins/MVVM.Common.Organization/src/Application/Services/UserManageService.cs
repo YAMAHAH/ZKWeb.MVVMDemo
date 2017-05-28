@@ -9,6 +9,7 @@ using ZKWeb.Localize;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
+using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.ActionFilters;
@@ -94,6 +95,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
             productRepository.Upsert(ref result);
 
             var pagelists = productRepository.GetPagedList();
+
+            //test report 
+            var reportManager = ZKWeb.Application.Ioc.Resolve<ReportManager>();
+            //reportManager.CreateOrUpdateRootReport();
             return new GridSearchResponseDto(100, new List<object>() { result, pagelists });
         }
 

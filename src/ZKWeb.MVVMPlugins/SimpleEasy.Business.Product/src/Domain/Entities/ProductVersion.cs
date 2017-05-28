@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using ZKWeb.Database;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities.Interfaces;
@@ -13,7 +14,7 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Entities
     /// 产品版次
     /// </summary>
     [ExportMany]
-   // [Table("productversions")]
+    // [Table("productversions")]
     public class ProductVersion : IEntity<Guid>,
         IHaveCreateTime,
         IHaveUpdateTime,
@@ -32,6 +33,9 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Entities
         public bool Deleted { get; set; }
         public DateTime UpdateTime { get; set; }
         public DateTime CreateTime { get; set; }
+
+        public List<Bom> RootRefs { get; set; } = new List<Bom>();
+        public List<Bom> NodeRefs { get; set; } = new List<Bom>();
 
 
         public void Configure(IEntityMappingBuilder<ProductVersion> builder)

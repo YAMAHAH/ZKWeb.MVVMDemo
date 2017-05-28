@@ -234,6 +234,18 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
         long Update(Expression<Func<TEntity, bool>> predicate, Action<TEntity> update);
 
         /// <summary>
+        /// 按需更新
+        /// </summary>
+        /// <param name="propertyExpression">更新的属性</param>
+        /// <param name="entities">更新的实体</param>
+        void Update(Expression<Func<TEntity, object>> propertyExpression, params TEntity[] entities);
+        /// <summary>
+        /// 整体更新
+        /// </summary>
+        /// <param name="entities">更新的实体</param>
+        void Update(params TEntity[] entities);
+
+        /// <summary>
         /// 快速批量删除实体
         /// </summary>
         /// <param name="predicate"></param>
@@ -251,7 +263,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
         /// 附加实体到数据库上下文
         /// </summary>
         /// <param name="entity">附加实体</param>
-        /// <returns></returns>
+        /// <returns>附加实体入口引用</returns>
         EntityEntry<TEntity> Attach(TEntity entity);
         /// <summary>
         /// 批量附加实体到数据库上下文
@@ -392,8 +404,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
             Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>,
             IOrderedQueryable<TEntity>> orderBy = null,
-            Func<IQueryable<TEntity>, 
-                IIncludableQueryable<TEntity, object>> include = null, 
+            Func<IQueryable<TEntity>,
+                IIncludableQueryable<TEntity, object>> include = null,
             int pageIndex = 0,
             int pageSize = 20,
             bool disableTracking = true,

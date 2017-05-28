@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore.Query;
 using System.Threading;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.PagedList;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.Reflection;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
 {
@@ -293,6 +295,16 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             return DbContext.Set<TEntity>();
         }
         /// <summary>
+        /// 从数据库上下文中获取实体入口引用
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public EntityEntry GetEntry(TEntity entity)
+        {
+            return DbContext.Entry(entity);
+        }
+        /// <summary>
         /// 从上下文中获取指定主键值且没有跟踪上下文的实体
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -494,6 +506,71 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         }
 
         /// <summary>
+        /// 整体更新实体
+        /// </summary>
+        /// <param name="entities"></param>
+        public void Update(params TEntity[] entities)
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+
+            foreach (TEntity entity in entities)
+            {
+                try
+                {
+                    var entry = GetEntry(entity);
+                    if (entry.State == EntityState.Detached)
+                    {
+                        Attach(entity);
+                        entry.State = EntityState.Modified;
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    TEntity oldEntity = GetByKey(entity.Id);
+                    UpdateValues(oldEntity, entity);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 按需更新实体
+        /// </summary>
+        /// <param name="propertyExpression"></param>
+        /// <param name="entities"></param>
+        public void Update(Expression<Func<TEntity, object>> propertyExpression, params TEntity[] entities)
+        {
+            if (propertyExpression == null) throw new ArgumentNullException("propertyExpression");
+            if (entities == null) throw new ArgumentNullException("entities");
+
+            ReadOnlyCollection<MemberInfo> memberInfos = ((dynamic)propertyExpression.Body).Members;
+
+            foreach (TEntity entity in entities)
+            {
+                try
+                {
+                    var entry = GetEntry(entity);
+                    UpdateState(entity, EntityState.Unchanged);
+                    foreach (var memberInfo in memberInfos)
+                    {
+                        entry.Property(memberInfo.Name).IsModified = true;
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    TEntity originalEntity = EntitySet().Local.Single(m => m.Id.Equals(entity.Id)); //获取数据库实体
+                    var existEntry = GetEntry(originalEntity);
+
+                    UpdateValues(originalEntity, entity);
+                    UpdateState(originalEntity, EntityState.Unchanged);
+
+                    foreach (var memberInfo in memberInfos)
+                    {
+                        existEntry.Property(memberInfo.Name).IsModified = true;
+                    }
+                }
+            }
+        }
+        /// <summary>
         /// 快速批量删除实体
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -673,16 +750,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             var query = uow.Context.Query<TEntity>().AsNoTracking().Where(filterCondition);
             return uow.WrapQuery<TEntity, TPrimaryKey>(query);
         }
-        /// <summary>
-        /// 从数据库上下文中获取实体引用
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public EntityEntry GetEntry(TEntity entity)
-        {
-            return DbContext.Entry(entity);
-        }
+      
         public PageInfo<object> Query<TOrderBy>(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> where,
          Expression<Func<TEntity, TOrderBy>> orderby, Func<IQueryable<TEntity>, List<object>> selector)
           where TOrderBy : class
@@ -804,8 +872,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         /// <returns></returns>
         public Task<IPagedList<TEntity>> GetPagedListAsync(
             Expression<Func<TEntity, bool>> predicate = null,
-            Func<IQueryable<TEntity>,IOrderedQueryable<TEntity>> orderBy = null,
-            Func<IQueryable<TEntity>,IIncludableQueryable<TEntity, object>> include = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
             int pageIndex = 0, int pageSize = 20,
             bool disableTracking = true,
             CancellationToken cancellationToken = default(CancellationToken))

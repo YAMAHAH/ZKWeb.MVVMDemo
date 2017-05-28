@@ -7,6 +7,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Interfaces;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
 using ZKWebStandard.Utils;
@@ -36,7 +37,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases
     public abstract class DomainServiceBase<TEntity, TPrimaryKey> :
         DomainServiceBase,
         IDomainService<TEntity, TPrimaryKey>
-        where TEntity : class, IEntity<TPrimaryKey>
+        where TEntity : class, IEntity<TPrimaryKey>, new()
     {
         /// <summary>
         /// 获取仓储
@@ -46,6 +47,28 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases
             get { return ZKWeb.Application.Ioc.Resolve<IRepository<TEntity, TPrimaryKey>>(); }
         }
 
+        /// <summary>
+        /// 获取仓储
+        /// </summary>
+        protected virtual IUnitOfWorkRepository<TEntity, TPrimaryKey> UnitRepository
+        {
+            get { return UnitOfWork.GetRepository<TEntity, TPrimaryKey>(); }
+        }
+
+        /// <summary>
+        /// 树型结构结点更新,子类必须实现自己的逻辑
+        /// </summary>
+        /// <param name="childId"></param>
+        /// <param name="rootId"></param>
+        protected virtual void UpdateNodeOrder(Guid childId, Guid rootId)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected virtual NodeOrderInfo CalaOrder(TEntity treeNode)
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// 根据主键获取实体
         /// </summary>

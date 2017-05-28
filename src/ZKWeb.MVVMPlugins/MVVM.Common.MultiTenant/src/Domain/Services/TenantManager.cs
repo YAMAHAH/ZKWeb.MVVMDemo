@@ -55,6 +55,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services
         /// </summary>
         public virtual Tenant EnsureMasterTenant()
         {
+
             if (MasterTenant != null)
             {
                 return MasterTenant;

@@ -42,7 +42,6 @@
 	  <Folder Include="MVVM.Example.CrudExample\bin\" />
 	  <Folder Include="SimpleEasy.Business.Product\src\Application\" />
 	  <Folder Include="SimpleEasy.Business.Product\src\Domain\Repositories\" />
-	  <Folder Include="SimpleEasy.Business.Product\src\Domain\Services\" />
 	  <Folder Include="SimpleEasy.Core.lib\bin\" />
 	</ItemGroup>
 
