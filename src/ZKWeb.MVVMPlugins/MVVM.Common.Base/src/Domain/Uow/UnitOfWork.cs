@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -8,6 +9,8 @@ using ZKWeb.Database;
 using ZKWeb.Localize;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters.Interfaces;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Bases;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
 using ZKWebStandard.Collections;
@@ -329,19 +332,21 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
 
         public IActiveUnitOfWork Current => Data.Value;
 
-        private Dictionary<Type, object> repositories;
+        private ConcurrentDictionary<Type, object> repositories;
+
+        private ConcurrentDictionary<Type, object> repositoryFactories;
 
         /// <summary>
-        /// Gets the specified repository for the <typeparamref name="TEntity"/>.
+        /// 获取指定类型的单元仓储
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>An instance of type inherited from <see cref="IRepository{TEntity}"/> interface.</returns>
-        public IUnitOfWorkRepository<TEntity, TPrimaryKey> GetRepository<TEntity, TPrimaryKey>()
+        /// <typeparam name="TEntity">实体类型.</typeparam>
+        /// <returns>继承IUnitOfWorkRepository<TEntity, TPrimaryKey>接口实例.</returns>
+        public IUnitOfWorkRepository<TEntity, TPrimaryKey> GetUnitRepository<TEntity, TPrimaryKey>()
             where TEntity : class, IEntity<TPrimaryKey>, new()
         {
             if (repositories == null)
             {
-                repositories = new Dictionary<Type, object>();
+                repositories = new ConcurrentDictionary<Type, object>();
             }
 
             var type = typeof(TEntity);
@@ -352,6 +357,29 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
 
             return (IUnitOfWorkRepository<TEntity, TPrimaryKey>)repositories[type];
         }
+
+        /// <summary>
+        /// 获取指定类型的仓储.
+        /// </summary>
+        /// <typeparam name="TEntity">实体类型.</typeparam>
+        /// <returns>继承IRepository<TEntity, TPrimaryKey>接口实例.</returns>
+        public IRepository<TEntity, TPrimaryKey> GetRepository<TEntity, TPrimaryKey>()
+            where TEntity : class, IEntity<TPrimaryKey>, new()
+        {
+            if (repositoryFactories == null)
+            {
+                repositoryFactories = new ConcurrentDictionary<Type, object>();
+            }
+
+            var type = typeof(TEntity);
+            if (!repositoryFactories.ContainsKey(type))
+            {
+                repositoryFactories[type] = new GenericRepository<TEntity, TPrimaryKey>();
+            }
+
+            return (GenericRepository<TEntity, TPrimaryKey>)repositories[type];
+        }
+
         /// <summary>
         /// 默认的工作单元选项
         /// </summary>

@@ -44,7 +44,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases
         /// </summary>
         protected virtual IRepository<TEntity, TPrimaryKey> Repository
         {
-            get { return ZKWeb.Application.Ioc.Resolve<IRepository<TEntity, TPrimaryKey>>(); }
+            get
+            {
+                return ZKWeb.Application.Ioc.Resolve<IRepository<TEntity, TPrimaryKey>>() ??
+                       UnitOfWork.GetRepository<TEntity, TPrimaryKey>();
+            }
         }
 
         /// <summary>
@@ -52,7 +56,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases
         /// </summary>
         protected virtual IUnitOfWorkRepository<TEntity, TPrimaryKey> UnitRepository
         {
-            get { return UnitOfWork.GetRepository<TEntity, TPrimaryKey>(); }
+            get { return UnitOfWork.GetUnitRepository<TEntity, TPrimaryKey>(); }
         }
 
         /// <summary>
@@ -62,6 +66,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases
         /// <param name="rootId"></param>
         protected virtual void UpdateNodeOrder(Guid childId, Guid rootId)
         {
+            UnitOfWork.GetRepository<TEntity, TPrimaryKey>();
             throw new NotImplementedException();
         }
 

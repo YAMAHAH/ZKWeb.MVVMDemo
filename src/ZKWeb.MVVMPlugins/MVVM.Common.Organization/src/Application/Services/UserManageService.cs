@@ -77,7 +77,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Description("测试空参数")]
         public GridSearchResponseDto TestGet()
         {
-            var productRepository = UnitOfWork.GetRepository<Product, Guid>();
+            var productRepository = UnitOfWork.GetUnitRepository<Product, Guid>();
             List<Product> products = new List<Product>();
 
             for (int i = 0; i < 100; i++)
