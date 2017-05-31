@@ -93,11 +93,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
             }
             IEnumerable<Product> result = products;
             productRepository.Upsert(ref result);
-
+            
             var pagelists = productRepository.GetPagedList();
 
             //test report 
-            var reportManager = ZKWeb.Application.Ioc.Resolve<ReportManager>();
+            var reportManager = Injector.Resolve<ReportManager>();
             //reportManager.CreateOrUpdateRootReport();
             return new GridSearchResponseDto(100, new List<object>() { result, pagelists });
         }

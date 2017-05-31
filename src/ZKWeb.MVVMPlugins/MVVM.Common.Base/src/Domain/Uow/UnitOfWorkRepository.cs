@@ -31,9 +31,16 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
         {
             get
             {
-                if (_unitOfWork == null) _unitOfWork = ZKWeb.Application.Ioc.Resolve<IUnitOfWork>();
+                if (_unitOfWork == null) _unitOfWork = Injector.Resolve<IUnitOfWork>();
                 return _unitOfWork;
             }
+        }
+        /// <summary>
+        /// 获取依赖注入器(容器)
+        /// </summary>
+        protected virtual IContainer Injector
+        {
+            get { return ZKWeb.Application.Ioc; }
         }
 
         /// <summary>
@@ -750,7 +757,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             var query = uow.Context.Query<TEntity>().AsNoTracking().Where(filterCondition);
             return uow.WrapQuery<TEntity, TPrimaryKey>(query);
         }
-      
+
         public PageInfo<object> Query<TOrderBy>(int pageIndex, int pageSize, Expression<Func<TEntity, bool>> where,
          Expression<Func<TEntity, TOrderBy>> orderby, Func<IQueryable<TEntity>, List<object>> selector)
           where TOrderBy : class

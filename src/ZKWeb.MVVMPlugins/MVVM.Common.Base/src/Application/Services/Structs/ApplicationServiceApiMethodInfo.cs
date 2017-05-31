@@ -10,6 +10,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Structs
     public class ApplicationServiceApiMethodInfo
     {
         /// <summary>
+        /// 所属服务类类型
+        /// </summary>
+        public Type ServiceClassType { get; set; }
+        /// <summary>
         /// 返回类型
         /// </summary>
         public Type ReturnType { get; set; }
@@ -42,12 +46,13 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Structs
         /// <summary>
         /// 初始化
         /// </summary>
-        public ApplicationServiceApiMethodInfo(
+        public ApplicationServiceApiMethodInfo(Type serviceClassType,
             Type returnType, string name, string url,string method,
             IEnumerable<Attribute> attributes,
             IEnumerable<ApplicationServiceApiParameterInfo> parameters,
             Func<IActionResult> action)
         {
+            ServiceClassType = serviceClassType;
             ReturnType = returnType;
             Name = name;
             Url = url;

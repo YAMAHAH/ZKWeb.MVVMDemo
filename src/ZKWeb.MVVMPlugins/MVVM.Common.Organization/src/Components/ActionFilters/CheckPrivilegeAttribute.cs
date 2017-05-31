@@ -12,6 +12,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.ActionFilter
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class CheckPrivilegeAttribute : ActionFilterAttribute
     {
+        public Type ServiceClassType { get; set; }
+        public bool Enable { get; set; } = true;
+        public bool Default { get; set; } = true;
+        public string Text { get; set; }
         /// <summary>
         /// 是否要求主租户
         /// </summary>

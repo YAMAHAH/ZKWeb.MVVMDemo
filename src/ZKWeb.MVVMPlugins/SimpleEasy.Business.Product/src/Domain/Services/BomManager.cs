@@ -254,9 +254,11 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
         public void DeleteBomNode(ref Bom delBom)
         {
             var nowNode = delBom;
+
             var existNodeLists = UnitRepository?.RawQuery("CALL getBomNodes({0},{1})", delBom.Id, delBom.RootId).ToList();
 
             var existNode = existNodeLists.Where(r => r.Id == nowNode.Id).FirstOrDefault();
+
             UnitRepository.DeleteTreeNode(existNode, (nd) => nd.Childs);
 
             UnitOfWork.SaveChanges();
@@ -265,6 +267,7 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
             {
                 //找出根结点和根版次 
                 updateNodeOrder(delBom.RootId, delBom.RootId);
+
                 UnitOfWork.SaveChanges();
             }
         }

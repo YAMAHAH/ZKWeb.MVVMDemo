@@ -9,6 +9,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Structs;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
 using ZKWeb.Web;
+using ZKWebStandard.Ioc;
 using ZKWebStandard.Web;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases
@@ -36,9 +37,16 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases
         /// </summary>
         protected virtual IHttpResponse Response => Context.Response;
         /// <summary>
+        /// 获取依赖注入器(容器)
+        /// </summary>
+        protected virtual IContainer Injector
+        {
+            get { return ZKWeb.Application.Ioc; }
+        }
+        /// <summary>
         /// 当前使用的工作单元
         /// </summary>
-        protected virtual IUnitOfWork UnitOfWork => ZKWeb.Application.Ioc.Resolve<IUnitOfWork>();
+        protected virtual IUnitOfWork UnitOfWork => Injector.Resolve<IUnitOfWork>();
         /// <summary>
         /// 基础地址
         /// </summary>
@@ -50,7 +58,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases
         /// <returns></returns>
         public virtual IEnumerable<ApplicationServiceApiMethodInfo> GetApiMethods()
         {
-            var typeInfo = GetType().GetTypeInfo();
+            var serviceClassType = GetType();
+            var typeInfo = serviceClassType.GetTypeInfo();
             var methods = typeInfo.GetMethods(
                 BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
             foreach (var method in methods)
@@ -88,6 +97,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases
                 }
                 // 返回函数信息
                 var info = new ApplicationServiceApiMethodInfo(
+                    serviceClassType,
                     method.ReturnType,
                     method.Name,
                     requestPath, requestMethod,

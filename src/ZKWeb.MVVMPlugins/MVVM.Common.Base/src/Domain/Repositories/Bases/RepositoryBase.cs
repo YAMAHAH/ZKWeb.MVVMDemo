@@ -9,6 +9,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
+using ZKWebStandard.Ioc;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Bases
 {
@@ -23,11 +24,18 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Bases
         where TEntity : class, IEntity<TPrimaryKey>
     {
         /// <summary>
+        /// 获取依赖注入器(容器)
+        /// </summary>
+        protected virtual IContainer Injector
+        {
+            get { return ZKWeb.Application.Ioc; }
+        }
+        /// <summary>
         /// 获取工作单元
         /// </summary>
         protected virtual IUnitOfWork UnitOfWork
         {
-            get { return ZKWeb.Application.Ioc.Resolve<IUnitOfWork>(); }
+            get { return Injector.Resolve<IUnitOfWork>(); }
         }
 
         /// <summary>

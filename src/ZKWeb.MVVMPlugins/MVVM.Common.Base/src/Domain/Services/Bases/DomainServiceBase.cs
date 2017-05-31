@@ -10,6 +10,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
+using ZKWebStandard.Ioc;
 using ZKWebStandard.Utils;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases
@@ -19,6 +20,13 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases
     /// </summary>
     public abstract class DomainServiceBase : IDomainService
     {
+        /// <summary>
+        /// 获取依赖注入器(容器)
+        /// </summary>
+        protected virtual IContainer Injector
+        {
+            get { return ZKWeb.Application.Ioc; }
+        }
         /// <summary>
         /// 获取工作单元
         /// </summary>
@@ -46,7 +54,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases
         {
             get
             {
-                return ZKWeb.Application.Ioc.Resolve<IRepository<TEntity, TPrimaryKey>>() ??
+                return Injector.Resolve<IRepository<TEntity, TPrimaryKey>>() ??
                        UnitOfWork.GetRepository<TEntity, TPrimaryKey>();
             }
         }

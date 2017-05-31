@@ -18,6 +18,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Filters;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.ActionFilters;
+using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.Attributes;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities.UserTypes;
@@ -31,7 +32,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
     /// <summary>
     /// 租户管理服务
     /// </summary>
-    [ExportMany, SingletonReuse, Description("租户管理服务")]
+    [ExportMany, SingletonReuse, Description("租户管理服务"), 
+    TempModel(typeof(TenantOutputDto))]
     public class TenantManageService : ApplicationServiceBase
     {
         private TenantManager _tenantManager;
@@ -58,6 +60,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
 
         [Description("搜索租户")]
         [CheckPrivilege(true, typeof(IAmAdmin), "Tenant:View")]
+        [TempAction("Tenant:View", "搜索", true, true)]
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
             var response = request.BuildResponse<Tenant, Guid>()
@@ -70,6 +73,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
 
         [Description("编辑租户")]
         [CheckPrivilege(true, typeof(IAmAdmin), "Tenant:Edit")]
+        [TempAction("Tenant:Edit", "编辑", true, false)]
         [UnitOfWork(IsTransactional = true)]
         public ActionResponseDto Edit(TenantInputDto dto)
         {
@@ -106,6 +110,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
 
         [Description("删除租户")]
         [CheckPrivilege(true, typeof(IAmAdmin), "Tenant:Remove")]
+        [TempAction("Tenant:Remove", "删除", true, false)]
         public ActionResponseDto Remove(Guid id)
         {
             if (_tenantManager.Count(x => x.Id == id && x.IsMaster) > 0)
