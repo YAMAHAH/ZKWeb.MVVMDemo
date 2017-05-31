@@ -1,22 +1,18 @@
 ﻿using AutoMapper;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using ZKWeb.Localize;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Attributes;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Filters;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services;
-using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.ActionFilters;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.Attributes;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities;
@@ -33,7 +29,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
     /// 租户管理服务
     /// </summary>
     [ExportMany, SingletonReuse, Description("租户管理服务"), 
-    TempModel(typeof(TenantOutputDto))]
+        TempModel(typeof(TenantOutputDto)), 
+        TempFilter(typeof(DeletedFilter), typeof(CreateTimeFilter))]
     public class TenantManageService : ApplicationServiceBase
     {
         private TenantManager _tenantManager;
@@ -58,9 +55,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
             }
         }
 
-        [Description("搜索租户")]
+        [Description("搜索租户"), TempAction("Tenant:View", "搜索", true, true)]
         [CheckPrivilege(true, typeof(IAmAdmin), "Tenant:View")]
-        [TempAction("Tenant:View", "搜索", true, true)]
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
             var response = request.BuildResponse<Tenant, Guid>()
