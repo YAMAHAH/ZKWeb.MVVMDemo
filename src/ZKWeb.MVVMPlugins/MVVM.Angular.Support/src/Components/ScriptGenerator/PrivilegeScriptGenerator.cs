@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using ZKWeb.Localize;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.PrivilegeTranslators.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities.Interfaces;
 using ZKWeb.Plugins.MVVM.Common.Organization.src.Components.PrivilegeProviders.Interfaces;
@@ -77,6 +78,104 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
             }
             classBuilder.AppendLine("}");
             return classBuilder.ToString();
+        }
+        private const string classTemplate = @"
+export class {{templateName}} {
+
+    /**数据字段 */
+    dataFields = {
+{{dataFields}}
+    };
+
+    /** 功能 */
+    actions = {
+{{actions}}
+    };
+
+    /** 过滤器 */
+    filters = {
+{{filters}}
+    };
+}";
+
+        private const string actionTemplate = "{{actionName}}: {\n" + @"            enable: {{enableValue}}, text: {{TextValue}}, default: {{defaultValue}} " + "\n        }";
+
+        private const string dataFieldTemp = "{{dataFieldName}}: {\n" + @"            queryable: {{queryableValue}}, required: {{requiredValue}}, visible: {{visibleValue}}, editable: {{editableValue}}, text: {{textValue}},
+            default: {{defaultValue}}, dataType: {{dataTypeValue}}, componentType: {{compTypeValue}}" + "\n        }";
+
+        /// <summary>
+        /// 生成模板对象字典
+        /// </summary>
+        /// <returns></returns>
+        public virtual Dictionary<string, string> GenerateTemplateObjects()
+        {
+            var injector = ZKWeb.Application.Ioc;
+            var tempDict = new Dictionary<string, string>();
+            //获取模板对象
+            var templateProviders = injector.ResolveMany<IPrivilegesProvider>();
+            var templateTranslator = injector.Resolve<IPrivilegeTranslator>();
+
+            var strBuilder = new StringBuilder();
+            foreach (var templateProvider in templateProviders)
+            {
+                var temp = templateProvider.GetTemplateObjects();
+                foreach (var tpl in temp)
+                {
+                    //模板名称
+                    var tempName = tpl.TempClassType.Name.Replace("Service", "Template");
+                    //功能处理
+                    strBuilder.Clear();
+                    var tempActions = tpl.TempActions;
+                    foreach (var action in tempActions)
+                    {
+                        var act = actionTemplate.Replace("{{actionName}}", action.Name.Trim())
+                            .Replace("{{enableValue}}", action.Enable.ToString().ToLower())
+                            .Replace("{{TextValue}}", action.Text.AutoDoubleQuotes())
+                            .Replace("{{defaultValue}}", action.Default.ToString().ToLower());
+                        strBuilder.Append("        " + act);
+                        if (action != tempActions.Last())
+                        {
+                            strBuilder.AppendLine(",");
+                        }
+                    }
+                    var actions = strBuilder.ToString();
+
+                    //数据字段处理
+                    strBuilder.Clear();
+                    foreach (var dataField in tpl.TempDataFields)
+                    {
+                        var dataFieldStr = dataFieldTemp.Replace("{{dataFieldName}}", dataField.Name)
+                            .Replace("{{queryableValue}}", dataField.Queryable.ToString().ToLower())
+                            .Replace("{{requiredValue}}", dataField.required.ToString().ToLower())
+                            .Replace("{{visibleValue}}", dataField.Visible.ToString().ToLower())
+                            .Replace("{{editableValue}}", dataField.Editable.ToString().ToLower())
+                            .Replace("{{textValue}}", dataField.Text.AutoDoubleQuotes())
+                            .Replace("{{defaultValue}}", dataField.Default.AutoDoubleQuotes())
+                            .Replace("{{dataTypeValue}}", dataField.DataType.AutoDoubleQuotes())
+                            .Replace("{{compTypeValue}}", dataField.ComponentType.AutoDoubleQuotes());
+                        strBuilder.Append("        " + dataFieldStr);
+                        if (dataField != tpl.TempDataFields.Last())
+                        {
+                            strBuilder.AppendLine(",");
+                        }
+                    }
+                    var dataFields = strBuilder.ToString();
+
+                    //过滤器处理
+                    strBuilder.Clear();
+                    foreach (var action in templateProvider.GetTemplateFilters())
+                    {
+
+                    }
+                    var filters = strBuilder.ToString();
+
+                    tempDict[tempName] = classTemplate.Replace("{{templateName}}", tempName)
+                        .Replace("{{dataFields}}", dataFields)
+                        .Replace("{{actions}}", actions)
+                        .Replace("{{filters}}", filters);
+                }
+            }
+            return tempDict;
         }
     }
 }

@@ -9,3 +9,8 @@ export interface TemplateDataField {
     componentType:string;
 }
 
+
+export class SaleOrderTemplate{
+    actions:any[];
+    dataFields: TemplateDataField[] = [];
+}

@@ -174,8 +174,6 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Application
                 pathConfig.PrivilegesDirectoryName,
                 "privileges.ts");
             PathUtils.EnsureParentDirectory(userTypesPath);
-            // File.WriteAllText(userTypesPath, userTypesScript);
-            // File.WriteAllText(privilegesPath, privilegesScript);
             if (!File.Exists(userTypesPath) || File.ReadAllText(userTypesPath) != userTypesScript)
             {
                 File.WriteAllText(userTypesPath, userTypesScript);
@@ -183,6 +181,17 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Application
             if (!File.Exists(privilegesPath) || File.ReadAllText(privilegesPath) != privilegesScript)
             {
                 File.WriteAllText(privilegesPath, privilegesScript);
+            }
+            foreach (var temp in generator.GenerateTemplateObjects())
+            {
+                var tempPath = PathUtils.SecureCombine(
+                pathConfig.GenerateModuleDirectory,
+                pathConfig.PrivilegesDirectoryName,
+                $"{temp.Key}.ts");
+                if (!File.Exists(tempPath) || File.ReadAllText(tempPath) != temp.Value)
+                {
+                    File.WriteAllText(tempPath, temp.Value);
+                }
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters.Interfaces;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Extensions
 {
@@ -10,7 +11,32 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Extensions
     /// </summary>
     public static class ObjectExtensions
     {
+        public static TypeInfo GetTypeInfoEx(this object obj)
+        {
+            return obj.GetType().GetTypeInfo();
+        }
+        public static T GetAttribute<T>(this object obj) where T : Attribute
+        {
+            return obj.GetType().GetTypeInfo().GetCustomAttribute<T>();
+        }
 
+        public static MethodInfo GetAttributeMethod<T>(this object obj) where T : Attribute
+        {
+            return obj.GetTypeInfoEx().GetMethods().FirstOrDefault(m => m.GetCustomAttribute<T>() != null);
+        }
+        public static bool IsQueryFilter(this Type type)
+        {
+            return typeof(IEntityQueryFilter).IsAssignableFrom(type);
+        }
+        public static bool IsOperationFilter(this Type type)
+        {
+            return typeof(IEntityOperationFilter).IsAssignableFrom(type);
+        }
+        public static bool IsQueryOrOperationFilter(this Type type)
+        {
+            return typeof(IEntityQueryFilter).IsAssignableFrom(type) ||
+                 typeof(IEntityOperationFilter).IsAssignableFrom(type);
+        }
         public static Assembly GetExecutingAssembly(this object obj)
         {
             return obj.GetType().GetTypeInfo().Assembly;
