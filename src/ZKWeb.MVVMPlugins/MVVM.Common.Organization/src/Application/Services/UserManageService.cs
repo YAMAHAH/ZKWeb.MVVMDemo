@@ -6,12 +6,15 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using ZKWeb.Localize;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Dtos;
+using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Module;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.ActionFilters;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities.Interfaces;
@@ -30,12 +33,14 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
     /// 用户管理服务
     /// </summary>
     [ExportMany, SingletonReuse, Description("用户管理服务")]
-    public class UserManageService : ApplicationServiceBase
+    [TempClass(typeof(UserManagerModule), typeof(UserOutputDto),
+        typeof(DeletedFilter), typeof(CreateTimeFilter))]
+    public class UserManagerService : ApplicationServiceBase
     {
         private UserManager _userManager;
         private TenantManager _teantManager;
 
-        public UserManageService(
+        public UserManagerService(
             UserManager userManager,
             TenantManager tenantManager)
         {
@@ -46,6 +51,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Action("Search", HttpMethods.POST)]
         [Description("搜索用户")]
         [CheckPrivilege(typeof(IAmAdmin), "User:View")]
+        [TempAction("Search", "搜索", true, true)]
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
             return request.BuildResponse<User, Guid>()
@@ -68,6 +74,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Action("test", HttpMethods.GET)]
         [Description("测试基本数据类型")]
         [CheckPrivilege(typeof(IAmAdmin), "User:Test")]
+        [TempAction("Test", "测试", true, true)]
         public GridSearchResponseDto Test(string testid)
         {
             return new GridSearchResponseDto(Convert.ToInt64(testid), new List<object>());
@@ -75,6 +82,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
 
         [Action("TestGet", HttpMethods.GET)]
         [Description("测试空参数")]
+        [TempAction("TestGet", "测试空参数", true, true)]
         public GridSearchResponseDto TestGet()
         {
             var productRepository = UnitOfWork.GetUnitRepository<Product, Guid>();
@@ -105,6 +113,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Action("TestObject", HttpMethods.GET)]
         [Description("测试复杂对象")]
         [CheckPrivilege(typeof(IAmAdmin), "User:TestObject")]
+        [TempAction("TestObject", "测试复杂对象", true, true)]
         public GridSearchResponseDto TestObject(string name, TestInput testInputDto)
         {
             return new GridSearchResponseDto(testInputDto.param2, new List<object>() { name });
@@ -113,6 +122,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Action("customEdit", HttpMethods.POST)]
         [Description("编辑用户")]
         [CheckPrivilege(typeof(IAmAdmin), "User:Edit")]
+        [TempAction("Edit", "编辑", true, true)]
         public ActionResponseDto Edit(UserInputDto dto)
         {
             var user = _userManager.Get(dto.Id) ?? new User();
@@ -138,6 +148,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
 
         [Description("删除用户")]
         [CheckPrivilege(typeof(IAmAdmin), "User:Remove")]
+        [TempAction("Remove", "删除", true, true)]
         public ActionResponseDto Remove(Guid id)
         {
             _userManager.Delete(id);
@@ -147,6 +158,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Action("", HttpMethods.GET)]
         [Description("获取所有用户类型")]
         [CheckPrivilege(typeof(IAmAdmin))]
+        [TempAction("GetAllUserTypes", "获取用户类型", true, true)]
         public IList<UserTypeOutputDto> GetAllUserTypes()
         {
             var userTypes = _userManager.GetAllUserTypes();

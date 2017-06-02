@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.Attributes
+namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class TempActionAttribute:Attribute

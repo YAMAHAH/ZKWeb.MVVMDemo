@@ -82,7 +82,9 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
         private const string classTemplate = @"
 export class {{templateName}} {
 
-    /**数据字段 */
+    /** 属性 */
+{{props}}
+    /** 数据字段 */
     dataFields = {
 {{dataFields}}
     };
@@ -97,10 +99,10 @@ export class {{templateName}} {
 {{filters}}
     };
 }";
-
+        private const string propTemplate = "    {{propName}} = {{propValue}}; \n";
         private const string actionTemplate = "{{actionName}}: {\n" + @"            enable: {{enableValue}}, text: {{TextValue}}, default: {{defaultValue}} " + "\n        }";
 
-        private const string dataFieldTemp = "{{dataFieldName}}: {\n" + @"            queryable: {{queryableValue}}, required: {{requiredValue}}, visible: {{visibleValue}}, editable: {{editableValue}}, text: {{textValue}},
+        private const string dataFieldTemp = "{{dataFieldName}}: {\n" + @"            name: {{nameValue}}, queryable: {{queryableValue}}, required: {{requiredValue}}, visible: {{visibleValue}}, editable: {{editableValue}}, text: {{textValue}},
             default: {{defaultValue}}, dataType: {{dataTypeValue}}, componentType: {{compTypeValue}}" + "\n        }";
 
         /// <summary>
@@ -118,11 +120,23 @@ export class {{templateName}} {
             var strBuilder = new StringBuilder();
             foreach (var templateProvider in templateProviders)
             {
-                var temp = templateProvider.GetTemplateObjects();
+                var temp = templateProvider.GetModuleTemplateObjects();
                 foreach (var tpl in temp)
                 {
                     //模板名称
                     var tempName = tpl.TempClassType.Name.Replace("Service", "Template");
+                    //基本属性处理
+                    var tempProps = propTemplate.Replace("{{propName}}", "TemplateId")
+                        .Replace("{{propValue}}", tpl.TempId.AutoDoubleQuotes());
+
+                    tempProps += propTemplate.Replace("{{propName}}", "TempName")
+                        .Replace("{{propValue}}", tpl.TempName.AutoDoubleQuotes());
+
+                    tempProps += propTemplate.Replace("{{propName}}", "ModuleId")
+                            .Replace("{{propValue}}", tpl.ModuleId.AutoDoubleQuotes());
+
+                    tempProps += propTemplate.Replace("{{propName}}", "ModuleName")
+                            .Replace("{{propValue}}", tpl.ModuleName.AutoDoubleQuotes());
                     //功能处理
                     strBuilder.Clear();
                     var tempActions = tpl.TempActions;
@@ -144,7 +158,8 @@ export class {{templateName}} {
                     strBuilder.Clear();
                     foreach (var dataField in tpl.TempDataFields)
                     {
-                        var dataFieldStr = dataFieldTemp.Replace("{{dataFieldName}}", dataField.Name)
+                        var dataFieldStr = dataFieldTemp.Replace("{{dataFieldName}}", dataField.Alias)
+                            .Replace("{{nameValue}}", dataField.Name.AutoDoubleQuotes())
                             .Replace("{{queryableValue}}", dataField.Queryable.ToString().ToLower())
                             .Replace("{{requiredValue}}", dataField.required.ToString().ToLower())
                             .Replace("{{visibleValue}}", dataField.Visible.ToString().ToLower())
@@ -163,13 +178,14 @@ export class {{templateName}} {
 
                     //过滤器处理
                     strBuilder.Clear();
-                    foreach (var action in templateProvider.GetTemplateFilters())
+                    foreach (var action in tpl.TempFilters)
                     {
 
                     }
                     var filters = strBuilder.ToString();
 
                     tempDict[tempName] = classTemplate.Replace("{{templateName}}", tempName)
+                        .Replace("{{props}}", tempProps)
                         .Replace("{{dataFields}}", dataFields)
                         .Replace("{{actions}}", actions)
                         .Replace("{{filters}}", filters);

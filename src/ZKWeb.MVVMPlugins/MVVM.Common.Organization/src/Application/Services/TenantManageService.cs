@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Attributes;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
@@ -13,8 +14,8 @@ using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Filters;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services;
+using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Module;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.ActionFilters;
-using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.Attributes;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities.UserTypes;
@@ -28,9 +29,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
     /// <summary>
     /// 租户管理服务
     /// </summary>
-    [ExportMany, SingletonReuse, Description("租户管理服务"), 
-        TempModel(typeof(TenantOutputDto)), 
-        TempFilter(typeof(DeletedFilter), typeof(CreateTimeFilter))]
+    [ExportMany, SingletonReuse, Description("租户管理服务")]
+    [TempClass(typeof(MultiTenantModule), typeof(TenantOutputDto), typeof(DeletedFilter), typeof(CreateTimeFilter))]
     public class TenantManageService : ApplicationServiceBase
     {
         private TenantManager _tenantManager;

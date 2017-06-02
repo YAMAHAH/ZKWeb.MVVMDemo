@@ -19,11 +19,16 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Extensions
         {
             return obj.GetType().GetTypeInfo().GetCustomAttribute<T>();
         }
+        public static T GetAttribute<T>(this Type type) where T : Attribute
+        {
+            return type.GetTypeInfo().GetCustomAttribute<T>();
+        }
 
         public static MethodInfo GetAttributeMethod<T>(this object obj) where T : Attribute
         {
             return obj.GetTypeInfoEx().GetMethods().FirstOrDefault(m => m.GetCustomAttribute<T>() != null);
         }
+
         public static bool IsQueryFilter(this Type type)
         {
             return typeof(IEntityQueryFilter).IsAssignableFrom(type);

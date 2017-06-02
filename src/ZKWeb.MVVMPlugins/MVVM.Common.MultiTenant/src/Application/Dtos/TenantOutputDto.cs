@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.Attributes;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Application.Dtos
 {
@@ -11,7 +11,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Application.Dtos
         [Description("租户Id")]
         public Guid Id { get; set; }
 
-        [Description("租户名称"), TempDataField(Text = "租户名称", required = true, Name = "Name")]
+        [Description("租户名称"), TempDataField(Text = "租户名称", required = true)]
         public string Name { get; set; }
 
         [Description("是否主租户"), TempDataField(Text = "是否主租户", required = true, Name = "IsMaster")]

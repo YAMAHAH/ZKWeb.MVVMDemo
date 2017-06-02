@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Routing;
+using SimpleEasy.Core.lib.Utils;
 using System;
 using System.Collections.Generic;
 using System.FastReflection;
@@ -52,6 +53,15 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases
         /// </summary>
         protected virtual string UrlBase => $"/api/{GetType().Name}";
 
+        private string xServiceId;
+        public string ServiceId
+        {
+            get
+            {
+                if (xServiceId == null) xServiceId = MD5Utils.GetGuidByMD5(GetType().FullName, "X2");
+                return xServiceId;
+            }
+        }
         /// <summary>
         /// 获取Api函数列表
         /// </summary>

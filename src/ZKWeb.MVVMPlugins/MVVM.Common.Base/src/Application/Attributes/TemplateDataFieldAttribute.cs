@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.Attributes
+namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     public class TempDataFieldAttribute : Attribute
     {
         public Type TempClassType { get; set; }
         public string TempName { get; set; }
+        public string Alias { get; set; }
         public string Name { get; set; }
         public string Text { get; set; }
         public bool Queryable { get; set; } = true;
