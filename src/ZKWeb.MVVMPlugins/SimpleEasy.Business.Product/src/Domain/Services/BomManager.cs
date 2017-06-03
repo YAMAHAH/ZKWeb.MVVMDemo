@@ -21,7 +21,7 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
         /// <param name="productVserionId">版次ID</param>
         private List<Bom> GetAllRefNodeByVersion(string productVserionId)
         {
-            return UnitRepository.RawQuery("CALL getNodesByVersion({0})", productVserionId).ToList();
+            return UnitRepository.RawQuery("CALL getTreeNodesByVersion({0})", productVserionId).ToList();
         }
         /// <summary>
         /// 获取指定版次和根的结点
@@ -31,7 +31,19 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
         /// <returns></returns>
         private List<Bom> GetBomNodesByVersion(string productVserionId, string rootId)
         {
-            return UnitRepository.RawQuery("select * from bom where RootProductVersionId = {0} and RootId = {1}", productVserionId, rootId).ToList();
+            return UnitRepository.RawQuery("select * from bom where RootProductVersionId = {0} and RootId = {1}",
+                productVserionId, rootId)
+                .ToList();
+        }
+        /// <summary>
+        /// 获取指定结点,指定根结点的结点清单,弃用
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <param name="rootId"></param>
+        /// <returns></returns>
+        private List<Bom> GetBomNodes(string nodeId, string rootId)
+        {
+            return UnitRepository.GetTreeNodes(nodeId, rootId);
         }
 
         /// <summary>
@@ -65,9 +77,10 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
 
             foreach (var nd in allRefNodes.Where(nd => nd.NodeVersionId.Equals(Guid.Parse(oldVersionId))))
             {
-                UnitRepository.UpdateTreeNode(nd, nowRootNode, getChilds, getCompareKey, getKey, getNewNode, getConfig);
+                UnitRepository.UpdateTreeNode(nd, nowRootNode, getChilds,
+                    getCompareKey, getKey, getNewNode, getConfig);
                 // updateNodeOrder(nd.RootId, nd.RootId);
-                var allNodes = UnitRepository.RawQuery("CALL getBomNodes({0},{1})", nd.RootId.ToString(), nd.RootId).ToList();
+                var allNodes = UnitRepository.GetTreeNodes(nd.RootId.ToString(), nd.RootId.ToString());
 
                 var rootNode = allNodes.Find(bnd => bnd.Id == nd.RootId);
                 if (rootNode != null)
@@ -84,8 +97,7 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
         /// <param name="rootId"></param>
         private void updateNodeOrder(Guid nodeId, Guid rootId)
         {
-            var allNodes = UnitRepository.RawQuery("CALL getBomNodes({0},{1})", nodeId, rootId).ToList();
-
+            var allNodes = UnitRepository.GetTreeNodes(nodeId.ToString(), rootId.ToString());
             var rootNode = allNodes.Find(nd => nd.Id == nodeId);
             if (rootNode != null)
             {
@@ -120,7 +132,8 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
                 nd.Rgt = initNum;
             };
             Func<Bom, IEnumerable<Bom>> getChilds = (nd) => nd.Childs;
-            return UnitRepository.CalaOrd(treeNode, headerConfig, middleConfig, footerConfig, getChilds, new NodeOrderInfo());
+            return UnitRepository.CalaOrd(treeNode, headerConfig, middleConfig,
+                footerConfig, getChilds, new NodeOrderInfo());
         }
 
         /// <summary>
@@ -130,12 +143,12 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
         /// <returns></returns>
         public Bom UpsertRootBomNode(Bom rootNode)
         {
-            Func<Bom, Bom> getNewNode = bs => new Bom()
+            Func<Bom, Bom> getNewNode = pNode => new Bom()
             {
-                Parent = bs,
-                ParentId = bs.Id,
-                RootVersionId = bs.RootVersionId,
-                RootId = bs.RootId
+                Parent = pNode,
+                ParentId = pNode.Id,
+                RootVersionId = pNode.RootVersionId,
+                RootId = pNode.RootId
             };
             //bs1 数据库存在 BS2 现有的结点
             Action<Bom, Bom> getConfig = (bs1, bs2) =>
@@ -152,7 +165,13 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
 
             if (nowBomNode.Id == Guid.Empty || nowBomNode.Id.Equals(DBNull.Value))
             {
-                var existBomNode = new Bom() { Parent = null, ParentId = null, RootVersionId = nowBomNode.NodeVersionId };
+                var existBomNode = new Bom()
+                {
+                    Parent = null,
+                    ParentId = null,
+                    RootVersionId = nowBomNode.NodeVersionId
+                };
+
                 UnitRepository.Upsert(ref existBomNode);
                 existBomNode.RootId = existBomNode.Id;
                 UnitRepository.AddTreeNode(existBomNode, nowBomNode, getChilds, getNewNode, getConfig);
@@ -164,10 +183,12 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
                         .Where(bomNd => bomNd.RootId == nowBomNode.Id)
                         .ToList();
 
-                var existBomNode = existBomNodeList.FirstOrDefault(bomNd => bomNd.Id == nowBomNode.Id && bomNd.ParentId == null);
+                var existBomNode = existBomNodeList.FirstOrDefault(bomNd =>
+                    bomNd.Id == nowBomNode.Id && bomNd.ParentId == null);
                 nowBomNode.Parent = null;
                 nowBomNode.ParentId = null;
-                UnitRepository.UpdateTreeNode(existBomNode, nowBomNode, getChilds, getCompareKey, getKey, getNewNode, getConfig);
+                UnitRepository.UpdateTreeNode(existBomNode, nowBomNode, getChilds,
+                    getCompareKey, getKey, getNewNode, getConfig);
                 nowBomNode = existBomNode;
             }
             CalaOrder(nowBomNode); //计算序号，层次，结点左序号，结点右序号,数量
@@ -176,7 +197,9 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
             if (nowBomNode.RootId == Guid.Empty || nowBomNode.RootId.Equals(DBNull.Value))
             {
                 // var retCount = UnitOfWork.ExecuteSqlCommand("update Reports set RootId = {1} where RootId ={0}", nowReport.RootId, nowReport.ReportId);
-                UnitRepository.UpdateLocalNodeValues(nowBomNode, (nd) => nd.Childs, (nd) => nd.RootId = nowBomNode.Id);
+                UnitRepository.UpdateLocalNodeValues(nowBomNode,
+                    (nd) => nd.Childs,
+                    (nd) => nd.RootId = nowBomNode.Id);
                 UnitOfWork.SaveChanges();
             }
             return nowBomNode;
@@ -234,11 +257,11 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
             }
             else
             {
-                var existBomNodeList = UnitRepository.RawQuery("CALL getBomNodes({0},{1})", childNode.Id, childNode.RootId).ToList();
-
+                var existBomNodeList = UnitRepository.GetTreeNodes(childNode.Id.ToString(), childNode.RootId.ToString());
                 var existBNode = existBomNodeList.FirstOrDefault(r => r.Id == childNode.Id);
                 //递归更新结点值
-                UnitRepository.UpdateTreeNode(existBNode, nowBomNode, getChilds, getCompareKey, getKey, getNewNode, getConfig);
+                UnitRepository.UpdateTreeNode(existBNode, nowBomNode, getChilds, getCompareKey,
+                                                getKey, getNewNode, getConfig);
                 nowBomNode = existBNode;
             }
             //保存结点后更新结点序号,开启事务后,可以不用,有待测试
@@ -254,9 +277,7 @@ namespace ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Services
         public void DeleteBomNode(ref Bom delBom)
         {
             var nowNode = delBom;
-
-            var existNodeLists = UnitRepository?.RawQuery("CALL getBomNodes({0},{1})", delBom.Id, delBom.RootId).ToList();
-
+            var existNodeLists = UnitRepository.GetTreeNodes(delBom.Id.ToString(), delBom.RootId.ToString());
             var existNode = existNodeLists.Where(r => r.Id == nowNode.Id).FirstOrDefault();
 
             UnitRepository.DeleteTreeNode(existNode, (nd) => nd.Childs);

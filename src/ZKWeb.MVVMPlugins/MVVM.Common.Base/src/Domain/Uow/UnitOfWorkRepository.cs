@@ -22,8 +22,28 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
     public class UnitOfWorkRepository<TEntity, TPrimaryKey> : IUnitOfWorkRepository<TEntity, TPrimaryKey>
         where TEntity : class, IEntity<TPrimaryKey>, new()
     {
+
         public UnitOfWorkRepository()
         {
+        }
+
+        private string xTableName;
+        /// <summary>
+        /// 实体对应的表名
+        /// </summary>
+        public string TableName
+        {
+            get
+            {
+                if (xTableName == null)
+                {
+                    xTableName = typeof(TEntity).Name;
+                    var handlers = Injector.ResolveMany<IDatabaseInitializeHandler>();
+                    handlers.ForEach(h => h.ConvertTableName(ref xTableName));
+                    xTableName = xTableName.ToLower();
+                }
+                return xTableName;
+            }
         }
 
         private IUnitOfWork _unitOfWork;
@@ -242,7 +262,26 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             }
             return allNodes;
         }
-
+        /// <summary>
+        /// 获取指定结点ID和根结点ID的结点集合
+        /// </summary>
+        /// <param name="nodeId">结点ID</param>
+        /// <param name="rootId">根结点ID</param>
+        /// <returns></returns>
+        public List<TEntity> GetTreeNodes(string nodeId, string rootId)
+        {
+            var allNodes = RawQuery("CALL getTreeNodes({0},{1},{2},{3})",
+                TableName, "Id", nodeId, rootId)
+                .ToList();
+            return allNodes;
+        }
+        /// <summary>
+        /// 获取指定结点所有子结点集合,包括根结点,性能差,未测试
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="getCollection"></param>
+        /// <param name="getChilds"></param>
+        /// <returns></returns>
         public List<TEntity> GetTreeNodes(
             TEntity node,
             Expression<Func<TEntity, IEnumerable<TEntity>>> getCollection,

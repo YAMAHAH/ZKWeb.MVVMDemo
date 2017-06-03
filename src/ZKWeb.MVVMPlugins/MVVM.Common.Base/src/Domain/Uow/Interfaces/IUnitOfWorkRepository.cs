@@ -14,6 +14,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
 {
     public interface IUnitOfWorkRepository<TEntity, TPrimaryKey> where TEntity : class, IEntity<TPrimaryKey>, new()
     {
+        /// <summary>
+        /// 对应的表名
+        /// </summary>
+        string TableName { get; }
+
         #region 一对多实体增删改查
         /// <summary>
         /// 更新1对多关系的实体值
@@ -89,11 +94,29 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
                 Func<TEntity, IList<TEntity>> getChilds,
                 Func<TEntity, TEntity> getNewNode,
                 Action<TEntity, TEntity> getConfig);
+        /// <summary>
+        /// 删除指定结点
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="getChilds"></param>
         void DeleteTreeNode(
             TEntity node,
             Func<TEntity,
             IEnumerable<TEntity>> getChilds);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="getChilds"></param>
+        /// <returns></returns>
         List<TEntity> GetAllNodes(TEntity node, Func<TEntity, IEnumerable<TEntity>> getChilds);
+        /// <summary>
+        /// 获取指定结点ID和根结点ID的结点集合
+        /// </summary>
+        /// <param name="nodeId">结点ID</param>
+        /// <param name="rootId">根结点ID</param>
+        /// <returns></returns>
+        List<TEntity> GetTreeNodes(string nodeId, string rootId);
         List<TEntity> GetTreeNodes(
             TEntity node,
             Expression<Func<TEntity, IEnumerable<TEntity>>> getCollection,

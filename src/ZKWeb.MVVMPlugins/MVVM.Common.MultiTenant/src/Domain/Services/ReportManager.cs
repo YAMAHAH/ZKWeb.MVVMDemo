@@ -35,7 +35,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services
 
         protected override void UpdateNodeOrder(Guid childId, Guid rootId)
         {
-            var allNodes = UnitRepository.RawQuery("CALL getTreeNodes({0},{1})", childId.ToString(), rootId.ToString()).ToList();
+            var allNodes = UnitRepository.GetTreeNodes(childId.ToString(), rootId.ToString());
             var rootNode = allNodes.Find(nd => nd.Id == childId);
 
             if (rootNode != null)
@@ -135,7 +135,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services
             }
             else
             {
-                var existReportList = UnitRepository.RawQuery("CALL getTreeNodes({0},{1})", report.Id, report.RootId).ToList();
+                var existReportList = UnitRepository.GetTreeNodes(report.Id.ToString(), report.RootId.ToString());
                 var existReport = existReportList.FirstOrDefault(r => r.Id == nowReport.Id);
                 UnitRepository.UpdateTreeNode(existReport, nowReport, getChilds, getCompareKey, getKey, getNewNode, getConfig);
                 nowReport = existReport;
@@ -150,8 +150,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services
         public void DeleteReport(Report report)
         {
             var rptViewModel = report;
-            var existNodeLists = UnitRepository?.RawQuery("CALL getTreeNodes({0},{1})", rptViewModel.Id.ToString(), rptViewModel.RootId.ToString())
-            .ToList();
+            var existNodeLists =
+                UnitRepository.GetTreeNodes(rptViewModel.Id.ToString(), rptViewModel.RootId.ToString());
 
             var existNode = existNodeLists.Where(r => r.Id == rptViewModel.Id).FirstOrDefault();
 
@@ -174,7 +174,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services
             if (report.Id == Guid.Empty || report.Id.Equals(DBNull.Value)) throw new BadRequestException("请求对象ID为空.");
 
             var rptViewModel = report;
-            var rpt = UnitRepository.RawQuery("CALL getTreeNodes({0},{1})", rptViewModel.Id, rptViewModel.RootId).ToList();
+            var rpt = UnitRepository.GetTreeNodes(rptViewModel.Id.ToString(), rptViewModel.RootId.ToString());
 
             CalaOrder(rpt.FirstOrDefault(r => r.Id == rptViewModel.Id));
             var result = rpt.FirstOrDefault(r => r.Id == rptViewModel.Id);
