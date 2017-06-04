@@ -3,7 +3,7 @@
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-    public class TempDataFieldAttribute : Attribute
+    public class ComponentPropertyAttribute : Attribute
     {
         public Type TempClassType { get; set; }
         public string TempName { get; set; }
@@ -17,7 +17,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes
         public string Default { get; set; }
         public string DataType { get; set; }
         public string ComponentType { get; set; }
-        public TempDataFieldAttribute()
+
+        public ComponentPropertyAttribute()
         {
 
         }

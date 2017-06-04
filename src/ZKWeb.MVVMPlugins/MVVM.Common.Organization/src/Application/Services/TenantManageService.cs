@@ -30,7 +30,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
     /// 租户管理服务
     /// </summary>
     [ExportMany, SingletonReuse, Description("租户管理服务")]
-    [TempClass(typeof(MultiTenantModule), typeof(TenantOutputDto), typeof(DeletedFilter), typeof(CreateTimeFilter))]
+    [ComponentClass(typeof(MultiTenantModule), typeof(TenantOutputDto), typeof(DeletedFilter), typeof(CreateTimeFilter))]
     public class TenantManageService : ApplicationServiceBase
     {
         private TenantManager _tenantManager;
@@ -55,7 +55,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
             }
         }
 
-        [Description("搜索租户"), TempAction("View", "搜索", true, true)]
+        [Description("搜索租户"), ComponentMethod("View", "搜索", true, true)]
         [CheckPrivilege(true, typeof(IAmAdmin), "Tenant:View")]
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
@@ -69,7 +69,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
 
         [Description("编辑租户")]
         [CheckPrivilege(true, typeof(IAmAdmin), "Tenant:Edit")]
-        [TempAction("Edit", "编辑", true, false)]
+        [ComponentMethod("Edit", "编辑", true, false)]
         [UnitOfWork(IsTransactional = true)]
         public ActionResponseDto Edit(TenantInputDto dto)
         {
@@ -106,7 +106,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
 
         [Description("删除租户")]
         [CheckPrivilege(true, typeof(IAmAdmin), "Tenant:Remove")]
-        [TempAction("Remove", "删除", true, false)]
+        [ComponentMethod("Remove", "删除", true, false)]
         public ActionResponseDto Remove(Guid id)
         {
             if (_tenantManager.Count(x => x.Id == id && x.IsMaster) > 0)

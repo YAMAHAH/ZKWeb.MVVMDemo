@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Global;
 using ZKWeb.Plugin;
 using ZKWebStandard.Ioc;
 using ZKWebStandard.Utils;
@@ -14,12 +15,17 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
     /// 脚本路径的配置
     /// </summary>
     [ExportMany, SingletonReuse]
-    public class ScriptPathConfig
+    public class ScriptPathConfig : IScriptPathConfig
     {
         /// <summary>
         /// 生成模块的文件夹路径
         /// </summary>
         public string GenerateModuleDirectory { get; set; }
+
+        /// <summary>
+        /// 生成业务模块的文件夹路径
+        /// </summary>
+        public string BusinessModuleDirectory { get; set; }
         /// <summary>
         /// 保存数据传输脚本的文件夹名称
         /// </summary>
@@ -57,6 +63,8 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator
             GenerateModuleDirectory = PathUtils.SecureCombine(
                 websitePlugin.Directory,
                 "static", "src", "modules", "generated_module");
+            BusinessModuleDirectory = PathUtils.SecureCombine(
+                websitePlugin.Directory, "static", "src", "modules", "business_modules");
             DtosDirectoryName = "dtos";
             ServicesDirectoryName = "services";
             TranslationsDirectoryName = "translations";

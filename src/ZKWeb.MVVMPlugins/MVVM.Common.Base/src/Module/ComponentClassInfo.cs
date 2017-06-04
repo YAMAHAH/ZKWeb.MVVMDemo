@@ -7,7 +7,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
     /// <summary>
     /// 模板信息类
     /// </summary>
-    public class TemplateInfo
+    public class ComponentClassInfo
     {
         /// <summary>
         /// 模板ID
@@ -36,11 +36,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
         /// <summary>
         /// 模板字段特性集合
         /// </summary>
-        public IEnumerable<TempDataFieldAttribute> TempDataFields { get; set; }
+        public IEnumerable<ComponentPropertyAttribute> TempDataFields { get; set; }
         /// <summary>
         /// 模板功能特性集合
         /// </summary>
-        public IEnumerable<TempActionAttribute> TempActions { get; set; }
+        public IEnumerable<ComponentMethodAttribute> TempActions { get; set; }
         /// <summary>
         /// 模板过滤器集合
         /// </summary>

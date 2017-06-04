@@ -12,11 +12,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
         /// <summary>
         /// 获取模块的所有模板
         /// </summary>
-        List<Type> ModuleTemplates { get; }
+        List<Type> ModuleComponents { get; }
         /// <summary>
         /// 获取模块所有的模板对象信息
         /// </summary>
         /// <returns></returns>
-        List<TemplateInfo> GetTemplateObjects();
+        List<ComponentClassInfo> GetComponentClassInfoes();
     }
 }

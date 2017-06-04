@@ -10,35 +10,35 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
     [ExportMany, SingletonReuse]
     public class ModuleManager
     {
-        private IEnumerable<IApplicationService> xTemplates;
+        private IEnumerable<IApplicationService> xComponents;
 
-        public IEnumerable<IApplicationService> AllModuleTemplates
+        public IEnumerable<IApplicationService> AllModuleComponents
         {
             get
             {
-                if (xTemplates == null)
+                if (xComponents == null)
                 {
-                    xTemplates = ZKWeb.Application.Ioc.ResolveMany<IApplicationService>();
+                    xComponents = ZKWeb.Application.Ioc.ResolveMany<IApplicationService>();
                 }
-                return xTemplates;
+                return xComponents;
             }
         }
-        private Dictionary<Type, List<Type>> moduleTemplateDict;
+        private Dictionary<Type, List<Type>> moduleComponentDict;
         public ModuleManager()
         {
-            moduleTemplateDict = new Dictionary<Type, List<Type>>();
+            moduleComponentDict = new Dictionary<Type, List<Type>>();
         }
 
-        public void RegisterModuleTemplate(Type moduleType, List<Type> templates)
+        public void RegisterModuleComponent(Type moduleType, List<Type> components)
         {
-            var moduleTypes = moduleTemplateDict.GetOrCreate(moduleType, () => new List<Type>());
-            var addTypes = templates.Where(t => !moduleTypes.Contains(t)).ToList();
+            var moduleTypes = moduleComponentDict.GetOrCreate(moduleType, () => new List<Type>());
+            var addTypes = components.Where(t => !moduleTypes.Contains(t)).ToList();
             moduleTypes.AddRange(addTypes);
         }
 
-        public void RegisterModuleTemplate(Type moduleType, Type template)
+        public void RegisterModuleComponent(Type moduleType, Type template)
         {
-            var moduleTypes = moduleTemplateDict.GetOrCreate(moduleType, () => new List<Type>());
+            var moduleTypes = moduleComponentDict.GetOrCreate(moduleType, () => new List<Type>());
 
             if (!moduleTypes.Contains(template))
             {
@@ -46,9 +46,9 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
             }
         }
 
-        public List<Type> GetModuleTemplates(Type moduleType)
+        public List<Type> GetModuleComponents(Type moduleType)
         {
-            return moduleTemplateDict.GetOrCreate(moduleType, () => new List<Type>());
+            return moduleComponentDict.GetOrCreate(moduleType, () => new List<Type>());
         }
     }
 }

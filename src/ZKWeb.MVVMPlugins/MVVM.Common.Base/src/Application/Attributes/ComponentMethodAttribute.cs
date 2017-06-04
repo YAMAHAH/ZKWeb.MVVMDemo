@@ -3,7 +3,7 @@
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public class TempActionAttribute:Attribute
+    public class ComponentMethodAttribute:Attribute
     {
         /// <summary>
         /// 所属模板类类型
@@ -30,7 +30,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes
         /// </summary>
         public string Name { get; set; }
 
-        public TempActionAttribute(string name,string text,bool enable,bool defaultValue)
+        public ComponentMethodAttribute(string name,string text,bool enable,bool defaultValue)
         {
             Name = name;
             Text = text;

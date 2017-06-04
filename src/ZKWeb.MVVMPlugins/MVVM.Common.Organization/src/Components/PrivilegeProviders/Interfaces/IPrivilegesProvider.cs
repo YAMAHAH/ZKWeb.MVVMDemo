@@ -24,6 +24,6 @@ namespace ZKWeb.Plugins.MVVM.Common.Organization.src.Components.PrivilegeProvide
         /// <summary>
         /// 获取模板类对象
         /// </summary>
-        List<TemplateInfo> GetModuleTemplateObjects();
+        List<ComponentClassInfo> GetModuleComponentClassInfos();
     }
 }

@@ -7,7 +7,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Extensions;
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class TempClassAttribute : Attribute
+    public class ComponentClassAttribute : Attribute
     {
         public string TemplateId { get; set; }
         /// <summary>
@@ -26,16 +26,18 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes
         /// <summary>
         /// 模板的的数据模型类型
         /// </summary>
-        public Type[] TemplateModels { get; set; } = new Type[] { };
+        public Type[] ComponentModels { get; set; } = new Type[] { };
+
+        public Type[] ComponentTemplates { get; set; } = new Type[] { };
         /// <summary>
         /// 过滤器的类型
         /// </summary>
         public Type[] FilterTypes { get; set; } = new Type[] { };
 
-        public TempClassAttribute(Type pModuleType, params Type[] types)
+        public ComponentClassAttribute(Type pModuleType, params Type[] types)
         {
             ModuleType = pModuleType;
-            TemplateModels = types.Where(t => typeof(IOutputDto).IsAssignableFrom(t)).ToArray();
+            ComponentModels = types.Where(t => typeof(IOutputDto).IsAssignableFrom(t)).ToArray();
             FilterTypes = types.Where(t => t.IsQueryOrOperationFilter()).ToArray();
         }
     }

@@ -23,7 +23,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
         private void RegisterModuleTemplate()
         {
             var moduleTemps = EnumModuleTemplates();
-            ModuleManager.RegisterModuleTemplate(GetType(), new List<Type>(moduleTemps));
+            ModuleManager.RegisterModuleComponent(GetType(), new List<Type>(moduleTemps));
         }
         public IContainer Injector
         {
@@ -45,11 +45,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
         /// <summary>
         /// 获取模块的所有模板
         /// </summary>
-        public List<Type> ModuleTemplates
+        public List<Type> ModuleComponents
         {
             get
             {
-                return ModuleManager.GetModuleTemplates(GetType());
+                return ModuleManager.GetModuleComponents(GetType());
             }
         }
         private string xModuleId;
@@ -138,18 +138,18 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
         /// 获取模块所有模板的对象信息
         /// </summary>
         /// <returns></returns>
-        public List<TemplateInfo> GetTemplateObjects()
+        public List<ComponentClassInfo> GetComponentClassInfoes()
         {
             var moduleType = GetType();
             var ngModuleAttr = moduleType.GetTypeInfo().GetCustomAttribute<AngularModuleAttribute>();
             var moduleName = ngModuleAttr == null ? moduleType.Name : ngModuleAttr.ModuleName;
 
-            var tempObjects = ModuleTemplates
-                .Where(a => a.GetTypeInfo().GetCustomAttribute<TempClassAttribute>() != null)
+            var tempObjects = ModuleComponents
+                .Where(a => a.GetTypeInfo().GetCustomAttribute<ComponentClassAttribute>() != null)
                 .Select(a =>
                 {
                     var nameLists = new List<string>();
-                    var tempAttr = a.GetTypeInfo().GetCustomAttribute<TempClassAttribute>();
+                    var tempAttr = a.GetTypeInfo().GetCustomAttribute<ComponentClassAttribute>();
                     if (tempAttr != null)
                     {
                         if (tempAttr.TemplateId == null) tempAttr.TemplateId = MD5Utils.GetGuidByMD5(a.FullName, "X2");
@@ -157,7 +157,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
                         if (tempAttr.TempName == null) tempAttr.TempName = a.Name.Replace("Service", "");
                     }
 
-                    return new TemplateInfo()
+                    return new ComponentClassInfo()
                     {
                         ModuleType = moduleType,
                         ModuleId = MD5Utils.GetGuidByMD5(GetType().FullName, "X2"),
@@ -166,20 +166,20 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
                         TempId = tempAttr?.TemplateId,
                         TempName = tempAttr?.TempName,
                         TempActions = a.GetTypeInfo().GetMethods()
-                            .Where(m => m.GetCustomAttribute<TempActionAttribute>() != null)
-                            .Select(m => m.GetCustomAttribute<TempActionAttribute>())
+                            .Where(m => m.GetCustomAttribute<ComponentMethodAttribute>() != null)
+                            .Select(m => m.GetCustomAttribute<ComponentMethodAttribute>())
                             .ToList(),
 
-                        TempDataFields = tempAttr.TemplateModels
+                        TempDataFields = tempAttr.ComponentModels
                                 .SelectMany(t =>
                                 {
                                     this.typeLists.Clear();
                                     return this.TraversalProperties(t);
                                 })
-                                .Where(p => p.PropInfo.GetCustomAttribute<TempDataFieldAttribute>() != null)
+                                .Where(p => p.PropInfo.GetCustomAttribute<ComponentPropertyAttribute>() != null)
                                 .SelectMany(p =>
                                 {
-                                    var datafield = p.PropInfo.GetCustomAttribute<TempDataFieldAttribute>();
+                                    var datafield = p.PropInfo.GetCustomAttribute<ComponentPropertyAttribute>();
                                     var propType = p.PropInfo.PropertyType;
                                     if (datafield != null)
                                     {
@@ -202,7 +202,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
                                         }
                                         nameLists.Add(datafield.Alias);
                                     }
-                                    return new TempDataFieldAttribute[] { datafield };
+                                    return new ComponentPropertyAttribute[] { datafield };
                                 })
                                 .ToList(),
 
@@ -218,10 +218,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
         /// <returns></returns>
         public List<Type> EnumModuleTemplates()
         {
-            var moduleTemps = ModuleManager.AllModuleTemplates
+            var moduleTemps = ModuleManager.AllModuleComponents
                .Where(t =>
                {
-                   var tempClassAttr = t.GetType().GetTypeInfo().GetCustomAttribute<TempClassAttribute>();
+                   var tempClassAttr = t.GetType().GetTypeInfo().GetCustomAttribute<ComponentClassAttribute>();
                    return tempClassAttr != null && tempClassAttr.ModuleType == GetType();
                })
                .Select(t => t.GetType())

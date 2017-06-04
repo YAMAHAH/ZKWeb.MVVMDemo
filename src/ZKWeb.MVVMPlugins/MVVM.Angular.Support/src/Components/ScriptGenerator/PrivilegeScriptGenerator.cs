@@ -109,7 +109,7 @@ export class {{templateName}} {
         /// 生成模板对象字典
         /// </summary>
         /// <returns></returns>
-        public virtual Dictionary<string, string> GenerateTemplateObjects()
+        public virtual Dictionary<string, string> GenerateComponentObjects()
         {
             var injector = ZKWeb.Application.Ioc;
             var tempDict = new Dictionary<string, string>();
@@ -120,7 +120,7 @@ export class {{templateName}} {
             var strBuilder = new StringBuilder();
             foreach (var templateProvider in templateProviders)
             {
-                var temp = templateProvider.GetModuleTemplateObjects();
+                var temp = templateProvider.GetModuleComponentClassInfos();
                 foreach (var tpl in temp)
                 {
                     //模板名称

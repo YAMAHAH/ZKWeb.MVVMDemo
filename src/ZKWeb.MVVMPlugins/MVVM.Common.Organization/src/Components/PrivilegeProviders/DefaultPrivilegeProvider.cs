@@ -32,10 +32,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.PrivilegePro
         /// 获取所有模块的模板对象信息
         /// </summary>
         /// <returns></returns>
-        public List<TemplateInfo> GetModuleTemplateObjects()
+        public List<ComponentClassInfo> GetModuleComponentClassInfos()
         {
             var modules = Injector.ResolveMany<IAngularModule>();
-            return modules.SelectMany(m => m.GetTemplateObjects()).ToList();
+            return modules.SelectMany(m => m.GetComponentClassInfoes()).ToList();
         }
     }
 }

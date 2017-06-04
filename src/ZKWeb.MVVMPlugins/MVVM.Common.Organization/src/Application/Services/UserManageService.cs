@@ -33,7 +33,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
     /// 用户管理服务
     /// </summary>
     [ExportMany, SingletonReuse, Description("用户管理服务")]
-    [TempClass(typeof(UserManagerModule), typeof(UserOutputDto),
+    [ComponentClass(typeof(UserManagerModule), typeof(UserOutputDto),
         typeof(DeletedFilter), typeof(CreateTimeFilter))]
     public class UserManagerService : ApplicationServiceBase
     {
@@ -51,7 +51,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Action("Search", HttpMethods.POST)]
         [Description("搜索用户")]
         [CheckPrivilege(typeof(IAmAdmin), "User:View")]
-        [TempAction("Search", "搜索", true, true)]
+        [ComponentMethod("Search", "搜索", true, true)]
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
             return request.BuildResponse<User, Guid>()
@@ -74,7 +74,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Action("test", HttpMethods.GET)]
         [Description("测试基本数据类型")]
         [CheckPrivilege(typeof(IAmAdmin), "User:Test")]
-        [TempAction("Test", "测试", true, true)]
+        [ComponentMethod("Test", "测试", true, true)]
         public GridSearchResponseDto Test(string testid)
         {
             return new GridSearchResponseDto(Convert.ToInt64(testid), new List<object>());
@@ -82,7 +82,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
 
         [Action("TestGet", HttpMethods.GET)]
         [Description("测试空参数")]
-        [TempAction("TestGet", "测试空参数", true, true)]
+        [ComponentMethod("TestGet", "测试空参数", true, true)]
         public GridSearchResponseDto TestGet()
         {
             var productRepository = UnitOfWork.GetUnitRepository<Product, Guid>();
@@ -113,7 +113,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Action("TestObject", HttpMethods.GET)]
         [Description("测试复杂对象")]
         [CheckPrivilege(typeof(IAmAdmin), "User:TestObject")]
-        [TempAction("TestObject", "测试复杂对象", true, true)]
+        [ComponentMethod("TestObject", "测试复杂对象", true, true)]
         public GridSearchResponseDto TestObject(string name, TestInput testInputDto)
         {
             return new GridSearchResponseDto(testInputDto.param2, new List<object>() { name });
@@ -122,7 +122,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Action("customEdit", HttpMethods.POST)]
         [Description("编辑用户")]
         [CheckPrivilege(typeof(IAmAdmin), "User:Edit")]
-        [TempAction("Edit", "编辑", true, true)]
+        [ComponentMethod("Edit", "编辑", true, true)]
         public ActionResponseDto Edit(UserInputDto dto)
         {
             var user = _userManager.Get(dto.Id) ?? new User();
@@ -148,7 +148,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
 
         [Description("删除用户")]
         [CheckPrivilege(typeof(IAmAdmin), "User:Remove")]
-        [TempAction("Remove", "删除", true, true)]
+        [ComponentMethod("Remove", "删除", true, true)]
         public ActionResponseDto Remove(Guid id)
         {
             _userManager.Delete(id);
@@ -158,7 +158,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [Action("", HttpMethods.GET)]
         [Description("获取所有用户类型")]
         [CheckPrivilege(typeof(IAmAdmin))]
-        [TempAction("GetAllUserTypes", "获取用户类型", true, true)]
+        [ComponentMethod("GetAllUserTypes", "获取用户类型", true, true)]
         public IList<UserTypeOutputDto> GetAllUserTypes()
         {
             var userTypes = _userManager.GetAllUserTypes();

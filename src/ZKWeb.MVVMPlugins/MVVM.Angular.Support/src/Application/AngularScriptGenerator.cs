@@ -182,7 +182,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Application
             {
                 File.WriteAllText(privilegesPath, privilegesScript);
             }
-            foreach (var temp in generator.GenerateTemplateObjects())
+            foreach (var temp in generator.GenerateComponentObjects())
             {
                 var tempPath = PathUtils.SecureCombine(
                 pathConfig.GenerateModuleDirectory,

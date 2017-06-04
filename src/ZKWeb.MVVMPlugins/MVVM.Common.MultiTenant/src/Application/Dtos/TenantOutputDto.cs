@@ -11,22 +11,22 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Application.Dtos
         [Description("租户Id")]
         public Guid Id { get; set; }
 
-        [Description("租户名称"), TempDataField(Text = "租户名称", required = true)]
+        [Description("租户名称"), ComponentProperty(Text = "租户名称", required = true)]
         public string Name { get; set; }
 
-        [Description("是否主租户"), TempDataField(Text = "是否主租户", required = true, Name = "IsMaster")]
+        [Description("是否主租户"), ComponentProperty(Text = "是否主租户", required = true, Name = "IsMaster")]
         public bool IsMaster { get; set; }
 
-        [Description("超级管理员名称"), TempDataField(Text = "超级管理员名称", required = true, Name = "SuperAdminName")]
+        [Description("超级管理员名称"), ComponentProperty(Text = "超级管理员名称", required = true, Name = "SuperAdminName")]
         public string SuperAdminName { get; set; }
 
-        [Description("创建时间"), TempDataField(Text = "创建时间", required = true, Name = "CreateTime")]
+        [Description("创建时间"), ComponentProperty(Text = "创建时间", required = true, Name = "CreateTime")]
         public string CreateTime { get; set; }
 
-        [Description("更新时间"), TempDataField(Text = "更新时间", required = true, Name = "UpdateTime")]
+        [Description("更新时间"), ComponentProperty(Text = "更新时间", required = true, Name = "UpdateTime")]
         public string UpdateTime { get; set; }
 
-        [Description("备注"), TempDataField(Text = "备注", Name = "Remark")]
+        [Description("备注"), ComponentProperty(Text = "备注", Name = "Remark")]
         public string Remark { get; set; }
     }
 }
