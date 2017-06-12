@@ -1,12 +1,11 @@
 
-export class UserManagerTemplate {
+export class UserManageTemplate {
 
     /** 属性 */
-    TemplateId = "6a2da527-4a0c-f4ec-464f-3bfc13795950"; 
-    TempName = "UserManager"; 
-    ModuleId = "abd1fcfa-c132-6209-a334-215fff0dcdf7"; 
-    ModuleName = "UserManager"; 
-
+    TemplateId = "25080955-61e2-c960-e414-1edd677b61e8";
+    TempName = "UserManage";
+    ModuleId = "abd1fcfa-c132-6209-a334-215fff0dcdf7";
+    ModuleName = "UserManager";
     /** 数据字段 */
     dataFields = {
         Id: {

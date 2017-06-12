@@ -1,17 +1,15 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using ZKWeb.Localize;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters;
-using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Template;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Dtos;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Module;
@@ -20,12 +18,10 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Services;
-using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Services;
 using ZKWeb.MVVMPlugins.SimpleEasy.Business.Product.src.Domain.Entities;
 using ZKWeb.Web;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
-using ZKWebStandard.Web;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
 {
@@ -35,12 +31,12 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
     [ExportMany, SingletonReuse, Description("用户管理服务")]
     [ComponentClass(typeof(UserManagerModule), typeof(UserOutputDto),
         typeof(DeletedFilter), typeof(CreateTimeFilter))]
-    public class UserManagerService : ApplicationServiceBase
+    public class UserManageService : ApplicationServiceBase
     {
         private UserManager _userManager;
         private TenantManager _teantManager;
 
-        public UserManagerService(
+        public UserManageService(
             UserManager userManager,
             TenantManager tenantManager)
         {
@@ -101,11 +97,18 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
             }
             IEnumerable<Product> result = products;
             productRepository.Upsert(ref result);
-            
+
             var pagelists = productRepository.GetPagedList();
 
+            var ngEl = AngularElement.Create("sale-order-container", "saleOrderContainer1");
+            var saleOrder = AngularElement.Create("sale-order", "saleOrder1");
+            var saleOrderList = AngularElement.Create("sale-order-list", "saleOrderList1");
+            var saleOrderDetail = AngularElement.Create("sale-order-detail", "saleOrderDetail1");
+            saleOrder.AppendChilds(saleOrderList, saleOrderDetail);
+            ngEl.AppendChild(saleOrder);
+            System.IO.File.WriteAllText("d:/projects/saleOrder.html", ngEl.ToString(), System.Text.Encoding.UTF8);
             //test report 
-            var reportManager = Injector.Resolve<ReportManager>();
+            // var reportManager = Injector.Resolve<ReportManager>();
             //reportManager.CreateOrUpdateRootReport();
             return new GridSearchResponseDto(100, new List<object>() { result, pagelists });
         }

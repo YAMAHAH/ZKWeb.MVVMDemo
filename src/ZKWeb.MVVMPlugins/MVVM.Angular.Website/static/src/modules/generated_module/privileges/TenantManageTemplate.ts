@@ -2,11 +2,10 @@
 export class TenantManageTemplate {
 
     /** 属性 */
-    TemplateId = "ec2c5ff4-b6d5-5b6e-f2c7-14d4f33dedc8"; 
-    TempName = "TenantManage"; 
-    ModuleId = "2fed1c14-0b51-afbd-53d8-6b0e8d604b51"; 
-    ModuleName = "MultiTenant"; 
-
+    TemplateId = "ec2c5ff4-b6d5-5b6e-f2c7-14d4f33dedc8";
+    TempName = "TenantManage";
+    ModuleId = "2fed1c14-0b51-afbd-53d8-6b0e8d604b51";
+    ModuleName = "MultiTenant";
     /** 数据字段 */
     dataFields = {
         Name: {

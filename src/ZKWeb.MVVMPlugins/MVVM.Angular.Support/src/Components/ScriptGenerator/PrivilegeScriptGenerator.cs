@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using ZKWeb.Localize;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Extensions;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Template;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.PrivilegeTranslators.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities.Interfaces;
 using ZKWeb.Plugins.MVVM.Common.Organization.src.Components.PrivilegeProviders.Interfaces;
@@ -99,11 +100,13 @@ export class {{templateName}} {
 {{filters}}
     };
 }";
-        private const string propTemplate = "    {{propName}} = {{propValue}}; \n";
-        private const string actionTemplate = "{{actionName}}: {\n" + @"            enable: {{enableValue}}, text: {{TextValue}}, default: {{defaultValue}} " + "\n        }";
+        private string propTemplate = " ".Repeat(4) + "{{propName}} = {{propValue}};";
+        private string actionTemplate = "{{actionName}}: {\n" + " ".Repeat(12) + @"enable: {{enableValue}}, text: {{TextValue}}, default: {{defaultValue}} " + "\n" + " ".Repeat(8) + "}";
 
-        private const string dataFieldTemp = "{{dataFieldName}}: {\n" + @"            name: {{nameValue}}, queryable: {{queryableValue}}, required: {{requiredValue}}, visible: {{visibleValue}}, editable: {{editableValue}}, text: {{textValue}},
-            default: {{defaultValue}}, dataType: {{dataTypeValue}}, componentType: {{compTypeValue}}" + "\n        }";
+        private string dataFieldTemp = " ".Repeat(8) + "{{0}}: {\n" +
+                              " ".Repeat(12) + "name: {{1}}, queryable: {{2}}, required: {{3}}, visible: {{4}}, editable: {{5}}, text: {{6}},\n" +
+                              " ".Repeat(12) + "default: {{7}}, dataType: {{8}}, componentType: {{9}}" + "\n" +
+                              " ".Repeat(8) + "}";
 
         /// <summary>
         /// 生成模板对象字典
@@ -123,30 +126,51 @@ export class {{templateName}} {
                 var temp = templateProvider.GetModuleComponentClassInfos();
                 foreach (var tpl in temp)
                 {
+                    StringTemplateBuilder propBuilder = new StringTemplateBuilder() { NeedJoinSymbol = false };
                     //模板名称
                     var tempName = tpl.TempClassType.Name.Replace("Service", "Template");
                     //基本属性处理
-                    var tempProps = propTemplate.Replace("{{propName}}", "TemplateId")
-                        .Replace("{{propValue}}", tpl.TempId.AutoDoubleQuotes());
+                    Dictionary<string, string> propValues = new Dictionary<string, string>()
+                    {
+                        {"propName","TemplateId" },
+                        {"propValue",tpl.TempId.AutoDoubleQuotes() }
+                    };
+                    propBuilder.Clear();
+                    propBuilder.AddGroupValues(propValues);            
 
-                    tempProps += propTemplate.Replace("{{propName}}", "TempName")
-                        .Replace("{{propValue}}", tpl.TempName.AutoDoubleQuotes());
+                    propValues = new Dictionary<string, string>()
+                    {
+                        {"propName","TempName" },
+                        {"propValue",tpl.TempName.AutoDoubleQuotes() }
+                    };
+                    propBuilder.AddGroupValues(propValues);
 
-                    tempProps += propTemplate.Replace("{{propName}}", "ModuleId")
-                            .Replace("{{propValue}}", tpl.ModuleId.AutoDoubleQuotes());
+                    propValues = new Dictionary<string, string>()
+                    {
+                        {"propName","ModuleId" },
+                        {"propValue",tpl.ModuleId.AutoDoubleQuotes() }
+                    };
+                    propBuilder.AddGroupValues(propValues);
 
-                    tempProps += propTemplate.Replace("{{propName}}", "ModuleName")
-                            .Replace("{{propValue}}", tpl.ModuleName.AutoDoubleQuotes());
+                    propValues = new Dictionary<string, string>()
+                    {
+                        {"propName","ModuleName" },
+                        {"propValue",tpl.ModuleName.AutoDoubleQuotes() }
+                    };
+                    propBuilder.AddGroupValues(propValues);
+                    var tempProps = propBuilder.TransformText(propTemplate);
+
                     //功能处理
                     strBuilder.Clear();
                     var tempActions = tpl.TempActions;
+                    StringTemplateBuilder stringTemplate = new StringTemplateBuilder() { };
                     foreach (var action in tempActions)
                     {
                         var act = actionTemplate.Replace("{{actionName}}", action.Name.Trim())
                             .Replace("{{enableValue}}", action.Enable.ToString().ToLower())
                             .Replace("{{TextValue}}", action.Text.AutoDoubleQuotes())
                             .Replace("{{defaultValue}}", action.Default.ToString().ToLower());
-                        strBuilder.Append("        " + act);
+                        strBuilder.Append(" ".Repeat(8) + act);
                         if (action != tempActions.Last())
                         {
                             strBuilder.AppendLine(",");
@@ -154,27 +178,27 @@ export class {{templateName}} {
                     }
                     var actions = strBuilder.ToString();
 
-                    //数据字段处理
+                    //数据字段处理                
                     strBuilder.Clear();
+                    stringTemplate.Clear();
                     foreach (var dataField in tpl.TempDataFields)
                     {
-                        var dataFieldStr = dataFieldTemp.Replace("{{dataFieldName}}", dataField.Alias)
-                            .Replace("{{nameValue}}", dataField.Name.AutoDoubleQuotes())
-                            .Replace("{{queryableValue}}", dataField.Queryable.ToString().ToLower())
-                            .Replace("{{requiredValue}}", dataField.required.ToString().ToLower())
-                            .Replace("{{visibleValue}}", dataField.Visible.ToString().ToLower())
-                            .Replace("{{editableValue}}", dataField.Editable.ToString().ToLower())
-                            .Replace("{{textValue}}", dataField.Text.AutoDoubleQuotes())
-                            .Replace("{{defaultValue}}", dataField.Default.AutoDoubleQuotes())
-                            .Replace("{{dataTypeValue}}", dataField.DataType.AutoDoubleQuotes())
-                            .Replace("{{compTypeValue}}", dataField.ComponentType.AutoDoubleQuotes());
-                        strBuilder.Append("        " + dataFieldStr);
-                        if (dataField != tpl.TempDataFields.Last())
+                        Dictionary<string, string> values2 = new Dictionary<string, string>()
                         {
-                            strBuilder.AppendLine(",");
-                        }
+                            { "0", dataField.Alias },
+                            { "1", dataField.Name.AutoDoubleQuotes() },
+                            { "2", dataField.Queryable.ToString().ToLower() },
+                            { "3", dataField.required.ToString().ToLower() },
+                            { "4", dataField.Visible.ToString().ToLower() },
+                            { "5", dataField.Editable.ToString().ToLower() },
+                            { "6", dataField.Text.AutoDoubleQuotes() },
+                            { "7", dataField.Default.AutoDoubleQuotes()},
+                            { "8", dataField.DataType.AutoDoubleQuotes()},
+                            { "9", dataField.ComponentType.AutoDoubleQuotes()}
+                        };
+                        stringTemplate.AddGroupValues(values2);
                     }
-                    var dataFields = strBuilder.ToString();
+                    var dataFields = stringTemplate.TransformText(dataFieldTemp);
 
                     //过滤器处理
                     strBuilder.Clear();
@@ -183,12 +207,17 @@ export class {{templateName}} {
 
                     }
                     var filters = strBuilder.ToString();
-
-                    tempDict[tempName] = classTemplate.Replace("{{templateName}}", tempName)
-                        .Replace("{{props}}", tempProps)
-                        .Replace("{{dataFields}}", dataFields)
-                        .Replace("{{actions}}", actions)
-                        .Replace("{{filters}}", filters);
+                    StringTemplateBuilder strTemp = new StringTemplateBuilder() { Template = classTemplate };
+                    Dictionary<string, string> values = new Dictionary<string, string>()
+                    {
+                        { "templateName", tempName },
+                        { "props", tempProps },
+                        { "dataFields", dataFields },
+                        { "actions", actions },
+                        { "filters", filters }
+                    };
+                    strTemp.AddGroupValues(values);
+                    tempDict[tempName] = strTemp.TransformText();
                 }
             }
             return tempDict;
