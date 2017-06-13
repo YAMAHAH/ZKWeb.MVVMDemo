@@ -1,0 +1,10 @@
+﻿{
+  "Name": "销售管理系统",
+  "Version": "1.0",
+  "Description": "销售管理系统",
+  "Dependencies": [
+    "MVVM.Common.Base",
+    "MVVM.Common.SessionState",
+    "ProductManagerSystem"
+  ]
+}

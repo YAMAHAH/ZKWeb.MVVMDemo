@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BusinessPlugins.ProductManagerSystem.src.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -80,24 +81,24 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
         [ComponentMethod("TestGet", "测试空参数", true, true)]
         public GridSearchResponseDto TestGet()
         {
-            //var productRepository = UnitOfWork.GetUnitRepository<Product, Guid>();
-            //List<Product> products = new List<Product>();
+            var productRepository = UnitOfWork.GetUnitRepository<Product, Guid>();
+            List<Product> products = new List<Product>();
 
-            //for (int i = 0; i < 100; i++)
-            //{
-            //    Product product = new Product()
-            //    {
-            //        ProductNo = "P010100005NK" + i.ToString(),
-            //        ProductName = "华司外六角凹⊕",
-            //        ProductDesc = "1/4-20*18MM白镍.￠13边10H4.6",
-            //        Dw = "PC"
-            //    };
-            //    products.Add(product);
-            //}
-            //IEnumerable<Product> result = products;
-            //productRepository.Upsert(ref result);
+            for (int i = 0; i < 100; i++)
+            {
+                Product product = new Product()
+                {
+                    ProductNo = "P010100005NK" + i.ToString(),
+                    ProductName = "华司外六角凹⊕",
+                    ProductDesc = "1/4-20*18MM白镍.￠13边10H4.6",
+                    Dw = "PC"
+                };
+                products.Add(product);
+            }
+            IEnumerable<Product> result = products;
+            productRepository.Upsert(ref result);
 
-            //var pagelists = productRepository.GetPagedList();
+            var pagelists = productRepository.GetPagedList();
 
             var ngEl = AngularElement.Create("sale-order-container", "saleOrderContainer1");
             var saleOrder = AngularElement.Create("sale-order", "saleOrder1");
@@ -109,7 +110,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Application.Services
             //test report 
             // var reportManager = Injector.Resolve<ReportManager>();
             //reportManager.CreateOrUpdateRootReport();
-            return new GridSearchResponseDto(100, new List<object>() {  });
+            return new GridSearchResponseDto(100, new List<object>() { result, pagelists });
         }
 
         [Action("TestObject", HttpMethods.GET)]
