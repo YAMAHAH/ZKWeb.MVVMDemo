@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="MVVM.Angular.Website\static\src\business_bases\desktop\main_module\" />
+    <Folder Include="MVVM.Angular.Website\static\src\modules\business_implement_modules\" />
+    <Folder Include="MVVM.Angular.Website\static\src\modules\business_interface_modules\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ZKWeb" Version="1.9.0-beta-3" />
+    <PackageReference Include="ZKWeb.ORM.EFCore" Version="1.9.0-beta-3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ZKWeb.MVVMPlugins\ZKWeb.MVVMPlugins.csproj" />
+  </ItemGroup>
+
+</Project>

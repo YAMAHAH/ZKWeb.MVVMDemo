@@ -1,21 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using ZKWeb.Database;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.PagedList;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
-using Microsoft.EntityFrameworkCore.Query;
-using System.Threading;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.PagedList;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using System.Reflection;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
 {
@@ -90,7 +90,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             //更新主体实体
             UpdateValues(existEntity, nowEntity);
             //实体差异比较
-            var entityDiff = new EntityDiff<TDetail, TKey>(getChilds(existEntity), getChilds(nowEntity), getCompareKey);
+            var entityDiff = new EntityDiffer<TDetail, TKey>(getChilds(existEntity), getChilds(nowEntity), getCompareKey);
             //实体删除
             entityDiff.DeletedEntities.ForEach(p => UpdateState(p, EntityState.Deleted));
             //实体新增
@@ -117,7 +117,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             Func<T, TKey> getCompareKey,
             Func<T, T, bool> getKey) where T : class, IEntity<TPrimaryKey>, new()
         {
-            var entityDiff = new EntityDiff<T, TKey>(getExistLists, getNowLists, getCompareKey);
+            var entityDiff = new EntityDiffer<T, TKey>(getExistLists, getNowLists, getCompareKey);
             //删除实体
             entityDiff.DeletedEntities.ForEach(p => UpdateState(p, EntityState.Deleted));
             //新增实体
@@ -178,11 +178,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow
             Func<TEntity, TKey> getCompareKey,
             Func<TEntity, TEntity, bool> getEntityKey,
             Func<TEntity, TEntity> getNewNode,
-            Action<TEntity, TEntity> getConfig) //where T : class, IEntity<TPrimaryKey1>,new()
+            Action<TEntity, TEntity> getConfig)
         {
             UpdateValues(existNode, nowNode);
             //比较实体
-            var entityDiff = new EntityDiff<TEntity, TKey>(getChilds(existNode), getChilds(nowNode), getCompareKey);
+            var entityDiff = new EntityDiffer<TEntity, TKey>(getChilds(existNode), getChilds(nowNode), getCompareKey);
             //删除
             entityDiff.DeletedEntities.ForEach(node => DeleteTreeNode(node, getChilds));
             //新增

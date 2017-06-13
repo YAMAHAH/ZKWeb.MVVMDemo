@@ -7,14 +7,16 @@
 		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
 		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
 	</PropertyGroup>
-
 	<ItemGroup>
-	  <Compile Remove="MVVM.Angular.Website\static\dist\**" />
-	  <EmbeddedResource Remove="MVVM.Angular.Website\static\dist\**" />
-	  <None Remove="MVVM.Angular.Website\static\dist\**" />
-	  <Compile Remove="MVVM.Angular.Website\static\node_modules\**" />
-	  <EmbeddedResource Remove="MVVM.Angular.Website\static\node_modules\**" />
-	  <None Remove="MVVM.Angular.Website\static\node_modules\**" />
+	  <Compile Remove="MVVM.Angular.Support\**" />
+	  <Compile Remove="MVVM.Angular.Website\**" />
+	  <Compile Remove="SimpleEasy.Business.Product\**" />
+	  <EmbeddedResource Remove="MVVM.Angular.Support\**" />
+	  <EmbeddedResource Remove="MVVM.Angular.Website\**" />
+	  <EmbeddedResource Remove="SimpleEasy.Business.Product\**" />
+	  <None Remove="MVVM.Angular.Support\**" />
+	  <None Remove="MVVM.Angular.Website\**" />
+	  <None Remove="SimpleEasy.Business.Product\**" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -31,9 +33,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="MVVM.Angular.Support\bin\" />
-	  <Folder Include="MVVM.Angular.Support\src\Application\Template\" />
-	  <Folder Include="MVVM.Angular.Website\static\src\modules\index_modules\" />
 	  <Folder Include="MVVM.Common.ApiExplorer\bin\" />
 	  <Folder Include="MVVM.Common.Base\bin\" />
 	  <Folder Include="MVVM.Common.Base\src\Template\Extensions\" />
@@ -43,8 +42,6 @@
 	  <Folder Include="MVVM.Common.SessionState\bin\" />
 	  <Folder Include="MVVM.Common.TaskScheduler\bin\" />
 	  <Folder Include="MVVM.Example.CrudExample\bin\" />
-	  <Folder Include="SimpleEasy.Business.Product\src\Application\" />
-	  <Folder Include="SimpleEasy.Business.Product\src\Domain\Repositories\" />
 	  <Folder Include="SimpleEasy.Core.lib\bin\" />
 	</ItemGroup>
 

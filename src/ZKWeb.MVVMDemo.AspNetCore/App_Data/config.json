@@ -3,7 +3,9 @@
   "Database": "MySQL",
   "ConnectionString": "Server=localhost;Database=ZKWebdb;User Id=root;Password=99B3AD6E;",
   "PluginDirectories": [
-    "../ZKWeb.MVVMPlugins"
+    "../ZKWeb.MVVMPlugins",
+    "../BusinessPlugins",
+    "../FrontEndPlugins"
   ],
   "Plugins": [
     "MVVM.Common.Base",
@@ -12,10 +14,10 @@
     "MVVM.Common.MultiTenant",
     "MVVM.Common.SessionState",
     "MVVM.Common.Captcha",
-    "SimpleEasy.Business.Product",
     "MVVM.Common.Organization",
     "MVVM.Example.CrudExample",
     "SimpleEasy.Core.lib",
+    "ProductManagerSystem",
     "MVVM.Angular.Support",
     "MVVM.Angular.Website"
   ]

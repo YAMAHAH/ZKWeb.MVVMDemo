@@ -27,6 +27,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Template
         {
             this.GroupValues = new List<Dictionary<string, string>>();
         }
+        public StringTemplateBuilder(string template):this()
+        {
+            Template = template;
+        }
         #endregion
         #region 数据操作
         public string TransformText(string template = "")
