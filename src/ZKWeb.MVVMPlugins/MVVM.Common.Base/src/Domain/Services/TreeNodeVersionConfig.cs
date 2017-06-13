@@ -6,7 +6,6 @@ using ZKWebStandard.Ioc;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services
 {
-    [ExportMany]
     public class TreeNodeVersionConfig<TEntity, TPrimaryKey> : ITreeConfig<TEntity, TPrimaryKey> where TEntity : IHaveTreeNode<TPrimaryKey>,
         IHaveChildren<TPrimaryKey>, IHaveRootVersion<TPrimaryKey>, IHaveNodeVersion<TPrimaryKey>, IEntity<TPrimaryKey>, new()
     {

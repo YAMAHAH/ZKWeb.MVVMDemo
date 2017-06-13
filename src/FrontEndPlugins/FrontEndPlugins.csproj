@@ -9,6 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="MVVM.Angular.Website\static\bin\**" />
+    <Compile Remove="MVVM.Angular.Website\static\dist\**" />
+    <Compile Remove="MVVM.Angular.Website\static\node_modules\**" />
+    <EmbeddedResource Remove="MVVM.Angular.Website\static\bin\**" />
+    <EmbeddedResource Remove="MVVM.Angular.Website\static\dist\**" />
+    <EmbeddedResource Remove="MVVM.Angular.Website\static\node_modules\**" />
+    <None Remove="MVVM.Angular.Website\static\bin\**" />
+    <None Remove="MVVM.Angular.Website\static\dist\**" />
+    <None Remove="MVVM.Angular.Website\static\node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="MVVM.Angular.Website\static\src\business_bases\desktop\main_module\" />
     <Folder Include="MVVM.Angular.Website\static\src\modules\business_implement_modules\" />
     <Folder Include="MVVM.Angular.Website\static\src\modules\business_interface_modules\" />
@@ -20,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BusinessPlugins\BusinessPlugins.csproj" />
     <ProjectReference Include="..\ZKWeb.MVVMPlugins\ZKWeb.MVVMPlugins.csproj" />
   </ItemGroup>
 

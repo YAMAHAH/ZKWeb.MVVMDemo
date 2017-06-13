@@ -10,12 +10,18 @@
 	<ItemGroup>
 	  <Compile Remove="MVVM.Angular.Support\**" />
 	  <Compile Remove="MVVM.Angular.Website\**" />
+	  <Compile Remove="MVVM.Common.Organization\**" />
+	  <Compile Remove="MVVM.Example.CrudExample\**" />
 	  <Compile Remove="SimpleEasy.Business.Product\**" />
 	  <EmbeddedResource Remove="MVVM.Angular.Support\**" />
 	  <EmbeddedResource Remove="MVVM.Angular.Website\**" />
+	  <EmbeddedResource Remove="MVVM.Common.Organization\**" />
+	  <EmbeddedResource Remove="MVVM.Example.CrudExample\**" />
 	  <EmbeddedResource Remove="SimpleEasy.Business.Product\**" />
 	  <None Remove="MVVM.Angular.Support\**" />
 	  <None Remove="MVVM.Angular.Website\**" />
+	  <None Remove="MVVM.Common.Organization\**" />
+	  <None Remove="MVVM.Example.CrudExample\**" />
 	  <None Remove="SimpleEasy.Business.Product\**" />
 	</ItemGroup>
 	
@@ -38,10 +44,8 @@
 	  <Folder Include="MVVM.Common.Base\src\Template\Extensions\" />
 	  <Folder Include="MVVM.Common.Captcha\bin\" />
 	  <Folder Include="MVVM.Common.MultiTenant\bin\" />
-	  <Folder Include="MVVM.Common.Organization\bin\" />
 	  <Folder Include="MVVM.Common.SessionState\bin\" />
 	  <Folder Include="MVVM.Common.TaskScheduler\bin\" />
-	  <Folder Include="MVVM.Example.CrudExample\bin\" />
 	  <Folder Include="SimpleEasy.Core.lib\bin\" />
 	</ItemGroup>
 
@@ -53,6 +57,6 @@
 		<DefineConstants>$(DefineConstants);NETCORE</DefineConstants>
 	</PropertyGroup>
 
-	<ProjectExtensions><VisualStudio><UserProperties MVVM_1Angular_1Website_4static_4package_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
+	<ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>
