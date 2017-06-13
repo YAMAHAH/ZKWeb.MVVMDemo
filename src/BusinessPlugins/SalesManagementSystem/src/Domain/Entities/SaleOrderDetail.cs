@@ -1,4 +1,4 @@
-﻿using BusinessPlugins.ProductManagerSystem.src.Domain.Entities;
+﻿using BusinessPlugins.ProductManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using ZKWeb.Database;
@@ -7,7 +7,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.SaleManagerSystem.src.Domain.Entities
+namespace BusinessPlugins.SalesManagementSystem.Domain.Entities
 {
     [ExportMany]
     public class SaleOrderDetail : IEntity<Guid>,

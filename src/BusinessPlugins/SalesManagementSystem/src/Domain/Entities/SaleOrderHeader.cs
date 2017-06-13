@@ -7,7 +7,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.SaleManagerSystem.src.Domain.Entities
+namespace BusinessPlugins.SalesManagementSystem.Domain.Entities
 {
 
     [ExportMany]

@@ -13,8 +13,4 @@
     <ProjectReference Include="..\ZKWeb.MVVMPlugins\ZKWeb.MVVMPlugins.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="SaleManagerSystem\bin\" />
-  </ItemGroup>
-
 </Project>

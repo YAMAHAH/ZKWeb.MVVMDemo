@@ -7,7 +7,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductManagerSystem.src.Domain.Entities
+namespace BusinessPlugins.ProductManagementSystem.Domain.Entities
 {
     /// <summary>
     /// BOM(Bill Of Material，物料清单)
