@@ -5,8 +5,8 @@ using ZKWeb.Database;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities.Interfaces
 {
-    public interface IHaveChildren<TPrimaryKey> : IEntity
+    public interface IHaveChildren<TEntity, TPrimaryKey> : IEntity
     {
-        List<IEntity> Childs { get; set; }
+        List<TEntity> Childs { get; set; }
     }
 }

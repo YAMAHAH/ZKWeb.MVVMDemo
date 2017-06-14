@@ -6,8 +6,9 @@ using ZKWebStandard.Ioc;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services
 {
-    public class TreeNodeVersionConfig<TEntity, TPrimaryKey> : ITreeConfig<TEntity, TPrimaryKey> where TEntity : IHaveTreeNode<TPrimaryKey>,
-        IHaveChildren<TPrimaryKey>, IHaveRootVersion<TPrimaryKey>, IHaveNodeVersion<TPrimaryKey>, IEntity<TPrimaryKey>, new()
+    public class TreeNodeVersionConfig<TEntity, TPrimaryKey> : ITreeConfig<TEntity, TPrimaryKey> where TEntity : IHaveTreeNode<TEntity,TPrimaryKey>,
+        IHaveChildren<TEntity,TPrimaryKey>, IHaveRootVersion<TPrimaryKey>, IHaveNodeVersion<TPrimaryKey>, IEntity<TPrimaryKey>, new()
+        where TPrimaryKey :struct
     {
         /// <summary>
         /// 创建新的结点
