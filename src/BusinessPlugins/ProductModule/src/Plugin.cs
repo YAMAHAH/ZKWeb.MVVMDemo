@@ -1,7 +1,7 @@
 ﻿using ZKWeb.Plugin;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductManagementSystem
+namespace BusinessPlugins.ProductModule
 {
     /// <summary>
     /// 插件载入时的处理

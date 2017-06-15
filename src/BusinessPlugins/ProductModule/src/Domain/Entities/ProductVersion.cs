@@ -7,7 +7,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductManagementSystem.Domain.Entities
+namespace BusinessPlugins.ProductModule.Domain.Entities
 {
     /// <summary>
     /// 产品版次

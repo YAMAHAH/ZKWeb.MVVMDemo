@@ -21,6 +21,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Repositories
         {
             return base.Query()
                 .Include(u => u.OwnerTenant)
+                .Include(u => u.Employee)
                 .Include(u => u.Roles).ThenInclude(r => r.To);
         }
     }

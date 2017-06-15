@@ -6,6 +6,7 @@ using ZKWeb.Localize;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
+using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Services;
 using ZKWebStandard.Ioc;
 
@@ -15,23 +16,21 @@ namespace BusinessPlugins.MVVM.Common.Organization.src.Domain.Filters
     /// 
     /// </summary>
     [ExportMany]
-    public class CreatorUpdatorFilter : IEntityOperationFilter
+    public class OwnerUpdateFilter : IEntityOperationFilter
     {
         /// <summary>
         /// 数据应当属于的用户Id
         /// </summary>
         public Guid ExceptedOwnerId => _exceptedOwnerId.Value;
         protected Lazy<Guid> _exceptedOwnerId;
+        protected SessionManager sessionManager;
 
-        public CreatorUpdatorFilter()
+        public OwnerUpdateFilter()
         {
-            var sessionManager = ZKWeb.Application.Ioc.Resolve<SessionManager>();
+            sessionManager = ZKWeb.Application.Ioc.Resolve<SessionManager>();
             _exceptedOwnerId = new Lazy<Guid>(() => sessionManager.GetSession().UserId ?? Guid.Empty);
         }
-        void IEntityOperationFilter.FilterDelete<TEntity, TPrimaryKey>(TEntity entity)
-        {
-
-        }
+        void IEntityOperationFilter.FilterDelete<TEntity, TPrimaryKey>(TEntity entity) { }
 
         void IEntityOperationFilter.FilterSave<TEntity, TPrimaryKey>(TEntity entity)
         {
@@ -40,33 +39,20 @@ namespace BusinessPlugins.MVVM.Common.Organization.src.Domain.Filters
                 return;
             }
             var e = ((IHaveCreatorUpdator)entity);
-            var repository = ZKWeb.Application.Ioc.Resolve<IUnitOfWork>().GetRepository<Employee, Guid>();
+            var user = sessionManager.GetSession().GetUser();
             if (e.Creator == null && ExceptedOwnerId == Guid.Empty)
             {
                 // 未登陆用户保存数据，不需要设置
             }
-            else if (e.Creator == null && ExceptedOwnerId != Guid.Empty)
+            else if (e.Creator == null && ExceptedOwnerId != Guid.Empty && user.Employee != null)
             {
-                // 已登陆用户保存数据，设置所属用户，注意这里会受查询过滤器的影响
-                var user = repository.Get(u => u.Id == ExceptedOwnerId);
-                if (user == null)
-                {
-                    throw new BadRequestException("Set entity creator and updator failed, user not found");
-                }
-                e.CreatorId = ExceptedOwnerId;
-                e.Creator = user;
-                e.UpdatorId = ExceptedOwnerId;
-                e.Updator = user;
+                e.CreatorId = e.UpdatorId = user.Employee.Id;
+                e.Creator = e.Updator = user.Employee;
             }
-            else if (e.Creator != null && e.Creator.Id != Guid.Empty)
+            else if (e.Creator != null && e.Creator.Id != Guid.Empty && ExceptedOwnerId != Guid.Empty && user.Employee != null)
             {
-                var user = repository.Get(u => u.Id == ExceptedOwnerId);
-                if (user == null)
-                {
-                    throw new BadRequestException("Set entity creator and updator failed, user not found");
-                }
-                e.UpdatorId = ExceptedOwnerId;
-                e.Updator = user;
+                e.UpdatorId = user.Employee.Id;
+                e.Updator = user.Employee;
             }
         }
     }

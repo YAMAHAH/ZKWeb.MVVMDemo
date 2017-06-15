@@ -1,11 +1,11 @@
-﻿using BusinessPlugins.SalesManagementSystem.Domain.Entities;
+﻿using BusinessPlugins.SalesModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.SalesManagementSystem.Domain.Services
+namespace BusinessPlugins.SalesModule.Domain.Services
 {
     [ExportMany, SingletonReuse]
     public class SaleOrderManager : DomainServiceBase<SaleOrderHeader, Guid>

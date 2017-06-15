@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BusinessPlugins.ProductManagementSystem.Domain.Entities;
+using BusinessPlugins.ProductModule.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

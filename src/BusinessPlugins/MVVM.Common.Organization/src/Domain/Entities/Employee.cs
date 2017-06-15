@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
+using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.MVVM.Common.Organization.Domain.Entities
@@ -23,6 +25,7 @@ namespace BusinessPlugins.MVVM.Common.Organization.Domain.Entities
         public string EmployeeNo { get; set; }
         public string EmployeeName { get; set; }
         public string Remark { get; set; }
+        public User User { get; set; }
 
         /// <summary>
         /// 员工所拥有的数据字段权限
@@ -46,6 +49,13 @@ namespace BusinessPlugins.MVVM.Common.Organization.Domain.Entities
             var nativeBuilder = ((EntityTypeBuilder<Employee>)builder.NativeBuilder);
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
+
+            //双向配置
+            nativeBuilder.HasOne(e => e.User)
+               .WithOne(u => u.Employee)
+               .HasForeignKey<User>(u => u.EmployeeId)
+               .IsRequired(false)
+               .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

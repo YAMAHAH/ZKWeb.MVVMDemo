@@ -6,6 +6,6 @@
     "MVVM.Common.Base",
     "MVVM.Common.MultiTenant",
     "MVVM.Common.Captcha",
-    "ProductManagementSystem"
+    "ProductModule"
   ]
 }

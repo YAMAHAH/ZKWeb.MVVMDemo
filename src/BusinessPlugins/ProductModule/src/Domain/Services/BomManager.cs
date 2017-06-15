@@ -1,4 +1,4 @@
-﻿using BusinessPlugins.ProductManagementSystem.Domain.Entities;
+﻿using BusinessPlugins.ProductModule.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductManagementSystem.Domain.Services
+namespace BusinessPlugins.ProductModule.Domain.Services
 {
     /// <summary>
     /// BOM管理

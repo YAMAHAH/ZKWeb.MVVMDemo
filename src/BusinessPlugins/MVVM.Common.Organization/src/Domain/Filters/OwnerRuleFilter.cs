@@ -18,7 +18,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Filters
     /// 根据数据所属用户过滤查询和操作
     /// </summary>
     [ExportMany]
-    public class OwnerFilter : IEntityQueryFilter, IEntityOperationFilter
+    public class OwnerRuleFilter : IEntityQueryFilter, IEntityOperationFilter
     {
         /// <summary>
         /// 数据应当属于的用户Id
@@ -30,7 +30,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Filters
         /// 初始化
         /// 数据应当属于的用户Id默认等于当前登录用户Id
         /// </summary>
-        public OwnerFilter()
+        public OwnerRuleFilter()
         {
             var sessionManager = ZKWeb.Application.Ioc.Resolve<SessionManager>();
             _exceptedOwnerId = new Lazy<Guid>(() => sessionManager.GetSession().UserId ?? Guid.Empty);

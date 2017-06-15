@@ -9,6 +9,7 @@ using ZKWebStandard.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using BusinessPlugins.MVVM.Common.Organization.Domain.Entities;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities
 {
@@ -32,6 +33,9 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities
         /// 用户类型
         /// </summary>
         public virtual string Type { get; set; }
+
+        public Nullable<Guid> EmployeeId { get; set; }
+        public Employee Employee { get; set; }
         /// <summary>
         /// 用户名
         /// </summary>
@@ -62,6 +66,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities
         /// 备注
         /// </summary>
         public virtual string Remark { get; set; }
+
         /// <summary>
         /// 是否已删除
         /// </summary>
@@ -162,6 +167,13 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities
             builder.Map(u => u.Remark);
             builder.Map(u => u.Deleted);
             builder.HasMany(r => r.Roles);
+
+            //builder.References(u => u.Employee, new EntityMappingOptions() { Nullable = false });
+
+            //单向配置
+            //nativeBuilder.HasOne(u => u.Employee)
+            //    .WithOne()
+            //    .HasForeignKey<User>(u => u.EmployeeId);
         }
     }
 }
