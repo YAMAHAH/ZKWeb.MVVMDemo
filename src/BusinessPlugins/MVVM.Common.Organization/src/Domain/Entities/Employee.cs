@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities;
+using ZKWeb.ORM.EFCore;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.MVVM.Common.Organization.Domain.Entities
@@ -46,7 +47,7 @@ namespace BusinessPlugins.MVVM.Common.Organization.Domain.Entities
 
         public void Configure(IEntityMappingBuilder<Employee> builder)
         {
-            var nativeBuilder = ((EntityTypeBuilder<Employee>)builder.NativeBuilder);
+            var nativeBuilder = ((EFCoreEntityMappingBuilder<Employee>)builder).Builder;
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
 

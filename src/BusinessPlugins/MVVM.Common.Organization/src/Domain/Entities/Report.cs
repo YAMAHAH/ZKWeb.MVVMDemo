@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using ZKWeb.Database;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities.Interfaces;
+using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
+using ZKWeb.ORM.EFCore;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities
+namespace BusinessPlugins.MVVM.Common.Organization.Domain.Entities
 {
     /// <summary>
     /// 报表
@@ -44,11 +44,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities
 
         public void Configure(IEntityMappingBuilder<Report> builder)
         {
-            var nativeTypeBuilder = ((EntityTypeBuilder<Report>)builder.NativeBuilder);
+            var nativeBuilder = ((EFCoreEntityMappingBuilder<Report>)builder).Builder;
             builder.Id(pv => pv.Id);
             builder.References(pv => pv.OwnerTenant);
 
-            nativeTypeBuilder
+            nativeBuilder
                 .HasOne(r => r.Parent)
                 .WithMany(r => r.Childs)
                 .HasForeignKey(r => r.ParentId);

@@ -10,6 +10,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using BusinessPlugins.MVVM.Common.Organization.Domain.Entities;
+using ZKWeb.ORM.EFCore;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities
 {
@@ -155,7 +156,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities
         /// </summary>
         public virtual void Configure(IEntityMappingBuilder<User> builder)
         {
-            var nativeBuilder = ((EntityTypeBuilder<User>)builder.NativeBuilder);
+            var nativeBuilder = ((EFCoreEntityMappingBuilder<User>)builder).Builder;
             builder.Id(u => u.Id);
             builder.Map(u => u.Type, new EntityMappingOptions() { Index = "Idx_User_Type" });
             builder.Map(u => u.Username, new EntityMappingOptions() { Length = 255 });

@@ -5,6 +5,7 @@ using ZKWeb.Database;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
+using ZKWeb.ORM.EFCore;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.ProductModule.Domain.Entities
@@ -20,7 +21,7 @@ namespace BusinessPlugins.ProductModule.Domain.Entities
         IHaveOwnerTenant,
         IEntityMappingProvider<Bom>
     {
-        
+
         //一个产品结构必须一个版次,一个结构有零或多个自身结点
         public Guid RootId { get; set; }
         public int Ord { get; set; }
@@ -53,7 +54,7 @@ namespace BusinessPlugins.ProductModule.Domain.Entities
 
         public void Configure(IEntityMappingBuilder<Bom> builder)
         {
-            var nativeBuilder = ((EntityTypeBuilder<Bom>)builder.NativeBuilder);
+            var nativeBuilder = ((EFCoreEntityMappingBuilder<Bom>)builder).Builder;
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
 

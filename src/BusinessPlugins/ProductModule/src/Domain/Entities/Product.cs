@@ -5,6 +5,7 @@ using ZKWeb.Database;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
+using ZKWeb.ORM.EFCore;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.ProductModule.Domain.Entities
@@ -35,7 +36,7 @@ namespace BusinessPlugins.ProductModule.Domain.Entities
 
         public void Configure(IEntityMappingBuilder<Product> builder)
         {
-            var nativeBuilder = ((EntityTypeBuilder<Product>)builder.NativeBuilder);
+            var nativeBuilder = (((EFCoreEntityMappingBuilder<Product>)builder).Builder);
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
             //nativeBuilder.ToTable("products");

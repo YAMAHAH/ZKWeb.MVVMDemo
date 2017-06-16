@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Extensions;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Template

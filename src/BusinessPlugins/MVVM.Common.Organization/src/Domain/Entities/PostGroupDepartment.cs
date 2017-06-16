@@ -2,6 +2,7 @@
 using System;
 using ZKWeb.Database;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
+using ZKWeb.ORM.EFCore;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.MVVM.Common.Organization.Domain.Entities
@@ -27,7 +28,7 @@ namespace BusinessPlugins.MVVM.Common.Organization.Domain.Entities
 
         public void Configure(IEntityMappingBuilder<PostGroupDepartment> builder)
         {
-            var nativeBuilder = ((EntityTypeBuilder<PostGroupDepartment>)builder.NativeBuilder);
+            var nativeBuilder = ((EFCoreEntityMappingBuilder<PostGroupDepartment>)builder).Builder;
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
 

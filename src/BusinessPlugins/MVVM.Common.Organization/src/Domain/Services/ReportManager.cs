@@ -1,12 +1,12 @@
-﻿using System;
+﻿using BusinessPlugins.MVVM.Common.Organization.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow;
-using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 
-namespace ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services
+namespace BusinessPlugins.MVVM.Common.Organization.Domain.Services
 {
     public class ReportManager : DomainServiceBase<Report, Guid>
     {

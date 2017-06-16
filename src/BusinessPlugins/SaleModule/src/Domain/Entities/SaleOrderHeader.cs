@@ -5,6 +5,7 @@ using ZKWeb.Database;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
+using ZKWeb.ORM.EFCore;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.SalesModule.Domain.Entities
@@ -26,7 +27,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public Guid OwnerTenantId { get; set; }
         public string SaleOrderNo { get; set; }
         public string CustomerOrderNo { get; set; }
-        public DateTime?  SaleOrderDelivery { get; set; }
+        public DateTime? SaleOrderDelivery { get; set; }
         public Guid? PartnerId { get; set; }
         public bool SF_Finish { get; set; }
         public bool SF_Cancel { get; set; }
@@ -34,7 +35,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
 
         public void Configure(IEntityMappingBuilder<SaleOrderHeader> builder)
         {
-            var nativeBuilder = ((EntityTypeBuilder<SaleOrderHeader>)builder.NativeBuilder);
+            var nativeBuilder = ((EFCoreEntityMappingBuilder<SaleOrderHeader>)builder).Builder;
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
 
