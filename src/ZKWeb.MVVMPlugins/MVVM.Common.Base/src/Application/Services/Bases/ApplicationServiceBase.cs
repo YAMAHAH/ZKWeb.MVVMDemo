@@ -45,9 +45,25 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases
             get { return ZKWeb.Application.Ioc; }
         }
         /// <summary>
-        /// 当前使用的工作单元
+        /// 当前使用的工作单元，设置用户的过滤器
         /// </summary>
-        protected virtual IUnitOfWork UnitOfWork => Injector.Resolve<IUnitOfWork>();
+        protected virtual IUnitOfWork UnitOfWork
+        {
+            get
+            {
+                var xUnitOfWork = Injector.Resolve<IUnitOfWork>();
+                //根据当前用户，服务ID，获取工作单元相应的过滤器,规则过滤器，并应用过滤器
+                //获取用户
+                //获取过滤器,应用过滤器
+                var userQueryFilters = Injector.Resolve<IUserQueryFilter>()?.UserQueryFilters(ServiceId);
+                if (userQueryFilters != null && userQueryFilters.Count > 0) xUnitOfWork.QueryFilters = userQueryFilters;
+
+                var userOperationFilters = Injector.Resolve<IUserOperationFilter>()?.UserOperationFilters(ServiceId);
+                if (userOperationFilters != null && userOperationFilters.Count > 0) xUnitOfWork.OperationFilters = userOperationFilters;
+                
+                return xUnitOfWork;
+            }
+        }
         /// <summary>
         /// 基础地址
         /// </summary>
