@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using ZKWeb.Database;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Entities.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
 using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities.Interfaces;
@@ -40,7 +41,7 @@ namespace BusinessPlugins.ProductModule.Domain.Entities
 
         public void Configure(IEntityMappingBuilder<ProductVersion> builder)
         {
-            var nativeBuilder = ((EFCoreEntityMappingBuilder<ProductVersion>)builder).Builder;
+            var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(pv => pv.Id);
             builder.References(pv => pv.OwnerTenant);
 

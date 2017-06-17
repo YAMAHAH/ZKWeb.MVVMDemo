@@ -37,11 +37,6 @@
 		<Reference Include="Microsoft.CSharp" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\BusinessPlugins\BusinessPlugins.csproj" />
-	  <ProjectReference Include="..\ZKWeb.MVVMPlugins\ZKWeb.MVVMPlugins.csproj" />
-	</ItemGroup>
-
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">
 		<DefineConstants>$(DefineConstants);NETCORE</DefineConstants>
 	</PropertyGroup>

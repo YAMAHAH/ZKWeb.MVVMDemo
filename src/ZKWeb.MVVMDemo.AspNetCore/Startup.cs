@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module;
+using ZKWeb.MVVMDemo.AspNetCore.Assembles;
+using ZKWeb.MVVMDemo.AspNetCore.Modules;
 
 namespace ZKWeb.MVVMDemo.AspNetCore
 {
@@ -14,7 +15,7 @@ namespace ZKWeb.MVVMDemo.AspNetCore
         /// </summary>
         public override void Configure(IApplicationBuilder app)
         {
-            ModulePluginManager.Instance.Initialize(typeof(StartupModulePlugin));
+            ModulePluginManager.Instance.Initialize(typeof(MainModulePlugin));
             ModulePluginManager.Instance.StartModules();
             // 使用错误提示页面
             var env = (IHostingEnvironment)app.ApplicationServices.GetService(typeof(IHostingEnvironment));

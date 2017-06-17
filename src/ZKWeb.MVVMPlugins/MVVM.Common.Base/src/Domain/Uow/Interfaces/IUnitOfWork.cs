@@ -10,7 +10,7 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces
     /// <summary>
     /// 工作单元的接口
     /// </summary>
-    public interface IUnitOfWork : IRepositoryFactory
+    public interface IUnitOfWork : IRepositoryFactory,IDomainServiceFactory
     {
         /// <summary>
         /// 当前的数据库上下文

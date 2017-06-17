@@ -2,15 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Extensions;
+using ZKWeb.MVVMDemo.AspNetCore.Assembles.ZKWeb.MVVMPlugins.MVVM.Common.Base;
+using ZKWeb.MVVMDemo.AspNetCore.Extensions;
 
-namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
+namespace ZKWeb.MVVMDemo.AspNetCore.Modules
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class ModulePluginBase : IModulePlugin
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public ModulePluginBase Instance { get; set; }
-        public Type PluginType { get; set; }
+        /// <summary>
+        /// 插件父亲路径
+        /// </summary>
+        public string RootPath { get; set; }
+        /// <summary>
+        /// 插件目录路径
+        /// </summary>
+        public string Path { get; set; }
         /// <summary>
         /// 模块英名名称
         /// </summary>
@@ -32,6 +45,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
         /// </summary>
         public IList<ModulePluginBase> Dependencies { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static bool IsModulePlugin(Type type)
         {
             return type.GetTypeInfo().IsClass &&
@@ -39,7 +57,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
                 !type.GetTypeInfo().IsGenericType &&
                 typeof(ModulePluginBase).IsAssignableFrom(type);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="moduleType"></param>
+        /// <returns></returns>
         public static List<Type> FindDependedModuleTypes(Type moduleType)
         {
             if (!IsModulePlugin(moduleType))
@@ -62,7 +84,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
             }
             return list;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="moduleType"></param>
+        /// <returns></returns>
         public static List<Type> FindDependedModuleTypesRecursively(Type moduleType)
         {
             var list = new List<Type>();
@@ -70,7 +96,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
             list.AddIfNotContains(typeof(BaseModulePlugin));
             return list;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modules"></param>
+        /// <param name="moduleType"></param>
         private static void AddModuleAndDependenciesResursively(List<Type> modules, Type moduleType)
         {
             if (!IsModulePlugin(moduleType))

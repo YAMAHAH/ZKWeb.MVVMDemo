@@ -1,16 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Extensions;
+using ZKWeb.MVVMDemo.AspNetCore.Assembles.ZKWeb.MVVMPlugins.MVVM.Common.Base;
+using ZKWeb.MVVMDemo.AspNetCore.Extensions;
 
-namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
+namespace ZKWeb.MVVMDemo.AspNetCore.Modules
 {
     /// <summary>
     /// Used to store AbpModuleInfo objects as a dictionary.
     /// </summary>
     public class ModulePluginCollection : List<ModulePluginInfo>
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Type StartupModuleType { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startupModuleType"></param>
 
         public ModulePluginCollection(Type startupModuleType)
         {
@@ -46,6 +54,10 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
             return sortedModules;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modules"></param>
         public static void EnsureKernelModuleToBeFirst(List<ModulePluginInfo> modules)
         {
             var kernelModuleIndex = modules.FindIndex(m => m.Type == typeof(BaseModulePlugin));
@@ -60,6 +72,11 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
             modules.Insert(0, kernelModule);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modules"></param>
+        /// <param name="startupModuleType"></param>
         public static void EnsureStartupModuleToBeLast(List<ModulePluginInfo> modules, Type startupModuleType)
         {
             var startupModuleIndex = modules.FindIndex(m => m.Type == startupModuleType);
@@ -73,11 +90,17 @@ namespace ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module
             modules.RemoveAt(startupModuleIndex);
             modules.Add(startupModule);
         }
+        /// <summary>
+        /// 
+        /// </summary>
 
         public void EnsureKernelModuleToBeFirst()
         {
             EnsureKernelModuleToBeFirst(this);
         }
+        /// <summary>
+        /// 
+        /// </summary>
 
         public void EnsureStartupModuleToBeLast()
         {

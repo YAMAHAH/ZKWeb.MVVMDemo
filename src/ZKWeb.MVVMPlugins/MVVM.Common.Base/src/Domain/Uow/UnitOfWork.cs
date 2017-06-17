@@ -11,6 +11,7 @@ using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters.Interfaces;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Bases;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Interfaces;
+using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
 using ZKWebStandard.Collections;
@@ -336,6 +337,8 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
 
         private ConcurrentDictionary<Type, object> repositoryFactories;
 
+        private ConcurrentDictionary<Type, object> serviceFactories;
+
         /// <summary>
         /// 获取指定类型的单元仓储
         /// </summary>
@@ -380,6 +383,26 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
             return (GenericRepository<TEntity, TPrimaryKey>)repositories[type];
         }
 
+        /// <summary>
+        ///获取通用的服务类型
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="TPrimaryKey"></typeparam>
+        /// <returns></returns>
+        public DomainServiceBase<TEntity, TPrimaryKey> GetDomainService<TEntity, TPrimaryKey>()
+            where TEntity : class, IEntity<TPrimaryKey>, new()
+        {
+            if (serviceFactories == null)
+            {
+                serviceFactories = new ConcurrentDictionary<Type, object>();
+            }
+            var type = typeof(TEntity);
+            if (!serviceFactories.ContainsKey(type))
+            {
+                serviceFactories[type] = new GenericService<TEntity, TPrimaryKey>();
+            }
+            return (DomainServiceBase<TEntity, TPrimaryKey>)serviceFactories[type];
+        }
         /// <summary>
         /// 默认的工作单元选项
         /// </summary>
