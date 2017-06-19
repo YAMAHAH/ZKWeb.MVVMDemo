@@ -1,0 +1,10 @@
+{
+  "Name": "仓储管理系统",
+  "Version": "1.0",
+  "Description": "仓储管理系统",
+  "Dependencies": [
+    "MVVM.Common.Base",
+    "MVVM.Common.SessionState",
+    "MVVM.Common.Organization"
+  ]
+}

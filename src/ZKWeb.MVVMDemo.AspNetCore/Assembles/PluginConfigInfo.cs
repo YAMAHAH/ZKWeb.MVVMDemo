@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ZKWeb.MVVMDemo.AspNetCore.Assembles
+﻿namespace ZKWeb.MVVMDemo.AspNetCore.Assembles
 {
     /// <summary>
     /// 插件配置信息

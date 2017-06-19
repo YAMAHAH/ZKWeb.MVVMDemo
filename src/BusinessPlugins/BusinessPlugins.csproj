@@ -13,4 +13,14 @@
     <ProjectReference Include="..\ZKWeb.MVVMPlugins\ZKWeb.MVVMPlugins.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ProductionModule\src\Domain\Services\" />
+    <Folder Include="ProductionPlanModule\src\Domain\Services\" />
+    <Folder Include="PurchaseModule\src\Domain\Services\" />
+    <Folder Include="QualityControlModule\src\Domain\Entities\" />
+    <Folder Include="QualityControlModule\src\Domain\Services\" />
+    <Folder Include="SubcontractingModule\src\Domain\Services\" />
+    <Folder Include="WarehouseModule\src\Domain\Services\" />
+  </ItemGroup>
+
 </Project>
