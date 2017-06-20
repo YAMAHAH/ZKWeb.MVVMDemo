@@ -1,13 +1,13 @@
-﻿using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.ProductModule;
+﻿using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.ProductEngineeringModule;
 using ZKWeb.MVVMDemo.AspNetCore.Assembles.ZKWeb.MVVMPlugins.MVVM.Common.Base;
 using ZKWeb.MVVMDemo.AspNetCore.Modules;
 
-namespace ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.MVVM.Common.Organization
+namespace ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.OrganizationModule
 {
     /// <summary>
     /// 
     /// </summary>
-    [DependsOn(typeof(BaseModulePlugin), typeof(ProductModulePlugin))]
+    [DependsOn(typeof(BaseModulePlugin), typeof(ProductEngineeringModulePlugin))]
     public class OrganizationModulePlugin : ModulePluginBase
     {
         /// <summary>
@@ -16,8 +16,8 @@ namespace ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.MVVM.Common.Organi
         public OrganizationModulePlugin()
         {
             RootPath = PluginConfigInfo.BusinessPluginPath;
-            Path = "MVVM.Common.Organization";
-            EName = "MVVM.Common.Organization";
+            Path = "OrganizationModule";
+            EName = "OrganizationModule";
             CName = "Organization Structure For MVVM";
             Version = "1.0";
             Description = "Provide organization entities and domain services";

@@ -2,5 +2,5 @@
     "Name": "Crud Example For MVVM",
     "Version": "1.0",
     "Description": "Provide crud example",
-    "Dependencies": [ "MVVM.Common.Base", "MVVM.Common.Organization" ]
+    "Dependencies": [ "MVVM.Common.Base", "OrganizationModule" ]
 }

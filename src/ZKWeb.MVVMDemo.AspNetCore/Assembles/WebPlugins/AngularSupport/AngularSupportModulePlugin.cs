@@ -1,4 +1,4 @@
-﻿using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.MVVM.Common.Organization;
+﻿using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.OrganizationModule;
 using ZKWeb.MVVMDemo.AspNetCore.Assembles.ZKWeb.MVVMPlugins.MVVM.Common.Base;
 using ZKWeb.MVVMDemo.AspNetCore.Modules;
 

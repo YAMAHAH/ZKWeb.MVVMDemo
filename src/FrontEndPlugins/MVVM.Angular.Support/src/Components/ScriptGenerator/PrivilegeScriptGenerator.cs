@@ -8,9 +8,9 @@ using System.Text;
 using ZKWeb.Localize;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Extensions;
 using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Template;
-using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Components.PrivilegeTranslators.Interfaces;
-using ZKWeb.MVVMPlugins.MVVM.Common.Organization.src.Domain.Entities.Interfaces;
-using ZKWeb.Plugins.MVVM.Common.Organization.src.Components.PrivilegeProviders.Interfaces;
+using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.PrivilegeTranslators.Interfaces;
+using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities.Interfaces;
+using ZKWeb.Plugins.OrganizationModule.src.Components.PrivilegeProviders.Interfaces;
 using ZKWebStandard.Ioc;
 
 namespace ZKWeb.MVVMPlugins.MVVM.Angular.Support.src.Components.ScriptGenerator

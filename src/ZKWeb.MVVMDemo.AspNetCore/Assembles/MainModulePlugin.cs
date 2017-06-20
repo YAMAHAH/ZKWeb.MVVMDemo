@@ -1,8 +1,8 @@
 ﻿
-using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.MVVM.Common.Organization;
+using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.OrganizationModule;
 using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.MVVM.Example.CrudExample;
-using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.ProductModule;
-using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.SaleModule;
+using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.ProductEngineeringModule;
+using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.SalesModule;
 using ZKWeb.MVVMDemo.AspNetCore.Assembles.WebPlugins.AngularSupport;
 using ZKWeb.MVVMDemo.AspNetCore.Assembles.WebPlugins.AngularWebsite;
 using ZKWeb.MVVMDemo.AspNetCore.Modules;
@@ -14,8 +14,8 @@ namespace ZKWeb.MVVMDemo.AspNetCore.Assembles
     /// </summary>
     [DependsOn(
         typeof(OrganizationModulePlugin),
-        typeof(SaleModulePlugin),
-        typeof(ProductModulePlugin),
+        typeof(SalesModulePlugin),
+        typeof(ProductEngineeringModulePlugin),
         typeof(CRUDExampleModulePlugin),
         typeof(AngularModulePlugin),
         typeof(AngularSupportModulePlugin)

@@ -14,11 +14,11 @@
     "MVVM.Common.MultiTenant",
     "MVVM.Common.SessionState",
     "MVVM.Common.Captcha",
-    "ProductModule",
-    "MVVM.Common.Organization",
+    "ProductEngineeringModule",
+    "OrganizationModule",
     "MVVM.Example.CrudExample",
     "SimpleEasy.Core.lib",
-    "SaleModule",
+    "SalesModule",
     "MVVM.Angular.Support",
     "MVVM.Angular.Website"
   ]
