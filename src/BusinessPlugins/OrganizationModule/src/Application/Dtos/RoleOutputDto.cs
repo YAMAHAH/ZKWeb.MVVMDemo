@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Attributes;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos
+namespace BusinessPlugins.OrganizationModule.Application.Dtos
 {
     [Description("角色传出信息")]
     public class RoleOutputDto : IOutputDto

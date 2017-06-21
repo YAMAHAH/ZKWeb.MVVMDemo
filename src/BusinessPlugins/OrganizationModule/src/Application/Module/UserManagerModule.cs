@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module;
+using InfrastructurePlugins.BaseModule.Application.Attributes;
+using InfrastructurePlugins.BaseModule.Module;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Module
+namespace BusinessPlugins.OrganizationModule.Application.Module
 {
     [ExportMany, SingletonReuse]
     [AngularModule("UserManager")]

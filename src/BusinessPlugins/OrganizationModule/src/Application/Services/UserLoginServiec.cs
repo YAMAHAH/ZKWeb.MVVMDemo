@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
-using ZKWeb.MVVMPlugins.MVVM.Common.Captcha.src.Managers;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Services;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Services.Bases;
+using InfrastructurePlugins.BaseModule.Components.Exceptions;
+using InfrastructurePlugins.CaptchaModule.Managers;
+using BusinessPlugins.OrganizationModule.Application.Dtos;
+using BusinessPlugins.OrganizationModule.Domain.Services;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Services
+namespace BusinessPlugins.OrganizationModule.Application.Services
 {
     /// <summary>
     /// 用户登录服务

@@ -1,6 +1,6 @@
-﻿using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities;
+﻿using BusinessPlugins.OrganizationModule.Domain.Entities;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Components.UserLoginHandlers.Interfaces
+namespace BusinessPlugins.OrganizationModule.Components.UserLoginHandlers.Interfaces
 {
     /// <summary>
     /// 用户登录处理器

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
+using BusinessPlugins.OrganizationModule.Application.Dtos;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos
+namespace BusinessPlugins.OrganizationModule.Application.Dtos
 {
     [Description("当前会话信息")]
     public class SessionInfoDto : IOutputDto

@@ -1,5 +1,5 @@
 ﻿using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.OrganizationModule;
-using ZKWeb.MVVMDemo.AspNetCore.Assembles.ZKWeb.MVVMPlugins.MVVM.Common.Base;
+using ZKWeb.MVVMDemo.AspNetCore.Assembles.InfrastructurePlugins.MVVM.Common.Base;
 using ZKWeb.MVVMDemo.AspNetCore.Modules;
 
 namespace ZKWeb.MVVMDemo.AspNetCore.Assembles.WebPlugins.AngularSupport

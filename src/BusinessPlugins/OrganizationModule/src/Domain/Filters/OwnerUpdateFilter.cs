@@ -1,16 +1,16 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.OrganizationModule.Domain.Entities.TypeTraits;
-using BusinessPlugins.OrganizationModule.src.Domain.Entities.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
 using System;
 using ZKWeb.Localize;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters.Interfaces;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Interfaces;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Extensions;
-using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Services;
+using InfrastructurePlugins.BaseModule.Components.Exceptions;
+using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
+using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Extensions;
+using InfrastructurePlugins.SessionStateModule.Domain.Services;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.OrganizationModule.src.Domain.Filters
+namespace BusinessPlugins.OrganizationModule.Domain.Filters
 {
     /// <summary>
     /// 

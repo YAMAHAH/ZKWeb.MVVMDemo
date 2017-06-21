@@ -3,14 +3,14 @@ using System;
 using System.Collections.Concurrent;
 using System.Reflection;
 using ZKWeb.Cache;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.GenericConfigs.Attributes;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities;
+using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
+using BusinessPlugins.OrganizationModule.Components.GenericConfigs.Attributes;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
 using ZKWebStandard.Collections;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Services
+namespace BusinessPlugins.OrganizationModule.Domain.Services
 {
     /// <summary>
     /// 通用配置管理器

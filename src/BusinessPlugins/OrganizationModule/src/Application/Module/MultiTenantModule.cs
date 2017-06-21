@@ -1,9 +1,9 @@
-﻿using SimpleEasy.Core.lib.Utils;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module;
+﻿using CoreLibModule.Utils;
+using InfrastructurePlugins.BaseModule.Application.Attributes;
+using InfrastructurePlugins.BaseModule.Module;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Module
+namespace BusinessPlugins.OrganizationModule.Application.Module
 {
     [ExportMany, SingletonReuse]
     [AngularModule("MultiTenant")]

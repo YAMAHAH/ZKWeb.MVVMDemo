@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Translates.Bases;
+using InfrastructurePlugins.BaseModule.Components.Translates.Bases;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Components.Translates
+namespace BusinessPlugins.OrganizationModule.Components.Translates
 {
     /// <summary>
     /// 中文翻译

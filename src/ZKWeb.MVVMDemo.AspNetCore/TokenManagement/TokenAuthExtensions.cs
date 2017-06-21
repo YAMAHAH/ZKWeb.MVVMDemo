@@ -11,11 +11,11 @@ namespace ZKWeb.MVVMDemo.AspNetCore.TokenManagement
   /// </summary>
     public static class TokenAuthExtensions
     {
-        /// <summary>
-        /// Adds the <see cref="TokenProviderMiddleware"/> middleware to the specified <see cref="IApplicationBuilder"/>, which enables token generation capabilities.
-        /// <param name="app">The <see cref="IApplicationBuilder"/> to add the middleware to.</param>
-        /// <param name="options">A  <see cref="TokenProviderOptions"/> that specifies options for the middleware.</param>
-        /// <returns>A reference to this instance after the operation has completed.</returns>
+       /// <summary>
+       /// 
+       /// </summary>
+       /// <param name="app"></param>
+       /// <returns></returns>
         public static IApplicationBuilder UseTokenAuth(this IApplicationBuilder app)
         {
             if (app == null)

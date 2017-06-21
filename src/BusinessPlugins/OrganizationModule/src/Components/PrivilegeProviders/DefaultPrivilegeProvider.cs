@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Interfaces;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.ActionFilters;
-using ZKWeb.Plugins.OrganizationModule.src.Components.PrivilegeProviders.Interfaces;
+using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
+using InfrastructurePlugins.BaseModule.Module;
+using BusinessPlugins.OrganizationModule.Components.ActionFilters;
+using ZKWeb.Plugins.OrganizationModule.Components.PrivilegeProviders.Interfaces;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Components.PrivilegeProviders
+namespace BusinessPlugins.OrganizationModule.Components.PrivilegeProviders
 {
     /// <summary>
     /// 默认的权限提供器

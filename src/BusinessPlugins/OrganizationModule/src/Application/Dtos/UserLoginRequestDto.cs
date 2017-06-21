@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos
+namespace BusinessPlugins.OrganizationModule.Application.Dtos
 {
     /// <summary>
     /// 用户登录请求

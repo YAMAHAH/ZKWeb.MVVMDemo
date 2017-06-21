@@ -36,7 +36,7 @@ npm config set sass_binary_site http://npm.taobao.org/mirrors/node-sass
 **Build website files**
 
 ```
-cd src/ZKWeb.MVVMPlugins/MVVM.Angular.Website/static
+cd src/InfrastructurePlugins/MVVM.Angular.Website/static
 npm install
 npm run watch
 ```

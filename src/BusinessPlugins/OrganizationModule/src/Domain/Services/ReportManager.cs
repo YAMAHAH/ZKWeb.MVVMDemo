@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow;
+using InfrastructurePlugins.BaseModule.Components.Exceptions;
+using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
+using InfrastructurePlugins.BaseModule.Domain.Uow;
 
 namespace BusinessPlugins.OrganizationModule.Domain.Services
 {

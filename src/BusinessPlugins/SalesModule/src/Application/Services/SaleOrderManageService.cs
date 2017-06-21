@@ -1,6 +1,6 @@
 ﻿using BusinessPlugins.SalesModule.Domain.Services;
 using System.ComponentModel;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
+using InfrastructurePlugins.BaseModule.Application.Services.Bases;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.SalesModule.Application.Services

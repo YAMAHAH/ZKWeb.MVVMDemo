@@ -1,6 +1,6 @@
 ﻿using ZKWeb.MVVMDemo.AspNetCore.Modules;
 
-namespace ZKWeb.MVVMDemo.AspNetCore.Assembles.ZKWeb.MVVMPlugins.MVVM.Common.Base
+namespace ZKWeb.MVVMDemo.AspNetCore.Assembles.InfrastructurePlugins.MVVM.Common.Base
 {
     /// <summary>
     /// 

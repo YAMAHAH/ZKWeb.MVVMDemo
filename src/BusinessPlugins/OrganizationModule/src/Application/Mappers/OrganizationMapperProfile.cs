@@ -2,17 +2,17 @@
 using Newtonsoft.Json;
 using System;
 using System.Linq;
-using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Entities;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.GenericConfigs;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.PrivilegeTranslators.Interfaces;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Extensions;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Services;
+using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Application.Dtos;
+using BusinessPlugins.OrganizationModule.Components.GenericConfigs;
+using BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain.Extensions;
+using BusinessPlugins.OrganizationModule.Domain.Services;
 using ZKWeb.Storage;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Mappers
+namespace BusinessPlugins.OrganizationModule.Application.Mappers
 {
     /// <summary>
     /// AutoMapper的配置

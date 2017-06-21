@@ -10,17 +10,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ZKWeb.MVVMPlugins\ZKWeb.MVVMPlugins.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Folder Include="BusinessBaseModule\src\ProductionModule\Domain\Services\" />
+    <Folder Include="BusinessBaseModule\src\ProductionPlanModule\Domain\Services\" />
+    <Folder Include="BusinessBaseModule\src\PurchaseModule\Domain\Services\" />
+    <Folder Include="BusinessBaseModule\src\QualityControlModule\Domain\Entities\" />
+    <Folder Include="BusinessBaseModule\src\QualityControlModule\Domain\Services\" />
+    <Folder Include="BusinessBaseModule\src\SubcontractingModule\Domain\Services\" />
+    <Folder Include="BusinessBaseModule\src\WarehouseModule\Domain\Services\" />
+    <Folder Include="FinanceModule\src\Domain\" />
     <Folder Include="ProductionModule\src\Domain\Services\" />
     <Folder Include="ProductionPlanModule\src\Domain\Services\" />
     <Folder Include="PurchaseModule\src\Domain\Services\" />
-    <Folder Include="QualityControlModule\src\Domain\Entities\" />
     <Folder Include="QualityControlModule\src\Domain\Services\" />
     <Folder Include="SubcontractingModule\src\Domain\Services\" />
     <Folder Include="WarehouseModule\src\Domain\Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ZKWeb.MVVMPlugins\InfrastructurePlugins.csproj" />
   </ItemGroup>
 
 </Project>

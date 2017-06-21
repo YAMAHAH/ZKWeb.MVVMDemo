@@ -5,6 +5,6 @@
     "Dependencies": [
         "MVVM.Common.Base",
         "MVVM.Common.AdminPanel",
-        "MVVM.Angular.Support"
+        "AngularSupportModule"
     ]
 }

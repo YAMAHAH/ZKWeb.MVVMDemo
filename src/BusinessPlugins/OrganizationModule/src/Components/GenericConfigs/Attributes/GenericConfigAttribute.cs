@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Components.GenericConfigs.Attributes
+namespace BusinessPlugins.OrganizationModule.Components.GenericConfigs.Attributes
 {
     /// <summary>
     /// 通用配置的属性，用于指定所属插件和配置键名

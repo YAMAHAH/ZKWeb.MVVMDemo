@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow;
+using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
+using InfrastructurePlugins.BaseModule.Domain.Uow;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.ProductEngineeringModule.Domain.Services

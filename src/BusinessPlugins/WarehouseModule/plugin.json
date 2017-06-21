@@ -4,7 +4,8 @@
   "Description": "仓储管理系统",
   "Dependencies": [
     "MVVM.Common.Base",
-    "MVVM.Common.SessionState",
+    "BusinessBaseModule",
+    "SessionStateModule",
     "OrganizationModule"
   ]
 }

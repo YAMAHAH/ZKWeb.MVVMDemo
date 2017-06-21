@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BusinessPlugins\BusinessPlugins.csproj" />
-    <ProjectReference Include="..\ZKWeb.MVVMPlugins\ZKWeb.MVVMPlugins.csproj" />
+    <ProjectReference Include="..\ZKWeb.MVVMPlugins\InfrastructurePlugins.csproj" />
   </ItemGroup>
 
 </Project>

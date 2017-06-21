@@ -4,8 +4,9 @@
   "Description": "Provide organization entities and domain services",
   "Dependencies": [
     "MVVM.Common.Base",
-    "MVVM.Common.MultiTenant",
-    "MVVM.Common.Captcha",
-    "ProductEngineeringModule"
+    "BusinessBaseModule",
+    "MultiTenantModule",
+    "ProductEngineeringModule",
+    "OrganizationModule"
   ]
 }

@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ZKWeb.Localize;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.PrivilegeTranslators.Interfaces;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities.Interfaces;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Extensions;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Structs;
-using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Services;
-using ZKWeb.Plugins.OrganizationModule.src.Components.PrivilegeProviders.Interfaces;
+using InfrastructurePlugins.BaseModule.Components.Exceptions;
+using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
+using BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Extensions;
+using BusinessPlugins.OrganizationModule.Domain.Structs;
+using InfrastructurePlugins.SessionStateModule.Domain.Services;
+using ZKWeb.Plugins.OrganizationModule.Components.PrivilegeProviders.Interfaces;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Services
+namespace BusinessPlugins.OrganizationModule.Domain.Services
 {
     /// <summary>
     /// 权限管理器

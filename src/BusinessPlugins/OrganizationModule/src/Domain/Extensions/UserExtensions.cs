@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.FastReflection;
 using System.Linq;
 using System.Reflection;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
 using ZKWebStandard.Utils;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Extensions
+namespace BusinessPlugins.OrganizationModule.Domain.Extensions
 {
     /// <summary>
     /// 用户的扩展函数

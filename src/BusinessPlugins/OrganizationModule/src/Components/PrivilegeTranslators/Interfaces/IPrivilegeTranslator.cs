@@ -1,4 +1,4 @@
-﻿namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Components.PrivilegeTranslators.Interfaces
+﻿namespace BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfaces
 {
     /// <summary>
     /// 权限名称翻译器

@@ -5,20 +5,20 @@ using System.ComponentModel;
 using System.Linq;
 using ZKWeb.Cache;
 using ZKWeb.Localize;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.ActionFilters;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.GenericConfigs;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities.Interfaces;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Services;
-using ZKWeb.MVVMPlugins.MVVM.Common.TaskScheduler.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.MVVM.Common.TaskScheduler.src.Domain.Entities;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Services.Bases;
+using BusinessPlugins.OrganizationModule.Application.Dtos;
+using BusinessPlugins.OrganizationModule.Components.ActionFilters;
+using BusinessPlugins.OrganizationModule.Components.GenericConfigs;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Services;
+using InfrastructurePlugins.TaskSchedulerModule.Application.Dtos;
+using InfrastructurePlugins.TaskSchedulerModule.Domain.Entities;
 using ZKWeb.Plugin;
 using ZKWebStandard.Ioc;
 using ZKWebStandard.Utils;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Services
+namespace BusinessPlugins.OrganizationModule.Application.Services
 {
     /// <summary>
     /// 网站管理服务

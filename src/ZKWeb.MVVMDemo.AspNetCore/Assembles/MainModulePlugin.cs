@@ -1,6 +1,6 @@
 ﻿
 using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.OrganizationModule;
-using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.MVVM.Example.CrudExample;
+using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.CrudExampleModule;
 using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.ProductEngineeringModule;
 using ZKWeb.MVVMDemo.AspNetCore.Assembles.BusinessPlugins.SalesModule;
 using ZKWeb.MVVMDemo.AspNetCore.Assembles.WebPlugins.AngularSupport;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Structs
+namespace BusinessPlugins.OrganizationModule.Domain.Structs
 {
     /// <summary>
     /// 要求的权限信息

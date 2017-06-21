@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Module;
+using InfrastructurePlugins.BaseModule.Module;
 
-namespace ZKWeb.Plugins.OrganizationModule.src.Components.PrivilegeProviders.Interfaces
+namespace ZKWeb.Plugins.OrganizationModule.Components.PrivilegeProviders.Interfaces
 {
     /// <summary>
     /// 权限提供器

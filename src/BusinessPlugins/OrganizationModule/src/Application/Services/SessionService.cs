@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using System.ComponentModel;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Extensions;
-using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Services;
+using InfrastructurePlugins.BaseModule.Application.Services.Bases;
+using BusinessPlugins.OrganizationModule.Application.Dtos;
+using BusinessPlugins.OrganizationModule.Domain.Extensions;
+using InfrastructurePlugins.SessionStateModule.Domain.Services;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Services
+namespace BusinessPlugins.OrganizationModule.Application.Services
 {
     /// <summary>
     /// 会话服务

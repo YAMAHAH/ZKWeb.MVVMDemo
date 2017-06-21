@@ -1,8 +1,8 @@
 ﻿using ZKWeb.Localize;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.PrivilegeTranslators.Interfaces;
+using BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfaces;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Components.PrivilegeTranslators
+namespace BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators
 {
     /// <summary>
     /// 默认的权限翻译器

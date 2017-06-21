@@ -3,23 +3,23 @@
   "Database": "MySQL",
   "ConnectionString": "Server=localhost;Database=ZKWebdb;User Id=root;Password=99B3AD6E;",
   "PluginDirectories": [
-    "../ZKWeb.MVVMPlugins",
+    "../InfrastructurePlugins",
     "../BusinessPlugins",
     "../FrontEndPlugins"
   ],
   "Plugins": [
     "MVVM.Common.Base",
-    "MVVM.Common.ApiExplorer",
-    "MVVM.Common.TaskScheduler",
-    "MVVM.Common.MultiTenant",
-    "MVVM.Common.SessionState",
-    "MVVM.Common.Captcha",
+    "ApiExplorerModule",
+    "TaskSchedulerModule",
+    "MultiTenantModule",
+    "SessionStateModule",
+    "CaptchaModule",
     "ProductEngineeringModule",
     "OrganizationModule",
-    "MVVM.Example.CrudExample",
-    "SimpleEasy.Core.lib",
+    "CrudExampleModule",
+    "CoreLibModule",
     "SalesModule",
-    "MVVM.Angular.Support",
+    "AngularSupportModule",
     "MVVM.Angular.Website"
   ]
 }

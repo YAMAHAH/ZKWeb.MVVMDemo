@@ -1,16 +1,16 @@
 ﻿using System.ComponentModel;
 using ZKWeb.Localize;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.ActionFilters;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities.Interfaces;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Services;
-using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Services;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Services.Bases;
+using InfrastructurePlugins.BaseModule.Components.Exceptions;
+using BusinessPlugins.OrganizationModule.Application.Dtos;
+using BusinessPlugins.OrganizationModule.Components.ActionFilters;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Services;
+using InfrastructurePlugins.SessionStateModule.Domain.Services;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Services
+namespace BusinessPlugins.OrganizationModule.Application.Services
 {
     /// <summary>
     /// 用户资料服务

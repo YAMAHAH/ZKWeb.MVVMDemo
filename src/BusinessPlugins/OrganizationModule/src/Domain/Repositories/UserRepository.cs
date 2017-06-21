@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Bases;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities;
+using InfrastructurePlugins.BaseModule.Domain.Repositories.Bases;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Repositories
+namespace BusinessPlugins.OrganizationModule.Domain.Repositories
 {
     /// <summary>
     /// 用户的仓储

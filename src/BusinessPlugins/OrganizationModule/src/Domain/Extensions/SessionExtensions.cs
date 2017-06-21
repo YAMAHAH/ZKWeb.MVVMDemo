@@ -1,11 +1,11 @@
 ﻿using System;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Interfaces;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities;
-using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Entities;
+using InfrastructurePlugins.BaseModule.Domain.Services.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
+using InfrastructurePlugins.SessionStateModule.Domain.Entities;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Web;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Extensions
+namespace BusinessPlugins.OrganizationModule.Domain.Extensions
 {
     /// <summary>
     /// 会话的扩展函数

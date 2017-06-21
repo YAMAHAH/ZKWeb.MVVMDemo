@@ -1,9 +1,9 @@
 ﻿using System;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities;
+using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Services
+namespace BusinessPlugins.OrganizationModule.Domain.Services
 {
     /// <summary>
     /// 角色管理器

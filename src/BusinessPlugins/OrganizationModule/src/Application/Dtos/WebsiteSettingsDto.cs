@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.AutoMapper;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.GenericConfigs;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Components.AutoMapper;
+using BusinessPlugins.OrganizationModule.Components.GenericConfigs;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos
+namespace BusinessPlugins.OrganizationModule.Application.Dtos
 {
     [AutoMap(typeof(WebsiteSettings))]
     [Description("网站设置")]

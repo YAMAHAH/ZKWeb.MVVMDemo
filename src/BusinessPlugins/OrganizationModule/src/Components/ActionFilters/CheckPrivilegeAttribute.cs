@@ -1,10 +1,10 @@
 ﻿using System;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Services;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Structs;
+using BusinessPlugins.OrganizationModule.Domain.Services;
+using BusinessPlugins.OrganizationModule.Domain.Structs;
 using ZKWeb.Web;
 using ZKWebStandard.Web;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Components.ActionFilters
+namespace BusinessPlugins.OrganizationModule.Components.ActionFilters
 {
     /// <summary>
     /// 用于检查权限的属性

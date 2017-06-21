@@ -3,16 +3,16 @@ using System.Linq;
 using System.Linq.Expressions;
 using ZKWeb.Database;
 using ZKWeb.Localize;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Filters.Interfaces;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Repositories.Interfaces;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities.Interfaces;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities.TypeTraits;
-using ZKWeb.MVVMPlugins.MVVM.Common.SessionState.src.Domain.Services;
+using InfrastructurePlugins.BaseModule.Components.Exceptions;
+using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
+using InfrastructurePlugins.BaseModule.Domain.Repositories.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Entities.TypeTraits;
+using InfrastructurePlugins.SessionStateModule.Domain.Services;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Filters
+namespace BusinessPlugins.OrganizationModule.Domain.Filters
 {
     /// <summary>
     /// 根据数据所属用户过滤查询和操作

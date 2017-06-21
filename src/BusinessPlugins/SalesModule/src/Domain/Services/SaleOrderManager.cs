@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
+using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.SalesModule.Domain.Services

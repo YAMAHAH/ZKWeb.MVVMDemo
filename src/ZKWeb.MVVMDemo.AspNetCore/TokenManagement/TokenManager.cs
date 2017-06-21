@@ -12,12 +12,6 @@ namespace ZKWeb.MVVMDemo.AspNetCore.TokenManagement
     public class TokenManager
     {
         
-       /// <summary>
-       /// 
-       /// </summary>
-       /// <param name="user"></param>
-       /// <param name="expires"></param>
-       /// <returns></returns>
         //public static string CreateToken(User user, DateTime expires)
         //{
         //    var handler = new JwtSecurityTokenHandler();

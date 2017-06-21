@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos
+namespace BusinessPlugins.OrganizationModule.Application.Dtos
 {
     [Description("插件信息")]
     public class PluginInfoOutputDto : IOutputDto

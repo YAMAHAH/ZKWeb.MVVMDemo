@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Loader;
-using System.Reflection;
 
 namespace ZKWeb.MVVMDemo.AspNetCore.Modules
 {

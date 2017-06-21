@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Services.Bases;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.ActionFilters;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities.Interfaces;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Services;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Services.Bases;
+using BusinessPlugins.OrganizationModule.Application.Dtos;
+using BusinessPlugins.OrganizationModule.Components.ActionFilters;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Services;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Services
+namespace BusinessPlugins.OrganizationModule.Application.Services
 {
     /// <summary>
     /// 角色管理服务

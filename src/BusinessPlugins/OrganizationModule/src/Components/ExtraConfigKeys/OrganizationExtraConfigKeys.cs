@@ -1,4 +1,4 @@
-﻿namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Components.ExtraConfigKeys
+﻿namespace BusinessPlugins.OrganizationModule.Components.ExtraConfigKeys
 {
     /// <summary>
     /// 网站附加配置中使用的键

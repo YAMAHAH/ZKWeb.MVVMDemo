@@ -1,8 +1,8 @@
-﻿using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Services;
+﻿using BusinessPlugins.OrganizationModule.Domain.Services;
 using ZKWeb.Plugin;
 using ZKWebStandard.Ioc;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src
+namespace BusinessPlugins.OrganizationModule
 {
     /// <summary>
     /// 插件载入时的处理

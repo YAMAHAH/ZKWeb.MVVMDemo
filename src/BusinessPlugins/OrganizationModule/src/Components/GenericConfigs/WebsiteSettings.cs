@@ -1,6 +1,6 @@
-﻿using ZKWeb.MVVMPlugins.OrganizationModule.src.Components.GenericConfigs.Attributes;
+﻿using BusinessPlugins.OrganizationModule.Components.GenericConfigs.Attributes;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Components.GenericConfigs
+namespace BusinessPlugins.OrganizationModule.Components.GenericConfigs
 {
     /// <summary>
     /// 网站设置

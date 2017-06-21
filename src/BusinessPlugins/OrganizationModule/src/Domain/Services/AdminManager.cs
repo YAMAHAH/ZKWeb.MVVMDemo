@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Linq;
 using ZKWeb.Localize;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Components.Exceptions;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Bases;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Services.Interfaces;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Domain.Uow.Extensions;
-using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Filters;
-using ZKWeb.MVVMPlugins.MVVM.Common.MultiTenant.src.Domain.Services;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities.Interfaces;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Entities.UserTypes;
-using ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Extensions;
+using InfrastructurePlugins.BaseModule.Components.Exceptions;
+using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
+using InfrastructurePlugins.BaseModule.Domain.Services.Interfaces;
+using InfrastructurePlugins.BaseModule.Domain.Uow.Extensions;
+using InfrastructurePlugins.MultiTenantModule.Domain.Filters;
+using InfrastructurePlugins.MultiTenantModule.Domain.Services;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Entities.UserTypes;
+using BusinessPlugins.OrganizationModule.Domain.Extensions;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
 using ZKWebStandard.Web;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Domain.Services
+namespace BusinessPlugins.OrganizationModule.Domain.Services
 {
     /// <summary>
     /// 管理员管理器

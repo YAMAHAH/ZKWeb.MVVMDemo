@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Attributes;
-using ZKWeb.MVVMPlugins.MVVM.Common.Base.src.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Attributes;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
 using ZKWebStandard.Web;
 
-namespace ZKWeb.MVVMPlugins.OrganizationModule.src.Application.Dtos
+namespace BusinessPlugins.OrganizationModule.Application.Dtos
 {
     [Description("修改头像传入信息")]
     public class UserUploadAvatarInputDto : IInputDto
