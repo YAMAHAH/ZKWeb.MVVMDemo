@@ -1,10 +1,13 @@
-﻿using System;
+﻿using BusinessPlugins.ProductionModule.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using ZKWeb.Database;
 
 namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
-    class ProductionIn
+    public class ProductionIn : StockIn
     {
+        
     }
 }

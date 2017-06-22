@@ -7,6 +7,7 @@ using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using ZKWeb.ORM.EFCore;
 using ZKWebStandard.Ioc;
+using BusinessPlugins.WarehouseModule.Domain.Entities;
 
 namespace BusinessPlugins.OrganizationModule.Domain.Entities
 {
@@ -36,6 +37,10 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         public string DepartmentNo { get; set; }
         public string DepartmentName { get; set; }
         public string Remark { get; set; }
+
+        #region StockIn
+       // public List<StockIn> StockIns { get; set; } = new List<StockIn>();
+        #endregion
 
         /// <summary>
         /// 部门所拥有的岗位
