@@ -1,4 +1,5 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using BusinessPlugins.ProductionModule.Domain.Entities;
 using BusinessPlugins.PurchaseModule.Domain.Entities;
@@ -77,7 +78,6 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// </summary>
         public Guid StockInId { get; set; }
         public StockIn StockIn { get; set; }
-
         /// <summary>
         /// 产品ID
         /// </summary>
@@ -107,6 +107,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public SubcontractingOrderItem SubcontractingOrderItem { get; set; }
         #endregion
 
+        #region 实体关系配置
         public void Configure(IEntityMappingBuilder<StockInItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
@@ -142,6 +143,9 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
                 .WithMany()
                 .HasForeignKey(i => i.SubcontractingOrderItemId)
                 .OnDelete(DeleteBehavior.Restrict);
+           
         }
+        #endregion
+
     }
 }

@@ -3,6 +3,7 @@ using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,15 +37,18 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// </summary>
         public string Unit { get; set; }
         /// <summary>
-        /// 单位换算率 辅助单位/基本单位
+        /// 单位换算率 
+        /// =辅助单位/基本单位 1h=100pc
         /// </summary>
         public double UnitRate { get; set; }
         /// <summary>
         /// 单重
         /// </summary>
         public double SingleWeight { get; set; }
+
         /// <summary>
-        /// 重量
+        /// 重量 
+        /// weight = SingleWeight *  ProdctionQty*UnitRate
         /// </summary>
         public double Weight { get; set; }
         /// <summary>
@@ -56,11 +60,28 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// </summary>
         public double FinishQty { get; set; }
         /// <summary>
-        /// 剩余数量
+        /// 剩余数量 计算字段
         /// </summary>
         public double RemainingQty { get; set; }
         /// <summary>
-        /// 完成率
+        /// 单价
+        /// </summary>
+        public double Price { get; set; }
+        /// <summary>
+        /// 金额 计算字段
+        /// </summary>
+        public double Amount { get; set; }
+        /// <summary>
+        /// 含税单价
+        /// </summary>
+        public double TaxPrice { get; set; }
+        /// <summary>
+        /// 含税金额 计算字段
+        /// </summary>
+        public double TaxAmount { get; set; }
+
+        /// <summary>
+        /// 完成率 计算字段
         /// </summary>
         public double FinishRate { get; set; }
 
@@ -77,6 +98,18 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 完工日期
         /// </summary>
         public DateTime CompletionDate { get; set; }
+        /// <summary>
+        /// 是否完成
+        /// </summary>
+        public bool IsDone { get; set; }
+        /// <summary>
+        /// 是否取消
+        /// </summary>
+        public bool IsCancel { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Remark { get; set; }
         #endregion
 
         #region 依赖对象引用
@@ -116,6 +149,16 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
             nativeBuilder.HasOne(i => i.SaleOrderItem)
                 .WithMany()
                 .HasForeignKey(i => i.SaleOrderItemId);
+            //计算列
+            nativeBuilder.Property(i => i.RemainingQty)
+                .HasComputedColumnSql("[ProductionQty] - [FinishQty]");
+            nativeBuilder.Property(i => i.TaxAmount)
+                .HasComputedColumnSql("[TaxPrice]*[ProductionQty]");
+            nativeBuilder.Property(i => i.Amount)
+              .HasComputedColumnSql("[Price]*[ProductionQty]");
+
+            nativeBuilder.Property(i => i.Weight)
+                .HasComputedColumnSql("[SingleWeight] * [ProductionQty] * [UnitRate]");
         }
     }
 }

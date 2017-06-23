@@ -59,9 +59,14 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 
         #region 依赖对象引用
         /// <summary>
+        /// 工厂
+        /// </summary>
+        public Guid PlantId { get; set; }
+        public Plant Plant { get; set; }
+        /// <summary>
         /// 仓库ID
         /// </summary>
-        public Guid Ckid { get; set; }
+        public Guid WarehouseId { get; set; }
         /// <summary>
         /// 仓库
         /// </summary>
@@ -118,6 +123,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public List<StockInItem> Items { get; set; } = new List<StockInItem>();
         #endregion
 
+        #region 实体关系配置
         public virtual void Configure(IEntityMappingBuilder<StockIn> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
@@ -126,7 +132,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             ////仓库
             nativeBuilder.HasOne(i => i.Warehouse)
                 .WithMany()
-                .HasForeignKey(i => i.Ckid)
+                .HasForeignKey(i => i.WarehouseId)
                 .OnDelete(DeleteBehavior.Restrict);
             ////合作合伴
             nativeBuilder.HasOne(i => i.Partner)
@@ -160,6 +166,13 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
                 .WithMany()
                 .HasForeignKey(i => i.SubcontractingOrderId)
                 .OnDelete(DeleteBehavior.Restrict);
+            //工厂
+            nativeBuilder.HasOne(i => i.Plant)
+              .WithMany()
+              .HasForeignKey(i => i.PlantId)
+              .OnDelete(DeleteBehavior.Restrict);
         }
+        #endregion
+
     }
 }

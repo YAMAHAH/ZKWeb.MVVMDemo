@@ -1,4 +1,5 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
@@ -33,18 +34,30 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public string Ckname { get; set; }
 
         /// <summary>
+        /// 仓库位置
+        /// </summary>
+        public string Location { get; set; }
+        /// <summary>
         /// inventory available库存可用
         /// </summary>
-        public bool SF_kcuse { get; set; }
+        public bool IsAvailableInventory { get; set; }
         /// <summary>
         /// 停止使用
         /// </summary>
-        public bool SF_Disuse { get; set; }
+        public bool IsDisabled { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
 
         public string Remark { get; set; }
+        #endregion
+
+        #region 依赖对象引用
+        /// <summary>
+        /// 工厂ID
+        /// </summary>
+        public Guid PlantId { get; set; }
+        public Plant Plant { get; set; }
         #endregion
 
         public void Configure(IEntityMappingBuilder<Warehouse> builder)

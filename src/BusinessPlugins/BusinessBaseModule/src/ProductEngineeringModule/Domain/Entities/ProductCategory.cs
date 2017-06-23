@@ -5,9 +5,9 @@ using System.Text;
 namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 {
     /// <summary>
-    /// 客户零件号
+    /// 产品类别
     /// </summary>
-    class CustomerPartno
+    class ProductCategory
     {
     }
 }

@@ -45,11 +45,11 @@ namespace BusinessPlugins.SubcontractingModule.Domain.Entities
         /// <summary>
         /// 是否完成
         /// </summary>
-        public bool SF_Finish { get; set; }
+        public bool IsDone { get; set; }
         /// <summary>
         /// 是否取消
         /// </summary>
-        public bool SF_Cancel { get; set; }
+        public bool IsCancel { get; set; }
         /// <summary>
         /// 备注
         /// </summary>

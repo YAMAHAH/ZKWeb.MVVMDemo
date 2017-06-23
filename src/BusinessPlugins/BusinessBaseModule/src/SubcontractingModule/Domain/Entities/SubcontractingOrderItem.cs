@@ -83,16 +83,23 @@ namespace BusinessPlugins.SubcontractingModule.Domain.Entities
         /// 是否完成
         /// </summary>
 
-        public bool SF_Finish { get; set; }
+        public bool IsDone { get; set; }
 
+        /// <summary>
+        /// 是否取消
+        /// </summary>
+
+        public bool IsCancel { get; set; }
         /// <summary>
         /// 前制程
         /// </summary>
-        public Nullable<Guid> PreprocessingId { get; set; }
+        public Nullable<Guid> PreprocessId { get; set; }
+        public WorkCenter PreProcess { get; set; }
         /// <summary>
         /// 后制程
         /// </summary>
-        public Nullable<Guid> PostprocessingId { get; set; }
+        public Nullable<Guid> PostprocessId { get; set; }
+        public WorkCenter PostProcess { get; set; }
         /// <summary>
         /// 材质
         /// </summary>
@@ -138,6 +145,17 @@ namespace BusinessPlugins.SubcontractingModule.Domain.Entities
             nativeBuilder.HasOne(i => i.SaleOrderItem)
                 .WithMany()
                 .HasForeignKey(i => i.SaleOrderItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+            //前制程
+            nativeBuilder.HasOne(i => i.PreProcess)
+                .WithMany()
+                .HasForeignKey(i => i.PreprocessId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //后制程
+            nativeBuilder.HasOne(i => i.PostProcess)
+                .WithMany()
+                .HasForeignKey(i => i.PostprocessId)
                 .OnDelete(DeleteBehavior.Restrict);
 
         }

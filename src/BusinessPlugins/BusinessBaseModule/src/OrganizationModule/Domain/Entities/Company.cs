@@ -1,45 +1,38 @@
 ﻿using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
+using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusinessPlugins.OrganizationModule.Domain.Entities
 {
     /// <summary>
-    /// 合作企业
+    /// 公司
     /// </summary>
     [ExportMany]
-    public class Partner : IFullAudit<Partner, Guid>
+    public class Company : IFullAudit<Company, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
-        public bool Deleted { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
-        public Tenant OwnerTenant { get; set; }
+        public bool Deleted { get; set; }
         public Guid OwnerTenantId { get; set; }
+        public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 合作伙伴基本信息
-        public string Ptnno { get; set; }
-        public string Ptncname { get; set; }
-        public string Ptnename { get; set; }
-        public string Smpcname { get; set; }
-        public string Smpename { get; set; }
-        public string Remark { get; set; }
+        #region 依赖对象集合引用
+        public List<CompanyCode> CompanyCodes { get; set; }
         #endregion
 
-        public void Configure(IEntityMappingBuilder<Partner> builder)
+        #region 实体配置
+        public void Configure(IEntityMappingBuilder<Company> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
-
-            nativeBuilder.HasDiscriminator<string>("Type")
-                .HasValue<Supplier>("Supplier")
-                .HasValue<Customer>("Customer");
         }
+        #endregion
     }
 }

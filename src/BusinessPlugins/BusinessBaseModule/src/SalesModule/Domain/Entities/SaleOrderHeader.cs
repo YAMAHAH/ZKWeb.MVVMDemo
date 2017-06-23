@@ -28,8 +28,8 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public string CustomerOrderNo { get; set; }
         public DateTime? SaleOrderDelivery { get; set; }
         public Guid? PartnerId { get; set; }
-        public bool SF_Finish { get; set; }
-        public bool SF_Cancel { get; set; }
+        public bool IsDone { get; set; }
+        public bool IsCancel { get; set; }
         public List<SaleOrderDetail> SaleOrderDetails { get; set; }
 
         public void Configure(IEntityMappingBuilder<SaleOrderHeader> builder)

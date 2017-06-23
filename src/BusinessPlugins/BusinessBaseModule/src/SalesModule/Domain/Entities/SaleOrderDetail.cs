@@ -37,7 +37,8 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public double Price { get; set; }
         public double CostPrice { get; set; }
         public string Rem { get; set; }
-        public bool SF_MxFin { get; set; }
+        public bool IsDone { get; set; }
+        public bool IsCancel { get; set; }
 
         public void Configure(IEntityMappingBuilder<SaleOrderDetail> builder)
         {

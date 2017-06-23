@@ -68,6 +68,15 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         /// 完成率
         /// </summary>
         public double FinishRate { get; set; }
+
+        /// <summary>
+        /// 是否完成
+        /// </summary>
+        public bool IsDone { get; set; }
+        /// <summary>
+        /// 是否取消
+        /// </summary>
+        public bool IsCancel { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
