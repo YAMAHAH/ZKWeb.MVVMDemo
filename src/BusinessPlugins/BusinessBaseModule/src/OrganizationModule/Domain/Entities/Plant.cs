@@ -63,7 +63,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
             nativeBuilder.HasOne(p => p.CompanyCode)
                 .WithMany(cc => cc.plants)
                 .HasForeignKey(p => p.CompanyCodeId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
         }
         #endregion
     }

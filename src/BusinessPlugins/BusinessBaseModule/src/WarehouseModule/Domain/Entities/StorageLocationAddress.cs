@@ -42,7 +42,8 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 
             nativeBuilder.HasOne(i => i.StorageLocation)
                 .WithMany(l => l.StorageLocationAddresses)
-                .HasForeignKey(i => i.StorageLocationId);
+                .HasForeignKey(i => i.StorageLocationId)
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict);
         }
         #endregion
     }

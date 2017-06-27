@@ -50,7 +50,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             nativeBuilder.HasOne(p => p.StorageSection)
                 .WithMany(s => s.StoragePositions)
                 .HasForeignKey(p => p.StorageSectionId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
         }
         #endregion
     }

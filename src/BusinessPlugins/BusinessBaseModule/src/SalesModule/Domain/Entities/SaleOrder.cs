@@ -11,12 +11,12 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
 {
 
     [ExportMany]
-    public class SaleOrderHeader : IEntity<Guid>,
+    public class SaleOrder : IEntity<Guid>,
     IHaveCreateTime,
     IHaveUpdateTime,
     IHaveDeleted,
     IHaveOwnerTenant,
-    IEntityMappingProvider<SaleOrderHeader>
+    IEntityMappingProvider<SaleOrder>
     {
         public Guid Id { get; set; }
         public DateTime CreateTime { get; set; }
@@ -30,9 +30,9 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public Guid? PartnerId { get; set; }
         public bool IsDone { get; set; }
         public bool IsCancel { get; set; }
-        public List<SaleOrderDetail> SaleOrderDetails { get; set; }
+        public List<SaleOrderItem> SaleOrderDetails { get; set; }
 
-        public void Configure(IEntityMappingBuilder<SaleOrderHeader> builder)
+        public void Configure(IEntityMappingBuilder<SaleOrder> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);

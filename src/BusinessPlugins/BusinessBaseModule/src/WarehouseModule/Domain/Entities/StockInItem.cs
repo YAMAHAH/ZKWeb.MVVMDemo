@@ -91,7 +91,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 
         #region 销售订单行关联
         public Nullable<Guid> SaleOrderItemId { get; set; }
-        public SaleOrderDetail SaleOrderItem { get; set; }
+        public SaleOrderItem SaleOrderItem { get; set; }
         #endregion
         #region 生产订单行关联
         public Nullable<Guid> ProductionOrderItemId { get; set; }
@@ -121,7 +121,8 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             //当前物料
             nativeBuilder.HasOne(i => i.Product)
                 .WithMany()
-                .HasForeignKey(i => i.ProductId);
+                .HasForeignKey(i => i.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
             //销售订单
             nativeBuilder.HasOne(i => i.SaleOrderItem)
                 .WithMany()

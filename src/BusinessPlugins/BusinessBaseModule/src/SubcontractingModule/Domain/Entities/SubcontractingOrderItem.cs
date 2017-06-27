@@ -125,7 +125,7 @@ namespace BusinessPlugins.SubcontractingModule.Domain.Entities
 
         #region 销售订单行关联
         public Nullable<Guid> SaleOrderItemId { get; set; }
-        public SaleOrderDetail SaleOrderItem { get; set; }
+        public SaleOrderItem SaleOrderItem { get; set; }
         #endregion
         public void Configure(IEntityMappingBuilder<SubcontractingOrderItem> builder)
         {

@@ -58,16 +58,21 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             nativeBuilder.HasOne(l => l.Warehouse)
                 .WithMany(w => w.StorageLocations)
                 .HasForeignKey(l => l.WarehouseId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
 
             //工厂
             nativeBuilder.HasOne(l => l.Plant)
                 .WithMany(p => p.StorageLocations)
                 .HasForeignKey(l => l.PlantId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
+
+            nativeBuilder.HasOne(l => l.Warehouse)
+                .WithMany(w => w.StorageLocations)
+                .HasForeignKey(l => l.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
-    }
+        }
         #endregion
     }
 }

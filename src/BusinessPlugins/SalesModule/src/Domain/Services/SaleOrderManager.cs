@@ -8,9 +8,9 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.SalesModule.Domain.Services
 {
     [ExportMany, SingletonReuse]
-    public class SaleOrderManager : DomainServiceBase<SaleOrderHeader, Guid>
+    public class SaleOrderManager : DomainServiceBase<SaleOrder, Guid>
     {
-        public void CreateOrUpdateSaleOrder(SaleOrderHeader saleOrder)
+        public void CreateOrUpdateSaleOrder(SaleOrder saleOrder)
         {
             if (saleOrder.Id == Guid.Empty)
             {
@@ -27,7 +27,7 @@ namespace BusinessPlugins.SalesModule.Domain.Services
             }
         }
 
-        public void DeleteSaleOrder(SaleOrderHeader saleOrder)
+        public void DeleteSaleOrder(SaleOrder saleOrder)
         {
             Delete(saleOrder);
         }

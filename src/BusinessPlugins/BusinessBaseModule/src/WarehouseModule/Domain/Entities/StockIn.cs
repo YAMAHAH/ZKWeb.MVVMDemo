@@ -93,7 +93,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         #region 销售订单
         public Nullable<Guid> SaleOrderId { get; set; }
 
-        public SaleOrderHeader SaleOrder { get; set; }
+        public SaleOrder SaleOrder { get; set; }
 
         #endregion
         #region 生产订单

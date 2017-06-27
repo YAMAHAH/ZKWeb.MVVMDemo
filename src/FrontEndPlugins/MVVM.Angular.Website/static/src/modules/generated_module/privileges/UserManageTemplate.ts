@@ -2,9 +2,9 @@
 export class UserManageTemplate {
 
     /** 属性 */
-    TemplateId = "25080955-61e2-c960-e414-1edd677b61e8";
+    TemplateId = "ffa69635-e65d-f953-1941-94cbfd151092";
     TempName = "UserManage";
-    ModuleId = "abd1fcfa-c132-6209-a334-215fff0dcdf7";
+    ModuleId = "c2791da9-0434-c9c1-4fa1-67c25844a57a";
     ModuleName = "UserManager";
     /** 数据字段 */
     dataFields = {

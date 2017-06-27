@@ -12,12 +12,12 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.SalesModule.Domain.Entities
 {
     [ExportMany]
-    public class SaleOrderDetail : IEntity<Guid>,
+    public class SaleOrderItem : IEntity<Guid>,
      IHaveCreateTime,
      IHaveUpdateTime,
      IHaveDeleted,
      IHaveOwnerTenant,
-     IEntityMappingProvider<SaleOrderDetail>
+     IEntityMappingProvider<SaleOrderItem>
     {
         public Guid Id { get; set; }
         public DateTime CreateTime { get; set; }
@@ -33,14 +33,14 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public double OrderFinishTotal { get; set; }
         public double OrderLeftTotal { get; set; }
         public Guid SaleOrderHeaderId { get; set; }
-        public SaleOrderHeader SaleOrderHeader { get; set; }
+        public SaleOrder SaleOrderHeader { get; set; }
         public double Price { get; set; }
         public double CostPrice { get; set; }
         public string Rem { get; set; }
         public bool IsDone { get; set; }
         public bool IsCancel { get; set; }
 
-        public void Configure(IEntityMappingBuilder<SaleOrderDetail> builder)
+        public void Configure(IEntityMappingBuilder<SaleOrderItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);

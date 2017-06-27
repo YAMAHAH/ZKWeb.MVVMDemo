@@ -7,12 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ZKWeb.Database;
+using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 {
     /// <summary>
     /// 客户信息
     /// </summary>
+    [ExportMany]
     public class CustomerMaterialInfo : IFullAudit<CustomerMaterialInfo, Guid>
     {
         #region FullAudit接口实现

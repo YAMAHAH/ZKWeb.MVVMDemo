@@ -42,7 +42,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
             nativeBuilder.HasOne(i => i.WorkCenter)
                 .WithOne()
                 .HasForeignKey<ProcessStep>(i => i.WorkCenterId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
         }
         #endregion
 

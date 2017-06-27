@@ -1,6 +1,7 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
 using ZKWeb.Database;
@@ -48,7 +49,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             nativeBuilder.HasOne(a => a.Warehouse)
                 .WithMany(w => w.StorageAreas)
                 .HasForeignKey(a => a.WarehouseId)
-                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
         }
         #endregion
     }
