@@ -8,12 +8,13 @@
     "../FrontEndPlugins"
   ],
   "Plugins": [
-    "MVVM.Common.Base",
+    "BaseModule",
     "ApiExplorerModule",
     "TaskSchedulerModule",
     "MultiTenantModule",
     "SessionStateModule",
     "CaptchaModule",
+    "BusinessBaseModule",
     "ProductEngineeringModule",
     "OrganizationModule",
     "CrudExampleModule",

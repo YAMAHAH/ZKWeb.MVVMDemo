@@ -27,10 +27,58 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         public Guid Id { get; set; }
         public Tenant OwnerTenant { get; set; }
         public Guid OwnerTenantId { get; set; }
+        #region 物料基本信息
+        /// <summary>
+        /// 料号
+        /// </summary>
         public string ProductNo { get; set; }
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string ProductName { get; set; }
+        /// <summary>
+        /// 规格
+        /// </summary>
         public string ProductDesc { get; set; }
-        public string Dw { get; set; }
+        /// <summary>
+        /// 单位
+        /// </summary>
+        public string Unit { get; set; }
+        /// <summary>
+        /// 物料类型
+        /// </summary>
+        public Guid MaterialTypeId { get; set; }
+        public MaterialType MatrialType { get; set; }
+        /// <summary>
+        /// 物料组
+        /// </summary>
+        public Guid MaterialGroupId { get; set; }
+        /// <summary>
+        /// 经济订货量
+        /// </summary>
+        public double EconomicOrderQty { get; set; }
+        /// <summary>
+        /// 当前库存
+        /// </summary>
+        public double CurrentStock { get; set; }
+        /// <summary>
+        /// 安全库存量
+        /// </summary>
+        public double SafetyStock { get; set; }
+        /// <summary>
+        /// 最低库存量
+        /// </summary>
+        public double MinimumStock { get; set; }
+        /// <summary>
+        /// 是否客供料
+        /// </summary>
+        public bool IsConsignMaterial { get; set; }
+        /// <summary>
+        /// 是否虚拟件
+        /// </summary>
+        public bool IsPhantomItem { get; set; }
+        #endregion
+
         public List<ProductVersion> ProductVersions { get; set; } = new List<ProductVersion>();
 
         public void Configure(IEntityMappingBuilder<Product> builder)
@@ -43,7 +91,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
             nativeBuilder.Property(p => p.ProductNo).IsRequired();
             nativeBuilder.Property(p => p.ProductName).IsRequired();
             nativeBuilder.Property(p => p.ProductDesc).IsRequired();
-            nativeBuilder.Property(p => p.Dw).IsRequired();
+            nativeBuilder.Property(p => p.Unit).IsRequired();
         }
     }
 }

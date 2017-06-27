@@ -3,7 +3,7 @@
   "Version": "1.0",
   "Description": "仓储管理系统",
   "Dependencies": [
-    "MVVM.Common.Base",
+    "BaseModule",
     "BusinessBaseModule",
     "SessionStateModule",
     "OrganizationModule"

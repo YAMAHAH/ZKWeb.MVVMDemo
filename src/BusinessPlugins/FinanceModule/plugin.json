@@ -3,7 +3,7 @@
   "Version": "1.0",
   "Description": "财务管理系统",
   "Dependencies": [
-    "MVVM.Common.Base",
+    "BaseModule",
     "SessionStateModule",
     "BusinessBaseModule",
     "OrganizationModule"

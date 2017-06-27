@@ -22,7 +22,11 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         public Guid OwnerTenantId { get; set; }
         public Tenant OwnerTenant { get; set; }
         #endregion
-
+        #region 公司代码基本信息
+        public string CompanyCodeNumber { get; set; }
+        public string CompanyCodeName { get; set; }
+        public string Remark { get; set; }
+        #endregion
         #region 依赖对象引用
         /// <summary>
         /// 公司
@@ -44,7 +48,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
             nativeBuilder.HasOne(c => c.Company)
                 .WithMany(c => c.CompanyCodes)
                 .HasForeignKey(cc => cc.CompanyId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
         }
         #endregion
     }

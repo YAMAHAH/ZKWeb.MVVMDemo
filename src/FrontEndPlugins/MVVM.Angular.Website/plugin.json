@@ -3,7 +3,7 @@
     "Version": "1.0",
     "Description": "AngularJS website files",
     "Dependencies": [
-        "MVVM.Common.Base",
+        "BaseModule",
         "MVVM.Common.AdminPanel",
         "AngularSupportModule"
     ]

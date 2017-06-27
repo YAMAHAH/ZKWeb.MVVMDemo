@@ -1,4 +1,5 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -8,6 +9,9 @@ using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 {
+    /// <summary>
+    /// 工作中心
+    /// </summary>
     [ExportMany]
     public class WorkCenter : IFullAudit<WorkCenter, Guid>
     {
@@ -37,12 +41,12 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         }
         #endregion
         #region 工作中心基本信息
-        public string ProcessNo { get; set; }
-        public string ProcessName { get; set; }
+        public string WorkCenterNo { get; set; }
+        public string WorkCenterName { get; set; }
         /// <summary>
         /// 工序类别:机器/机器组/工时/工时组/生产线/供应商
         /// </summary>
-        public string ProcessType { get; set; }
+        public string WorkCenterType { get; set; }
         /// <summary>
         /// 用途
         /// </summary>

@@ -3,7 +3,7 @@
   "Version": "1.0",
   "Description": "Provide organization entities and domain services",
   "Dependencies": [
-    "MVVM.Common.Base",
+    "BaseModule",
     "BusinessBaseModule",
     "MultiTenantModule",
     "ProductEngineeringModule",

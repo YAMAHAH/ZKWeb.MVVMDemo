@@ -91,7 +91,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
                     ProductNo = "P010100005NK" + i.ToString(),
                     ProductName = "华司外六角凹⊕",
                     ProductDesc = "1/4-20*18MM白镍.￠13边10H4.6",
-                    Dw = "PC"
+                    Unit = "PC"
                 };
                 products.Add(product);
             }

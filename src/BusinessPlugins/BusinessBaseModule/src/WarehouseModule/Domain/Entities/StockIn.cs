@@ -42,7 +42,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// <summary>
         /// 入库单号
         /// </summary>
-        public string StockInNo { get; set; }
+        public string StockInCode { get; set; }
         /// <summary>
         /// 入库日期
         /// </summary>

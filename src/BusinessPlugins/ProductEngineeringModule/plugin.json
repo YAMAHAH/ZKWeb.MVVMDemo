@@ -3,7 +3,7 @@
   "Version": "1.0",
   "Description": "产品管理系统",
   "Dependencies": [
-    "MVVM.Common.Base",
+    "BaseModule",
     "BusinessBaseModule",
     "SessionStateModule"
   ]

@@ -3,7 +3,7 @@
   "Version": "1.0",
   "Description": "Business entities and interfaces",
   "Dependencies": [
-    "MVVM.Common.Base"
-
+    "BaseModule",
+    "BusinessBaseModule"
   ]
 }

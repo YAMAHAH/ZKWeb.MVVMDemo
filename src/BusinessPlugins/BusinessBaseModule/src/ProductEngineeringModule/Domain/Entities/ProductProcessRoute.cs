@@ -57,9 +57,9 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         #region 依赖对象引用
 
         public Nullable<Guid> PreProcessId { get; set; }
-        public WorkCenter PreProcess { get; set; }
+        public ProcessStep PreProcess { get; set; }
         public Nullable<Guid> PostProcessId { get; set; }
-        public WorkCenter PostProcess { get; set; }
+        public ProcessStep PostProcess { get; set; }
         /// <summary>
         /// 产品版次
         /// </summary>

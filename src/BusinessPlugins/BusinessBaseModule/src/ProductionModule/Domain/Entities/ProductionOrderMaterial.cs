@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BusinessPlugins.ProductionModule.Domain.Entities
 {
-    class ProductionOrderMaterial
+  public class ProductionOrderMaterial
     {
     }
 }

@@ -94,12 +94,12 @@ namespace BusinessPlugins.SubcontractingModule.Domain.Entities
         /// 前制程
         /// </summary>
         public Nullable<Guid> PreprocessId { get; set; }
-        public WorkCenter PreProcess { get; set; }
+        public ProcessStep PreProcess { get; set; }
         /// <summary>
         /// 后制程
         /// </summary>
         public Nullable<Guid> PostprocessId { get; set; }
-        public WorkCenter PostProcess { get; set; }
+        public ProcessStep PostProcess { get; set; }
         /// <summary>
         /// 材质
         /// </summary>

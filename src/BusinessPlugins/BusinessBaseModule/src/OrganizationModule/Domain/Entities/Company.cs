@@ -22,6 +22,12 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
+        #region 公司基本信息
+        public string CompanyCode { get; set; }
+        public string CompanyName { get; set; }
+        public string Remark { get; set; }
+        #endregion
+
         #region 依赖对象集合引用
         public List<CompanyCode> CompanyCodes { get; set; }
         #endregion

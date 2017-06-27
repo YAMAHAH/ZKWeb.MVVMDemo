@@ -11,6 +11,8 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
     /// <summary>
     /// 仓库
+    /// 一个工厂有多个仓库,一个仓库有多个区域,
+    /// 一个区域有多个分区,一个分区有多个储位
     /// </summary>
     [ExportMany]
     public class Warehouse : IFullAudit<Warehouse, Guid>
@@ -27,11 +29,11 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// <summary>
         /// 仓库编码
         /// </summary>
-        public string Ckno { get; set; }
+        public string WarehouseCode { get; set; }
         /// <summary>
         /// 仓库名称
         /// </summary>
-        public string Ckname { get; set; }
+        public string WarehouseName { get; set; }
 
         /// <summary>
         /// 仓库位置
@@ -53,13 +55,19 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         #endregion
 
         #region 依赖对象引用
-        /// <summary>
-        /// 工厂ID
-        /// </summary>
-        public Guid PlantId { get; set; }
-        public Plant Plant { get; set; }
+    
         #endregion
 
+        #region 依赖对象集合引用
+        /// <summary>
+        /// 存储区域
+        /// </summary>
+        public List<StorageArea> StorageAreas { get; set; }
+        /// <summary>
+        /// 库存地点
+        /// </summary>
+        public List<StorageLocation> StorageLocations { get; set; }
+        #endregion
         public void Configure(IEntityMappingBuilder<Warehouse> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();

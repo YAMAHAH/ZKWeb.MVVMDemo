@@ -3,7 +3,7 @@
   "Version": "1.0",
   "Description": "Provide captcha support",
   "Dependencies": [
-    "MVVM.Common.Base",
+    "BaseModule",
     "CoreLibModule",
     "SessionStateModule"
   ]

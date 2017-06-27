@@ -13,7 +13,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
     /// <summary>
     /// 客户信息
     /// </summary>
-    public class CustomerInfo : IFullAudit<CustomerInfo, Guid>
+    public class CustomerMaterialInfo : IFullAudit<CustomerMaterialInfo, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -63,7 +63,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         #endregion
 
         #region 实体配置
-        public void Configure(IEntityMappingBuilder<CustomerInfo> builder)
+        public void Configure(IEntityMappingBuilder<CustomerMaterialInfo> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);

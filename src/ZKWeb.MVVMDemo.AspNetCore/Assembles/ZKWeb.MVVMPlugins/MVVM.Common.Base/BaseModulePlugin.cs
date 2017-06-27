@@ -1,6 +1,6 @@
 ﻿using ZKWeb.MVVMDemo.AspNetCore.Modules;
 
-namespace ZKWeb.MVVMDemo.AspNetCore.Assembles.InfrastructurePlugins.MVVM.Common.Base
+namespace ZKWeb.MVVMDemo.AspNetCore.Assembles.InfrastructurePlugins.BaseModule
 {
     /// <summary>
     /// 
@@ -13,8 +13,8 @@ namespace ZKWeb.MVVMDemo.AspNetCore.Assembles.InfrastructurePlugins.MVVM.Common.
         public BaseModulePlugin()
         {
             RootPath = PluginConfigInfo.BasePluginPath;
-            Path = "MVVM.Common.Base";
-            EName = "MVVM.Common.Base";
+            Path = "BaseModule";
+            EName = "BaseModule";
             CName = "基础模块";
             Version = "1.0";
             Description = "所有模块共用的基础库";

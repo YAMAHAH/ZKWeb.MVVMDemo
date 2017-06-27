@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ZKWeb.MVVMDemo.AspNetCore.Assembles.InfrastructurePlugins.MVVM.Common.Base;
+using ZKWeb.MVVMDemo.AspNetCore.Assembles.InfrastructurePlugins.BaseModule;
 using ZKWeb.MVVMDemo.AspNetCore.Extensions;
 
 namespace ZKWeb.MVVMDemo.AspNetCore.Modules

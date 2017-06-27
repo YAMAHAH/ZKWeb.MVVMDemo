@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ZKWeb.MVVMPlugins\InfrastructurePlugins.csproj" />
+    <ProjectReference Include="..\InfrastructurePlugins\InfrastructurePlugins.csproj" />
   </ItemGroup>
 
 </Project>

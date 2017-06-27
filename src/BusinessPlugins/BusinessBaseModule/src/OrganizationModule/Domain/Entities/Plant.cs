@@ -1,15 +1,17 @@
-﻿using BusinessPlugins.OrganizationModule.Domain;
+﻿using BusinessPlugins.WarehouseModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.OrganizationModule.Domain.Entities
 {
+    /// <summary>
+    /// 工厂
+    /// </summary>
     [ExportMany]
     public class Plant : IFullAudit<Plant, Guid>
     {
@@ -26,16 +28,29 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         /// <summary>
         /// 工厂编码
         /// </summary>
-        public string PlantNo { get; set; }
+        public string PlantCode { get; set; }
         /// <summary>
         /// 工厂名称
         /// </summary>
         public string PlantName { get; set; }
+
+        public string Remark { get; set; }
         #endregion
 
-        #region 公司代码基本信息
+        #region 依赖对象引用
+        /// <summary>
+        /// 公司代码
+        /// </summary>
         public Guid CompanyCodeId { get; set; }
         public CompanyCode CompanyCode { get; set; }
+        #endregion
+
+        #region 依赖对象集合引用
+        /// <summary>
+        /// 存储地点
+        /// 一个工厂有多个存储地点
+        /// </summary>
+        public List<StorageLocation> StorageLocations { get; set; }
         #endregion
 
         #region 实体配置
@@ -48,7 +63,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
             nativeBuilder.HasOne(p => p.CompanyCode)
                 .WithMany(cc => cc.plants)
                 .HasForeignKey(p => p.CompanyCodeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
         }
         #endregion
     }

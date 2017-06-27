@@ -31,7 +31,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// <summary>
         /// 生产订单编码
         /// </summary>
-        public string ProductionOrderNo { get; set; }
+        public string ProductionOrderCode { get; set; }
         /// <summary>
         /// 登记日期
         /// </summary>
