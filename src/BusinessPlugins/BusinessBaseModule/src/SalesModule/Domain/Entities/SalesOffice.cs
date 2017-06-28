@@ -38,7 +38,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
-
+            builder.HasMany(o => o.SalesRegions);
             ////工厂
             //nativeBuilder.HasOne(i => i.Plant)
             //    .WithMany()

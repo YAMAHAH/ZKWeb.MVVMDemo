@@ -46,8 +46,22 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
+            builder.HasMany(r => r.SalesOffices);
 
             nativeBuilder.HasAlternateKey(r => new { r.SalesOrgId, r.DistrId, r.SalesDivId });
+            nativeBuilder.HasOne(r => r.SalesOrganiation)
+                .WithOne()
+                .HasForeignKey<SalesRegion>(r => r.SalesOrgId)
+                .OnDelete(DeleteBehavior.Restrict);
+            nativeBuilder.HasOne(r => r.DistributionChannel)
+                .WithOne()
+                .HasForeignKey<SalesRegion>(r => r.DistrId)
+                .OnDelete(DeleteBehavior.Restrict);
+            nativeBuilder.HasOne(r => r.SalesDivision)
+                .WithOne()
+                .HasForeignKey<SalesRegion>(r => r.SalesDivId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
         #endregion
     }
