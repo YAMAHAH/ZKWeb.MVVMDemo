@@ -85,7 +85,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
+            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
             //nativeBuilder.ToTable("products");
 
             nativeBuilder.Property(p => p.ProductNo).IsRequired();

@@ -1,4 +1,6 @@
-﻿using InfrastructurePlugins.BaseModule.Components.Extensions;
+﻿using BusinessPlugins.PurchaseModule.Domain.Entities;
+using BusinessPlugins.SalesModule.Domain.Entities;
+using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
@@ -33,9 +35,13 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> CompanyId { get; set; }
         public Company Company { get; set; }
+
         #endregion
 
         #region 依赖对象集合引用
+        public List<SalesOrganization> SalesOrganizations { get; set; }
+        public List<PurchaseOrganization> PurchaseOrganizations { get; set; }
+
         public List<Plant> plants { get; set; }
         #endregion
         #region 实体配置
@@ -43,7 +49,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
+            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
 
             nativeBuilder.HasOne(c => c.Company)
                 .WithMany(c => c.CompanyCodes)

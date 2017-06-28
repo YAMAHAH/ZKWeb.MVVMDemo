@@ -104,7 +104,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
             builder.Id(r => r.Id);
             builder.Map(r => r.Name);
             builder.Map(r => r.PrivilegesJson);
-            builder.References(r => r.OwnerTenant, new EntityMappingOptions() { Nullable = false });
+            builder.References(r => r.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
             builder.Map(r => r.CreateTime, new EntityMappingOptions() { Index = "Idx_Role_CreateTime" });
             builder.Map(r => r.UpdateTime);
             builder.Map(r => r.Remark);

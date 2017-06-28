@@ -49,7 +49,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
+            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
 
             nativeBuilder.HasOne(s => s.StorageArea)
                 .WithMany(a => a.StorageSections)

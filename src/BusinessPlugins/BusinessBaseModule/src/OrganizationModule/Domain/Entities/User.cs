@@ -162,7 +162,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
             builder.Map(u => u.Type, new EntityMappingOptions() { Index = "Idx_User_Type" });
             builder.Map(u => u.Username, new EntityMappingOptions() { Length = 255 });
             builder.Map(u => u.PasswordJson);
-            builder.References(u => u.OwnerTenant, new EntityMappingOptions() { Nullable = false });
+            builder.References(u => u.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
             builder.Map(u => u.CreateTime, new EntityMappingOptions() { Index = "Idx_User_CreateTime" });
             builder.Map(u => u.UpdateTime);
             builder.Map(u => u.ItemsJson);
@@ -170,7 +170,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
             builder.Map(u => u.Deleted);
             builder.HasMany(r => r.Roles);
 
-            //builder.References(u => u.Employee, new EntityMappingOptions() { Nullable = false });
+            //builder.References(u => u.Employee, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
 
             //单向配置
             //nativeBuilder.HasOne(u => u.Employee)

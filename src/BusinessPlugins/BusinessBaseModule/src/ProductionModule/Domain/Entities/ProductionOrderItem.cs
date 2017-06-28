@@ -135,7 +135,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
+            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
             //主从表
             nativeBuilder.HasOne(i => i.ProductionOrder)
                 .WithMany(i => i.Items)

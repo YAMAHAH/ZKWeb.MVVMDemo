@@ -1,4 +1,6 @@
-﻿using BusinessPlugins.WarehouseModule.Domain.Entities;
+﻿using BusinessPlugins.PurchaseModule.Domain.Entities;
+using BusinessPlugins.SalesModule.Domain.Entities;
+using BusinessPlugins.WarehouseModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -43,6 +45,16 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         /// </summary>
         public Guid CompanyCodeId { get; set; }
         public CompanyCode CompanyCode { get; set; }
+
+        public Nullable<Guid> SalesOrganizationId { get; set; }
+        public SalesOrganization SalesOrganization { get; set; }
+
+        public Nullable<Guid> DistributionChannelId { get; set; }
+        public DistributionChannel DistributionChannel { get; set; }
+        /// <summary>
+        /// 采购组织
+        /// </summary>
+        public List<PurchaseOrganizationToPlant> PurchaseOrganizations { get; set; }
         #endregion
 
         #region 依赖对象集合引用
@@ -51,6 +63,8 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         /// 一个工厂有多个存储地点
         /// </summary>
         public List<StorageLocation> StorageLocations { get; set; }
+
+        public List<SalesOrgDistrToPlant> SalesOrganizationDistributions { get; set; }
         #endregion
 
         #region 实体配置
@@ -58,12 +72,25 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
+            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
+            builder.HasMany(p => p.SalesOrganizationDistributions);
+            //采购组织
+            builder.HasMany(p => p.PurchaseOrganizations);
 
+            //公司代码
             nativeBuilder.HasOne(p => p.CompanyCode)
                 .WithMany(cc => cc.plants)
                 .HasForeignKey(p => p.CompanyCodeId)
                 .OnDelete(DeleteBehavior.Restrict);
+            nativeBuilder.HasOne(p => p.SalesOrganization)
+                .WithMany(o => o.Plants)
+                .HasForeignKey(p => p.SalesOrganizationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            nativeBuilder.HasOne(p => p.DistributionChannel)
+               .WithMany(o => o.Plants)
+               .HasForeignKey(p => p.DistributionChannelId)
+               .OnDelete(DeleteBehavior.Restrict);
         }
         #endregion
     }

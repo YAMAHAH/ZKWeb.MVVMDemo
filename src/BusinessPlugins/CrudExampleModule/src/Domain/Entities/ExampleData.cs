@@ -63,7 +63,7 @@ namespace BusinessPlugins.CrudExampleModule.Domain.Entities
             builder.Map(e => e.CreateTime, new EntityMappingOptions() { Index = "Idx_ExampleData_CreateTime" });
             builder.Map(e => e.UpdateTime);
             builder.Map(e => e.Deleted);
-            builder.References(e => e.OwnerTenant, new EntityMappingOptions() { Nullable = false });
+            builder.References(e => e.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
         }
     }
 }

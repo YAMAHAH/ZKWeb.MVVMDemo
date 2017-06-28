@@ -1,19 +1,18 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
-using BusinessPlugins.OrganizationModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
-using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
+namespace BusinessPlugins.PurchaseModule.Domain.Entities
 {
     /// <summary>
-    /// 产品类别
+    /// 采购组
+    /// 不与任何其它组织机构分配,只应用于主数据和凭证中,如物料主数据,采购信息记录,采购订单等
     /// </summary>
     [ExportMany]
-    public class MaterialGroup : IFullAudit<MaterialGroup, Guid>
+    public class PurchaseGroup : IFullAudit<PurchaseGroup, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -24,32 +23,27 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 物料组基本信息
-        public string MaterialGroupNo { get; set; }
-        public string MaterialGroupName { get; set; }
+        #region 主数据属性
+        /// <summary>
+        /// 采购组编码
+        /// 整个集团中唯一的值
+        /// </summary>
+        public string PurchaseGroupCode { get; set; }
+        public string PurchaseGroupName { get; set; }
         public string Remark { get; set; }
         #endregion
+
         #region 依赖对象引用
-        /// <summary>
-        /// 工厂
-        /// </summary>
-        public Guid PlantId { get; set; }
-        public Plant Plant { get; set; }
+   
         #endregion
 
-        #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<MaterialGroup> builder)
+
+        public void Configure(IEntityMappingBuilder<PurchaseGroup> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
-
-            //工厂
-            nativeBuilder.HasOne(i => i.Plant)
-                .WithMany()
-                .HasForeignKey(i => i.PlantId)
-                .OnDelete(DeleteBehavior.Restrict);
+           
         }
-        #endregion
     }
 }

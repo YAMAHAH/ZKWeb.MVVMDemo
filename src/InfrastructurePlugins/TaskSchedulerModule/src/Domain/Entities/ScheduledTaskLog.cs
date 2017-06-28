@@ -41,7 +41,7 @@ namespace InfrastructurePlugins.TaskSchedulerModule.Domain.Entities
         public void Configure(IEntityMappingBuilder<ScheduledTaskLog> builder)
         {
             builder.Id(t => t.Id);
-            builder.References(t => t.Task, new EntityMappingOptions() { Nullable = false });
+            builder.References(t => t.Task, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
             builder.Map(t => t.CreateTime);
             builder.Map(t => t.Success);
             builder.Map(t => t.Error);

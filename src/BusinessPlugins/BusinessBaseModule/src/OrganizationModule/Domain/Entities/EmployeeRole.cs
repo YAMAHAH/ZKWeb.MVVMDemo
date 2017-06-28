@@ -39,7 +39,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false });
+            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
 
             nativeBuilder.HasOne(er => er.Employee)
                 .WithMany(e => e.EmployeeRoles)

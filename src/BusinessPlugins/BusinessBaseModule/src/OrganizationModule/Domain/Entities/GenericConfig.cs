@@ -52,7 +52,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
             builder.Id(c => c.Id);
             builder.Map(c => c.Key);
             builder.Map(c => c.Value);
-            builder.References(c => c.OwnerTenant, new EntityMappingOptions() { Nullable = false });
+            builder.References(c => c.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
             builder.Map(c => c.CreateTime);
             builder.Map(c => c.UpdateTime);
         }
