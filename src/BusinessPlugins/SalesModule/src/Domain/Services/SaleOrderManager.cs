@@ -19,11 +19,11 @@ namespace BusinessPlugins.SalesModule.Domain.Services
             else
             {
                 var existEntity = UnitRepository.Query()
-                    .Include(h => h.SaleOrderDetails)
+                    .Include(h => h.Items)
                     .Where(h => h.Id == saleOrder.Id)
                     .FirstOrDefault();
 
-                UnitRepository.UpdateMany(existEntity, saleOrder, h => h.SaleOrderDetails, mx => mx.Id, (mx1, mx2) => mx1.Id == mx2.Id);
+                UnitRepository.UpdateMany(existEntity, saleOrder, h => h.Items, mx => mx.Id, (mx1, mx2) => mx1.Id == mx2.Id);
             }
         }
 

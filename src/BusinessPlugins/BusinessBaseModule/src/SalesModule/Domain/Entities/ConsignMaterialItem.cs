@@ -1,22 +1,21 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
-using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionModule.Domain.Entities
+namespace BusinessPlugins.SalesModule.Domain.Entities
 {
     /// <summary>
-    /// 生产订单项目
+    /// 客供料行
     /// </summary>
     [ExportMany]
-    public class ProductionOrderItem : IFullAudit<ProductionOrderItem, Guid>
+    public class ConsignMaterialItem : IFullAudit<ConsignMaterialItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -25,9 +24,10 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         public bool Deleted { get; set; }
         public Guid OwnerTenantId { get; set; }
         public Tenant OwnerTenant { get; set; }
+
         #endregion
 
-        #region 生产订单行基本信息
+        #region 主数据属性
         /// <summary>
         /// 明细序号
         /// </summary>
@@ -54,7 +54,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// <summary>
         /// 生产数量
         /// </summary>
-        public double ProductionQty { get; set; }
+        public double ConsignQty { get; set; }
         /// <summary>
         /// 完成数量
         /// </summary>
@@ -63,22 +63,6 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 剩余数量 计算字段
         /// </summary>
         public double RemainingQty { get; set; }
-        /// <summary>
-        /// 单价
-        /// </summary>
-        public double Price { get; set; }
-        /// <summary>
-        /// 金额 计算字段
-        /// </summary>
-        public double Amount { get; set; }
-        /// <summary>
-        /// 含税单价
-        /// </summary>
-        public double TaxPrice { get; set; }
-        /// <summary>
-        /// 含税金额 计算字段
-        /// </summary>
-        public double TaxAmount { get; set; }
 
         /// <summary>
         /// 完成率 计算字段
@@ -89,15 +73,6 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 需求日期
         /// </summary>
         public DateTime NeedDate { get; set; }
-
-        /// <summary>
-        /// 上线日期   ScheduleDate
-        /// </summary>
-        public DateTime OnlineDate { get; set; }
-        /// <summary>
-        /// 完工日期
-        /// </summary>
-        public DateTime CompletionDate { get; set; }
         /// <summary>
         /// 是否完成
         /// </summary>
@@ -110,58 +85,51 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 备注
         /// </summary>
         public string Remark { get; set; }
+
         #endregion
 
         #region 依赖对象引用
-
         /// <summary>
-        /// 产品
+        /// 产品版次
         /// </summary>
-        public Guid ProductId { get; set; }
-        public Product Product { get; set; }
-        /// <summary>
-        /// 生产订单
-        /// </summary>
-        public Guid ProductionOrderId { get; set; }
-        public ProductionOrder ProductionOrder { get; set; }
-
-        /// <summary>
-        /// 销售订单行
-        /// </summary>
+        public Guid ProductVersionId { get; set; }
+        public ProductVersion ProductVersion { get; set; }
+        public Guid ConsignMaterialOrderId { get; set; }
+        public ConsignMaterialOrder ConsignMaterialOrder { get; set; }
         public Nullable<Guid> SalesOrderItemId { get; set; }
-        public SaleOrderItem SalesOrderItem { get; set; }
+        public SaleOrderItem SaleOrderItem { get; set; }
 
         #endregion
 
-
-        public void Configure(IEntityMappingBuilder<ProductionOrderItem> builder)
+        #region 实体关系配置
+        public void Configure(IEntityMappingBuilder<ConsignMaterialItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
-            //主从表
-            nativeBuilder.HasOne(i => i.ProductionOrder)
-                .WithMany(i => i.Items)
-                .HasForeignKey(i => i.ProductionOrderId);
-            //产品
-            nativeBuilder.HasOne(i => i.Product)
-                .WithMany()
-                .HasForeignKey(i => i.ProductId);
-
+            //builder.References(p => p.OwnerTenant, new EntityMappingOptions()
+            //{
+            //    Nullable = false,
+            //    CascadeDelete = false
+            //});
+            builder.HasMany(p => p.OwnerTenant, p => p.OwnerTenantId);
+            //客供料订单
+            builder.HasMany(i => i.ConsignMaterialOrder, o => o.Items, i => i.ConsignMaterialOrderId);
             //销售订单Item
-            nativeBuilder.HasOne(i => i.SalesOrderItem)
-                .WithMany()
-                .HasForeignKey(i => i.SalesOrderItemId);
-            //计算列
+            builder.HasMany(i => i.SaleOrderItem, i => i.SalesOrderItemId);
+            //产品版次
+            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            //剩余数量
             nativeBuilder.Property(i => i.RemainingQty)
-                .HasComputedColumnSql("[ProductionQty] - [FinishQty]");
-            nativeBuilder.Property(i => i.TaxAmount)
-                .HasComputedColumnSql("[TaxPrice]*[ProductionQty]");
-            nativeBuilder.Property(i => i.Amount)
-              .HasComputedColumnSql("[Price]*[ProductionQty]");
-
+              .HasComputedColumnSql("[ConsignQty] - [FinishQty]");
+            //重量
             nativeBuilder.Property(i => i.Weight)
-                .HasComputedColumnSql("[SingleWeight] * [ProductionQty] * [UnitRate]");
+                .HasComputedColumnSql("[SingleWeight] * [ConsignQty] * [UnitRate]");
+            //完成率
+            nativeBuilder.Property(i => i.FinishRate)
+                .HasComputedColumnSql("[FinishQty] / [ConsignQty]");
+
+            nativeBuilder.Property(i => i.Unit).HasMaxLength(10);
         }
+        #endregion
     }
 }

@@ -10,7 +10,7 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 {
     /// <summary>
-    /// 产品
+    /// 物料
     /// </summary>
     [ExportMany]
     public class Product :
@@ -76,7 +76,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// <summary>
         /// 是否虚拟件
         /// </summary>
-        public bool IsPhantomItem { get; set; }
+        public bool IsPhantom { get; set; }
         #endregion
 
         public List<ProductVersion> ProductVersions { get; set; } = new List<ProductVersion>();

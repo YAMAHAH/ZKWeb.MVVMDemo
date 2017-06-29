@@ -27,25 +27,57 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         public Guid OwnerTenantId { get; set; }
         #endregion
 
-        #region 树型结构
-        public List<Department> Childs { get; set; }
-        public Guid RootId { get; set; }
+        #region 依赖对象引用
+        /// <summary>
+        /// 父结点
+        /// </summary>
         public Guid? ParentId { get; set; }
         public Department Parent { get; set; }
-        #endregion
-
-        public string DepartmentNo { get; set; }
-        public string DepartmentName { get; set; }
-        public string Remark { get; set; }
-
-        #region StockIn
-       // public List<StockIn> StockIns { get; set; } = new List<StockIn>();
-        #endregion
-
+        /// <summary>
+        /// 子结点集合
+        /// </summary>
+        public List<Department> Childs { get; set; }
         /// <summary>
         /// 部门所拥有的岗位
         /// </summary>
         public IList<PostGroupDepartment> PostGroupDepartments { get; set; } = new List<PostGroupDepartment>();
+        #endregion
+
+        #region 主数据基本属性
+        /// <summary>
+        /// 部门编码
+        /// </summary>
+        public string DepartmentCode { get; set; }
+        /// <summary>
+        /// 部门名称
+        /// </summary>
+        public string DepartmentName { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Remark { get; set; }
+        #endregion
+
+        #region 预排序遍历树算法
+        /// <summary>
+        /// 结点的根结点
+        /// </summary>
+        public Guid RootId { get; set; }
+        /// <summary>
+        /// 左结点序号
+        /// 预排序遍历树算法
+        /// </summary>
+        public int Lft { get; set; }
+        /// <summary>
+        /// 右结点序号
+        /// 预排序遍历树算法
+        /// </summary>
+        public int Rgt { get; set; }
+        /// <summary>
+        /// 结点所在的层次
+        /// </summary>
+        public int Level { get; set; }
+        #endregion
 
         public void Configure(IEntityMappingBuilder<Department> builder)
         {
