@@ -11,7 +11,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DatabaseInitializeHandler
     {
         public void ConvertTableName(ref string tableName)
         {
-            tableName = "ZKWeb_" + tableName;
+            
         }
     }
 }

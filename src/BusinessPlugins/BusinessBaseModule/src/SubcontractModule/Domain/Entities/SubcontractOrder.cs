@@ -6,17 +6,16 @@ using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.SubcontractingModule.Domain.Entities
+namespace BusinessPlugins.SubcontractModule.Domain.Entities
 {
     /// <summary>
     /// 外包订单
     /// </summary>
     [ExportMany]
-    public class SubcontractingOrder : IFullAudit<SubcontractingOrder, Guid>
+    public class SubcontractOrder : IFullAudit<SubcontractOrder, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -80,7 +79,7 @@ namespace BusinessPlugins.SubcontractingModule.Domain.Entities
         /// <summary>
         /// 外包Item
         /// </summary>
-        public List<SubcontractingOrderItem> Items { get; set; }
+        public List<SubcontractOrderItem> Items { get; set; }
         #endregion
 
         #endregion
@@ -91,7 +90,7 @@ namespace BusinessPlugins.SubcontractingModule.Domain.Entities
         #endregion
 
 
-        public void Configure(IEntityMappingBuilder<SubcontractingOrder> builder)
+        public void Configure(IEntityMappingBuilder<SubcontractOrder> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);

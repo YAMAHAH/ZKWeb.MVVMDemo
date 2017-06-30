@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ZKWeb.MVVMDemo.AspNetCore
 {
+    //(Server=(localdb)\mssqllocaldb;Database=sedb;trusted_Connection=True;
+    //Server=localhost;Database=ZKWebdb;User Id=root;Password=99B3AD6E;
     /// <summary>
     /// Asp.Net Core Main Program
     /// </summary>

@@ -39,7 +39,7 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         public Nullable<Guid> CompanyCodeId { get; set; }
         public CompanyCode CompanyCode { get; set; }
 
-        public List<PurchaseOrganizationToPlant> Plants { get; set; }
+        public List<PurchaseOrgToPlant> Plants { get; set; }
         /// <summary>
         /// 采购项目
         /// </summary>

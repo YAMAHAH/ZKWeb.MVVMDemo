@@ -10,13 +10,13 @@ using System.Text;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.SubcontractingModule.Domain.Entities
+namespace BusinessPlugins.SubcontractModule.Domain.Entities
 {
     /// <summary>
     /// 外包订单项目
     /// </summary>
     [ExportMany]
-    public class SubcontractingOrderItem : IFullAudit<SubcontractingOrderItem, Guid>
+    public class SubcontractOrderItem : IFullAudit<SubcontractOrderItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -120,14 +120,14 @@ namespace BusinessPlugins.SubcontractingModule.Domain.Entities
         /// 外包订单
         /// </summary>
         public Guid SubcontractingOrderId { get; set; }
-        public SubcontractingOrder SubcontractingOrder { get; set; }
+        public SubcontractOrder SubcontractingOrder { get; set; }
         #endregion
 
         #region 销售订单行关联
         public Nullable<Guid> SaleOrderItemId { get; set; }
         public SaleOrderItem SaleOrderItem { get; set; }
         #endregion
-        public void Configure(IEntityMappingBuilder<SubcontractingOrderItem> builder)
+        public void Configure(IEntityMappingBuilder<SubcontractOrderItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);

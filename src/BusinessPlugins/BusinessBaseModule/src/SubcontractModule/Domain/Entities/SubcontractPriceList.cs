@@ -9,13 +9,14 @@ using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.SalesModule.Domain.Entities
+
+namespace BusinessPlugins.SubcontractModule.Domain.Entities
 {
     /// <summary>
-    /// 销售价目表
+    /// 外包价目表
     /// </summary>
     [ExportMany]
-    public class SalesPriceList : IFullAudit<SalesPriceList, Guid>
+    public class SubcontractPriceList : IFullAudit<SubcontractPriceList, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -36,6 +37,11 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// </summary>
         public double EndRange { get; set; }
         /// <summary>
+        /// 最新生效日期
+        /// 业务日期大于等于生效日期
+        /// </summary>
+        public Nullable<DateTime> FromDate { get; set; }
+        /// <summary>
         /// 单位
         /// </summary>
         public string Unit { get; set; }
@@ -43,11 +49,6 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// 单位转换率
         /// </summary>
         public double UnitRate { get; set; }
-        /// <summary>
-        /// 最新生效日期
-        /// 业务日期大于等于生效日期
-        /// </summary>
-        public Nullable<DateTime> FromDate { get; set; }
         /// <summary>
         /// 单价
         /// </summary>
@@ -59,48 +60,42 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         #endregion
 
         #region 依赖对象引用
-        /// <summary>
-        /// 产品版次
-        /// </summary>
-        public Guid ProductVersionId { get; set; }
-        public ProductVersion ProductVersion { get; set; }
 
         /// <summary>
-        /// 客户
+        ///  外包商
         /// </summary>
-        public Guid CustomerId { get; set; }
-        public Partner Customer { get; set; }
+        public Guid SubcontractorId { get; set; }
+        public Partner Subcontractor { get; set; }
+        /// <summary>
+        /// 工序
+        /// </summary>
+        public Guid ProcessStepId { get; set; }
+        public ProcessStep ProcessStep { get; set; }
         /// <summary>
         /// 货币
         /// </summary>
-        /// <param name="builder"></param>
         public Guid CurrencyId { get; set; }
         public Currency Currency { get; set; }
-        /// <summary>
-        /// 客户信息
-        /// </summary>
-        public Nullable<Guid> CustomerInfoId { get; set; }
-        public CustomerMaterialInfo CustomerMaterialInfo { get; set; }
+
         #endregion
 
         #region 实体配置
-        public void Configure(IEntityMappingBuilder<SalesPriceList> builder)
+        public void Configure(IEntityMappingBuilder<SubcontractPriceList> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
-            nativeBuilder.HasKey(p => new { p.Id, p.CustomerId, p.ProductVersionId, p.Unit, p.FromDate, p.StartRange })
-                .HasName("SalesPriceId");
+
+            nativeBuilder.HasKey(p => new { p.Id, p.SubcontractorId, p.ProcessStepId, p.Unit, p.FromDate, p.StartRange })
+               .HasName("SubcontractPriceId");
+
             builder.Map(p => p.Unit, new EntityMappingOptions() { Length = 10 });
 
             builder.HasMany(p => p.OwnerTenant, p => p.OwnerTenantId);
 
-            builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
-
-            builder.HasMany(p => p.Customer, p => p.CustomerId);
+            builder.HasMany(p => p.Subcontractor, p => p.SubcontractorId);
 
             builder.HasMany(p => p.Currency, p => p.CurrencyId);
 
-            builder.HasOne(p => p.CustomerMaterialInfo, p => p.CustomerInfoId);
-
+            builder.HasMany(p => p.ProcessStep, p => p.ProcessStepId);
         }
         #endregion
     }

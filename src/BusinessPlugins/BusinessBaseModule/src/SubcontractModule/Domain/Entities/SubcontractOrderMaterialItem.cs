@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BusinessPlugins.SubcontractingModule.Domain.Entities
+namespace BusinessPlugins.SubcontractModule.Domain.Entities
 {
     /// <summary>
     /// 外包订单物料明细
     /// </summary>
-    class SubcontractingOrderMaterialIDetail
+    class SubcontractOrderMaterialItem
     {
     }
 }

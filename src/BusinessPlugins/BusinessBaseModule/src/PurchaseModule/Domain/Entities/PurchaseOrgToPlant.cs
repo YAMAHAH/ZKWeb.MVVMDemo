@@ -16,7 +16,7 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
     /// 采购组织到工厂的多对多关联表
     /// </summary>
     [ExportMany]
-    public class PurchaseOrganizationToPlant : ManyToManyEntityBase<PurchaseOrganization, Plant, PurchaseOrganizationToPlant>
+    public class PurchaseOrgToPlant : ManyToManyEntityBase<PurchaseOrganization, Plant, PurchaseOrgToPlant>
     {
 
     }

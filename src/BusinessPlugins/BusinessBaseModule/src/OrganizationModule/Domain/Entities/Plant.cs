@@ -54,7 +54,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         /// <summary>
         /// 采购组织
         /// </summary>
-        public List<PurchaseOrganizationToPlant> PurchaseOrganizations { get; set; }
+        public List<PurchaseOrgToPlant> PurchaseOrganizations { get; set; }
         #endregion
 
         #region 依赖对象集合引用

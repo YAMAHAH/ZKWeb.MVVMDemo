@@ -1,7 +1,7 @@
 ﻿using ZKWeb.Plugin;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.SubcontractingModule
+namespace BusinessPlugins.SubcontractModule
 {
     /// <summary>
     /// 插件载入时的处理

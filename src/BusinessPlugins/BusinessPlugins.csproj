@@ -15,14 +15,14 @@
     <Folder Include="BusinessBaseModule\src\PurchaseModule\Domain\Services\" />
     <Folder Include="BusinessBaseModule\src\QualityControlModule\Domain\Entities\" />
     <Folder Include="BusinessBaseModule\src\QualityControlModule\Domain\Services\" />
-    <Folder Include="BusinessBaseModule\src\SubcontractingModule\Domain\Services\" />
+    <Folder Include="BusinessBaseModule\src\SubcontractModule\Domain\Services\" />
     <Folder Include="BusinessBaseModule\src\WarehouseModule\Domain\Services\" />
     <Folder Include="FinanceModule\src\Domain\" />
     <Folder Include="ProductionModule\src\Domain\Services\" />
     <Folder Include="ProductionPlanModule\src\Domain\Services\" />
     <Folder Include="PurchaseModule\src\Domain\Services\" />
     <Folder Include="QualityControlModule\src\Domain\Services\" />
-    <Folder Include="SubcontractingModule\src\Domain\Services\" />
+    <Folder Include="SubcontractModule\src\Domain\Services\" />
     <Folder Include="WarehouseModule\src\Domain\Services\" />
   </ItemGroup>
 

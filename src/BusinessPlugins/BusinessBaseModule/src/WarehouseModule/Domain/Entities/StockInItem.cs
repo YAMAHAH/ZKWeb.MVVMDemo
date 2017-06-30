@@ -4,7 +4,7 @@ using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using BusinessPlugins.ProductionModule.Domain.Entities;
 using BusinessPlugins.PurchaseModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
-using BusinessPlugins.SubcontractingModule.Domain.Entities;
+using BusinessPlugins.SubcontractModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -104,7 +104,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         #region 外包订单行关联
 
         public Nullable<Guid> SubcontractingOrderItemId { get; set; }
-        public SubcontractingOrderItem SubcontractingOrderItem { get; set; }
+        public SubcontractOrderItem SubcontractingOrderItem { get; set; }
         #endregion
 
         #region 实体关系配置

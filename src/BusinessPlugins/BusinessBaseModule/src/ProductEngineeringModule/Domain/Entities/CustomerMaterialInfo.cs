@@ -51,11 +51,6 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// </summary>
         public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
-        /// <summary>
-        /// 产品
-        /// </summary>
-        public Guid ProductId { get; set; }
-        public Product Product { get; set; }
 
         /// <summary>
         /// 合作伙伴
@@ -76,12 +71,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
                 .WithMany()
                 .HasForeignKey(i => i.ProductVersionId)
                 .OnDelete(DeleteBehavior.Restrict);
-            //产品
-            nativeBuilder.HasOne(i => i.Product)
-                .WithMany()
-                .HasForeignKey(i => i.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
- 
+          
             //合作伙伴
             nativeBuilder.HasOne(i => i.Partner)
                 .WithMany()

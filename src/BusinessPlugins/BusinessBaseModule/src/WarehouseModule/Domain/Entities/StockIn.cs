@@ -3,7 +3,7 @@ using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductionModule.Domain.Entities;
 using BusinessPlugins.PurchaseModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
-using BusinessPlugins.SubcontractingModule.Domain.Entities;
+using BusinessPlugins.SubcontractModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -111,7 +111,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 
         public Nullable<Guid> SubcontractingOrderId { get; set; }
 
-        public SubcontractingOrder SubcontractingOrder { get; set; }
+        public SubcontractOrder SubcontractingOrder { get; set; }
         #endregion
 
         #endregion
