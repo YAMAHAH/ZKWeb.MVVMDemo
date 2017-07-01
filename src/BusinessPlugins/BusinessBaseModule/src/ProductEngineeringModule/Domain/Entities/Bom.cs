@@ -3,6 +3,7 @@ using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.BaseModule.Domain.Entities.Interfaces;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities.Interfaces;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
 using ZKWeb.Database;
@@ -105,19 +106,22 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
 
+            //Tenant
+            builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
+
+            //parent
             builder.HasMany(b => b.Parent, b => b.Childs, b => b.ParentId);
 
             nativeBuilder.HasOne(b => b.NodeVersion)
                 .WithMany(pv => pv.NodeRefs)
                 .HasForeignKey(b => b.NodeVersionId)
-                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);
 
             nativeBuilder.HasOne(b => b.RootVersion)
                 .WithMany(pv => pv.RootRefs)
                 .HasForeignKey(b => b.RootVersionId)
-                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

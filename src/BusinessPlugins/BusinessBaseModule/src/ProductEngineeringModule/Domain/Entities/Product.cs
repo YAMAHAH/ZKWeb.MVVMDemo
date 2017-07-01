@@ -72,7 +72,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// <summary>
         /// 是否客供料
         /// </summary>
-        public bool IsConsignMaterial { get; set; }
+        public bool IsConsignItem { get; set; }
         /// <summary>
         /// 是否虚拟件
         /// </summary>

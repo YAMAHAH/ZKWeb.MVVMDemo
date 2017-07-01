@@ -24,7 +24,6 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
 
         #endregion
-
         #region 损耗范围基本信息
         /// <summary>
         /// 序号

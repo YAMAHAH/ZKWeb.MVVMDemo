@@ -10,6 +10,8 @@ using ZKWeb.ORM.EFCore;
 using ZKWebStandard.Ioc;
 using BusinessPlugins.OrganizationModule.Domain;
 using Microsoft.EntityFrameworkCore;
+using BusinessPlugins.ProductionPlanModule.Domain.Entities;
+using System.Collections.Generic;
 
 namespace BusinessPlugins.SalesModule.Domain.Entities
 {
@@ -129,6 +131,15 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// </summary>
         public Guid SaleOrderId { get; set; }
         public SaleOrder SaleOrder { get; set; }
+        /// <summary>
+        /// MpsItems
+        /// </summary>
+        public List<MpsItem> MpsItems { get; set; } = new List<MpsItem>();
+        /// <summary>
+        /// MrpItems
+        /// </summary>
+        public List<MrpItem> MrpItems { get; set; } = new List<MrpItem>();
+
         #endregion
 
         public void Configure(IEntityMappingBuilder<SaleOrderItem> builder)

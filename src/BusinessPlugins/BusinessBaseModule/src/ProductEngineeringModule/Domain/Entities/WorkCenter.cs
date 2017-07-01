@@ -25,7 +25,6 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 
 
         #endregion
-
         #region 实体关系配置
         public void Configure(IEntityMappingBuilder<WorkCenter> builder)
         {
@@ -62,7 +61,6 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         public bool IsDisabled { get; set; }
         public string Remark { get; set; }
         #endregion
-
         #region 依赖对象引用
         /// <summary>
         /// 工厂ID
