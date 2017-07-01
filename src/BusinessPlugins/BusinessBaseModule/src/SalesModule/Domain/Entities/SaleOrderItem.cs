@@ -1,17 +1,13 @@
-﻿using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using ZKWeb.Database;
-using InfrastructurePlugins.BaseModule.Components.Extensions;
-using InfrastructurePlugins.BaseModule.Domain.Entities.Interfaces;
-using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
-using InfrastructurePlugins.MultiTenantModule.Domain.Entities.Interfaces;
-using ZKWeb.ORM.EFCore;
-using ZKWebStandard.Ioc;
-using BusinessPlugins.OrganizationModule.Domain;
-using Microsoft.EntityFrameworkCore;
+﻿using BusinessPlugins.OrganizationModule.Domain;
+using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using BusinessPlugins.ProductionPlanModule.Domain.Entities;
+using InfrastructurePlugins.BaseModule.Components.Extensions;
+using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using ZKWeb.Database;
+using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.SalesModule.Domain.Entities
 {
@@ -63,7 +59,15 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// <summary>
         /// 剩余数量 计算字段
         /// </summary>
-        public double RemainingQty { get; set; }
+        public double RemainQty { get; set; }
+        /// <summary>
+        /// 排程完成数量
+        /// </summary>
+        public decimal ScheduleFinishQty { get; set; }
+        /// <summary>
+        /// 排程剩余数量
+        /// </summary>
+        public decimal ScheduleRemainQty { get; set; }
         /// <summary>
         /// 单价
         /// </summary>
@@ -146,14 +150,15 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
-
+            //Tenant
+            builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
+            //SaleOrder
             builder.HasMany(i => i.SaleOrder, o => o.Items, i => i.SaleOrderId);
 
             //产品版次
             builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
             //剩余数量
-            nativeBuilder.Property(i => i.RemainingQty)
+            nativeBuilder.Property(i => i.RemainQty)
               .HasComputedColumnSql("[SalesOrderQty] - [FinishQty]");
             //重量
             nativeBuilder.Property(i => i.Weight)
