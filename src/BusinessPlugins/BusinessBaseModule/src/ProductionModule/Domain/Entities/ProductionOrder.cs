@@ -13,6 +13,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
 {
     /// <summary>
     /// 生产订单
+    /// 下达日期[排产日期] 下达期间 基本开始日期 产前缓存时间 生产开始时间 加工时间 生产完成时间 产后缓存时间 基本完成时间[需求日期]
     /// </summary>
     [ExportMany]
     public class ProductionOrder : IFullAudit<ProductionOrder, Guid>
@@ -45,6 +46,26 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 排产日期
         /// </summary>
         public DateTime ScheduleDate { get; set; }
+        /// <summary>
+        /// 下达日期[排产日期]
+        /// </summary>
+        public DateTime IssuedDate { get; set; }
+        /// <summary>
+        /// 基本开始日期 =下达日期 + 计划边际码的下达期间
+        /// </summary>
+        public DateTime BasicStartDate { get; set; }
+        /// <summary>
+        /// 生产开始日期] = 基本开始日期 + 产向缓存时间
+        /// </summary>
+        public DateTime ProductionStartDate { get; set; }  
+        /// <summary>
+        /// 生产完成日期 = 生产开始日期 + 加工时间
+        /// </summary>
+        public DateTime ProductionFinishDate { get; set; }
+        /// <summary>
+        /// 基本完成日期 = 生产完成日期 + 产后缓存时间
+        /// </summary>
+        public DateTime BasicFinishDate { get; set; }
         /// <summary>
         /// 是否完成
         /// </summary>

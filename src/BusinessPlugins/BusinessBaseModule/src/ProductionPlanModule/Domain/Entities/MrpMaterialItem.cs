@@ -123,7 +123,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public List<MrpMaterialItem> Childs { get; set; }
 
         /// <summary>
-        /// 生产部门 
+        /// 生产部门 + 采购类型(客供品/采购/外协/生产)
         /// </summary>
         public Nullable<Guid> DeptId { get; set; }
         public Department ProductionDept { get; set; }

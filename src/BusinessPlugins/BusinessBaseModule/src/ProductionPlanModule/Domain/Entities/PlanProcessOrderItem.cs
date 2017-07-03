@@ -4,7 +4,10 @@ using System.Text;
 
 namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
 {
-    class SubcontractingOrderMaterialPlanDetail
+    /// <summary>
+    /// 产品工序外协加工处理
+    /// </summary>
+    class PlanProcessOrderItem
     {
     }
 }

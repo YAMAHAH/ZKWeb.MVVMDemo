@@ -136,13 +136,37 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public Guid SaleOrderId { get; set; }
         public SaleOrder SaleOrder { get; set; }
         /// <summary>
-        /// MpsItems
+        /// MPS行
         /// </summary>
         public List<MpsItem> MpsItems { get; set; } = new List<MpsItem>();
         /// <summary>
-        /// MrpItems
+        /// MRP行
         /// </summary>
         public List<MrpItem> MrpItems { get; set; } = new List<MrpItem>();
+        /// <summary>
+        /// 计划生产订单行
+        /// </summary>
+        public List<PlanProductionOrderItem> PlanProductionOrderItems { get; set; }
+        /// <summary>
+        /// 计划生产订单物料行
+        /// </summary>
+        public List<PlanProductionOrderMaterialItem> PlanProductionOrderMaterialItems { get; set; }
+        /// <summary>
+        /// 计划外包订单行
+        /// </summary>
+        public List<PlanSubcontractOrderItem> PlanSubcontractOrderItems { get; set; }
+        /// <summary>
+        /// 计划外包订单行
+        /// </summary>
+        public List<PlanSubcontractOrderMaterialItem> PlanSubcontractOrderMaterialItems { get; set; }
+        /// <summary>
+        /// 计划采购订单行
+        /// </summary>
+        public List<PlanPurchaseOrderItem> PlanPurchaseOrderItems { get; set; }
+        /// <summary>
+        /// 计划客供料订单行
+        /// </summary>
+        public List<PlanConsignMaterialOrderItem> PlanConsignMaterialOrderItems { get; set; }
 
         #endregion
 

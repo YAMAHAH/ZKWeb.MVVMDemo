@@ -8,7 +8,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
     /// 独立需求单明细
     /// 处理不属于客户需求的额外需求
     /// </summary>
-    class IndepedentRequirementPlanItem
+    class PlanIndepedentRequirementItem
     {
     }
 }
