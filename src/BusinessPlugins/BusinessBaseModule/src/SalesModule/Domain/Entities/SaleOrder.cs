@@ -1,5 +1,6 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -94,7 +95,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> SalesGroupId { get; set; }
         public SalesGroup SalesGroup { get; set; }
-
+        
         /// <summary>
         /// 项目行
         /// </summary>

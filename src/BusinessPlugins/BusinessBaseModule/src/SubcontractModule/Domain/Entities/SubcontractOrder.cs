@@ -60,11 +60,11 @@ namespace BusinessPlugins.SubcontractModule.Domain.Entities
         /// <summary>
         /// 伙伴ID
         /// </summary>
-        public Guid PartnerId { get; set; }
+        public Guid SubcontractorId { get; set; }
         /// <summary>
         /// 合作伙伴
         /// </summary>
-        public Partner Partner { get; set; }
+        public Partner Subcontractor { get; set; }
 
         /// <summary>
         /// 部门ID
@@ -74,21 +74,18 @@ namespace BusinessPlugins.SubcontractModule.Domain.Entities
         /// 部门
         /// </summary>
         public Department Department { get; set; }
-
-        #region 集合对象
         /// <summary>
-        /// 外包Item
+        /// 销售订单
         /// </summary>
-        public List<SubcontractOrderItem> Items { get; set; }
-        #endregion
-
-        #endregion
-
-        #region 销售订单行关联
         public Nullable<Guid> SaleOrderItemId { get; set; }
         public SaleOrderItem SaleOrderItem { get; set; }
-        #endregion
 
+        /// <summary>
+        /// 外包行
+        /// </summary>
+        public List<SubcontractOrderItem> Items { get; set; }
+
+        #endregion
 
         public void Configure(IEntityMappingBuilder<SubcontractOrder> builder)
         {
@@ -97,9 +94,9 @@ namespace BusinessPlugins.SubcontractModule.Domain.Entities
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
 
             ////合作合伴
-            nativeBuilder.HasOne(i => i.Partner)
+            nativeBuilder.HasOne(i => i.Subcontractor)
                 .WithMany()
-                .HasForeignKey(i => i.PartnerId)
+                .HasForeignKey(i => i.SubcontractorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             ////部门

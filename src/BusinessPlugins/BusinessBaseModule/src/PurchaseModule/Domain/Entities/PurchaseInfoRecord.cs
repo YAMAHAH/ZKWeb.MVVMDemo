@@ -9,14 +9,13 @@ using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-
-namespace BusinessPlugins.SubcontractModule.Domain.Entities
+namespace BusinessPlugins.PurchaseModule.Domain.Entities
 {
     /// <summary>
-    /// 外包价目表
+    /// 采购价目表
     /// </summary>
     [ExportMany]
-    public class SubcontractPriceList : IFullAudit<SubcontractPriceList, Guid>
+    public class PurchaseInfoRecord : IFullAudit<PurchaseInfoRecord, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -54,6 +53,10 @@ namespace BusinessPlugins.SubcontractModule.Domain.Entities
         /// </summary>
         public double Price { get; set; }
         /// <summary>
+        /// 税率
+        /// </summary>
+        public double TaxRate { get; set; }
+        /// <summary>
         /// 备注
         /// </summary>
         public string Remark { get; set; }
@@ -62,14 +65,29 @@ namespace BusinessPlugins.SubcontractModule.Domain.Entities
         #region 依赖对象引用
 
         /// <summary>
-        ///  外包商
+        /// 工厂
         /// </summary>
-        public Guid SubcontractorId { get; set; }
-        public Partner Subcontractor { get; set; }
+        public Nullable<Guid> PlantId { get; set; }
+        public Plant Plant { get; set; }
+        /// <summary>
+        /// 采购组织
+        /// </summary>
+        public Nullable<Guid> PurOrgId { get; set; }
+        public PurchaseOrganization PurchaseOrganization { get; set; }
+        /// <summary>
+        /// 供应商
+        /// </summary>
+        public Nullable<Guid> VendorId { get; set; }
+        public Partner Vendor { get; set; }
+        /// <summary>
+        /// 产品版次
+        /// </summary>
+        public Nullable<Guid> ProductVersionId { get; set; }
+        public ProductVersion ProductVersion { get; set; }
         /// <summary>
         /// 工序
         /// </summary>
-        public Guid ProcessStepId { get; set; }
+        public Nullable<Guid> ProcessStepId { get; set; }
         public ProcessStep ProcessStep { get; set; }
         /// <summary>
         /// 货币
@@ -80,22 +98,29 @@ namespace BusinessPlugins.SubcontractModule.Domain.Entities
         #endregion
 
         #region 实体配置
-        public void Configure(IEntityMappingBuilder<SubcontractPriceList> builder)
+        public void Configure(IEntityMappingBuilder<PurchaseInfoRecord> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
 
-            nativeBuilder.HasKey(p => new { p.Id, p.SubcontractorId, p.ProcessStepId, p.Unit, p.FromDate, p.StartRange })
-               .HasName("SubcontractPriceId");
+            nativeBuilder.HasKey(p => p.Id)
+               .HasName("PurInfoRecordId");
 
             builder.Map(p => p.Unit, new EntityMappingOptions() { Length = 10 });
-
+            //租户
             builder.HasMany(p => p.OwnerTenant, p => p.OwnerTenantId);
-
-            builder.HasMany(p => p.Subcontractor, p => p.SubcontractorId);
-
+            //工厂
+            builder.HasMany(m => m.Plant, m => m.PlantId);
+            //采购组织
+            builder.HasMany(r => r.PurchaseOrganization, r => r.PurOrgId);
+            //厂商
+            builder.HasMany(p => p.Vendor, p => p.VendorId);
+            //产品
+            builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
+            //工序
+            builder.HasMany(p => p.ProcessStep, p => p.ProcessStepId);
+            //货币
             builder.HasMany(p => p.Currency, p => p.CurrencyId);
 
-            builder.HasMany(p => p.ProcessStep, p => p.ProcessStepId);
         }
         #endregion
     }

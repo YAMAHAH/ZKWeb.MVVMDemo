@@ -1,19 +1,20 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
+using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
-using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
 {
     /// <summary>
-    /// 客供料
+    /// 采购申请物料
     /// </summary>
     [ExportMany]
-    public class PlanConsignMaterialOrder : IFullAudit<PlanConsignMaterialOrder, Guid>
+    public class PurReqMatItem : IFullAudit<PurReqMatItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -25,19 +26,9 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         #endregion
 
         #region 计划生产订单主数据属性
-        /// <summary>
-        /// 计划客供料订单号码
-        /// </summary>
-        public string PlanConsignOrderNo { get; set; }
-        /// <summary>
-        /// 计划日期
-        /// </summary>
-        public DateTime PlanDate { get; set; }
-        /// <summary>
-        /// 需求日期
-        /// </summary>
 
-        public DateTime NeedDate { get; set; }
+
+
         /// <summary>
         /// 是否完成
         /// </summary>
@@ -58,27 +49,51 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
         /// <summary>
-        /// 计划外包商
+        /// 采购申请行
         /// </summary>
-        public Guid CustomerId { get; set; }
-        public Partner Customer { get; set; }
+        public Guid PurchaseRequestItemId { get; set; }
+        public PurReqItem PurchaseRequestItem { get; set; }
+
         /// <summary>
-        /// 明细行
+        /// 产品版次
         /// </summary>
-        public List<PlanConsignMaterialOrderItem> Items { get; set; }
+        public Guid ProductVersionId { get; set; }
+        public ProductVersion ProductVersion { get; set; }
+        ///// <summary>
+        ///// 销售订单行
+        ///// </summary>
+        //public Nullable<Guid> SaleOrderItemId { get; set; }
+        //public SaleOrderItem SaleOrderItem { get; set; }
+
+        /// <summary>
+        /// 主需求计划行
+        /// </summary>
+        public Nullable<Guid> MdsItemId { get; set; }
+        public MdsItem MdsItem { get; set; }
+
+        /// <summary>
+        /// 预留
+        /// </summary>
+        public Reservation Reservation { get; set; }
         #endregion
 
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<PlanConsignMaterialOrder> builder)
+        public void Configure(IEntityMappingBuilder<PurReqMatItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            //Tenant
+            //租户
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
-            //外包商
-            builder.HasMany(s => s.Customer, s => s.CustomerId);
+            //采购申请行
+            builder.HasMany(p => p.PurchaseRequestItem, p => p.PurchaseRequestItemId);
+            //销售订单
+            //builder.HasMany(i => i.SaleOrderItem, s => s.PurchaseRequestMaterialItems, i => i.SaleOrderItemId);
+            //MdsItem
+            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PurReqMatItems, i => i.MdsItemId);
+            //产品版次
+            builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
         }
         #endregion
     }

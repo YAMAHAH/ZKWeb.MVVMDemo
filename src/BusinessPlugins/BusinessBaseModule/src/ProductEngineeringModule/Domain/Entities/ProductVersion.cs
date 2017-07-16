@@ -28,9 +28,11 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         public DateTime UpdateTime { get; set; }
         public DateTime CreateTime { get; set; }
 
-        public List<Bom> RootRefs { get; set; } = new List<Bom>();
-        public List<Bom> NodeRefs { get; set; } = new List<Bom>();
+        public List<StandardBom> StandBomRootRefs { get; set; } = new List<StandardBom>();
+        public List<StandardBom> StandBomNodeRefs { get; set; } = new List<StandardBom>();
 
+        public List<ProductOrderBom> ProdOrdBomRootRefs { get; set; } = new List<ProductOrderBom>();
+        public List<ProductOrderBom> ProdOrdBomNodeRefs { get; set; } = new List<ProductOrderBom>();
 
         public void Configure(IEntityMappingBuilder<ProductVersion> builder)
         {

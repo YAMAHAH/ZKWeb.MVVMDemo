@@ -53,7 +53,13 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// 当前库存
         /// </summary>
         public decimal CurrentStock { get; set; }
-       
+        /// <summary>
+        /// 再订货点
+        /// 再订货点 = 安全库存 + 提前期的预测需求
+        /// 当库存水平低于再订货点时,发出订货建议请求
+        /// </summary>
+        public decimal ReorderPoint { get; set; }
+
         /// <summary>
         /// 是否虚拟件
         /// </summary>

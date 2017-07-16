@@ -1,6 +1,9 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
+using BusinessPlugins.ProductionModule.Domain.Entities;
 using BusinessPlugins.ProductionPlanModule.Domain.Entities;
+using BusinessPlugins.PurchaseModule.Domain.Entities;
+using BusinessPlugins.SubcontractModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +28,13 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         #endregion
 
         #region 订单行主数据属性
+
+        /// <summary>
+        /// 子订单号码
+        /// 表内唯一
+        /// 根据这个号码可以找出对应的项
+        /// </summary>
+        public string ChildNo { get; set; }
         /// <summary>
         /// 明细序号
         /// </summary>
@@ -131,43 +141,75 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
         /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+
+        public ProductFeature ProductFeatureValueGroup { get; set; }
+
+        /// <summary>
+        /// 销售订单BOM ID
+        /// </summary>
+
+        public Nullable<Guid> ProdOrdBomId { get; set; }
+
+        public ProductOrderBom ProductOrderBom { get; set; }
+        /// <summary>
         /// 销售订单抬头
         /// </summary>
         public Guid SaleOrderId { get; set; }
         public SaleOrder SaleOrder { get; set; }
         /// <summary>
-        /// MPS行
+        /// 主需求计划行
         /// </summary>
-        public List<MpsItem> MpsItems { get; set; } = new List<MpsItem>();
+        public MdsItem MdsItem { get; set; }
         /// <summary>
-        /// MRP行
+        /// 预留
         /// </summary>
-        public List<MrpItem> MrpItems { get; set; } = new List<MrpItem>();
-        /// <summary>
-        /// 计划生产订单行
-        /// </summary>
-        public List<PlanProductionOrderItem> PlanProductionOrderItems { get; set; }
-        /// <summary>
-        /// 计划生产订单物料行
-        /// </summary>
-        public List<PlanProductionOrderMaterialItem> PlanProductionOrderMaterialItems { get; set; }
-        /// <summary>
-        /// 计划外包订单行
-        /// </summary>
-        public List<PlanSubcontractOrderItem> PlanSubcontractOrderItems { get; set; }
-        /// <summary>
-        /// 计划外包订单行
-        /// </summary>
-        public List<PlanSubcontractOrderMaterialItem> PlanSubcontractOrderMaterialItems { get; set; }
-        /// <summary>
-        /// 计划采购订单行
-        /// </summary>
-        public List<PlanPurchaseOrderItem> PlanPurchaseOrderItems { get; set; }
-        /// <summary>
-        /// 计划客供料订单行
-        /// </summary>
-        public List<PlanConsignMaterialOrderItem> PlanConsignMaterialOrderItems { get; set; }
+        public Reservation Reservation { get; set; }
+        ///// <summary>
+        ///// MPS行
+        ///// </summary>
+        //public List<MpsItem> MpsItems { get; set; } = new List<MpsItem>();
+        ///// <summary>
+        ///// MRP行
+        ///// </summary>
+        //public List<MrpItem> MrpItems { get; set; } = new List<MrpItem>();
+        ///// <summary>
+        ///// 计划生产订单行
+        ///// </summary>
+        //public List<PlannedOrderItem> PlannedOrderItems { get; set; }
+        ///// <summary>
+        ///// 计划生产订单物料行
+        ///// </summary>
+        //public List<PlannedOrderMaterialItem> PlannedOrderMaterialItems { get; set; }
 
+        ///// <summary>
+        ///// 生产订单行
+        ///// </summary>
+        //public List<ProductionOrderItem> ProductionOrderItems { get; set; }
+        ///// <summary>
+        ///// 生产订单物料行
+        ///// </summary>
+        //public List<ProductionMaterialItem> ProductionOrderMaterialItems { get; set; }
+        ///// 采购申请行
+        ///// </summary>
+        //public List<PurchaseRequestItem> PurchaseRequestItems { get; set; }
+        ///// <summary>
+        ///// 采购申请物料行
+        ///// </summary>
+        //public List<PurchaseRequestMaterialItem> PurchaseRequestMaterialItems { get; set; }
+
+        ///// <summary>
+        ///// 采购订单行
+        ///// </summary>
+        //public List<PurchaseOrderItem> PurchaseOrderItems { get; set; }
+        ///// <summary>
+        ///// 采购物料行
+        ///// </summary>
+        //public List<PurchaseMaterialItem> PurchaseMaterialItems { get; set; }
+
+        //public List<SubcontractOrderItem> SubcontractOrderItems { get; set; }
         #endregion
 
         public void Configure(IEntityMappingBuilder<SaleOrderItem> builder)
@@ -181,6 +223,11 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
 
             //产品版次
             builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            //产品特性值
+            builder.HasOne(i => i.ProductFeatureValueGroup, i => i.ProdFeatValGrpId);
+            //生产订单BOM
+            builder.HasMany(i => i.ProductOrderBom, i => i.ProdOrdBomId);
+
             //剩余数量
             nativeBuilder.Property(i => i.RemainQty)
               .HasComputedColumnSql("[SalesOrderQty] - [FinishQty]");

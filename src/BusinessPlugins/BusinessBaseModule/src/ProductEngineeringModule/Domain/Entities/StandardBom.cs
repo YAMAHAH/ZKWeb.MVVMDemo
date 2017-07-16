@@ -1,8 +1,8 @@
-﻿using BusinessPlugins.OrganizationModule.Domain;
+﻿using BusinessPlugins.BaseModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
-using InfrastructurePlugins.BaseModule.Domain.Entities.Interfaces;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
-using InfrastructurePlugins.MultiTenantModule.Domain.Entities.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
@@ -12,11 +12,11 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 {
     /// <summary>
-    /// BOM(Bill Of Material，物料清单)
+    /// 标准BOM(Bill Of Material，物料清单)
     /// 成本BOM,销售BOM,生产BOM/包装BOM,工程BOM的基类
     /// </summary>
     [ExportMany]
-    public class Bom : IFullAudit<Bom, Guid>
+    public class StandardBom : IFullAudit<StandardBom, Guid>
     {
         //一个产品结构必须一个版次,一个结构有零或多个自身结点
 
@@ -38,22 +38,65 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 
         /// <summary>
         /// 用量dosage
-        /// 一个父阶所要的数量
+        /// 一个单位父阶所需要子项的数量
         /// </summary>
         public double SingleTotal { get; set; }
+        /// <summary>
+        /// 一个单位子项对应父项的数量
+        /// </summary>
+        public double Radix { get; set; } = 1;
         /// <summary>
         /// 单位数量
         /// 一个根产品所要的数量
         /// </summary>
-        public double Total { get; set; } = 1;
+        public double Quantity { get; set; } = 1;
         /// <summary>
-        /// 成本
+        /// 固定损耗率
         /// </summary>
-        //public double Cost { get; set; }
-        //public decimal NeedTotal { get; set; }
-        //public decimal MaoTotal { get; set; }
-        //public Decimal MrpTotal { get; set; }
-        //public decimal UsedKc { get; set; }
+        public double FixedLossRate { get; set; }
+        /// <summary>
+        /// 损耗率
+        /// </summary>
+        public double LossRate { get; set; }
+        /// <summary>
+        /// 附加值
+        /// </summary>
+        public double AddedValues { get; set; }
+        /// <summary>
+        /// 发料工序号码
+        /// </summary>
+        public int GoodsIssueProcessNo { get; set; }
+        /// <summary>
+        /// BOM子项状态:未确认,确认,取消
+        /// </summary>
+        public BomItemStatus BomItemStatus { get; set; }
+        /// <summary>
+        /// 插件位置
+        /// 指明子项放在父项的什么位置
+        /// </summary>
+        public string PluginLocation { get; set; }
+        /// <summary>
+        /// 供应商
+        /// </summary>
+        public Nullable<Guid> VendorId { get; set; }
+        public Partner Vendor { get; set; }
+        /// <summary>
+        /// 生效日期
+        /// </summary>
+        public Nullable<DateTime> FromDate { get; set; }
+        /// <summary>
+        /// 失效日期
+        /// </summary>
+        public Nullable<DateTime> ExpiryDate { get; set; }
+
+        /// <summary>
+        /// 开始批号
+        /// </summary>
+        public string StartBatchNo { get; set; }
+        /// <summary>
+        /// 结束批号
+        /// </summary>
+        public string EndsBatchNo { get; set; }
         /// <summary>
         /// 结点的根结点
         /// </summary>
@@ -83,7 +126,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// 父阶结点
         /// </summary>
         public Nullable<Guid> ParentId { get; set; }
-        public Bom Parent { get; set; }
+        public StandardBom Parent { get; set; }
         /// <summary>
         /// 根结点版次
         /// </summary>
@@ -98,11 +141,11 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// <summary>
         /// 子结点集合
         /// </summary>
-        public List<Bom> Childs { get; set; } = new List<Bom>();
+        public List<StandardBom> Childs { get; set; } = new List<StandardBom>();
         #endregion
 
 
-        public void Configure(IEntityMappingBuilder<Bom> builder)
+        public void Configure(IEntityMappingBuilder<StandardBom> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
@@ -114,12 +157,12 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
             builder.HasMany(b => b.Parent, b => b.Childs, b => b.ParentId);
 
             nativeBuilder.HasOne(b => b.NodeVersion)
-                .WithMany(pv => pv.NodeRefs)
+                .WithMany(pv => pv.StandBomNodeRefs)
                 .HasForeignKey(b => b.NodeVersionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             nativeBuilder.HasOne(b => b.RootVersion)
-                .WithMany(pv => pv.RootRefs)
+                .WithMany(pv => pv.StandBomRootRefs)
                 .HasForeignKey(b => b.RootVersionId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

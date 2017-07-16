@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BusinessPlugins.BusinessBaseModule.src.ProductEngineeringModule.Domain.Entities
+namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 {
     class ProductPurchaseData
     {

@@ -49,6 +49,10 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// </summary>
         public Nullable<DateTime> FromDate { get; set; }
         /// <summary>
+        /// 终止日期
+        /// </summary>
+        public Nullable<DateTime> ToDate { get; set; }
+        /// <summary>
         /// 单价
         /// </summary>
         public double Price { get; set; }
@@ -60,16 +64,27 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
 
         #region 依赖对象引用
         /// <summary>
-        /// 产品版次
+        /// 销售组织
         /// </summary>
-        public Guid ProductVersionId { get; set; }
-        public ProductVersion ProductVersion { get; set; }
-
+        public Guid SalesOrgId { get; set; }
+        public SalesOrganization SalesOrganization { get; set; }
+        /// <summary>
+        /// 分销渠道
+        /// </summary>
+        public Guid DistrChanelId { get; set; }
+        public DistributionChannel DistributionChannel { get; set; }
         /// <summary>
         /// 客户
         /// </summary>
         public Guid CustomerId { get; set; }
         public Partner Customer { get; set; }
+        /// <summary>
+        /// 产品版次
+        /// </summary>
+        public Guid ProductVersionId { get; set; }
+        public ProductVersion ProductVersion { get; set; }
+
+
         /// <summary>
         /// 货币
         /// </summary>

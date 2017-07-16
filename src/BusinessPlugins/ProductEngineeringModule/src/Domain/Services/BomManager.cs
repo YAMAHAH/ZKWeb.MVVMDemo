@@ -13,13 +13,13 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Services
     /// BOM管理
     /// </summary>
     [ExportMany, SingletonReuse]
-    public class BomManager : DomainServiceBase<Bom, Guid>
+    public class BomManager : DomainServiceBase<StandardBom, Guid>
     {
         /// <summary>
         /// 根据产品版次查找所有引用的结点
         /// </summary>
         /// <param name="productVserionId">版次ID</param>
-        private List<Bom> GetAllRefNodeByVersion(string productVserionId)
+        private List<StandardBom> GetAllRefNodeByVersion(string productVserionId)
         {
             return UnitRepository.RawQuery("CALL getTreeNodesByVersion({0})", productVserionId).ToList();
         }
@@ -29,7 +29,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Services
         /// <param name="productVserionId">版次ID</param>
         /// <param name="rootId">根ID</param>
         /// <returns></returns>
-        private List<Bom> GetBomNodesByVersion(string productVserionId, string rootId)
+        private List<StandardBom> GetBomNodesByVersion(string productVserionId, string rootId)
         {
             return UnitRepository.RawQuery("select * from bom where RootProductVersionId = {0} and RootId = {1}",
                 productVserionId, rootId)
@@ -41,7 +41,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Services
         /// <param name="nodeId"></param>
         /// <param name="rootId"></param>
         /// <returns></returns>
-        private List<Bom> GetBomNodes(string nodeId, string rootId)
+        private List<StandardBom> GetBomNodes(string nodeId, string rootId)
         {
             return UnitRepository.GetTreeNodes(nodeId, rootId);
         }
@@ -58,22 +58,22 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Services
             var allRefNodes = GetAllRefNodeByVersion(oldVersionId);
             var nowRootNode = nowNodes.Find(nd => nd.ParentId == null && nd.NodeVersionId == nd.RootVersionId);
 
-            Func<Bom, Bom> getNewNode = bNode => new Bom()
+            Func<StandardBom, StandardBom> getNewNode = bNode => new StandardBom()
             {
                 Parent = bNode,
                 ParentId = bNode.Id,
                 RootVersionId = bNode.RootVersionId,
                 RootId = bNode.RootId
             };
-            Action<Bom, Bom> getConfig = (bNode1, bNode2) =>
+            Action<StandardBom, StandardBom> getConfig = (bNode1, bNode2) =>
             {
                 bNode2.Id = bNode1.Id;
                 bNode2.RootVersionId = bNode1.RootVersionId;
                 bNode2.RootId = bNode1.RootId;
             };
-            Func<Bom, Bom, bool> getKey = (bNode1, bNode2) => bNode1.Id == bNode2.Id;
-            Func<Bom, List<Bom>> getChilds = bNode => bNode.Childs;
-            Func<Bom, Guid> getCompareKey = bNode => bNode.Id;
+            Func<StandardBom, StandardBom, bool> getKey = (bNode1, bNode2) => bNode1.Id == bNode2.Id;
+            Func<StandardBom, List<StandardBom>> getChilds = bNode => bNode.Childs;
+            Func<StandardBom, Guid> getCompareKey = bNode => bNode.Id;
 
             foreach (var nd in allRefNodes.Where(nd => nd.NodeVersionId.Equals(Guid.Parse(oldVersionId))))
             {
@@ -113,25 +113,25 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Services
         /// <param name="node"></param>
         /// <returns></returns>
         /// 
-        protected override NodeOrderInfo CalaOrder(Bom treeNode)
+        protected override NodeOrderInfo CalaOrder(StandardBom treeNode)
         {
             treeNode.Level = 1;
-            treeNode.Total = 1;
-            Action<Bom, NodeOrderInfo> headerConfig = (rpt, nodeInfo) =>
+            treeNode.Quantity = 1;
+            Action<StandardBom, NodeOrderInfo> headerConfig = (rpt, nodeInfo) =>
             {
                 rpt.Ord = nodeInfo.Ord;
                 rpt.Lft = nodeInfo.InitNum;
             };
-            Action<Bom, Bom> middleConfig = (curNode, parentNode) =>
+            Action<StandardBom, StandardBom> middleConfig = (curNode, parentNode) =>
             {
                 curNode.Level = parentNode.Level + 1;
-                curNode.Total = parentNode.Total * curNode.SingleTotal;
+                curNode.Quantity = parentNode.Quantity * curNode.SingleTotal;
             };
-            Action<Bom, int> footerConfig = (nd, initNum) =>
+            Action<StandardBom, int> footerConfig = (nd, initNum) =>
             {
                 nd.Rgt = initNum;
             };
-            Func<Bom, IEnumerable<Bom>> getChilds = (nd) => nd.Childs;
+            Func<StandardBom, IEnumerable<StandardBom>> getChilds = (nd) => nd.Childs;
             return UnitRepository.CalaOrd(treeNode, headerConfig, middleConfig,
                 footerConfig, getChilds, new NodeOrderInfo());
         }
@@ -141,9 +141,9 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Services
         /// </summary>
         /// <param name="rootNode">更新结点</param>
         /// <returns></returns>
-        public Bom UpsertRootBomNode(Bom rootNode)
+        public StandardBom UpsertRootBomNode(StandardBom rootNode)
         {
-            Func<Bom, Bom> getNewNode = pNode => new Bom()
+            Func<StandardBom, StandardBom> getNewNode = pNode => new StandardBom()
             {
                 Parent = pNode,
                 ParentId = pNode.Id,
@@ -151,21 +151,21 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Services
                 RootId = pNode.RootId
             };
             //bs1 数据库存在 BS2 现有的结点
-            Action<Bom, Bom> getConfig = (existNode, nowNode) =>
+            Action<StandardBom, StandardBom> getConfig = (existNode, nowNode) =>
             {
                 nowNode.Id = existNode.Id;
                 nowNode.RootVersionId = existNode.RootVersionId;
                 nowNode.RootId = existNode.RootId;
             };
-            Func<Bom, Bom, bool> getKey = (bNode1, bNode2) => bNode1.Id == bNode2.Id;
-            Func<Bom, List<Bom>> getChilds = bNode => bNode.Childs;
-            Func<Bom, Guid> getCompareKey = bNode => bNode.Id;
+            Func<StandardBom, StandardBom, bool> getKey = (bNode1, bNode2) => bNode1.Id == bNode2.Id;
+            Func<StandardBom, List<StandardBom>> getChilds = bNode => bNode.Childs;
+            Func<StandardBom, Guid> getCompareKey = bNode => bNode.Id;
 
             var nowBomNode = rootNode;
 
             if (nowBomNode.Id == Guid.Empty || nowBomNode.Id.Equals(DBNull.Value))
             {
-                var existBomNode = new Bom()
+                var existBomNode = new StandardBom()
                 {
                     Parent = null,
                     ParentId = null,
@@ -210,14 +210,14 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Services
         /// </summary>
         /// <param name="childNode">子结点</param>
         /// <returns></returns>
-        public Bom UpsertBomNode(Bom childNode)
+        public StandardBom UpsertBomNode(StandardBom childNode)
         {
             if (childNode.ParentId == null || childNode.Id == Guid.Empty)
             {
                 throw new NullReferenceException("BOM结点的父结点外键或结点的主键为空");
             }
             //创建新结点
-            Func<Bom, Bom> getNewNode = bNode => new Bom()
+            Func<StandardBom, StandardBom> getNewNode = bNode => new StandardBom()
             {
                 Parent = bNode,
                 ParentId = bNode.Id,
@@ -225,24 +225,24 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Services
                 RootId = bNode.RootId
             };
             //配置结点的值,bNode1数据库存在的结点，bNode2现在的结点
-            Action<Bom, Bom> getConfig = (existNode, nowNode) =>
+            Action<StandardBom, StandardBom> getConfig = (existNode, nowNode) =>
             {
                 nowNode.Id = existNode.Id;
                 nowNode.RootVersionId = existNode.RootVersionId;
                 nowNode.RootId = existNode.RootId;
             };
             //查找结点的函数
-            Func<Bom, Bom, bool> getKey = (bNode1, bNode2) => bNode1.Id == bNode2.Id;
+            Func<StandardBom, StandardBom, bool> getKey = (bNode1, bNode2) => bNode1.Id == bNode2.Id;
             //结点的子结点集合
-            Func<Bom, List<Bom>> getChilds = bNode => bNode.Childs;
+            Func<StandardBom, List<StandardBom>> getChilds = bNode => bNode.Childs;
             //结点比较函数
-            Func<Bom, Guid> getCompareKey = bNode => bNode.Id;
+            Func<StandardBom, Guid> getCompareKey = bNode => bNode.Id;
 
             var nowBomNode = childNode;
 
             if (nowBomNode.Id.Equals(DBNull.Value) || nowBomNode.Id == Guid.Empty) //<= 0 
             {
-                var existBNode = new Bom()
+                var existBNode = new StandardBom()
                 {
                     Parent = nowBomNode.Parent,
                     ParentId = nowBomNode.Parent.ParentId,
@@ -274,7 +274,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Services
         /// 删除结点
         /// </summary>
         /// <param name="delBom"></param>
-        public void DeleteBomNode(ref Bom delBom)
+        public void DeleteBomNode(ref StandardBom delBom)
         {
             var nowNode = delBom;
             var existNodeLists = UnitRepository.GetTreeNodes(delBom.Id.ToString(), delBom.RootId.ToString());

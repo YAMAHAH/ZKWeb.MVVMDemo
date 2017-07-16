@@ -5,16 +5,20 @@ using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
+using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
+namespace BusinessPlugins.ProductionModule.Domain.Entities
 {
     /// <summary>
-    /// 客供料行
+    ///  计划工序订单行
+    ///  MRP->计划生产订单->生产订单->工序订单->子工序订单
+    ///  MRP->计划外包订单->外包订单
+    ///  MRP->计划采购订单->采购订单
     /// </summary>
     [ExportMany]
-    public class PlanConsignMaterialOrderItem : IFullAudit<PlanConsignMaterialOrderItem, Guid>
+    public class ProcessOrderItem : IFullAudit<ProcessOrderItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -25,7 +29,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 计划客供料订单主数据属性
+        #region 计划生产订单主数据属性
         /// <summary>
         /// 需求日期
         /// </summary>
@@ -33,7 +37,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 计划数量
         /// </summary>
-        public decimal PlanQuantity { get; set; }
+        public decimal  Quantity { get; set; }
         /// <summary>
         /// 已下达数量
         /// </summary>
@@ -60,29 +64,33 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
         /// <summary>
-        /// 计划客供料订单
+        /// 计划生产订单抬头
         /// </summary>
-        public Guid PlanConsignOrderId { get; set; }
-        public PlanConsignMaterialOrder PlanConsignMaterialOrder { get; set; }
+        public Guid ProductionOrderItemId { get; set; }
+        public ProductionOrderItem ProductionOrderItem { get; set; }
         /// <summary>
-        /// MRP物料需求
+        /// 工序订单物料行集合
         /// </summary>
-        public Guid MrpMaterialItemId { get; set; }
-        public MrpMaterialItem MrpMaterialItem { get; set; }
+        public List<ProcessMaterialItem> ProcessOrderMaterialItems { get; set; }
+        /// <summary>
+        /// 子工序集合
+        /// </summary>
+        public List<SubProcessOrderItem> SubProcessOrderItems { get; set; }
+
         /// <summary>
         /// 销售订单行
         /// </summary>
         public Nullable<Guid> SaleOrderItemId { get; set; }
         public SaleOrderItem SaleOrderItem { get; set; }
         /// <summary>
-        /// 产品版次
+        /// 工序
         /// </summary>
-        public Guid ProductVersionId { get; set; }
-        public ProductVersion ProductVersion { get; set; }
+        public Nullable<Guid> ProcessStepId { get; set; }
+        public ProcessStep ProcessStep { get; set; }
         #endregion
 
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<PlanConsignMaterialOrderItem> builder)
+        public void Configure(IEntityMappingBuilder<ProcessOrderItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
@@ -90,15 +98,10 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
-            //计划客供料订单
-            builder.HasMany(p => p.PlanConsignMaterialOrder, i => i.Items, p => p.PlanConsignOrderId);
-            //计划物料需求行
-            builder.HasMany(p => p.MrpMaterialItem, p => p.MrpMaterialItemId);
-            //销售订单
-            builder.HasMany(i => i.SaleOrderItem, s => s.PlanConsignMaterialOrderItems, i => i.SaleOrderItemId);
-            //产品版次
-            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
-
+            //计划生产订单行
+            builder.HasMany(p => p.ProductionOrderItem, i => i.ProcessOrderItems, p => p.ProductionOrderItemId);
+            //工序
+            builder.HasMany(i => i.ProcessStep, i => i.ProcessStepId);
         }
         #endregion
     }

@@ -5,16 +5,20 @@ using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
+using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
+namespace BusinessPlugins.ProductionModule.Domain.Entities
 {
     /// <summary>
-    /// 外包订单物料
+    ///  计划工序订单行
+    ///  MRP->计划生产订单->生产订单->工序订单->子工序订单
+    ///  MRP->计划外包订单->外包订单
+    ///  MRP->计划采购订单->采购订单
     /// </summary>
     [ExportMany]
-    public class PlanSubcontractOrderMaterialItem : IFullAudit<PlanSubcontractOrderMaterialItem, Guid>
+    public class SubProcessOrderItem : IFullAudit<SubProcessOrderItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -26,9 +30,20 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         #endregion
 
         #region 计划生产订单主数据属性
+        /// <summary>
+        /// 需求日期
+        /// </summary>
+        public DateTime NeedDate { get; set; }
+        /// <summary>
+        /// 计划数量
+        /// </summary>
+        public decimal Quantity { get; set; }
+        /// <summary>
+        /// 已下达数量
+        /// </summary>
+        public decimal IssuedQuantity { get; set; }
 
-
-
+        public decimal IssuedRemainQty { get; set; }
         /// <summary>
         /// 是否完成
         /// </summary>
@@ -49,25 +64,29 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
         /// <summary>
-        /// 计划外包订单行
+        /// 流程订单抬头
         /// </summary>
-        public Guid PlanSubcontractOrderItemId { get; set; }
-        public PlanProductionOrder PlanSubcontractOrderItem { get; set; }
-
+        public Guid ProcessOrderItemId { get; set; }
+        public ProcessOrderItem ProcessOrderItem { get; set; }
         /// <summary>
-        /// 产品版次
+        /// 工序订单物料行集合
         /// </summary>
-        public Guid ProductVersionId { get; set; }
-        public ProductVersion ProductVersion { get; set; }
+        public List<SubProcessMaterialItem> SubProcessOrderMaterialItems { get; set; }
+
         /// <summary>
         /// 销售订单行
         /// </summary>
         public Nullable<Guid> SaleOrderItemId { get; set; }
         public SaleOrderItem SaleOrderItem { get; set; }
+        /// <summary>
+        /// 工序
+        /// </summary>
+        public Nullable<Guid> ProcessStepId { get; set; }
+        public ProcessStep ProcessStep { get; set; }
         #endregion
 
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<PlanSubcontractOrderMaterialItem> builder)
+        public void Configure(IEntityMappingBuilder<SubProcessOrderItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
@@ -75,12 +94,10 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
-            //计划外包订单行
-            builder.HasMany(p => p.PlanSubcontractOrderItem, p => p.PlanSubcontractOrderItemId);
-            //销售订单
-            builder.HasMany(i => i.SaleOrderItem, s => s.PlanSubcontractOrderMaterialItems, i => i.SaleOrderItemId);
-            //产品版次
-            builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
+            //流程订单
+            builder.HasMany(p => p.ProcessOrderItem, i => i.SubProcessOrderItems, p => p.ProcessOrderItemId);
+            //工序
+            builder.HasMany(i => i.ProcessStep, i => i.ProcessStepId);
         }
         #endregion
     }

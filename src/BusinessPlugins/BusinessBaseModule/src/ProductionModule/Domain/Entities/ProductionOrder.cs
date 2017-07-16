@@ -1,5 +1,6 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -57,7 +58,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// <summary>
         /// 生产开始日期] = 基本开始日期 + 产向缓存时间
         /// </summary>
-        public DateTime ProductionStartDate { get; set; }  
+        public DateTime ProductionStartDate { get; set; }
         /// <summary>
         /// 生产完成日期 = 生产开始日期 + 加工时间
         /// </summary>
@@ -95,6 +96,8 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 部门
         /// </summary>
         public Department Department { get; set; }
+
+     
         #endregion
 
         #region 依赖对象集合引用

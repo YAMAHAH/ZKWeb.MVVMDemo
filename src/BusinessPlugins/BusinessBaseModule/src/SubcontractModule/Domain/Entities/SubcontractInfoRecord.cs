@@ -9,13 +9,14 @@ using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.PurchaseModule.Domain.Entities
+
+namespace BusinessPlugins.SubcontractModule.Domain.Entities
 {
     /// <summary>
-    /// 采购价目表
+    /// 外包价目表
     /// </summary>
     [ExportMany]
-    public class PurchasePriceList : IFullAudit<PurchasePriceList, Guid>
+    public class SubcontractInfoRecord : IFullAudit<SubcontractInfoRecord, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -59,17 +60,17 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         #endregion
 
         #region 依赖对象引用
-        /// <summary>
-        /// 产品版次
-        /// </summary>
-        public Guid ProductVersionId { get; set; }
-        public ProductVersion ProductVersion { get; set; }
 
         /// <summary>
-        /// 客户
+        ///  外包商
         /// </summary>
-        public Guid VendorId { get; set; }
-        public Partner Vendor { get; set; }
+        public Guid SubcontractorId { get; set; }
+        public Partner Subcontractor { get; set; }
+        /// <summary>
+        /// 工序
+        /// </summary>
+        public Guid ProcessStepId { get; set; }
+        public ProcessStep ProcessStep { get; set; }
         /// <summary>
         /// 货币
         /// </summary>
@@ -79,23 +80,22 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         #endregion
 
         #region 实体配置
-        public void Configure(IEntityMappingBuilder<PurchasePriceList> builder)
+        public void Configure(IEntityMappingBuilder<SubcontractInfoRecord> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
 
-            nativeBuilder.HasKey(p => new { p.Id, p.VendorId, p.ProductVersionId, p.Unit, p.FromDate, p.StartRange })
-               .HasName("PurchasePriceId");
+            nativeBuilder.HasKey(p => new { p.Id, p.SubcontractorId, p.ProcessStepId, p.Unit, p.FromDate, p.StartRange })
+               .HasName("SubcontractPriceId");
 
             builder.Map(p => p.Unit, new EntityMappingOptions() { Length = 10 });
 
             builder.HasMany(p => p.OwnerTenant, p => p.OwnerTenantId);
 
-            builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
-
-            builder.HasMany(p => p.Vendor, p => p.VendorId);
+            builder.HasMany(p => p.Subcontractor, p => p.SubcontractorId);
 
             builder.HasMany(p => p.Currency, p => p.CurrencyId);
 
+            builder.HasMany(p => p.ProcessStep, p => p.ProcessStepId);
         }
         #endregion
     }

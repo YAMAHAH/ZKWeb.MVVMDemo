@@ -53,6 +53,18 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public DateTime PrepareDate { get; set; }
         /// <summary>
+        /// 固定损耗率
+        /// </summary>
+        public double FixedLossRate { get; set; }
+        /// <summary>
+        /// 损耗率
+        /// </summary>
+        public double LossRate { get; set; }
+        /// <summary>
+        /// 附加值
+        /// </summary>
+        public double AddedValues { get; set; }
+        /// <summary>
         /// 序号
         /// </summary>
         public int Order { get; set; }

@@ -7,13 +7,19 @@ using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
+
 namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
 {
     /// <summary>
-    /// 指把原材料发出去，扣减库存，然后供应商加工生产，最后再作为成品入库
+    /// 主需求计划
+    /// 来源:销售订单,销售预测,库存补充请求单,手工录入
+    /// MasterDemandSchedule
+    /// 提供两种方案:
+    /// 按SO + PO + 交期 + 产品 + 特性组 + SOBomId汇总
+    /// 按交期 + 产品 + 特性组 + SOBomId汇总
     /// </summary>
     [ExportMany]
-    public class PlanSubcontractOrder : IFullAudit<PlanSubcontractOrder, Guid>
+    public class Mds : IFullAudit<Mds, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -23,23 +29,34 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Guid OwnerTenantId { get; set; }
         public Tenant OwnerTenant { get; set; }
         #endregion
+        #region 实体关系配置
+        public void Configure(IEntityMappingBuilder<Mds> builder)
+        {
+            var nativeBuilder = builder.GetNativeBuilder();
+            builder.Id(p => p.Id);
+            //Tenant
+            builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
+            //工厂
+            builder.HasMany(m => m.Plant, m => m.PlantId);
+            //计划部门
+            builder.HasOne(m => m.PlanDept, m => m.PlanDeptId);
 
-        #region 计划生产订单主数据属性
+        }
+        #endregion
+        #region 主需求计划主数据属性
+        public string MdsNumber { get; set; }
         /// <summary>
-        /// 计划生产订单号
+        /// 需求计划日期
         /// </summary>
-        public string PlanSubcontractOrderNo { get; set; }
-        /// <summary>
-        /// 计划日期
-        /// </summary>
-        public DateTime PlanDate { get; set; }
-        /// <summary>
-        /// 需求日期
-        /// </summary>
+        public DateTime ScheduleDate { get; set; }
 
-        public DateTime NeedDate { get; set; }
         /// <summary>
-        /// 是否完成
+        /// 排程日期
+        /// 什么时候开始编制的计划
+        /// </summary>
+        public DateTime ProgramDate { get; set; }
+        /// <summary>
+        /// 是否生产完成
         /// </summary>
         public bool IsDone { get; set; }
         /// <summary>
@@ -58,28 +75,14 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
         /// <summary>
-        /// 计划外包商
+        /// 计划部门
         /// </summary>
-        public Guid SubcontractorId { get; set; }
-        public Partner Subcontractor { get; set; }
+        public Nullable<Guid> PlanDeptId { get; set; }
+        public Department PlanDept { get; set; }
         /// <summary>
-        /// 明细行
+        /// 主需求计划行
         /// </summary>
-        public List<PlanSubcontractOrderItem> Items { get; set; }
-        #endregion
-
-        #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<PlanSubcontractOrder> builder)
-        {
-            var nativeBuilder = builder.GetNativeBuilder();
-            builder.Id(p => p.Id);
-            //Tenant
-            builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
-            //工厂
-            builder.HasMany(m => m.Plant, m => m.PlantId);
-            //外包商
-            builder.HasMany(s => s.Subcontractor, s => s.SubcontractorId);
-        }
+        public List<MdsItem> Items { get; set; }
         #endregion
     }
 }

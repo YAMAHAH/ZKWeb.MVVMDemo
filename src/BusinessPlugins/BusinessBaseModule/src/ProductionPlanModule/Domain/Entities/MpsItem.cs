@@ -24,8 +24,14 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Guid OwnerTenantId { get; set; }
         public Tenant OwnerTenant { get; set; }
         #endregion
-     
+
         #region 主生产计划行主数据属性
+        /// <summary>
+        /// 子订单号码
+        /// 表内唯一
+        /// 根据这个号码可以找出对应的项
+        /// </summary>
+        public string ChildNo { get; set; }
         /// <summary>
         /// 排程数量
         /// </summary>
@@ -70,11 +76,17 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Guid MpsId { get; set; }
         public Mps Mps { get; set; }
 
+        ///// <summary>
+        ///// 销售订单行
+        ///// </summary>
+        //public Nullable<Guid> SaleOrderItemId { get; set; }
+        //public SaleOrderItem SaleOrderItem { get; set; }
+
         /// <summary>
-        /// 销售订单行
+        /// 主需求计划行
         /// </summary>
-        public Nullable<Guid> SaleOrderItemId { get; set; }
-        public SaleOrderItem SaleOrderItem { get; set; }
+        public Nullable<Guid> MdsItemId { get; set; }
+        public MdsItem MdsItem { get; set; }
 
         /// <summary>
         /// 产品版次
@@ -96,7 +108,9 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             //MPS
             builder.HasMany(i => i.Mps, m => m.Items, i => i.MpsId);
             //SalesOrder
-            builder.HasMany(i => i.SaleOrderItem, soItem => soItem.MpsItems, i => i.SaleOrderItemId);
+            //builder.HasMany(i => i.SaleOrderItem, soItem => soItem.MpsItems, i => i.SaleOrderItemId);
+            //MdsItem
+            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.MpsItems, i => i.MdsItemId);
         }
         #endregion
     }

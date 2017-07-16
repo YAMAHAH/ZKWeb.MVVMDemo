@@ -1,5 +1,7 @@
-﻿using BusinessPlugins.OrganizationModule.Domain;
+﻿using BusinessPlugins.BaseModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -27,7 +29,14 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         #endregion
 
         #region 采购订单信息
-
+        /// <summary>
+        /// 采购类型
+        /// </summary>
+        public PurchaseType PurchaseType { get; set; }
+        /// <summary>
+        /// 需求日期
+        /// </summary>
+        public DateTime NeedDate { get; set; }
         /// <summary>
         /// 是否完成
         /// </summary>
@@ -42,29 +51,33 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         public string Remark { get; set; }
         #endregion
 
-        #region 合作伙伴
+        #region 依赖对象引用
         /// <summary>
-        /// 伙伴ID
+        /// 工厂
         /// </summary>
-        public Nullable<Guid> PartnerId { get; set; }
+        public Guid PlantId { get; set; }
+        public Plant Plant { get; set; }
         /// <summary>
-        /// 合作伙伴
+        /// 供应商ID
         /// </summary>
-        public Partner Partner { get; set; }
-        #endregion
+        public Guid VendorId { get; set; }
+        /// <summary>
+        /// 供应商
+        /// </summary>
+        public Partner Vendor { get; set; }
 
-        #region 部门
-        /// <summary>
-        /// 部门ID
-        /// </summary>
-        public Guid DptmId { get; set; }
         /// <summary>
         /// 部门
         /// </summary>
+        public Guid DptmId { get; set; }
         public Department Department { get; set; }
+       
+        /// <summary>
+        /// 采购物料行
+        /// </summary>
+        public List<PurchaseOrderItem> Items { get; set; }
         #endregion
 
-        public List<PurchaseOrderItem> Items { get; set; }
         public void Configure(IEntityMappingBuilder<PurchaseOrder> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
@@ -72,9 +85,9 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
 
             ////合作合伴
-            nativeBuilder.HasOne(i => i.Partner)
+            nativeBuilder.HasOne(i => i.Vendor)
                 .WithMany()
-                .HasForeignKey(i => i.PartnerId)
+                .HasForeignKey(i => i.VendorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             ////部门

@@ -1,12 +1,11 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
+using BusinessPlugins.ProductionPlanModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
@@ -26,7 +25,6 @@ namespace BusinessPlugins.SubcontractModule.Domain.Entities
         public Guid OwnerTenantId { get; set; }
         public Tenant OwnerTenant { get; set; }
         #endregion
-
 
         #region 外包订单行基本信息
         /// <summary>
@@ -112,20 +110,25 @@ namespace BusinessPlugins.SubcontractModule.Domain.Entities
 
         #region 依赖对象引用
         /// <summary>
-        /// 产品ID
+        /// 产品
         /// </summary>
-        public Guid ProductId { get; set; }
-        public Product Product { get; set; }
+        public Nullable<Guid> ProductVersionId { get; set; }
+        public ProductVersion ProductVersion { get; set; }
         /// <summary>
         /// 外包订单
         /// </summary>
-        public Guid SubcontractingOrderId { get; set; }
-        public SubcontractOrder SubcontractingOrder { get; set; }
-        #endregion
-
-        #region 销售订单行关联
-        public Nullable<Guid> SaleOrderItemId { get; set; }
-        public SaleOrderItem SaleOrderItem { get; set; }
+        public Guid SubcontractOrderId { get; set; }
+        public SubcontractOrder SubcontractOrder { get; set; }
+        /// <summary>
+        /// 采购请求
+        /// </summary>
+        public Nullable<Guid> PurchaseRequestId { get; set; }
+        public PurReq PurchaseRequest { get; set; }
+        ///// <summary>
+        ///// 销售订单行
+        ///// </summary>
+        //public Nullable<Guid> SaleOrderItemId { get; set; }
+        //public SaleOrderItem SaleOrderItem { get; set; }
         #endregion
         public void Configure(IEntityMappingBuilder<SubcontractOrderItem> builder)
         {
@@ -134,18 +137,12 @@ namespace BusinessPlugins.SubcontractModule.Domain.Entities
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
 
             //主从表
-            nativeBuilder.HasOne(i => i.SubcontractingOrder)
-                .WithMany(i => i.Items)
-                .HasForeignKey(i => i.SubcontractingOrderId);
+            builder.HasMany(i => i.SubcontractOrder, i => i.Items, i => i.SubcontractOrderId);
             //产品
-            nativeBuilder.HasOne(i => i.Product)
-                .WithMany()
-                .HasForeignKey(i => i.ProductId);
-            //销售订单项目
-            nativeBuilder.HasOne(i => i.SaleOrderItem)
-                .WithMany()
-                .HasForeignKey(i => i.SaleOrderItemId)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            //销售订单行
+            // builder.HasMany(i => i.SaleOrderItem, s => s.SubcontractOrderItems, i => i.SaleOrderItemId);
+
             //前制程
             nativeBuilder.HasOne(i => i.PreProcess)
                 .WithMany()

@@ -1,5 +1,6 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
+using BusinessPlugins.ProductionPlanModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
@@ -26,6 +27,13 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         #endregion
 
         #region 采购订单项目基本信息
+
+        /// <summary>
+        /// 子订单号码
+        /// 表内唯一
+        /// 根据这个号码可以找出对应的项
+        /// </summary>
+        public string ChildNo { get; set; }
         /// <summary>
         /// 明细序号
         /// </summary>
@@ -88,18 +96,24 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         /// <summary>
         /// 产品ID
         /// </summary>
-        public Guid ProductId { get; set; }
-        public Product Product { get; set; }
+        public Guid ProductVersionId { get; set; }
+        public ProductVersion ProductVersion { get; set; }
+        /// <summary>
+        /// 采购订单抬头
+        /// </summary>
         public Guid PurchaseOrderId { get; set; }
         public PurchaseOrder PurchaseOrder { get; set; }
+        ///// <summary>
+        ///// 销售订单行
+        ///// </summary>
+        //public Nullable<Guid> SaleOrderItemId { get; set; }
+        //public SaleOrderItem SaleOrderItem { get; set; }
+        /// <summary>
+        /// 主需求计划行
+        /// </summary>
+        public Nullable<Guid> MdsItemId { get; set; }
+        public MdsItem MdsItem { get; set; }
         #endregion
-
-
-        #region 销售订单行关联
-        public Nullable<Guid> SaleOrderItemId { get; set; }
-        public SaleOrderItem SaleOrderItem { get; set; }
-        #endregion
-
 
         public void Configure(IEntityMappingBuilder<PurchaseOrderItem> builder)
         {
@@ -107,18 +121,15 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
             //主从表
-            nativeBuilder.HasOne(i => i.PurchaseOrder)
-             .WithMany(i => i.Items)
-             .HasForeignKey(i => i.PurchaseOrderId);
+            builder.HasMany(i => i.PurchaseOrder, s => s.Items, i => i.PurchaseOrderId);
             //产品
-            nativeBuilder.HasOne(i => i.Product)
-                .WithMany()
-                .HasForeignKey(i => i.ProductId);
+            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
             //销售订单
-            nativeBuilder.HasOne(i => i.SaleOrderItem)
-                .WithMany()
-                .HasForeignKey(i => i.SaleOrderItemId)
-                .OnDelete(DeleteBehavior.Restrict);
+
+            //builder.HasMany(i => i.SaleOrderItem, s => s.PurchaseOrderItems, i => i.SaleOrderItemId);
+            //MdsItem
+            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PurOrdItems, i => i.MdsItemId);
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -47,16 +48,26 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         #endregion
         #region 依赖对象引用
         /// <summary>
+        /// 销售组织
+        /// </summary>
+        public Guid SalesOrgId { get; set; }
+        public SalesOrganization SalesOrganization { get; set; }
+        /// <summary>
+        /// 分销渠道
+        /// </summary>
+        public Guid DistrChanelId { get; set; }
+        public DistributionChannel DistributionChannel { get; set; }
+        /// <summary>
+        /// 客户
+        /// </summary>
+        public Guid CustomerId { get; set; }
+        public Partner Customer { get; set; }
+
+        /// <summary>
         /// 产品版次
         /// </summary>
         public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
-
-        /// <summary>
-        /// 合作伙伴
-        /// </summary>
-        public Guid PartnerId { get; set; }
-        public Partner Partner { get; set; }
         #endregion
 
         #region 实体配置
@@ -67,16 +78,11 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
 
             //产品版次
-            nativeBuilder.HasOne(i => i.ProductVersion)
-                .WithMany()
-                .HasForeignKey(i => i.ProductVersionId)
-                .OnDelete(DeleteBehavior.Restrict);
-          
+            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+
             //合作伙伴
-            nativeBuilder.HasOne(i => i.Partner)
-                .WithMany()
-                .HasForeignKey(i => i.PartnerId)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(i => i.Customer, i => i.CustomerId);
+
         }
         #endregion
     }

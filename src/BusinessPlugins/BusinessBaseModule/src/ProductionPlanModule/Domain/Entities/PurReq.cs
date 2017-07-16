@@ -1,5 +1,7 @@
-﻿using BusinessPlugins.OrganizationModule.Domain;
+﻿using BusinessPlugins.BaseModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
@@ -10,10 +12,10 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
 {
     /// <summary>
-    /// 
+    /// 采购申请
     /// </summary>
     [ExportMany]
-    public class PlanPurchaseOrder : IFullAudit<PlanPurchaseOrder, Guid>
+    public class PurReq : IFullAudit<PurReq, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -24,20 +26,24 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 计划生产订单主数据属性
+        #region 采购申请主数据属性
         /// <summary>
-        /// 计划生产订单号
+        /// 采购申请号码
         /// </summary>
-        public string PlanPurchaseOrderNo { get; set; }
+        public string PurchaseRequestNo { get; set; }
         /// <summary>
-        /// 计划日期
+        /// 请求日期
         /// </summary>
-        public DateTime PlanDate { get; set; }
+        public DateTime ReqeustDate { get; set; }
         /// <summary>
         /// 需求日期
         /// </summary>
 
         public DateTime NeedDate { get; set; }
+        /// <summary>
+        /// 采购请求类型
+        /// </summary>
+        public PurchaseType PurchaseRequestType { get; set; }
         /// <summary>
         /// 是否完成
         /// </summary>
@@ -58,18 +64,19 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
         /// <summary>
-        /// 计划外包商
+        /// 请求供应商
         /// </summary>
-        public Guid VendorId { get; set; }
-        public Partner Vendor { get; set; }
+        public Guid RequestVendorId { get; set; }
+        public Partner RequestVendor { get; set; }
+  
         /// <summary>
-        /// 明细行
+        /// 请求行
         /// </summary>
-        public List<PlanPurchaseOrderItem> Items { get; set; }
+        public List<PurReqItem> Items { get; set; }
         #endregion
 
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<PlanPurchaseOrder> builder)
+        public void Configure(IEntityMappingBuilder<PurReq> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
@@ -77,8 +84,8 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
-            //供应商
-            builder.HasMany(s => s.Vendor, s => s.VendorId);
+            //请求供应商
+            builder.HasMany(r => r.RequestVendor, r => r.RequestVendorId);
         }
         #endregion
     }

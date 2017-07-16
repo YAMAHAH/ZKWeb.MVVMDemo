@@ -11,7 +11,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
 {
     /// <summary>
     /// 物料需求计划
-    /// 需求来源:客户订单,独立需求,主生产计划,销售预测
+    /// 需求来源:主需求计划,主生产计划
     /// </summary>
     [ExportMany]
     public class Mrp : IFullAudit<Mrp, Guid>

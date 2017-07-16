@@ -1,5 +1,6 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
+using BusinessPlugins.ProductionPlanModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
@@ -28,6 +29,13 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         #endregion
 
         #region 生产订单行基本信息
+
+        /// <summary>
+        /// 子订单号码
+        /// 表内唯一
+        /// 根据这个号码可以找出对应的项
+        /// </summary>
+        public string ChildNo { get; set; }
         /// <summary>
         /// 明细序号
         /// </summary>
@@ -117,19 +125,32 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// <summary>
         /// 产品
         /// </summary>
-        public Guid ProductId { get; set; }
-        public Product Product { get; set; }
+        public Guid ProductVersionId { get; set; }
+        public ProductVersion ProductVersion { get; set; }
         /// <summary>
         /// 生产订单
         /// </summary>
         public Guid ProductionOrderId { get; set; }
         public ProductionOrder ProductionOrder { get; set; }
 
+        public Nullable<Guid> PlanProductionOrderItemId { get; set; }
+        public PlannedOrderItem PlanProductionOrderItem { get; set; }
+
         /// <summary>
-        /// 销售订单行
+        /// 工序(作业/流程)订单集合
         /// </summary>
-        public Nullable<Guid> SalesOrderItemId { get; set; }
-        public SaleOrderItem SalesOrderItem { get; set; }
+        public List<ProcessOrderItem> ProcessOrderItems { get; set; }
+
+        ///// <summary>
+        ///// 销售订单行
+        ///// </summary>
+        //public Nullable<Guid> SalesOrderItemId { get; set; }
+        //public SaleOrderItem SalesOrderItem { get; set; }
+        /// <summary>
+        /// 主需求计划行
+        /// </summary>
+        public Nullable<Guid> MdsItemId { get; set; }
+        public MdsItem MdsItem { get; set; }
 
         #endregion
 
@@ -139,19 +160,18 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
-            //主从表
-            nativeBuilder.HasOne(i => i.ProductionOrder)
-                .WithMany(i => i.Items)
-                .HasForeignKey(i => i.ProductionOrderId);
+            //生产订单行
+            builder.HasMany(i => i.ProductionOrder, i => i.Items, i => i.ProductionOrderId);
             //产品
-            nativeBuilder.HasOne(i => i.Product)
-                .WithMany()
-                .HasForeignKey(i => i.ProductId);
+            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            //计划生产订单行
+            builder.HasMany(i => i.PlanProductionOrderItem, p => p.ProductionOrderItems, i => i.PlanProductionOrderItemId);
 
             //销售订单Item
-            nativeBuilder.HasOne(i => i.SalesOrderItem)
-                .WithMany()
-                .HasForeignKey(i => i.SalesOrderItemId);
+            //builder.HasMany(i => i.SalesOrderItem, s => s.ProductionOrderItems, i => i.SalesOrderItemId);
+            //MdsItem
+            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.ProdOrdItems, i => i.MdsItemId);
+
             //计算列
             nativeBuilder.Property(i => i.RemainingQty)
                 .HasComputedColumnSql("[ProductionQty] - [FinishQty]");
