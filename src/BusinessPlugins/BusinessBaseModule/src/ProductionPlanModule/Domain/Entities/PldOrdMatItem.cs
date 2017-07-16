@@ -14,7 +14,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
     /// 计划生产物料
     /// </summary>
     [ExportMany]
-    public class PlannedOrderMaterialItem : IFullAudit<PlannedOrderMaterialItem, Guid>
+    public class PldOrdMatItem : IFullAudit<PldOrdMatItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -52,15 +52,16 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
         /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+
+        public ProductFeature ProdFeatValGrp { get; set; }
+        /// <summary>
         /// 计划生产订单行
         /// </summary>
-        public Guid PlanProductionOrderItemId { get; set; }
-        public PlannedOrder PlanProductionOrderItem { get; set; }
-        ///// <summary>
-        ///// 销售订单行
-        ///// </summary>
-        //public Nullable<Guid> SaleOrderItemId { get; set; }
-        //public SaleOrderItem SaleOrderItem { get; set; }
+        public Guid PldProdOrdItemId { get; set; }
+        public PlannedOrder PldProdOrdItem { get; set; }   
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -74,7 +75,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         #endregion
 
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<PlannedOrderMaterialItem> builder)
+        public void Configure(IEntityMappingBuilder<PldOrdMatItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
@@ -83,11 +84,11 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
             //计划生产订单行
-            builder.HasMany(p => p.PlanProductionOrderItem, p => p.PlanProductionOrderItemId);
-            //销售订单
-            //builder.HasMany(i => i.SaleOrderItem, s => s.PlannedOrderMaterialItems, i => i.SaleOrderItemId);
+            builder.HasMany(p => p.PldProdOrdItem, p => p.PldProdOrdItemId);
             //MdsItem
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PldOrdMatItems, i => i.MdsItemId);
+            //产品特性值
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
             //产品版次
             builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
         }

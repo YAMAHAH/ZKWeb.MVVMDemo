@@ -58,12 +58,13 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         /// </summary>
         public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
-        ///// <summary>
-        ///// 销售订单行
-        ///// </summary>
-        //public Nullable<Guid> SaleOrderItemId { get; set; }
-        //public SaleOrderItem SaleOrderItem { get; set; }
+        /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
+        public ProductFeature ProdFeatValGrp { get; set; }
+        
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -86,12 +87,12 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
             builder.HasMany(m => m.Plant, m => m.PlantId);
             //采购订单行
             builder.HasMany(p => p.PurchaseOrderItem, p => p.PurchaseOrderItemId);
-            //销售订单
-            //builder.HasMany(i => i.SaleOrderItem, s => s.PurchaseMaterialItems, i => i.SaleOrderItemId);
             //MdsItem
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PurMatItems, i => i.MdsItemId);
             //产品版次
             builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
+            //产品特性值
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
         }
         #endregion
     }

@@ -66,7 +66,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// 计划订单
         /// </summary>
         public Nullable<Guid> PldOrdMatItemId { get; set; }
-        public PlannedOrderMaterialItem PldOrdMatItem { get; set; }
+        public PldOrdMatItem PldOrdMatItem { get; set; }
         /// <summary>
         /// 采购订单
         /// </summary>

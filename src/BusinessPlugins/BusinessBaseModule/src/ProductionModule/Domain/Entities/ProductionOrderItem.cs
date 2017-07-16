@@ -125,27 +125,27 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// <summary>
         /// 产品
         /// </summary>
-        public Guid ProductVersionId { get; set; }
-        public ProductVersion ProductVersion { get; set; }
+        public Guid ProdVerId { get; set; }
+        public ProductVersion ProdVer { get; set; }
+        /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+
+        public ProductFeature ProdFeatValGrp { get; set; }
         /// <summary>
         /// 生产订单
         /// </summary>
-        public Guid ProductionOrderId { get; set; }
-        public ProductionOrder ProductionOrder { get; set; }
+        public Guid ProdOrdId { get; set; }
+        public ProductionOrder ProdOrd { get; set; }
 
-        public Nullable<Guid> PlanProductionOrderItemId { get; set; }
-        public PlannedOrderItem PlanProductionOrderItem { get; set; }
+        public Nullable<Guid> PldProduOrdItemId { get; set; }
+        public PlannedOrderItem PldProdOrdItem { get; set; }
 
         /// <summary>
         /// 工序(作业/流程)订单集合
         /// </summary>
-        public List<ProcessOrderItem> ProcessOrderItems { get; set; }
-
-        ///// <summary>
-        ///// 销售订单行
-        ///// </summary>
-        //public Nullable<Guid> SalesOrderItemId { get; set; }
-        //public SaleOrderItem SalesOrderItem { get; set; }
+        public List<ProcessOrderItem> ProcessOrdItems { get; set; } 
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -161,14 +161,13 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
             //生产订单行
-            builder.HasMany(i => i.ProductionOrder, i => i.Items, i => i.ProductionOrderId);
+            builder.HasMany(i => i.ProdOrd, i => i.Items, i => i.ProdOrdId);
             //产品
-            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            builder.HasMany(i => i.ProdVer, i => i.ProdVerId);
+            //产品特性值
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
             //计划生产订单行
-            builder.HasMany(i => i.PlanProductionOrderItem, p => p.ProductionOrderItems, i => i.PlanProductionOrderItemId);
-
-            //销售订单Item
-            //builder.HasMany(i => i.SalesOrderItem, s => s.ProductionOrderItems, i => i.SalesOrderItemId);
+            builder.HasMany(i => i.PldProdOrdItem, p => p.ProdOrdItems, i => i.PldProduOrdItemId);
             //MdsItem
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.ProdOrdItems, i => i.MdsItemId);
 

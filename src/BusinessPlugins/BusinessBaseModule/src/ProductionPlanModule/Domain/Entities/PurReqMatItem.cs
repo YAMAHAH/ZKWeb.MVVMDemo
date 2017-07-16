@@ -27,8 +27,6 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
 
         #region 计划生产订单主数据属性
 
-
-
         /// <summary>
         /// 是否完成
         /// </summary>
@@ -51,20 +49,21 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 采购申请行
         /// </summary>
-        public Guid PurchaseRequestItemId { get; set; }
-        public PurReqItem PurchaseRequestItem { get; set; }
+        public Guid PurReqItemId { get; set; }
+        public PurReqItem PurReqItem { get; set; }
 
         /// <summary>
         /// 产品版次
         /// </summary>
-        public Guid ProductVersionId { get; set; }
+        public Guid ProdVerId { get; set; }
         public ProductVersion ProductVersion { get; set; }
-        ///// <summary>
-        ///// 销售订单行
-        ///// </summary>
-        //public Nullable<Guid> SaleOrderItemId { get; set; }
-        //public SaleOrderItem SaleOrderItem { get; set; }
+        /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
+        public ProductFeature ProdFeatValGrp { get; set; }
+        
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -87,13 +86,13 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
             //采购申请行
-            builder.HasMany(p => p.PurchaseRequestItem, p => p.PurchaseRequestItemId);
-            //销售订单
-            //builder.HasMany(i => i.SaleOrderItem, s => s.PurchaseRequestMaterialItems, i => i.SaleOrderItemId);
+            builder.HasMany(p => p.PurReqItem, p => p.PurReqItemId);
             //MdsItem
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PurReqMatItems, i => i.MdsItemId);
             //产品版次
-            builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
+            builder.HasMany(p => p.ProductVersion, p => p.ProdVerId);
+            //productFeatureValueGroup
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
         }
         #endregion
     }

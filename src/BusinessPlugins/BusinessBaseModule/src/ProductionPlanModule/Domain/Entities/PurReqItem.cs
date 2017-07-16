@@ -68,20 +68,15 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 采购申请抬头
         /// </summary>
-        public Guid PurchaseRequestId { get; set; }
-        public PurReq PurchaseRequest { get; set; }
+        public Guid PurReqId { get; set; }
+        public PurReq PurReq { get; set; }
 
 
         /// <summary>
         /// MRP物料需求
         /// </summary>
-        public Guid MrpMaterialItemId { get; set; }
-        public MrpMaterialItem MrpMaterialItem { get; set; }
-        ///// <summary>
-        ///// 销售订单行
-        ///// </summary>
-        //public Nullable<Guid> SaleOrderItemId { get; set; }
-        //public SaleOrderItem SaleOrderItem { get; set; }
+        public Guid MrpMatItemId { get; set; }
+        public MrpMaterialItem MrpMatItem { get; set; }
 
         /// <summary>
         /// 主需求计划行
@@ -91,8 +86,14 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 产品版次
         /// </summary>
-        public Guid ProductVersionId { get; set; }
+        public Guid ProdVerId { get; set; }
         public ProductVersion ProductVersion { get; set; }
+        /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+
+        public ProductFeature ProdFeatValGrp { get; set; }
         /// <summary>
         /// 工序
         /// 生产部门 + 工序 => 生产订单[内部生产订单]
@@ -111,15 +112,15 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
             //计划外包订单
-            builder.HasMany(p => p.PurchaseRequest, i => i.Items, p => p.PurchaseRequestId);
+            builder.HasMany(p => p.PurReq, i => i.Items, p => p.PurReqId);
             //计划物料需求行
-            builder.HasMany(p => p.MrpMaterialItem, p => p.MrpMaterialItemId);
-            //销售订单
-            //builder.HasMany(i => i.SaleOrderItem, s => s.PurchaseRequestItems, i => i.SaleOrderItemId);
+            builder.HasMany(p => p.MrpMatItem, p => p.MrpMatItemId); 
             //MdsItem
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PurReqItems, i => i.MdsItemId);
             //产品版次
-            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            builder.HasMany(i => i.ProductVersion, i => i.ProdVerId);
+            //productFeatureValueGroup
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
             //工序
             builder.HasMany(i => i.ProcessStep, i => i.ProcessStepId);
         }

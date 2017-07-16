@@ -1,7 +1,6 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
-using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
@@ -66,11 +65,12 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
-        ///// <summary>
-        ///// 销售订单行
-        ///// </summary>
-        //public Nullable<Guid> SaleOrderItemId { get; set; }
-        //public SaleOrderItem SaleOrderItem { get; set; }
+        /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+
+        public ProductFeature ProdFeatValGrp { get; set; }   
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -92,11 +92,11 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             //ProductVersion
             builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
             //MPS
-            builder.HasMany(i => i.Mrp, m => m.Items, i => i.MrpId);
-            //SalesOrder
-            //builder.HasMany(i => i.SaleOrderItem, soItem => soItem.MrpItems, i => i.SaleOrderItemId);
+            builder.HasMany(i => i.Mrp, m => m.Items, i => i.MrpId);       
             //MdsItem
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.MrpItems, i => i.MdsItemId);
+            //产品特性值
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
         }
         #endregion
     }

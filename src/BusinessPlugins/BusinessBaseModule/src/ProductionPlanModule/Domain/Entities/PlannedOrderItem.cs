@@ -70,19 +70,14 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 计划生产订单抬头
         /// </summary>
-        public Guid PlannedOrderId { get; set; }
-        public PlannedOrder PlannedOrder { get; set; }
+        public Guid PldOrdId { get; set; }
+        public PlannedOrder PldOrd { get; set; }
         
         /// <summary>
         /// MRP物料需求
         /// </summary>
-        public Guid MrpMaterialItemId { get; set; }
-        public MrpMaterialItem MrpMaterialItem { get; set; }
-        ///// <summary>
-        ///// 销售订单行
-        ///// </summary>
-        //public Nullable<Guid> SaleOrderItemId { get; set; }
-        //public SaleOrderItem SaleOrderItem { get; set; }
+        public Guid MrpMatItemId { get; set; }
+        public MrpMaterialItem MrpMatItem { get; set; }      
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -91,8 +86,15 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 产品版次
         /// </summary>
-        public Guid ProductVersionId { get; set; }
+        public Guid ProdVerId { get; set; }
         public ProductVersion ProductVersion { get; set; }
+
+        /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+
+        public ProductFeature ProdFeatValGrp { get; set; }
         /// <summary>
         /// 工序
         /// 生产部门 + 工序 => 生产订单[内部生产订单]
@@ -102,7 +104,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 已下达的生产订单行
         /// </summary>
-        public List<ProductionOrderItem> ProductionOrderItems { get; set; }
+        public List<ProductionOrderItem> ProdOrdItems { get; set; }
         #endregion
 
         #region 实体关系配置
@@ -115,15 +117,15 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
             //计划生产订单
-            builder.HasMany(p => p.PlannedOrder, i => i.Items, p => p.PlannedOrderId);
+            builder.HasMany(p => p.PldOrd, i => i.Items, p => p.PldOrdId);
             //计划物料需求行
-            builder.HasMany(p => p.MrpMaterialItem, p => p.MrpMaterialItemId);
-            //销售订单
-            //builder.HasMany(i => i.SaleOrderItem, s => s.PlannedOrderItems, i => i.SaleOrderItemId);
+            builder.HasMany(p => p.MrpMatItem, p => p.MrpMatItemId);    
             //MdsItem
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PldOrdItems, i => i.MdsItemId);
             //产品版次
-            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            builder.HasMany(i => i.ProductVersion, i => i.ProdVerId);
+            //productFeatureValueGroup
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
             //工序
             builder.HasMany(i => i.ProcessStep, i => i.ProcessStepId);
         }

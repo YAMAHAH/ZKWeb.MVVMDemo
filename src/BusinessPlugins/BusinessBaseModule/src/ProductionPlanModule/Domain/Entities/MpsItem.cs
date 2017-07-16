@@ -75,18 +75,17 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
 
         public Guid MpsId { get; set; }
         public Mps Mps { get; set; }
-
-        ///// <summary>
-        ///// 销售订单行
-        ///// </summary>
-        //public Nullable<Guid> SaleOrderItemId { get; set; }
-        //public SaleOrderItem SaleOrderItem { get; set; }
-
         /// <summary>
         /// 主需求计划行
         /// </summary>
         public Nullable<Guid> MdsItemId { get; set; }
         public MdsItem MdsItem { get; set; }
+        /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+
+        public ProductFeature ProdFeatValGrp { get; set; }
 
         /// <summary>
         /// 产品版次
@@ -106,11 +105,11 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             //ProductVersion
             builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
             //MPS
-            builder.HasMany(i => i.Mps, m => m.Items, i => i.MpsId);
-            //SalesOrder
-            //builder.HasMany(i => i.SaleOrderItem, soItem => soItem.MpsItems, i => i.SaleOrderItemId);
+            builder.HasMany(i => i.Mps, m => m.Items, i => i.MpsId);    
             //MdsItem
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.MpsItems, i => i.MdsItemId);
+            //productFeatureValueGroup
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
         }
         #endregion
     }

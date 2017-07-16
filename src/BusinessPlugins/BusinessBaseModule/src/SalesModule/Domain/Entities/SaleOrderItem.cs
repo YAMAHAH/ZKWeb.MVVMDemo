@@ -145,7 +145,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
-        public ProductFeature ProductFeatureValueGroup { get; set; }
+        public ProductFeature ProdFeatValGrp { get; set; }
 
         /// <summary>
         /// 销售订单BOM ID
@@ -153,7 +153,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
 
         public Nullable<Guid> ProdOrdBomId { get; set; }
 
-        public ProductOrderBom ProductOrderBom { get; set; }
+        public ProductOrderBom ProdOrdBom { get; set; }
         /// <summary>
         /// 销售订单抬头
         /// </summary>
@@ -224,9 +224,9 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
             //产品版次
             builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
             //产品特性值
-            builder.HasOne(i => i.ProductFeatureValueGroup, i => i.ProdFeatValGrpId);
+            builder.HasOne(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
             //生产订单BOM
-            builder.HasMany(i => i.ProductOrderBom, i => i.ProdOrdBomId);
+            builder.HasMany(i => i.ProdOrdBom, i => i.ProdOrdBomId);
 
             //剩余数量
             nativeBuilder.Property(i => i.RemainQty)

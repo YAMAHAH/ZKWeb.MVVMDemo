@@ -50,16 +50,16 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
         /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+
+        public ProductFeature ProdFeatValGrp { get; set; }
+        /// <summary>
         /// 生产订单行
         /// </summary>
-        public Guid ProductionOrderItemId { get; set; }
-        public ProductionOrderItem ProductionOrderItem { get; set; }
-        ///// <summary>
-        ///// 销售订单行
-        ///// </summary>
-        //public Nullable<Guid> SaleOrderItemId { get; set; }
-        //public SaleOrderItem SaleOrderItem { get; set; }
-
+        public Guid ProdOrdItemId { get; set; }
+        public ProductionOrderItem ProdOrdItem { get; set; }
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -82,13 +82,13 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
             //生产订单行
-            builder.HasMany(p => p.ProductionOrderItem, p => p.ProductionOrderItemId);
-            //销售订单
-            //builder.HasMany(i => i.SaleOrderItem, s => s.ProductionOrderMaterialItems, i => i.SaleOrderItemId);
+            builder.HasMany(p => p.ProdOrdItem, p => p.ProdOrdItemId); 
             //MdsItem
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.ProdOrdMatItems, i => i.MdsItemId);
             //产品版次
             builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
+            //产品特性值
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
         }
         #endregion
     }

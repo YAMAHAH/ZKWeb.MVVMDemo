@@ -99,7 +99,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
             //计划生产订单行
-            builder.HasMany(p => p.ProductionOrderItem, i => i.ProcessOrderItems, p => p.ProductionOrderItemId);
+            builder.HasMany(p => p.ProductionOrderItem, i => i.ProcessOrdItems, p => p.ProductionOrderItemId);
             //工序
             builder.HasMany(i => i.ProcessStep, i => i.ProcessStepId);
         }

@@ -89,18 +89,18 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// 产品版次
         /// </summary>
         public Guid ProdVerId { get; set; }
-        public ProductVersion ProductVersion { get; set; }
+        public ProductVersion ProdVer { get; set; }
         /// <summary>
         /// 销售订单行
         /// </summary>
         public Nullable<Guid> SalOrdItemId { get; set; }
-        public SaleOrderItem SaleOrderItem { get; set; }
+        public SaleOrderItem SalOrdItem { get; set; }
         /// <summary>
         /// 产品特性值
         /// </summary>
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
-        public ProductFeature ProductFeatureValueGroup { get; set; }
+        public ProductFeature ProdFeatValGrp { get; set; }
 
         /// <summary>
         /// 生产订单BOM
@@ -108,7 +108,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
 
         public Nullable<Guid> ProdOrdBomId { get; set; }
 
-        public ProductOrderBom ProductOrderBom { get; set; }
+        public ProductOrderBom ProdOrdBom { get; set; }
 
         /// <summary>
         /// MPS行
@@ -119,13 +119,17 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public List<MrpItem> MrpItems { get; set; } = new List<MrpItem>();
         /// <summary>
+        /// MRP行
+        /// </summary>
+        public List<MrpMaterialItem> MrpMatItems { get; set; } = new List<MrpMaterialItem>();
+        /// <summary>
         /// 计划生产订单行
         /// </summary>
         public List<PlannedOrderItem> PldOrdItems { get; set; }
         /// <summary>
         /// 计划生产订单物料行
         /// </summary>
-        public List<PlannedOrderMaterialItem> PldOrdMatItems { get; set; }
+        public List<PldOrdMatItem> PldOrdMatItems { get; set; }
 
         /// <summary>
         /// 生产订单行
@@ -162,15 +166,15 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
             //ProductVersion
-            builder.HasMany(i => i.ProductVersion, i => i.ProdVerId);
+            builder.HasMany(i => i.ProdVer, i => i.ProdVerId);
             //SalesOrder
-            builder.HasOne(i => i.SaleOrderItem, s => s.MdsItem, i => i.SalOrdItemId);
+            builder.HasOne(i => i.SalOrdItem, s => s.MdsItem, i => i.SalOrdItemId);
             //mds
             builder.HasMany(i => i.Mds, m => m.Items, i => i.MdsId);
             //产品特性值
-            builder.HasOne(i => i.ProductFeatureValueGroup, i => i.ProdFeatValGrpId);
+            builder.HasOne(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
             //生产订单BOM
-            builder.HasMany(i => i.ProductOrderBom, i => i.ProdOrdBomId);
+            builder.HasMany(i => i.ProdOrdBom, i => i.ProdOrdBomId);
         }
         #endregion
     }

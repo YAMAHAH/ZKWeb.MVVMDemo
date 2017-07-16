@@ -99,15 +99,16 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
         /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+
+        public ProductFeature ProdFeatValGrp { get; set; }
+        /// <summary>
         /// 采购订单抬头
         /// </summary>
         public Guid PurchaseOrderId { get; set; }
         public PurchaseOrder PurchaseOrder { get; set; }
-        ///// <summary>
-        ///// 销售订单行
-        ///// </summary>
-        //public Nullable<Guid> SaleOrderItemId { get; set; }
-        //public SaleOrderItem SaleOrderItem { get; set; }
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -123,12 +124,11 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
             //主从表
             builder.HasMany(i => i.PurchaseOrder, s => s.Items, i => i.PurchaseOrderId);
             //产品
-            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
-            //销售订单
-
-            //builder.HasMany(i => i.SaleOrderItem, s => s.PurchaseOrderItems, i => i.SaleOrderItemId);
+            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);    
             //MdsItem
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PurOrdItems, i => i.MdsItemId);
+            //产品特性值
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
 
         }
     }

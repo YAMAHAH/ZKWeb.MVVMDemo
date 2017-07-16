@@ -113,12 +113,19 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// 产品版次
         /// </summary>
         public Guid ProductVersionId { get; set; }
-        public ProductVersion ProductVersion { get; set; }
+        public ProductVersion ProdVer { get; set; }
         /// <summary>
-        /// 销售订单行
+        /// 产品特性值
         /// </summary>
-        public Nullable<Guid> SaleOrderItemId { get; set; }
-        public SaleOrderItem SaleOrderItem { get; set; }
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+
+        public ProductFeature ProdFeatValGrp { get; set; }
+        /// <summary>
+        /// 主需求计划行
+        /// </summary>
+        public Nullable<Guid> MdsItemId { get; set; }
+        public MdsItem MdsItem { get; set; }
+       
         /// <summary>
         /// MRP行
         /// </summary>
@@ -138,7 +145,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// 生产部门 + 采购类型(客供品/采购/外协/生产)
         /// </summary>
         public Nullable<Guid> DeptId { get; set; }
-        public Department ProductionDept { get; set; }
+        public Department ProdDept { get; set; }
         /// <summary>
         /// 工序
         /// 生产部门 + 工序 => 生产订单[内部生产订单,外协加工订单]
@@ -151,7 +158,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// 客供料 + 供应商 =>客供料订单
         /// 不是客供料 + 供应商 => 采购订单
         /// </summary>
-        public Nullable<Guid> VendorId { get; set; }
+        public Nullable<Guid> VendId { get; set; }
         public Partner Vendor { get; set; }
 
         #endregion
@@ -165,17 +172,19 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
             //ProductVersion
-            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            builder.HasMany(i => i.ProdVer, i => i.ProductVersionId);
             //计划部门
-            builder.HasOne(m => m.ProductionDept, m => m.DeptId);
-            //SalesOrder
-            builder.HasMany(i => i.SaleOrderItem, i => i.SaleOrderItemId);
+            builder.HasOne(m => m.ProdDept, m => m.DeptId);
+            //MdsItem
+            builder.HasMany(i => i.MdsItem, m => m.MrpMatItems, i => i.MdsItemId);
+            //productFeatureValueGroup
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
             //MrpMaterialItem
             builder.HasMany(i => i.MrpItem, mrp => mrp.MrpMaterialItems, i => i.MrpItemId);
             //ProcessStep
             builder.HasMany(i => i.ProcessStep, i => i.ProcessStepId);
             //vendor
-            builder.HasMany(i => i.Vendor, i => i.VendorId);
+            builder.HasMany(i => i.Vendor, i => i.VendId);
             //Parent
             builder.HasMany(i => i.Parent, i => i.Childs, i => i.ParentId);
 
