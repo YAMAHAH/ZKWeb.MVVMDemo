@@ -11,7 +11,7 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.ProductionModule.Domain.Entities
 {
     /// <summary>
-    ///工序订单物料
+    ///流程订单物料
     /// </summary>
     [ExportMany]
     public class ProcessMaterialItem : IFullAudit<ProcessMaterialItem, Guid>
@@ -63,7 +63,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 计划生产订单抬头
         /// </summary>
         public Guid ProcessOrderItemId { get; set; }
-        public ProcessOrderItem ProcessOrderItem { get; set; }
+        public ProcessOrdItem ProcessOrderItem { get; set; }
         /// <summary>
         /// 产品版次
         /// </summary>

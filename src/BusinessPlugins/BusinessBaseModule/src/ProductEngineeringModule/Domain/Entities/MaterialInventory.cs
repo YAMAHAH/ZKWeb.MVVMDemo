@@ -1,20 +1,20 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 {
     /// <summary>
-    /// 产品特性值
-    /// 特性A 值1
-    /// 特性B 值2
+    /// 物料库存表
     /// </summary>
     [ExportMany]
-    public class ProductFeatureValueGroup : IFullAudit<ProductFeatureValueGroup, Guid>
+    public class MaterialInventory : IFullAudit<MaterialInventory, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -24,23 +24,38 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         public Guid OwnerTenantId { get; set; }
         public Tenant OwnerTenant { get; set; }
         #endregion
-        #region 产品特性值数据属性
+        #region 库存表基本属性
 
         #endregion
-        #region 依赖对象引用
 
+        #region 依赖对象引用
         /// <summary>
-        /// 产品特性值行
+        /// 工厂
         /// </summary>
-        public List<ProductFeatureValueItem> Items { get; set; }
+        public Nullable<Guid> PlantId { get; set; }
+        public Plant Plant { get; set; }
+        /// <summary>
+        /// 产品版本
+        /// </summary>
+        public Guid ProdVerId { get; set; }
+        public ProductVersion ProductVer { get; set; }
+        /// <summary>
+        /// 产品特性值组
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+        public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
         #endregion
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<ProductFeatureValueGroup> builder)
+        public void Configure(IEntityMappingBuilder<MaterialInventory> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            //Tenant
+            //租户
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
+            //工厂
+            builder.HasMany(m => m.Plant, m => m.PlantId);
+            //产品特性值
+            builder.HasOne(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
         }
         #endregion
     }

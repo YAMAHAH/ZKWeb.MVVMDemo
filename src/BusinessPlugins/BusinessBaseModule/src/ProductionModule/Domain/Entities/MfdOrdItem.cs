@@ -17,7 +17,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
     /// 生产订单项目
     /// </summary>
     [ExportMany]
-    public class ProductionOrderItem : IFullAudit<ProductionOrderItem, Guid>
+    public class MfdOrdItem : IFullAudit<MfdOrdItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -132,20 +132,20 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
-        public ProductFeature ProdFeatValGrp { get; set; }
+        public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
         /// <summary>
         /// 生产订单
         /// </summary>
         public Guid ProdOrdId { get; set; }
-        public ProductionOrder ProdOrd { get; set; }
+        public MfdOrd ProdOrd { get; set; }
 
         public Nullable<Guid> PldProduOrdItemId { get; set; }
-        public PlannedOrderItem PldProdOrdItem { get; set; }
+        public PldOrdItem PldProdOrdItem { get; set; }
 
         /// <summary>
         /// 工序(作业/流程)订单集合
         /// </summary>
-        public List<ProcessOrderItem> ProcessOrdItems { get; set; } 
+        public List<ProcessOrdItem> ProcessOrdItems { get; set; } 
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -155,7 +155,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         #endregion
 
 
-        public void Configure(IEntityMappingBuilder<ProductionOrderItem> builder)
+        public void Configure(IEntityMappingBuilder<MfdOrdItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);

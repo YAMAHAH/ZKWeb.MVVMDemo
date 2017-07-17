@@ -95,7 +95,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         #endregion
         #region 生产订单行关联
         public Nullable<Guid> ProductionOrderItemId { get; set; }
-        public ProductionOrderItem ProductionOrderItem { get; set; }
+        public MfdOrdItem ProductionOrderItem { get; set; }
         #endregion
         #region 采购订单行关联
         public Nullable<Guid> PurchaseOrderItemId { get; set; }

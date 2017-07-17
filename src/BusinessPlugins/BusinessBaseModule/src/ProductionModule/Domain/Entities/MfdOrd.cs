@@ -17,7 +17,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
     /// 下达日期[排产日期] 下达期间 基本开始日期 产前缓存时间 生产开始时间 加工时间 生产完成时间 产后缓存时间 基本完成时间[需求日期]
     /// </summary>
     [ExportMany]
-    public class ProductionOrder : IFullAudit<ProductionOrder, Guid>
+    public class MfdOrd : IFullAudit<MfdOrd, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -33,7 +33,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// <summary>
         /// 生产订单编码
         /// </summary>
-        public string ProductionOrderCode { get; set; }
+        public string MoCode { get; set; }
         /// <summary>
         /// 登记日期
         /// </summary>
@@ -101,10 +101,10 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         #endregion
 
         #region 依赖对象集合引用
-        public List<ProductionOrderItem> Items { get; set; }
+        public List<MfdOrdItem> Items { get; set; }
         #endregion
 
-        public void Configure(IEntityMappingBuilder<ProductionOrder> builder)
+        public void Configure(IEntityMappingBuilder<MfdOrd> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);

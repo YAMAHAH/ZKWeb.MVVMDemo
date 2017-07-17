@@ -61,12 +61,12 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// 采购申请
         /// </summary>
         public Nullable<Guid> PurReqMatItemId { get; set; }
-        public PurReqMatItem PurReqMatItem { get; set; }
+        public PurReqMaterialItem PurReqMatItem { get; set; }
         /// <summary>
         /// 计划订单
         /// </summary>
         public Nullable<Guid> PldOrdMatItemId { get; set; }
-        public PldOrdMatItem PldOrdMatItem { get; set; }
+        public PldOrdMaterialItem PldOrdMatItem { get; set; }
         /// <summary>
         /// 采购订单
         /// </summary>
@@ -76,7 +76,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// 生产订单
         /// </summary>
         public Nullable<Guid> ProdOrdMatItemId { get; set; }
-        public ProductionMaterialItem ProdOrdMatItem { get; set; }
+        public MfdMaterailItem ProdOrdMatItem { get; set; }
         /// <summary>
         /// 预留明细
         /// </summary>

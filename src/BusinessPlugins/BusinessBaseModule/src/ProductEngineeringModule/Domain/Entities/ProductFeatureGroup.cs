@@ -9,12 +9,11 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 {
     /// <summary>
-    /// 产品特性值
-    /// 特性A 值1
-    /// 特性B 值2
+    /// 产品特性组
+    /// 有多个产品特性
     /// </summary>
     [ExportMany]
-    public class ProductFeatureValueGroup : IFullAudit<ProductFeatureValueGroup, Guid>
+    public class ProductFeatureGroup : IFullAudit<ProductFeatureGroup, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -24,23 +23,37 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         public Guid OwnerTenantId { get; set; }
         public Tenant OwnerTenant { get; set; }
         #endregion
-        #region 产品特性值数据属性
 
+        #region 产品特性值行数据属性
+        /// <summary>
+        /// 特性组
+        /// </summary>
+        public string FeatureGroupNumber { get; set; }
+        /// <summary>
+        /// 特性组名称
+        /// </summary>
+        public string FeatureGroupName { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Remark { get; set; }
         #endregion
         #region 依赖对象引用
-
         /// <summary>
-        /// 产品特性值行
+        /// 产品特性
         /// </summary>
-        public List<ProductFeatureValueItem> Items { get; set; }
+        public Guid ProdFeatId { get; set; }
+        public List<ProductFeature> ProductFeature { get; set; }
         #endregion
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<ProductFeatureValueGroup> builder)
+        public void Configure(IEntityMappingBuilder<ProductFeatureGroup> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
             //Tenant
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
+
+
         }
         #endregion
     }

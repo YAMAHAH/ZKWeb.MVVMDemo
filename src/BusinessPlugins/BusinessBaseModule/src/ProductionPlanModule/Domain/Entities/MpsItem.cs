@@ -85,7 +85,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
-        public ProductFeature ProdFeatValGrp { get; set; }
+        public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
 
         /// <summary>
         /// 产品版次

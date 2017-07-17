@@ -100,7 +100,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
-        public ProductFeature ProdFeatValGrp { get; set; }
+        public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
 
         /// <summary>
         /// 生产订单BOM
@@ -108,7 +108,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
 
         public Nullable<Guid> ProdOrdBomId { get; set; }
 
-        public ProductOrderBom ProdOrdBom { get; set; }
+        public MoBom ProdOrdBom { get; set; }
 
         /// <summary>
         /// MPS行
@@ -125,27 +125,27 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 计划生产订单行
         /// </summary>
-        public List<PlannedOrderItem> PldOrdItems { get; set; }
+        public List<PldOrdItem> PldOrdItems { get; set; }
         /// <summary>
         /// 计划生产订单物料行
         /// </summary>
-        public List<PldOrdMatItem> PldOrdMatItems { get; set; }
+        public List<PldOrdMaterialItem> PldOrdMatItems { get; set; }
 
         /// <summary>
         /// 生产订单行
         /// </summary>
-        public List<ProductionOrderItem> ProdOrdItems { get; set; }
+        public List<MfdOrdItem> ProdOrdItems { get; set; }
         /// <summary>
         /// 生产订单物料行
         /// </summary>
-        public List<ProductionMaterialItem> ProdOrdMatItems { get; set; }
+        public List<MfdMaterailItem> ProdOrdMatItems { get; set; }
         /// 采购申请行
         /// </summary>
         public List<PurReqItem> PurReqItems { get; set; }
         /// <summary>
         /// 采购申请物料行
         /// </summary>
-        public List<PurReqMatItem> PurReqMatItems { get; set; }
+        public List<PurReqMaterialItem> PurReqMatItems { get; set; }
 
         /// <summary>
         /// 采购订单行

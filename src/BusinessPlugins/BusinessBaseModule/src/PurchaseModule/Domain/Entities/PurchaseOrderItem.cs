@@ -103,7 +103,7 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
-        public ProductFeature ProdFeatValGrp { get; set; }
+        public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
         /// <summary>
         /// 采购订单抬头
         /// </summary>

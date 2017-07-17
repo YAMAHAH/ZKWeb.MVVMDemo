@@ -145,7 +145,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
-        public ProductFeature ProdFeatValGrp { get; set; }
+        public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
 
         /// <summary>
         /// 销售订单BOM ID
@@ -153,7 +153,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
 
         public Nullable<Guid> ProdOrdBomId { get; set; }
 
-        public ProductOrderBom ProdOrdBom { get; set; }
+        public MoBom ProdOrdBom { get; set; }
         /// <summary>
         /// 销售订单抬头
         /// </summary>

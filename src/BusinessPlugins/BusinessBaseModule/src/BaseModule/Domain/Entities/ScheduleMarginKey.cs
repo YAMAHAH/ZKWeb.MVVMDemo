@@ -11,7 +11,7 @@ namespace BusinessPlugins.BaseModule.Domain.Entities
     /// 计划边际码
     /// </summary>
     [ExportMany]
-    public class ScheduleMarginKey : IFullAudit<Currency, Guid>
+    public class ScheduleMarginKey : IFullAudit<ScheduleMarginKey, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -54,7 +54,7 @@ namespace BusinessPlugins.BaseModule.Domain.Entities
         #endregion
 
         #region 实体配置
-        public void Configure(IEntityMappingBuilder<Currency> builder)
+        public void Configure(IEntityMappingBuilder<ScheduleMarginKey> builder)
         {
             builder.Id(p => p.Id);
             //租户

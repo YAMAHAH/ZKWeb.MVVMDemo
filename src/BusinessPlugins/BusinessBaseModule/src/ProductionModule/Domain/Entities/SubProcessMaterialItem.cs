@@ -65,7 +65,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 计划生产订单抬头
         /// </summary>
         public Guid SubProcessOrderItemId { get; set; }
-        public SubProcessOrderItem SubProcessOrderItem { get; set; }
+        public SubProcessOrdItem SubProcessOrderItem { get; set; }
         /// <summary>
         /// 产品版次
         /// </summary>

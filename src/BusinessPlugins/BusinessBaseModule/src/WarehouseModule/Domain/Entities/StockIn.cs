@@ -99,7 +99,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         #region 生产订单
         public Nullable<Guid> ProductionOrderId { get; set; }
 
-        public ProductionOrder ProductionOrder { get; set; }
+        public MfdOrd ProductionOrder { get; set; }
         #endregion
         #region 采购订单
 

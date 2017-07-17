@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 {
-    class ProductPurchaseData
+    class ProductPurData
     {
     }
 }

@@ -12,11 +12,10 @@ namespace InfrastructurePlugins.BaseModule.Components.DatabaseInitializeHandler
     {
         public void ConvertTableName(ref string tableName)
         {
-            //AbcDef => Abc_Def
-            //foreach (var item in Regex.Matches(tableName, "[A-Z]"))
-            //{
-            //    tableName = tableName.Replace(item.ToString(), item.ToString() + '_');
-            //}
+            //[A-Z] [a-z]+(?=[A-Z])|[A-Z] (?=[A-Z] [a-z]+(?=[A-Z]))
+
+            Regex reg = new Regex(@"[A-Z]([a-z]+|(?=[A-Z][a-z]+))(?=[A-Z])");
+            tableName = reg.Replace(tableName, m => m.Value + "_");
         }
     }
 }
