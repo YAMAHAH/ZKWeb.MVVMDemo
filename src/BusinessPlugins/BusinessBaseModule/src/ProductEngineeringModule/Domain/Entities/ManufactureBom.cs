@@ -15,7 +15,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
     ///生产订单BOM 
     /// </summary>
     [ExportMany]
-    public class MoBom : IFullAudit<MoBom, Guid>
+    public class ManufactureBom : IFullAudit<ManufactureBom, Guid>
     {
         //一个产品结构必须一个版次,一个结构有零或多个自身结点
 
@@ -125,7 +125,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// 父阶结点
         /// </summary>
         public Nullable<Guid> ParentId { get; set; }
-        public MoBom Parent { get; set; }
+        public ManufactureBom Parent { get; set; }
         /// <summary>
         /// 根结点版次
         /// </summary>
@@ -140,11 +140,11 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// <summary>
         /// 子结点集合
         /// </summary>
-        public List<MoBom> Childs { get; set; } = new List<MoBom>();
+        public List<ManufactureBom> Childs { get; set; } = new List<ManufactureBom>();
         #endregion
 
 
-        public void Configure(IEntityMappingBuilder<MoBom> builder)
+        public void Configure(IEntityMappingBuilder<ManufactureBom> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);

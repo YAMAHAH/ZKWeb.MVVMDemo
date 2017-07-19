@@ -45,10 +45,10 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// <summary>
         /// 订单交期
         /// </summary>
-        public DateTime OrderDelivery { get; set; }
+        public DateTime DeliveryDate { get; set; }
         /// <summary>
         /// 订单类型
-        /// 需求订单/装配订单/零售订单/免费订单
+        /// 需求订单/装配订单/零售订单/免费订单/退货订单
         /// 按订单装配（Assemble-to-Order，ATO指在生产的最后阶段，用库存的通用零部件装配满足客户订单需求的产品
         /// 按订单生产(make-to-order)指的是企业根据客户订单的需求量和交货期来进行生产安排(MTO),订货型
         /// 按库存生产(Make to Stock)又称为现货生产(MTS),备货型

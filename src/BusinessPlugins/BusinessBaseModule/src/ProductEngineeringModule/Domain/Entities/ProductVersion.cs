@@ -31,8 +31,8 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         public List<StandardBom> StandBomRootRefs { get; set; } = new List<StandardBom>();
         public List<StandardBom> StandBomNodeRefs { get; set; } = new List<StandardBom>();
 
-        public List<MoBom> ProdOrdBomRootRefs { get; set; } = new List<MoBom>();
-        public List<MoBom> ProdOrdBomNodeRefs { get; set; } = new List<MoBom>();
+        public List<ManufactureBom> ProdOrdBomRootRefs { get; set; } = new List<ManufactureBom>();
+        public List<ManufactureBom> ProdOrdBomNodeRefs { get; set; } = new List<ManufactureBom>();
 
         public void Configure(IEntityMappingBuilder<ProductVersion> builder)
         {

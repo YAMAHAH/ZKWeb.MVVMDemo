@@ -153,7 +153,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
 
         public Nullable<Guid> ProdOrdBomId { get; set; }
 
-        public MoBom ProdOrdBom { get; set; }
+        public ManufactureBom ProdOrdBom { get; set; }
         /// <summary>
         /// 销售订单抬头
         /// </summary>

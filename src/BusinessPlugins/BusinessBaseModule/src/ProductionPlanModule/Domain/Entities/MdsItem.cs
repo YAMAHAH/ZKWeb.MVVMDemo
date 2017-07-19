@@ -108,7 +108,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
 
         public Nullable<Guid> ProdOrdBomId { get; set; }
 
-        public MoBom ProdOrdBom { get; set; }
+        public ManufactureBom ProdOrdBom { get; set; }
 
         /// <summary>
         /// MPS行
