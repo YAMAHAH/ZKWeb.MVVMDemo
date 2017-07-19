@@ -17,7 +17,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
     /// 生产订单项目
     /// </summary>
     [ExportMany]
-    public class MfdOrdItem : IFullAudit<MfdOrdItem, Guid>
+    public class ManufactureOrderItem : IFullAudit<ManufactureOrderItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -137,7 +137,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 生产订单
         /// </summary>
         public Guid ProdOrdId { get; set; }
-        public MfdOrd ProdOrd { get; set; }
+        public ManufactureOrder ProdOrd { get; set; }
 
         public Nullable<Guid> PldProduOrdItemId { get; set; }
         public PldOrdItem PldProdOrdItem { get; set; }
@@ -155,7 +155,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         #endregion
 
 
-        public void Configure(IEntityMappingBuilder<MfdOrdItem> builder)
+        public void Configure(IEntityMappingBuilder<ManufactureOrderItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);

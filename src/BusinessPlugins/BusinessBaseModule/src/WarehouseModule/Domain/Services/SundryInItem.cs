@@ -4,8 +4,7 @@ using System.Text;
 
 namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
-    public class SundryIn : StockIn
+    public class SundryInItem : GoodsReceiptItem
     {
-     
     }
 }

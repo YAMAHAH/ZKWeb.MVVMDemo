@@ -2,7 +2,6 @@
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using BusinessPlugins.ProductionPlanModule.Domain.Entities;
-using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
@@ -12,10 +11,10 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.ProductionModule.Domain.Entities
 {
     /// <summary>
-    /// 生产订单物料清单
+    /// 生产物料项
     /// </summary>
     [ExportMany]
-    public class MfdMaterailItem : IFullAudit<MfdMaterailItem, Guid>
+    public class ManufactureMaterailItem : IFullAudit<ManufactureMaterailItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -62,7 +61,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 生产订单行
         /// </summary>
         public Guid ProdOrdItemId { get; set; }
-        public MfdOrdItem ProdOrdItem { get; set; }
+        public ManufactureOrderItem ProdOrdItem { get; set; }
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -76,7 +75,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         #endregion
 
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<MfdMaterailItem> builder)
+        public void Configure(IEntityMappingBuilder<ManufactureMaterailItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);

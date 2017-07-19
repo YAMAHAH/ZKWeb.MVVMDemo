@@ -104,7 +104,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 已下达的生产订单行
         /// </summary>
-        public List<MfdOrdItem> ProdOrdItems { get; set; }
+        public List<ManufactureOrderItem> ProdOrdItems { get; set; }
         #endregion
 
         #region 实体关系配置

@@ -76,7 +76,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// 生产订单
         /// </summary>
         public Nullable<Guid> ProdOrdMatItemId { get; set; }
-        public MfdMaterailItem ProdOrdMatItem { get; set; }
+        public ManufactureMaterailItem ProdOrdMatItem { get; set; }
         /// <summary>
         /// 预留明细
         /// </summary>

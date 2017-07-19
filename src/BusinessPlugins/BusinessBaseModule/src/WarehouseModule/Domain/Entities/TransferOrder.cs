@@ -1,22 +1,23 @@
-﻿using BusinessPlugins.OrganizationModule.Domain;
+﻿using BusinessPlugins.BaseModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.ProductionModule.Domain.Entities;
 using BusinessPlugins.PurchaseModule.Domain.Entities;
-using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
     /// <summary>
-    /// 交货单
-    /// 分为采购交货单和销售交货单
+    /// 转储订单
     /// </summary>
     [ExportMany]
-    public class DeliveryOrder : IFullAudit<DeliveryOrder, Guid>
+    public class TransferOrder : IFullAudit<TransferOrder, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -28,24 +29,23 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 
         #endregion
 
-        #region 收货基本属性
+        #region 转储请求基本属性
         /// <summary>
-        /// 交货类型
-        /// 采购交货单/销售交货单
+        /// 移动类型
         /// </summary>
-        public DeliveryType DeliveryType { get; set; }
+        public MovementType MovementType { get; set; }
         /// <summary>
         /// 登记日期
         /// </summary>
         public DateTime RecordDate { get; set; }
         /// <summary>
-        /// 交货单号
+        /// 转储订单号码
         /// </summary>
-        public string DeliveryNumber { get; set; }
+        public string TONumber { get; set; }
         /// <summary>
-        /// 交货日期
+        /// 转储日期
         /// </summary>
-        public DateTime DeliveryDate { get; set; }
+        public DateTime TRDate { get; set; }
         /// <summary>
         /// 源单据号
         /// </summary>
@@ -88,44 +88,45 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// 部门
         /// </summary>
         public Department Department { get; set; }
-        /// <summary>
-        /// 销售订单
-        /// </summary>
-        public Nullable<Guid> SaleOrderId { get; set; }
 
-        public SaleOrder SaleOrder { get; set; }
+        /// <summary>
+        /// 生产订单
+        /// </summary>
+        public Nullable<Guid> MfdOrdId { get; set; }
+
+        public ManufactureOrder MfdOrder { get; set; }
         /// <summary>
         /// 采购订单
         /// </summary>
-        public Nullable<Guid> PurchaseOrderId { get; set; }
+        public Nullable<Guid> PurOrdId { get; set; }
 
-        public PurchaseOrder PurchaseOrder { get; set; }
+        public PurchaseOrder PurOrd { get; set; }
+
         /// <summary>
-        /// 交货Item
+        /// 收货Item
         /// </summary>
-        public List<DeliveryOrderItem> Items { get; set; } = new List<DeliveryOrderItem>();
+        public List<TransferOrderItem> Items { get; set; } = new List<TransferOrderItem>();
 
         #endregion
 
         #region 实体关系配置
-        public virtual void Configure(IEntityMappingBuilder<DeliveryOrder> builder)
+        public virtual void Configure(IEntityMappingBuilder<TransferOrder> builder)
         {
-            //主键
             builder.Id(p => p.Id);
             //租户
-            builder.HasMany(d => d.OwnerTenant, d => d.OwnerTenantId);
+            builder.HasMany(g => g.OwnerTenant, g => g.OwnerTenantId);
             //工厂
-            builder.HasMany(d => d.Plant, d => d.PlantId);
-            ////库存地点
-            builder.HasMany(d => d.StorageLocation, d => d.StorLocId);
-            ////合作合伴
-            builder.HasMany(d => d.Partner, d => d.PartnerId);
-            ////部门
-            builder.HasMany(d => d.Department, d => d.DptmId);
-            //销售订单
-            builder.HasMany(d => d.SaleOrder, d => d.SaleOrderId);
+            builder.HasMany(g => g.Plant, g => g.PlantId);
+            //库存地点
+            builder.HasMany(g => g.StorageLocation, g => g.StorLocId);
+            //合作合伴
+            builder.HasMany(g => g.Partner, g => g.PartnerId);
+            //部门
+            builder.HasMany(g => g.Department, g => g.DptmId);
+            //生产订单
+            builder.HasMany(g => g.MfdOrder, g => g.MfdOrdId);
             //采购订单
-            builder.HasMany(d => d.PurchaseOrder, d => d.PurchaseOrderId);
+            builder.HasMany(g => g.PurOrd, g => g.PurOrdId);
         }
         #endregion
 

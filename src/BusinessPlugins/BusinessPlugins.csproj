@@ -15,7 +15,6 @@
     <Folder Include="BusinessBaseModule\src\PurchaseModule\Domain\Services\" />
     <Folder Include="BusinessBaseModule\src\QualityControlModule\Domain\Services\" />
     <Folder Include="BusinessBaseModule\src\SubcontractModule\Domain\Services\" />
-    <Folder Include="BusinessBaseModule\src\WarehouseModule\Domain\Services\" />
     <Folder Include="FinanceModule\src\Domain\" />
     <Folder Include="ProductionModule\src\Domain\Services\" />
     <Folder Include="ProductionPlanModule\src\Domain\Services\" />

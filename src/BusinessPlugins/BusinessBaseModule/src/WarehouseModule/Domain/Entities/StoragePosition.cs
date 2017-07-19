@@ -42,15 +42,16 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         #region 实体关系配置
         public void Configure(IEntityMappingBuilder<StoragePosition> builder)
         {
-            var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
+            //租户
+            builder.HasMany(i => i.OwnerTenant, i => i.OwnerTenantId);
 
             //存储分区
-            nativeBuilder.HasOne(p => p.StorageSection)
-                .WithMany(s => s.StoragePositions)
-                .HasForeignKey(p => p.StorageSectionId)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(i => i.StorageSection,
+                d => d.StoragePositions,
+                i => i.StorageSectionId,
+                DeleteBehavior.Restrict);
+
         }
         #endregion
     }

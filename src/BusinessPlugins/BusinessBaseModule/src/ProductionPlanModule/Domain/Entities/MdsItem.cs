@@ -134,11 +134,11 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 生产订单行
         /// </summary>
-        public List<MfdOrdItem> ProdOrdItems { get; set; }
+        public List<ManufactureOrderItem> ProdOrdItems { get; set; }
         /// <summary>
         /// 生产订单物料行
         /// </summary>
-        public List<MfdMaterailItem> ProdOrdMatItems { get; set; }
+        public List<ManufactureMaterailItem> ProdOrdMatItems { get; set; }
         /// 采购申请行
         /// </summary>
         public List<PurReqItem> PurReqItems { get; set; }
