@@ -145,7 +145,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// <summary>
         /// 工序(作业/流程)订单集合
         /// </summary>
-        public List<ProcessOrdItem> ProcessOrdItems { get; set; } 
+        public List<ProcessOrderItem> ProcessOrdItems { get; set; } 
         /// <summary>
         /// 主需求计划行
         /// </summary>

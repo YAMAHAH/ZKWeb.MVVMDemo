@@ -1,6 +1,7 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
+using BusinessPlugins.ProductionPlanModule.Domain.Entities;
 using BusinessPlugins.PurchaseModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
@@ -87,6 +88,11 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public Nullable<Guid> PurOrdItemId { get; set; }
         public PurchaseOrderItem PurOrdItem { get; set; }
         /// <summary>
+        /// 主需求计划行
+        /// </summary>
+        public Nullable<Guid> MdsItemId { get; set; }
+        public MdsItem MdsItem { get; set; }
+        /// <summary>
         /// 工厂
         /// </summary>
         public Guid PlantId { get; set; }
@@ -130,6 +136,8 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(i => i.SalOrdItem, i => i.SalOrdItemId);
             //采购订单
             builder.HasMany(i => i.PurOrdItem, i => i.PurOrdItemId);
+            //主需求计划行
+            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.DeliveryOrdItems, i => i.MdsItemId);
         }
         #endregion
 

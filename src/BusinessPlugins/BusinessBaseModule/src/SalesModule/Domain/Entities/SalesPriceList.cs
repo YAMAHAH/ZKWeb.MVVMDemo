@@ -83,7 +83,11 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// </summary>
         public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
-
+        /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+        public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
 
         /// <summary>
         /// 货币
@@ -102,19 +106,25 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public void Configure(IEntityMappingBuilder<SalesPriceList> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
-            nativeBuilder.HasKey(p => new { p.Id, p.CustomerId, p.ProductVersionId, p.Unit, p.FromDate, p.StartRange })
+            //主键
+            nativeBuilder.HasKey(p => new { p.Id })
                 .HasName("SalesPriceId");
+            //p.CustomerId, p.ProductVersionId, p.Unit, p.FromDate, p.StartRange
+            //单位
             builder.Map(p => p.Unit, new EntityMappingOptions() { Length = 10 });
-
+            //租户
             builder.HasMany(p => p.OwnerTenant, p => p.OwnerTenantId);
-
+            //产品版次
             builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
-
+            //产品特性值
+            builder.HasOne(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
+            //客户
             builder.HasMany(p => p.Customer, p => p.CustomerId);
-
+            //货币
             builder.HasMany(p => p.Currency, p => p.CurrencyId);
-
+            //客户物料信息
             builder.HasOne(p => p.CustomerMaterialInfo, p => p.CustomerInfoId);
+            //
 
         }
         #endregion

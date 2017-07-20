@@ -72,7 +72,9 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
-
+        /// <summary>
+        /// 主生产计划
+        /// </summary>
         public Guid MpsId { get; set; }
         public Mps Mps { get; set; }
         /// <summary>
@@ -81,17 +83,16 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Nullable<Guid> MdsItemId { get; set; }
         public MdsItem MdsItem { get; set; }
         /// <summary>
+        /// 产品版次
+        /// </summary>
+        public Guid ProductVersionId { get; set; }
+        public ProductVersion ProductVersion { get; set; }
+        /// <summary>
         /// 产品特性值
         /// </summary>
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
         public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
-
-        /// <summary>
-        /// 产品版次
-        /// </summary>
-        public Guid ProductVersionId { get; set; }
-        public ProductVersion ProductVersion { get; set; }
         #endregion
         #region 实体关系配置
         public void Configure(IEntityMappingBuilder<MpsItem> builder)
@@ -106,7 +107,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
             //MPS
             builder.HasMany(i => i.Mps, m => m.Items, i => i.MpsId);    
-            //MdsItem
+            //主需求计划行
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.MpsItems, i => i.MdsItemId);
             //productFeatureValueGroup
             builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);

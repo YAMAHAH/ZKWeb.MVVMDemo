@@ -27,15 +27,26 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         #endregion
 
         #region 采购物料主数据属性
-
         /// <summary>
-        /// 是否完成
+        /// 需求数量
         /// </summary>
-        public bool IsDone { get; set; }
+        public decimal NeedQuantity { get; set; }
         /// <summary>
-        /// 是否取消
+        /// 发料完成量
         /// </summary>
-        public bool IsCancel { get; set; }
+        public decimal IssueFinishQuantity { get; set; }
+        /// <summary>
+        /// 发料剩余量
+        /// </summary>
+        public decimal IssueRemainQuantity { get; set; }
+        /// <summary>
+        /// 是否发料完成
+        /// </summary>
+        public bool IsIssueDone { get; set; }
+        /// <summary>
+        /// 是否发料取消
+        /// </summary>
+        public bool IsIssueCancel { get; set; }
         /// <summary>
         /// 备注
         /// </summary>

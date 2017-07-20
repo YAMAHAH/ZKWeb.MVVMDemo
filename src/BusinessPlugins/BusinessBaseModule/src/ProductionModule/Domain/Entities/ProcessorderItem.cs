@@ -1,6 +1,7 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
+using BusinessPlugins.ProductionPlanModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
@@ -18,7 +19,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
     ///  MRP->计划采购订单->采购订单
     /// </summary>
     [ExportMany]
-    public class SubProcessOrdItem : IFullAudit<SubProcessOrdItem, Guid>
+    public class ProcessOrderItem : IFullAudit<ProcessOrderItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -64,20 +65,24 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
         /// <summary>
-        /// 流程订单抬头
+        /// 计划生产订单抬头
         /// </summary>
-        public Guid ProcessOrderItemId { get; set; }
-        public ProcessOrdItem ProcessOrderItem { get; set; }
+        public Guid MfdOrdItemId { get; set; }
+        public ManufactureOrderItem MfdOrdItem { get; set; }
         /// <summary>
         /// 工序订单物料行集合
         /// </summary>
-        public List<SubProcessMaterialItem> SubProcessOrderMaterialItems { get; set; }
+        public List<ProcessMaterialItem> ProcOrdMatItems { get; set; }
+        /// <summary>
+        /// 子工序集合
+        /// </summary>
+        public List<SubProcessOrderItem> SubProcOrdItems { get; set; }
 
         /// <summary>
-        /// 销售订单行
+        /// 主需求计划行
         /// </summary>
-        public Nullable<Guid> SaleOrderItemId { get; set; }
-        public SaleOrderItem SaleOrderItem { get; set; }
+        public Nullable<Guid> MdsItemId { get; set; }
+        public MdsItem MdsItem { get; set; }
         /// <summary>
         /// 工序
         /// </summary>
@@ -86,7 +91,7 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         #endregion
 
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<SubProcessOrdItem> builder)
+        public void Configure(IEntityMappingBuilder<ProcessOrderItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
@@ -94,10 +99,12 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
-            //流程订单
-            builder.HasMany(p => p.ProcessOrderItem, i => i.SubProcessOrderItems, p => p.ProcessOrderItemId);
+            //计划生产订单行
+            builder.HasMany(p => p.MfdOrdItem, i => i.ProcessOrdItems, p => p.MfdOrdItemId);
             //工序
             builder.HasMany(i => i.ProcessStep, i => i.ProcessStepId);
+            //主需求计划行
+            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.ProcessOrdItems, i => i.MdsItemId);
         }
         #endregion
     }

@@ -27,13 +27,25 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
 
         #region 生产订单主数据属性
         /// <summary>
+        /// 需求数量
+        /// </summary>
+        public decimal NeedQuantity { get; set; }
+        /// <summary>
+        /// 投料完成量
+        /// </summary>
+        public decimal FeedFinishQuantity { get; set; }
+        /// <summary>
+        /// 投料剩余量
+        /// </summary>
+        public decimal FeedRemainQuantity { get; set; }
+        /// <summary>
         /// 是否完成
         /// </summary>
-        public bool IsDone { get; set; }
+        public bool IsFeedDone { get; set; }
         /// <summary>
         /// 是否取消
         /// </summary>
-        public bool IsCancel { get; set; }
+        public bool IsFeedCancel { get; set; }
         /// <summary>
         /// 备注
         /// </summary>

@@ -84,6 +84,13 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
+
+        /// <summary>
+        /// 产品特性值
+        /// </summary>
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+        public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
+
         /// <summary>
         /// 工序
         /// </summary>
@@ -101,7 +108,7 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         public void Configure(IEntityMappingBuilder<PurchaseInfoRecord> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
-
+            //主键
             nativeBuilder.HasKey(p => p.Id)
                .HasName("PurInfoRecordId");
 
@@ -116,6 +123,8 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
             builder.HasMany(p => p.Vendor, p => p.VendorId);
             //产品
             builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
+            //产品特性值
+            builder.HasOne(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
             //工序
             builder.HasMany(p => p.ProcessStep, p => p.ProcessStepId);
             //货币

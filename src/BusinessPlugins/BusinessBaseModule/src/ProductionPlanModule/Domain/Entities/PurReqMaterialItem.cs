@@ -25,16 +25,31 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 计划生产订单主数据属性
-
+        #region 采购请求主数据属性
         /// <summary>
-        /// 是否完成
+        /// 需求数量
         /// </summary>
-        public bool IsDone { get; set; }
+        public decimal NeedQuantity { get; set; }
         /// <summary>
-        /// 是否取消
+        /// 下达剩余量
         /// </summary>
-        public bool IsCancel { get; set; }
+        public decimal IssuedRemainQuantity { get; set; }
+        /// <summary>
+        /// 拣货完成量
+        /// </summary>
+        public decimal PickFinishQuantity { get; set; }
+        /// <summary>
+        ///  拣货剩余量
+        /// </summary>
+        public decimal PickRemainQuantity { get; set; }
+        /// <summary>
+        /// 是否拣货完成
+        /// </summary>
+        public bool IsPickDone { get; set; }
+        /// <summary>
+        /// 是否取消拣货
+        /// </summary>
+        public bool IsPickCancel { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
@@ -63,7 +78,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
         public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
-        
+
         /// <summary>
         /// 主需求计划行
         /// </summary>

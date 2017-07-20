@@ -4,6 +4,7 @@ using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using BusinessPlugins.ProductionModule.Domain.Entities;
 using BusinessPlugins.PurchaseModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
+using BusinessPlugins.WarehouseModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
@@ -96,6 +97,10 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Nullable<Guid> SalOrdItemId { get; set; }
         public SaleOrderItem SalOrdItem { get; set; }
         /// <summary>
+        /// 交货行
+        /// </summary>
+        public List<DeliveryOrderItem> DeliveryOrdItems { get; set; }
+        /// <summary>
         /// 产品特性值
         /// </summary>
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
@@ -139,6 +144,22 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// 生产订单物料行
         /// </summary>
         public List<ManufactureMaterailItem> ProdOrdMatItems { get; set; }
+        /// <summary>
+        /// 流程订单行
+        /// </summary>
+        public List<ProcessOrderItem> ProcessOrdItems { get; set; }
+        /// <summary>
+        /// 流程订单物料行
+        /// </summary>
+        public List<ProcessMaterialItem> ProcessMatItems { get; set; }
+        /// <summary>
+        /// 子工序行
+        /// </summary>
+        public List<SubProcessOrderItem> SubProcessItems { get; set; }
+        /// <summary>
+        /// 子工序物料行
+        /// </summary>
+        public List<SubProcessMaterialItem> SubProcessMatItems { get; set; }
         /// 采购申请行
         /// </summary>
         public List<PurReqItem> PurReqItems { get; set; }
@@ -155,6 +176,22 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// 采购物料行
         /// </summary>
         public List<PurchaseMaterialItem> PurMatItems { get; set; }
+        /// <summary>
+        /// 收货行
+        /// </summary>
+        public List<GoodsReceiptItem> GRItems { get; set; }
+        /// <summary>
+        /// 发货行
+        /// </summary>
+        public List<GoodsIssuesItem> GIItems { get; set; }
+        /// <summary>
+        /// 转储请求行
+        /// </summary>
+        public List<TransferRequestItem> TransferReqItems { get; set; }
+        /// <summary>
+        /// 转储订单行
+        /// </summary>
+        public List<TransferOrderItem> TransferOrdItems { get; set; }
         #endregion
         #region 实体关系配置
         public void Configure(IEntityMappingBuilder<MdsItem> builder)

@@ -8,6 +8,7 @@ using InfrastructurePlugins.BaseModule.Components.Extensions;
 using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
+using BusinessPlugins.ProductionPlanModule.Domain.Entities;
 
 namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
@@ -114,6 +115,11 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> PurOrdItemId { get; set; }
         public PurchaseOrderItem PurOrdItem { get; set; }
+        /// <summary>
+        /// 主需求计划行
+        /// </summary>
+        public Nullable<Guid> MdsItemId { get; set; }
+        public MdsItem MdsItem { get; set; }
         #endregion
         #region 实体关系配置
         public void Configure(IEntityMappingBuilder<TransferRequestItem> builder)
@@ -138,6 +144,8 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(i => i.PurOrdItem, i => i.PurOrdItemId);
             //生产订单
             builder.HasMany(i => i.MfdOrdItem, i => i.MfdOrdItemId);
+            //主需求计划行
+            builder.HasMany(i => i.MdsItem, mi => mi.TransferReqItems, i => i.MdsItemId);
         }
         #endregion
     }

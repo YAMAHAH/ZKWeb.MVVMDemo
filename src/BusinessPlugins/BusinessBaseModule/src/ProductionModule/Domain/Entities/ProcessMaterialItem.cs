@@ -1,6 +1,7 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
+using BusinessPlugins.ProductionPlanModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
@@ -63,18 +64,23 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 计划生产订单抬头
         /// </summary>
         public Guid ProcessOrderItemId { get; set; }
-        public ProcessOrdItem ProcessOrderItem { get; set; }
+        public ProcessOrderItem ProcessOrderItem { get; set; }
         /// <summary>
         /// 产品版次
         /// </summary>
         public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
-
         /// <summary>
-        /// 销售订单行
+        /// 产品特性值
         /// </summary>
-        public Nullable<Guid> SaleOrderItemId { get; set; }
-        public SaleOrderItem SaleOrderItem { get; set; }
+        public Nullable<Guid> ProdFeatValGrpId { get; set; }
+
+        public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
+        /// <summary>
+        /// 主需求计划行
+        /// </summary>
+        public Nullable<Guid> MdsItemId { get; set; }
+        public MdsItem MdsItem { get; set; }
 
         #endregion
 
@@ -88,9 +94,13 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
             //流程订单行
-            builder.HasMany(p => p.ProcessOrderItem, i => i.ProcessOrderMaterialItems, p => p.ProcessOrderItemId);
+            builder.HasMany(p => p.ProcessOrderItem, i => i.ProcOrdMatItems, p => p.ProcessOrderItemId);
             //产品版次
             builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            //主需求计划行
+            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.ProcessMatItems, i => i.MdsItemId);
+            //产品特性值
+            builder.HasOne(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
         }
         #endregion
     }
