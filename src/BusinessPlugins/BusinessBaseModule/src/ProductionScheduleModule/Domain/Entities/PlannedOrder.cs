@@ -1,5 +1,4 @@
-﻿using BusinessPlugins.BaseModule.Domain.Entities;
-using BusinessPlugins.OrganizationModule.Domain;
+﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
@@ -9,13 +8,14 @@ using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
+namespace BusinessPlugins.ProductionScheduleModule.Domain.Entities
 {
     /// <summary>
-    /// 采购申请
+    /// 计划生产订单
+    /// 开始日期[排产日期] 生产天数 完成日期[需求日期] 收货处理天数 上级物料需求日期
     /// </summary>
     [ExportMany]
-    public class PurReq : IFullAudit<PurReq, Guid>
+    public class PlannedOrder : IFullAudit<PlannedOrder, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -26,24 +26,29 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 采购申请主数据属性
+        #region 计划生产订单主数据属性
         /// <summary>
-        /// 采购申请号码
+        /// 计划生产订单号
         /// </summary>
-        public string PurchaseRequestNo { get; set; }
+        public string PlannedOrderNo { get; set; }
         /// <summary>
-        /// 请求日期
+        /// 计划日期
         /// </summary>
-        public DateTime ReqeustDate { get; set; }
+        public DateTime PlanDate { get; set; }
         /// <summary>
         /// 需求日期
         /// </summary>
-
         public DateTime NeedDate { get; set; }
         /// <summary>
-        /// 采购请求类型
+        /// 计划生产订单开始日期
+        /// 计划单的基本开始日期 = 计划单的基本完成日期 - 自制生产天数 
         /// </summary>
-        public PurchaseType PurchaseRequestType { get; set; }
+        public DateTime BasicStartDate { get; set; }
+        /// <summary>
+        /// 计划生产订单基本完成日期
+        /// 基本完成日期 =上级物料需求日期 - 收货处理时间天数 
+        /// </summary>
+        public DateTime BasicFinishDate { get; set; }
         /// <summary>
         /// 是否完成
         /// </summary>
@@ -63,20 +68,20 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
+       
         /// <summary>
-        /// 请求供应商
+        /// 计划部门
         /// </summary>
-        public Guid RequestVendorId { get; set; }
-        public Partner RequestVendor { get; set; }
-  
+        public Nullable<Guid> DeptId { get; set; }
+        public Department PlanProductionDept { get; set; }
         /// <summary>
-        /// 请求行
+        /// 明细行
         /// </summary>
-        public List<PurReqItem> Items { get; set; }
+        public List<PlannedOrderItem> Items { get; set; }
         #endregion
 
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<PurReq> builder)
+        public void Configure(IEntityMappingBuilder<PlannedOrder> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
@@ -84,9 +89,10 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
-            //请求供应商
-            builder.HasMany(r => r.RequestVendor, r => r.RequestVendorId);
+            //计划生产部门
+            builder.HasOne(m => m.PlanProductionDept, m => m.DeptId);
         }
         #endregion
     }
+
 }

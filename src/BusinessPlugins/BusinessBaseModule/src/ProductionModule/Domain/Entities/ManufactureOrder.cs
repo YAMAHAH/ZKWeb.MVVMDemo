@@ -1,12 +1,12 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
-using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
+using BusinessPlugins.WarehouseModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
@@ -97,7 +97,22 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// </summary>
         public Department Department { get; set; }
 
-     
+        /// <summary>
+        /// 转储订单
+        /// </summary>
+        public Nullable<Guid> TransferOrderId { get; set; }
+        public TransferOrder TransferOrder { get; set; }
+        /// <summary>
+        /// 领料申请单
+        /// </summary>
+        public Nullable<Guid> MatReqId { get; set; }
+        public MaterialRequisition MatReq { get; set; }
+        /// <summary>
+        /// 计划订单
+        /// </summary>
+        public Nullable<Guid> PldOrdId { get; set; }
+        public PlannedOrder PldOrd { get; set; }
+
         #endregion
 
         #region 依赖对象集合引用
@@ -106,21 +121,20 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
 
         public void Configure(IEntityMappingBuilder<ManufactureOrder> builder)
         {
-            var nativeBuilder = builder.GetNativeBuilder();
+            //主键
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
-
-            ////车间
-            nativeBuilder.HasOne(i => i.Department)
-                .WithMany()
-                .HasForeignKey(i => i.DptmId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+            //租户
+            builder.HasMany(p => p.OwnerTenant, p => p.OwnerTenantId);
+            //车间
+            builder.HasMany(i => i.Department, i => i.DptmId);
             //工厂
-            nativeBuilder.HasOne(i => i.Plant)
-                .WithMany()
-                .HasForeignKey(i => i.PlantId)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(i => i.Plant, i => i.PlantId);
+            //领料申请单
+            builder.HasMany(i => i.MatReq, i => i.MatReqId);
+            //转储订单
+            builder.HasMany(i => i.TransferOrder, i => i.TransferOrderId);
+            //计划订单
+            builder.HasMany(i => i.PldOrd, i => i.PldOrdId);
         }
     }
 }

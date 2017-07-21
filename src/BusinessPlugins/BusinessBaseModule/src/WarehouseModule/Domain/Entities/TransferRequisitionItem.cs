@@ -8,15 +8,15 @@ using InfrastructurePlugins.BaseModule.Components.Extensions;
 using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
-using BusinessPlugins.ProductionPlanModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
 
 namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
     /// <summary>
-    /// 仓库调拔明细
+    /// 转储申请项
     /// </summary>
     [ExportMany]
-    public class TransferRequestItem : IFullAudit<TransferRequestItem, Guid>
+    public class TransferRequisitionItem : IFullAudit<TransferRequisitionItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -81,7 +81,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// 转储请求单抬头
         /// </summary>
         public Guid TransferRequestId { get; set; }
-        public TransferRequest TransferRequest { get; set; }
+        public TransferRequisition TransferRequest { get; set; }
         /// <summary>
         /// 产品版次
         /// </summary>
@@ -122,7 +122,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public MdsItem MdsItem { get; set; }
         #endregion
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<TransferRequestItem> builder)
+        public void Configure(IEntityMappingBuilder<TransferRequisitionItem> builder)
         {
             //主键
             builder.Id(p => p.Id);

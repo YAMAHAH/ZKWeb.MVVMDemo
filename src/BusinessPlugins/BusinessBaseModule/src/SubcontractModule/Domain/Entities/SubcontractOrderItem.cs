@@ -1,6 +1,6 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
-using BusinessPlugins.ProductionPlanModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
@@ -123,7 +123,7 @@ namespace BusinessPlugins.SubcontractModule.Domain.Entities
         /// 采购请求
         /// </summary>
         public Nullable<Guid> PurchaseRequestId { get; set; }
-        public PurReq PurchaseRequest { get; set; }
+        public PlannedPurchase PurchaseRequest { get; set; }
         ///// <summary>
         ///// 销售订单行
         ///// </summary>

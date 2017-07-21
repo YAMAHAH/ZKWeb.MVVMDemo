@@ -13,7 +13,7 @@ using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
 
-namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
+namespace BusinessPlugins.ProductionScheduleModule.Domain.Entities
 {
     /// <summary>
     /// 主需求项目
@@ -130,7 +130,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 计划生产订单行
         /// </summary>
-        public List<PldOrdItem> PldOrdItems { get; set; }
+        public List<PlannedOrderItem> PldOrdItems { get; set; }
         /// <summary>
         /// 计划生产订单物料行
         /// </summary>
@@ -160,13 +160,13 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// 子工序物料行
         /// </summary>
         public List<SubProcessMaterialItem> SubProcessMatItems { get; set; }
-        /// 采购申请行
+        /// 计划采购行
         /// </summary>
-        public List<PurReqItem> PurReqItems { get; set; }
+        public List<PlannedPurchaseItem> PldPurItems { get; set; }
         /// <summary>
-        /// 采购申请物料行
+        /// 计划采购物料行
         /// </summary>
-        public List<PurReqMaterialItem> PurReqMatItems { get; set; }
+        public List<PldPurMaterialItem> PldPurMatItems { get; set; }
 
         /// <summary>
         /// 采购订单行
@@ -176,6 +176,10 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// 采购物料行
         /// </summary>
         public List<PurchaseMaterialItem> PurMatItems { get; set; }
+        /// <summary>
+        /// 采购申请行
+        /// </summary>
+        public List<PurchaseRequisitionItem> PurReqItems { get; set; }
         /// <summary>
         /// 收货行
         /// </summary>
@@ -187,11 +191,15 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 转储请求行
         /// </summary>
-        public List<TransferRequestItem> TransferReqItems { get; set; }
+        public List<TransferRequisitionItem> TransferReqItems { get; set; }
         /// <summary>
         /// 转储订单行
-        /// </summary>
+        /// </summary> 
         public List<TransferOrderItem> TransferOrdItems { get; set; }
+        /// <summary>
+        /// 物料领料行
+        /// </summary>
+        public List<MaterialRequisitionItem> MaterialReqItems { get; set; }
         #endregion
         #region 实体关系配置
         public void Configure(IEntityMappingBuilder<MdsItem> builder)
@@ -206,7 +214,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             builder.HasMany(i => i.ProdVer, i => i.ProdVerId);
             //SalesOrder
             builder.HasOne(i => i.SalOrdItem, s => s.MdsItem, i => i.SalOrdItemId);
-            //mds
+            //主需求计划
             builder.HasMany(i => i.Mds, m => m.Items, i => i.MdsId);
             //产品特性值
             builder.HasOne(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);

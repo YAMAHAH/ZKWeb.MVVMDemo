@@ -2,7 +2,7 @@
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using BusinessPlugins.ProductionModule.Domain.Entities;
-using BusinessPlugins.ProductionPlanModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
 using BusinessPlugins.PurchaseModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
@@ -108,6 +108,16 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public Nullable<Guid> PurOrdItemId { get; set; }
         public PurchaseOrderItem PurOrdItem { get; set; }
         /// <summary>
+        /// 计划采购
+        /// </summary>
+        public Nullable<Guid> PldPurItemId { get; set; }
+        public PlannedPurchaseItem PldPurItem { get; set; }
+        /// <summary>
+        /// 计划订单
+        /// </summary>
+        public Nullable<Guid> PldOrdItemId { get; set; }
+        public PlannedOrderItem PldOrdItem { get; set; }
+        /// <summary>
         /// 主需求计划行
         /// </summary>
         public Nullable<Guid> MdsItemId { get; set; }
@@ -132,6 +142,10 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(g => g.StorageLocation, g => g.StorLocId);
             //货位
             builder.HasMany(g => g.StorageBin, g => g.StorageBinId);
+            //计划采购项
+            builder.HasMany(i => i.PldPurItem, i => i.PldPurItemId);
+            //计划订单项
+            builder.HasMany(i => i.PldOrdItem, i => i.PldOrdItemId);
             //采购订单
             builder.HasMany(i => i.PurOrdItem, i => i.PurOrdItemId);
             //生产订单

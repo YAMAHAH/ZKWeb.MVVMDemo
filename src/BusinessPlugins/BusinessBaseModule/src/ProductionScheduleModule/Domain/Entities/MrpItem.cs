@@ -1,20 +1,20 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
-using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
+using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
+namespace BusinessPlugins.ProductionScheduleModule.Domain.Entities
 {
     /// <summary>
-    /// 主生产计划明细
+    /// MRP明细
     /// </summary>
     [ExportMany]
-    public class MpsItem : IFullAudit<MpsItem, Guid>
+    public class MrpItem : IFullAudit<MrpItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -25,7 +25,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 主生产计划行主数据属性
+        #region MRP行主数据属性
         /// <summary>
         /// 子订单号码
         /// 表内唯一
@@ -33,30 +33,13 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public string ChildNo { get; set; }
         /// <summary>
-        /// 排程数量
+        /// 序号
         /// </summary>
-        public decimal ScheduleQuantity { get; set; }
-
+        public int Order { get; set; }
         /// <summary>
-        /// 生产完成数量
+        /// 计划数量
         /// </summary>
-        public decimal ProductionFinishQty { get; set; }
-        /// <summary>
-        /// 生产剩余数量
-        /// </summary>
-        public decimal ProductionRemainQty { get; set; }
-        /// <summary>
-        /// MRP完成数量
-        /// </summary>
-        public decimal MrpFinishQty { get; set; }
-        /// <summary>
-        /// MRP剩余数量
-        /// </summary>
-        public decimal MrpRemainQty { get; set; }
-        /// <summary>
-        /// 是否生产完成
-        /// </summary>
-        public bool IsDone { get; set; }
+        public decimal PlanQuantity { get; set; }
         /// <summary>
         /// 是否取消
         /// </summary>
@@ -68,20 +51,15 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         #endregion
         #region 依赖对象引用
         /// <summary>
+        /// MRP抬头
+        /// </summary>
+        public Guid MrpId { get; set; }
+        public Mrp Mrp { get; set; }
+        /// <summary>
         /// 工厂
         /// </summary>
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
-        /// <summary>
-        /// 主生产计划
-        /// </summary>
-        public Guid MpsId { get; set; }
-        public Mps Mps { get; set; }
-        /// <summary>
-        /// 主需求计划行
-        /// </summary>
-        public Nullable<Guid> MdsItemId { get; set; }
-        public MdsItem MdsItem { get; set; }
         /// <summary>
         /// 产品版次
         /// </summary>
@@ -92,10 +70,18 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
-        public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
+        public ProductFeatureValueGroup ProdFeatValGrp { get; set; }   
+        /// <summary>
+        /// 主需求计划行
+        /// </summary>
+        public Nullable<Guid> MdsItemId { get; set; }
+        public MdsItem MdsItem { get; set; }
+
+        public List<MrpMaterialItem> MrpMaterialItems { get; set; }
         #endregion
+
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<MpsItem> builder)
+        public void Configure(IEntityMappingBuilder<MrpItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
@@ -106,10 +92,10 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             //ProductVersion
             builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
             //MPS
-            builder.HasMany(i => i.Mps, m => m.Items, i => i.MpsId);    
-            //主需求计划行
-            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.MpsItems, i => i.MdsItemId);
-            //productFeatureValueGroup
+            builder.HasMany(i => i.Mrp, m => m.Items, i => i.MrpId);       
+            //MdsItem
+            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.MrpItems, i => i.MdsItemId);
+            //产品特性值
             builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
         }
         #endregion

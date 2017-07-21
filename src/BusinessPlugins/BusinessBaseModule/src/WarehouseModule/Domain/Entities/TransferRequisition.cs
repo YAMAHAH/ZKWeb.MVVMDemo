@@ -2,6 +2,7 @@
 using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductionModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
 using BusinessPlugins.PurchaseModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
@@ -13,10 +14,11 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
     /// <summary>
-    /// 发货->确认->过账
+    /// 转储申请单
+    /// 生产订单->转储申请->打印备料单->申请单确认->发料单
     /// </summary>
     [ExportMany]
-    public class GoodsIssues : IFullAudit<GoodsIssues, Guid>
+    public class TransferRequisition : IFullAudit<TransferRequisition, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -28,9 +30,9 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 
         #endregion
 
-        #region 收货基本属性
+        #region 转储请求基本属性
         /// <summary>
-        /// 收货类型
+        /// 移动类型
         /// </summary>
         public MovementType MovementType { get; set; }
         /// <summary>
@@ -38,13 +40,13 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// </summary>
         public DateTime RecordDate { get; set; }
         /// <summary>
-        /// 发货单号
+        /// 请求单号
         /// </summary>
-        public string GINumber { get; set; }
+        public string TRNumber { get; set; }
         /// <summary>
-        /// 发货日期
+        /// 请求日期
         /// </summary>
-        public DateTime GIDate { get; set; }
+        public DateTime TRDate { get; set; }
         /// <summary>
         /// 源单据号
         /// </summary>
@@ -87,7 +89,11 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// 部门
         /// </summary>
         public Department Department { get; set; }
-
+        /// <summary>
+        /// 计划订单
+        /// </summary>
+        public Nullable<Guid> PldOrdId { get; set; }
+        public PlannedOrder PldOrder { get; set; }
         /// <summary>
         /// 生产订单
         /// </summary>
@@ -95,31 +101,26 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 
         public ManufactureOrder MfdOrder { get; set; }
         /// <summary>
+        /// 计划采购
+        /// </summary>
+        public Nullable<Guid> PldPurId { get; set; }
+        public PlannedPurchase PldPur { get; set; }
+        /// <summary>
         /// 采购订单
         /// </summary>
         public Nullable<Guid> PurOrdId { get; set; }
 
         public PurchaseOrder PurOrd { get; set; }
-        /// <summary>
-        /// 领料申请单
-        /// </summary>
-        public Nullable<Guid> MatReqId { get; set; }
-        public MaterialRequisition MatReq { get; set; }
-        /// <summary>
-        /// 转储订单
-        /// </summary>
-        public Nullable<Guid> TransOrdId { get; set; }
-        public TransferOrder TransOrder { get; set; }
 
         /// <summary>
-        /// 发货行
+        /// 收货Item
         /// </summary>
-        public List<GoodsIssuesItem> Items { get; set; } = new List<GoodsIssuesItem>();
+        public List<TransferRequisitionItem> Items { get; set; } = new List<TransferRequisitionItem>();
 
         #endregion
 
         #region 实体关系配置
-        public virtual void Configure(IEntityMappingBuilder<GoodsIssues> builder)
+        public virtual void Configure(IEntityMappingBuilder<TransferRequisition> builder)
         {
             builder.Id(p => p.Id);
             //租户
@@ -132,14 +133,14 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(g => g.Partner, g => g.PartnerId);
             //部门
             builder.HasMany(g => g.Department, g => g.DptmId);
+            //计划订单
+            builder.HasMany(g => g.PldOrder, g => g.PldOrdId);
             //生产订单
             builder.HasMany(g => g.MfdOrder, g => g.MfdOrdId);
+            //计划采购
+            builder.HasMany(g => g.PldPur, g => g.PldPurId);
             //采购订单
             builder.HasMany(g => g.PurOrd, g => g.PurOrdId);
-            //领料申请单
-            builder.HasMany(g => g.MatReq, g => g.MatReqId);
-            //转储订单
-            builder.HasMany(g => g.TransOrder, g => g.TransOrdId);
         }
         #endregion
 

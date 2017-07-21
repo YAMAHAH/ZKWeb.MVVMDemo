@@ -1,7 +1,8 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
-using BusinessPlugins.ProductionPlanModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
+using BusinessPlugins.WarehouseModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -139,13 +140,24 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         public Guid ProdOrdId { get; set; }
         public ManufactureOrder ProdOrd { get; set; }
 
-        public Nullable<Guid> PldProduOrdItemId { get; set; }
-        public PldOrdItem PldProdOrdItem { get; set; }
+        public Nullable<Guid> PldOrdItemId { get; set; }
+        public PlannedOrderItem PldOrdItem { get; set; }
 
         /// <summary>
         /// 工序(作业/流程)订单集合
         /// </summary>
-        public List<ProcessOrderItem> ProcessOrdItems { get; set; } 
+        public List<ProcessOrderItem> ProcessOrdItems { get; set; }
+
+        /// <summary>
+        /// 转储订单行
+        /// </summary>
+        public Nullable<Guid> TransOrdItemId { get; set; }
+        public TransferOrderItem TransOrdItem { get; set; }
+        /// <summary>
+        /// 领料申请行
+        /// </summary>
+        public Nullable<Guid> MatReqItemId { get; set; }
+        public MaterialRequisitionItem MatReqItem { get; set; }
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -167,9 +179,13 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
             //产品特性值
             builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
             //计划生产订单行
-            builder.HasMany(i => i.PldProdOrdItem, p => p.ProdOrdItems, i => i.PldProduOrdItemId);
+            builder.HasMany(i => i.PldOrdItem, p => p.ProdOrdItems, i => i.PldOrdItemId);
             //MdsItem
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.ProdOrdItems, i => i.MdsItemId);
+            //领料申请项
+            builder.HasMany(i => i.MatReqItem, i => i.MatReqItemId);
+            //转储订单项
+            builder.HasMany(i => i.TransOrdItem, i => i.TransOrdItemId);
 
             //计算列
             nativeBuilder.Property(i => i.RemainingQty)

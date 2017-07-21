@@ -1,21 +1,21 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
-using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionModule.Domain.Entities
+namespace BusinessPlugins.PurchaseModule.Domain.Entities
 {
     /// <summary>
-    ///工序订单物料
+    /// 采购申请项目
     /// </summary>
     [ExportMany]
-    public class SubProcessMaterialItem : IFullAudit<SubProcessMaterialItem, Guid>
+    public class PurchaseRequisitionItem : IFullAudit<PurchaseRequisitionItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -26,23 +26,49 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 计划生产订单主数据属性
+        #region 采购申请项目基本信息
+
+        /// <summary>
+        /// 子订单号码
+        /// </summary>
+        public string ChildNo { get; set; }
+        /// <summary>
+        /// 单位
+        /// </summary>
+        public string Unit { get; set; }
+        /// <summary>
+        /// 单位换算率 辅助单位/基本单位
+        /// </summary>
+        public double UnitRate { get; set; }
+        /// <summary>
+        /// 单重
+        /// </summary>
+        public double SingleWeight { get; set; }
+        /// <summary>
+        /// 重量
+        /// </summary>
+        public double Weight { get; set; }
         /// <summary>
         /// 需求日期
         /// </summary>
         public DateTime NeedDate { get; set; }
         /// <summary>
-        /// 加工数量
+        /// 申请数量
         /// </summary>
-        public decimal Quantity { get; set; }
+        public decimal RequisitionQty { get; set; }
         /// <summary>
-        /// 领料完成数量
+        /// 确认数量
+        /// </summary>
+        public decimal VaildationQty { get; set; }
+        /// <summary>
+        /// 完成数量
         /// </summary>
         public decimal FinishQty { get; set; }
         /// <summary>
-        /// 领料剩余数量
+        /// 剩余数量
         /// </summary>
-        public decimal RemainQty { get; set; }
+        public decimal RemainingQty { get; set; }
+
         /// <summary>
         /// 是否完成
         /// </summary>
@@ -56,19 +82,11 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// </summary>
         public string Remark { get; set; }
         #endregion
+
         #region 依赖对象引用
+
         /// <summary>
-        /// 工厂
-        /// </summary>
-        public Guid PlantId { get; set; }
-        public Plant Plant { get; set; }
-        /// <summary>
-        /// 计划生产订单抬头
-        /// </summary>
-        public Guid SubProcessOrderItemId { get; set; }
-        public SubProcessOrderItem SubProcessOrderItem { get; set; }
-        /// <summary>
-        /// 产品版次
+        /// 产品ID
         /// </summary>
         public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
@@ -79,31 +97,32 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
 
         public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
         /// <summary>
-        /// 主需求计划行
+        /// 采购申请抬头
         /// </summary>
+        public Guid PurchaseRequisitionId { get; set; }
+        public PurchaseRequisition PurchaseRequisition { get; set; }
+        ///// <summary>
+        ///// 主需求计划行
+        ///// </summary>
         public Nullable<Guid> MdsItemId { get; set; }
         public MdsItem MdsItem { get; set; }
-
         #endregion
 
-        #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<SubProcessMaterialItem> builder)
+        public void Configure(IEntityMappingBuilder<PurchaseRequisitionItem> builder)
         {
-            var nativeBuilder = builder.GetNativeBuilder();
+            //主键
             builder.Id(p => p.Id);
             //租户
-            builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
-            //工厂
-            builder.HasMany(m => m.Plant, m => m.PlantId);
-            //子工序订单
-            builder.HasMany(p => p.SubProcessOrderItem, i => i.SubProcOrdMatItems, p => p.SubProcessOrderItemId);
-            //产品版次
+            builder.HasMany(p => p.OwnerTenant, i => i.OwnerTenantId);
+            //采购申请
+            builder.HasMany(i => i.PurchaseRequisition, s => s.Items, i => i.PurchaseRequisitionId);
+            //产品版本
             builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            //主需求计划
+            builder.HasMany(i => i.MdsItem, m => m.PurReqItems, i => i.MdsItemId);
             //产品特性值
-            builder.HasOne(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
-            //主需求计划行
-            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.SubProcessMatItems, i => i.MdsItemId);
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
+
         }
-        #endregion
     }
 }

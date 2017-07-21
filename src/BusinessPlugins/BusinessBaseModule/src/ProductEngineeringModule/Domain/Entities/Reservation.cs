@@ -2,7 +2,7 @@
 using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductionModule.Domain.Entities;
-using BusinessPlugins.ProductionPlanModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
 using BusinessPlugins.PurchaseModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
@@ -61,7 +61,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// 采购申请
         /// </summary>
         public Nullable<Guid> PurReqMatItemId { get; set; }
-        public PurReqMaterialItem PurReqMatItem { get; set; }
+        public PldPurMaterialItem PurReqMatItem { get; set; }
         /// <summary>
         /// 计划订单
         /// </summary>

@@ -1,10 +1,9 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
-using BusinessPlugins.ProductionPlanModule.Domain.Entities;
-using BusinessPlugins.SalesModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
+using BusinessPlugins.WarehouseModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
-using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
@@ -30,14 +29,8 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
 
         /// <summary>
         /// 子订单号码
-        /// 表内唯一
-        /// 根据这个号码可以找出对应的项
         /// </summary>
         public string ChildNo { get; set; }
-        /// <summary>
-        /// 明细序号
-        /// </summary>
-        public int Order { get; set; }
         /// <summary>
         /// 单位
         /// </summary>
@@ -63,19 +56,15 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         /// <summary>
         /// 采购数量
         /// </summary>
-        public double PurchaseQty { get; set; }
+        public decimal PurchaseQty { get; set; }
         /// <summary>
         /// 完成数量
         /// </summary>
-        public double FinishQty { get; set; }
+        public decimal FinishQty { get; set; }
         /// <summary>
         /// 剩余数量
         /// </summary>
-        public double RemainingQty { get; set; }
-        /// <summary>
-        /// 完成率
-        /// </summary>
-        public double FinishRate { get; set; }
+        public decimal RemainQty { get; set; }
 
         /// <summary>
         /// 是否完成
@@ -110,6 +99,21 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
         public Guid PurchaseOrderId { get; set; }
         public PurchaseOrder PurchaseOrder { get; set; }
         /// <summary>
+        /// 计划采购项
+        /// </summary>
+        public Nullable<Guid> PldPurItemId { get; set; }
+        public PlannedPurchaseItem PldPurItem { get; set; }
+        /// <summary>
+        /// 转储订单行
+        /// </summary>
+        public Nullable<Guid> TransOrdItemId { get; set; }
+        public TransferOrderItem TransOrdItem { get; set; }
+        /// <summary>
+        /// 领料申请行
+        /// </summary>
+        public Nullable<Guid> MatReqItemId { get; set; }
+        public MaterialRequisitionItem MatReqItem { get; set; }
+        /// <summary>
         /// 主需求计划行
         /// </summary>
         public Nullable<Guid> MdsItemId { get; set; }
@@ -118,17 +122,24 @@ namespace BusinessPlugins.PurchaseModule.Domain.Entities
 
         public void Configure(IEntityMappingBuilder<PurchaseOrderItem> builder)
         {
-            var nativeBuilder = builder.GetNativeBuilder();
+            //主键
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
-            //主从表
+            //租户
+            builder.HasMany(p => p.OwnerTenant, p => p.OwnerTenantId);
+            //采购订单
             builder.HasMany(i => i.PurchaseOrder, s => s.Items, i => i.PurchaseOrderId);
-            //产品
-            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);    
-            //MdsItem
+            //产品版本
+            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            //主需求计划
             builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PurOrdItems, i => i.MdsItemId);
             //产品特性值
             builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
+            //领料申请项
+            builder.HasMany(i => i.MatReqItem, i => i.MatReqItemId);
+            //转储订单项
+            builder.HasMany(i => i.TransOrdItem, i => i.TransOrdItemId);
+            //计划采购项
+            builder.HasMany(i => i.PldPurItem, i => i.PldPurItemId);
 
         }
     }

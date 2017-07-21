@@ -13,10 +13,10 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
     /// <summary>
-    /// 发货项
+    /// 领料申请项
     /// </summary>
     [ExportMany]
-    public class GoodsIssuesItem : IFullAudit<GoodsIssuesItem, Guid>
+    public class MaterialRequisitionItem : IFullAudit<MaterialRequisitionItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -27,11 +27,25 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
 
         #endregion
-        #region 发货项目基本信息
+        #region 领料申请项目基本信息
         /// <summary>
-        /// 发货数量
+        /// 申请数量
         /// </summary>
         public decimal Quantity { get; set; }
+        /// <summary>
+        /// 确认数量
+        /// </summary>
+        public decimal ValidationQuantity { get; set; }
+        /// <summary>
+        /// 领料完成量
+        ///         /// 如果为0就以领料数量为准,大于0则以确认数量为准
+        /// validation confirm
+        /// </summary>
+        public decimal FinishQty { get; set; }
+        /// <summary>
+        /// 领料剩余量
+        /// </summary>
+        public decimal RemainQty { get; set; }
         /// <summary>
         /// 单位
         /// </summary>
@@ -53,6 +67,14 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// </summary>
         public string BatchNumber { get; set; }
         /// <summary>
+        /// 是否完成
+        /// </summary>
+        public bool IsItemDone { get; set; }
+        /// <summary>
+        /// 是否取消
+        /// </summary>
+        public bool IsItemCancel { get; set; }
+        /// <summary>
         /// 备注
         /// </summary>
         public string Remark { get; set; }
@@ -65,10 +87,10 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
         /// <summary>
-        /// 发货单抬头
+        /// 物料请求单抬头
         /// </summary>
-        public Guid GoodsIssuesId { get; set; }
-        public GoodsIssues GoodsIssues { get; set; }
+        public Guid MatReqId { get; set; }
+        public MaterialRequisition MatReqItem { get; set; }
         /// <summary>
         /// 产品版次
         /// </summary>
@@ -93,6 +115,16 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public Nullable<Guid> StorageBinId { get; set; }
         public StoragePosition StorageBin { get; set; }
         /// <summary>
+        /// 计划采购
+        /// </summary>
+        public Nullable<Guid> PldPurItemId { get; set; }
+        public PlannedPurchaseItem PldPurItem { get; set; }
+        /// <summary>
+        /// 计划订单
+        /// </summary>
+        public Nullable<Guid> PldOrdItemId { get; set; }
+        public PlannedOrderItem PldOrdItem { get; set; }
+        /// <summary>
         /// 生产订单项
         /// </summary>
         public Nullable<Guid> MfdOrdItemId { get; set; }
@@ -102,16 +134,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> PurOrdItemId { get; set; }
         public PurchaseOrderItem PurOrdItem { get; set; }
-        /// <summary>
-        /// 转储订单行
-        /// </summary>
-        public Nullable<Guid> TransOrdItemId { get; set; }
-        public TransferOrderItem TransOrdItem { get; set; }
-        /// <summary>
-        /// 领料申请行
-        /// </summary>
-        public Nullable<Guid> MatReqItemId { get; set; }
-        public MaterialRequisitionItem MatReqItem { get; set; }
+
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -119,7 +142,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public MdsItem MdsItem { get; set; }
         #endregion
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<GoodsIssuesItem> builder)
+        public void Configure(IEntityMappingBuilder<MaterialRequisitionItem> builder)
         {
             //主键
             builder.Id(p => p.Id);
@@ -127,8 +150,8 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(i => i.OwnerTenant, i => i.OwnerTenantId);
             //工厂
             builder.HasMany(d => d.Plant, d => d.PlantId);
-            //发货单
-            builder.HasMany(i => i.GoodsIssues, d => d.Items, i => i.GoodsIssuesId);
+            //领料申请单
+            builder.HasMany(i => i.MatReqItem, d => d.Items, i => i.MatReqId);
             //产品版本
             builder.HasMany(i => i.ProductVersion, i => i.ProdVerId);
             //产品特性值
@@ -137,16 +160,16 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(g => g.StorageLocation, g => g.StorLocId);
             //货位
             builder.HasMany(g => g.StorageBin, g => g.StorageBinId);
+            //计划采购项
+            builder.HasMany(i => i.PldPurItem, i => i.PldPurItemId);
+            //计划订单项
+            builder.HasMany(i => i.PldOrdItem, i => i.PldOrdItemId);
             //采购订单项
             builder.HasMany(i => i.PurOrdItem, i => i.PurOrdItemId);
             //生产订单项
             builder.HasMany(i => i.MfdOrdItem, i => i.MfdOrdItemId);
-            //领料申请项
-            builder.HasMany(i => i.MatReqItem, i => i.MatReqItemId);
-            //转储订单项
-            builder.HasMany(i => i.TransOrdItem, i => i.TransOrdItemId);
             //主需求计划行
-            builder.HasMany(i => i.MdsItem, mi => mi.GIItems, i => i.MdsItemId);
+            builder.HasMany(i => i.MdsItem, m => m.MaterialReqItems, i => i.MdsItemId);
         }
         #endregion
 

@@ -2,6 +2,7 @@
 using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductionModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
 using BusinessPlugins.PurchaseModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
@@ -14,6 +15,8 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
     /// <summary>
     /// 转储订单
+    /// 基于采购订单的转储订单,可以作为采购订单发料的参考输入
+    /// 基于计划订单的转储订单,可以当作采购订单的参考输入
     /// </summary>
     [ExportMany]
     public class TransferOrder : IFullAudit<TransferOrder, Guid>
@@ -100,6 +103,16 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public Nullable<Guid> PurOrdId { get; set; }
 
         public PurchaseOrder PurOrd { get; set; }
+        /// <summary>
+        /// 计划采购
+        /// </summary>
+        public Nullable<Guid> PldPurItemId { get; set; }
+        public PlannedPurchaseItem PldPurItem { get; set; }
+        /// <summary>
+        /// 计划订单
+        /// </summary>
+        public Nullable<Guid> PldOrdItemId { get; set; }
+        public PlannedOrderItem PldOrdItem { get; set; }
 
         /// <summary>
         /// 收货Item
@@ -126,6 +139,10 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(g => g.MfdOrder, g => g.MfdOrdId);
             //采购订单
             builder.HasMany(g => g.PurOrd, g => g.PurOrdId);
+            //计划采购项
+            builder.HasMany(i => i.PldPurItem, i => i.PldPurItemId);
+            //计划订单项
+            builder.HasMany(i => i.PldOrdItem, i => i.PldOrdItemId);
         }
         #endregion
 

@@ -2,6 +2,7 @@
 using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductionModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
 using BusinessPlugins.PurchaseModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
@@ -13,10 +14,12 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
     /// <summary>
-    /// 转储请求
+    /// 领料申请单
+    /// 基于采购订单的领料单,可以作为采购订单发料的参考输入
+    /// 基于计划订单的领料单,可以当作采购订单的参考输入
     /// </summary>
     [ExportMany]
-    public class TransferRequest : IFullAudit<TransferRequest, Guid>
+    public class MaterialRequisition : IFullAudit<MaterialRequisition, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -28,7 +31,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 
         #endregion
 
-        #region 转储请求基本属性
+        #region 领料申请基本属性
         /// <summary>
         /// 移动类型
         /// </summary>
@@ -38,17 +41,26 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// </summary>
         public DateTime RecordDate { get; set; }
         /// <summary>
-        /// 请求单号
+        /// 申请单号
         /// </summary>
-        public string TRNumber { get; set; }
+        public string RequisitionNumber { get; set; }
         /// <summary>
-        /// 请求日期
+        /// 申请日期
         /// </summary>
-        public DateTime TRDate { get; set; }
+        public DateTime RequisitionDate { get; set; }
         /// <summary>
         /// 源单据号
         /// </summary>
         public string OriginalTicketNo { get; set; }
+        /// <summary>
+        /// 是否完成
+        /// </summary>
+        public bool IsDone { get; set; }
+        /// <summary>
+        /// 是否取消
+        /// </summary>
+        public bool IsCancel { get; set; }
+
         /// <summary>
         /// 单据备注
         /// </summary>
@@ -69,16 +81,11 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// 库存地点
         /// </summary>
         public StorageLocation StorageLocation { get; set; }
-
         /// <summary>
-        /// 伙伴ID
+        /// 供应商
         /// </summary>
-        public Nullable<Guid> PartnerId { get; set; }
-        /// <summary>
-        /// 合作伙伴
-        /// </summary>
-        public Partner Partner { get; set; }
-
+        public Nullable<Guid> VendorId { get; set; }
+        public Partner Vendor { get; set; }
         /// <summary>
         /// 部门ID
         /// </summary>
@@ -87,13 +94,22 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// 部门
         /// </summary>
         public Department Department { get; set; }
-
+        /// <summary>
+        /// 计划订单
+        /// </summary>
+        public Nullable<Guid> PldOrdId { get; set; }
+        public PlannedOrder PldOrder { get; set; }
         /// <summary>
         /// 生产订单
         /// </summary>
         public Nullable<Guid> MfdOrdId { get; set; }
 
         public ManufactureOrder MfdOrder { get; set; }
+        /// <summary>
+        /// 计划采购
+        /// </summary>
+        public Nullable<Guid> PldPurId { get; set; }
+        public PlannedPurchase PldPur { get; set; }
         /// <summary>
         /// 采购订单
         /// </summary>
@@ -102,14 +118,14 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public PurchaseOrder PurOrd { get; set; }
 
         /// <summary>
-        /// 收货Item
+        /// 领料单行
         /// </summary>
-        public List<TransferRequestItem> Items { get; set; } = new List<TransferRequestItem>();
+        public List<MaterialRequisitionItem> Items { get; set; } = new List<MaterialRequisitionItem>();
 
         #endregion
 
         #region 实体关系配置
-        public virtual void Configure(IEntityMappingBuilder<TransferRequest> builder)
+        public virtual void Configure(IEntityMappingBuilder<MaterialRequisition> builder)
         {
             builder.Id(p => p.Id);
             //租户
@@ -118,12 +134,14 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(g => g.Plant, g => g.PlantId);
             //库存地点
             builder.HasMany(g => g.StorageLocation, g => g.StorLocId);
-            //合作合伴
-            builder.HasMany(g => g.Partner, g => g.PartnerId);
             //部门
             builder.HasMany(g => g.Department, g => g.DptmId);
+            //计划订单
+            builder.HasMany(g => g.PldOrder, g => g.PldOrdId);
             //生产订单
             builder.HasMany(g => g.MfdOrder, g => g.MfdOrdId);
+            //计划采购
+            builder.HasMany(g => g.PldPur, g => g.PldPurId);
             //采购订单
             builder.HasMany(g => g.PurOrd, g => g.PurOrdId);
         }

@@ -1,7 +1,7 @@
 ﻿using ZKWeb.Plugin;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionPlanModule
+namespace BusinessPlugins.ProductionScheduleModule
 {
     /// <summary>
     /// 插件载入时的处理

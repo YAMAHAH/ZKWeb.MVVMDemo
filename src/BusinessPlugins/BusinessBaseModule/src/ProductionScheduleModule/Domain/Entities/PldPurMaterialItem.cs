@@ -8,13 +8,13 @@ using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
+namespace BusinessPlugins.ProductionScheduleModule.Domain.Entities
 {
     /// <summary>
-    /// 计划生产物料
+    /// 计划采购物料行
     /// </summary>
     [ExportMany]
-    public class PldOrdMaterialItem : IFullAudit<PldOrdMaterialItem, Guid>
+    public class PldPurMaterialItem : IFullAudit<PldPurMaterialItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -25,7 +25,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 计划生产订单主数据属性
+        #region 计划采购物料数据属性
         /// <summary>
         /// 需求数量
         /// </summary>
@@ -61,11 +61,16 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
+        /// <summary>
+        /// 采购申请行
+        /// </summary>
+        public Guid PurReqItemId { get; set; }
+        public PlannedPurchaseItem PurReqItem { get; set; }
 
         /// <summary>
         /// 产品版次
         /// </summary>
-        public Guid ProductVersionId { get; set; }
+        public Guid ProdVerId { get; set; }
         public ProductVersion ProductVersion { get; set; }
         /// <summary>
         /// 产品特性值
@@ -73,11 +78,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
         public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
-        /// <summary>
-        /// 计划生产订单行
-        /// </summary>
-        public Guid PldProdOrdItemId { get; set; }
-        public PldOrd PldProdOrdItem { get; set; }   
+
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -91,7 +92,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         #endregion
 
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<PldOrdMaterialItem> builder)
+        public void Configure(IEntityMappingBuilder<PldPurMaterialItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
@@ -99,14 +100,14 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
-            //计划生产订单行
-            builder.HasMany(p => p.PldProdOrdItem, p => p.PldProdOrdItemId);
+            //采购申请行
+            builder.HasMany(p => p.PurReqItem, p => p.PurReqItemId);
             //MdsItem
-            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PldOrdMatItems, i => i.MdsItemId);
-            //产品特性值
-            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
+            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PldPurMatItems, i => i.MdsItemId);
             //产品版次
-            builder.HasMany(p => p.ProductVersion, p => p.ProductVersionId);
+            builder.HasMany(p => p.ProductVersion, p => p.ProdVerId);
+            //productFeatureValueGroup
+            builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
         }
         #endregion
     }

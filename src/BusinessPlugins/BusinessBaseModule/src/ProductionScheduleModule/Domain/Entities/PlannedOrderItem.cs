@@ -10,13 +10,13 @@ using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
+namespace BusinessPlugins.ProductionScheduleModule.Domain.Entities
 {
     /// <summary>
     /// 计划生产订单行
     /// </summary>
     [ExportMany]
-    public class PldOrdItem : IFullAudit<PldOrdItem, Guid>
+    public class PlannedOrderItem : IFullAudit<PlannedOrderItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -71,7 +71,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// 计划生产订单抬头
         /// </summary>
         public Guid PldOrdId { get; set; }
-        public PldOrd PldOrd { get; set; }
+        public PlannedOrder PldOrd { get; set; }
         
         /// <summary>
         /// MRP物料需求
@@ -108,7 +108,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         #endregion
 
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<PldOrdItem> builder)
+        public void Configure(IEntityMappingBuilder<PlannedOrderItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);

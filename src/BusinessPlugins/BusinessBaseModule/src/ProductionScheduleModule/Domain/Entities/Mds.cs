@@ -7,13 +7,19 @@ using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
+
+namespace BusinessPlugins.ProductionScheduleModule.Domain.Entities
 {
     /// <summary>
-    /// 主生产计划
+    /// 主需求计划
+    /// 来源:销售订单,销售预测,库存补充请求单,手工录入
+    /// MasterDemandSchedule
+    /// 提供两种方案:
+    /// 按SO + PO + 交期 + 产品 + 特性组 + SOBomId汇总
+    /// 按交期 + 产品 + 特性组 + SOBomId汇总
     /// </summary>
     [ExportMany]
-    public class Mps : IFullAudit<Mps, Guid>
+    public class Mds : IFullAudit<Mds, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -24,7 +30,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<Mps> builder)
+        public void Configure(IEntityMappingBuilder<Mds> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
@@ -37,10 +43,10 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
 
         }
         #endregion
-        #region 主生产计划主数据属性
-        public string MpsNo { get; set; }
+        #region 主需求计划主数据属性
+        public string MdsNumber { get; set; }
         /// <summary>
-        /// 计划排产日期
+        /// 需求计划日期
         /// </summary>
         public DateTime ScheduleDate { get; set; }
 
@@ -73,8 +79,10 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> PlanDeptId { get; set; }
         public Department PlanDept { get; set; }
-
-        public List<MpsItem> Items { get; set; }
+        /// <summary>
+        /// 主需求计划行
+        /// </summary>
+        public List<MdsItem> Items { get; set; }
         #endregion
     }
 }

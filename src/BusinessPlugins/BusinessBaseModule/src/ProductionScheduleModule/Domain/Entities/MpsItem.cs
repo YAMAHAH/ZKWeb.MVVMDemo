@@ -8,13 +8,13 @@ using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
+namespace BusinessPlugins.ProductionScheduleModule.Domain.Entities
 {
     /// <summary>
-    /// 外包订单行
+    /// 主生产计划明细
     /// </summary>
     [ExportMany]
-    public class PurReqItem : IFullAudit<PurReqItem, Guid>
+    public class MpsItem : IFullAudit<MpsItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -25,7 +25,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 采购申请主数据属性
+        #region 主生产计划行主数据属性
         /// <summary>
         /// 子订单号码
         /// 表内唯一
@@ -33,21 +33,28 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public string ChildNo { get; set; }
         /// <summary>
-        /// 需求日期
+        /// 排程数量
         /// </summary>
-        public DateTime NeedDate { get; set; }
-        /// <summary>
-        /// 计划数量
-        /// </summary>
-        public decimal RequestQuantity { get; set; }
-        /// <summary>
-        /// 已下达数量
-        /// </summary>
-        public decimal IssuedQuantity { get; set; }
+        public decimal ScheduleQuantity { get; set; }
 
-        public decimal IssuedRemainQty { get; set; }
         /// <summary>
-        /// 是否完成
+        /// 生产完成数量
+        /// </summary>
+        public decimal ProductionFinishQty { get; set; }
+        /// <summary>
+        /// 生产剩余数量
+        /// </summary>
+        public decimal ProductionRemainQty { get; set; }
+        /// <summary>
+        /// MRP完成数量
+        /// </summary>
+        public decimal MrpFinishQty { get; set; }
+        /// <summary>
+        /// MRP剩余数量
+        /// </summary>
+        public decimal MrpRemainQty { get; set; }
+        /// <summary>
+        /// 是否生产完成
         /// </summary>
         public bool IsDone { get; set; }
         /// <summary>
@@ -66,18 +73,10 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
         /// <summary>
-        /// 采购申请抬头
+        /// 主生产计划
         /// </summary>
-        public Guid PurReqId { get; set; }
-        public PurReq PurReq { get; set; }
-
-
-        /// <summary>
-        /// MRP物料需求
-        /// </summary>
-        public Guid MrpMatItemId { get; set; }
-        public MrpMaterialItem MrpMatItem { get; set; }
-
+        public Guid MpsId { get; set; }
+        public Mps Mps { get; set; }
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -86,7 +85,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// <summary>
         /// 产品版次
         /// </summary>
-        public Guid ProdVerId { get; set; }
+        public Guid ProductVersionId { get; set; }
         public ProductVersion ProductVersion { get; set; }
         /// <summary>
         /// 产品特性值
@@ -94,35 +93,24 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Nullable<Guid> ProdFeatValGrpId { get; set; }
 
         public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
-        /// <summary>
-        /// 工序
-        /// 生产部门 + 工序 => 生产订单[内部生产订单]
-        /// </summary>
-        public Nullable<Guid> ProcessStepId { get; set; }
-        public ProcessStep ProcessStep { get; set; }
         #endregion
-
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<PurReqItem> builder)
+        public void Configure(IEntityMappingBuilder<MpsItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            //租户
+            //Tenant
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
-            //计划外包订单
-            builder.HasMany(p => p.PurReq, i => i.Items, p => p.PurReqId);
-            //计划物料需求行
-            builder.HasMany(p => p.MrpMatItem, p => p.MrpMatItemId); 
-            //MdsItem
-            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.PurReqItems, i => i.MdsItemId);
-            //产品版次
-            builder.HasMany(i => i.ProductVersion, i => i.ProdVerId);
+            //ProductVersion
+            builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
+            //MPS
+            builder.HasMany(i => i.Mps, m => m.Items, i => i.MpsId);    
+            //主需求计划行
+            builder.HasMany(i => i.MdsItem, mdsItem => mdsItem.MpsItems, i => i.MdsItemId);
             //productFeatureValueGroup
             builder.HasMany(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
-            //工序
-            builder.HasMany(i => i.ProcessStep, i => i.ProcessStepId);
         }
         #endregion
     }

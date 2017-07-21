@@ -1,7 +1,7 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
-using BusinessPlugins.ProductionPlanModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
@@ -30,6 +30,23 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
         /// 需求数量
         /// </summary>
         public decimal NeedQuantity { get; set; }
+
+        /// <summary>
+        /// 拣货完成量
+        /// </summary>
+        public decimal PickFinishQuantity { get; set; }
+        /// <summary>
+        ///  拣货剩余量
+        /// </summary>
+        public decimal PickRemainQuantity { get; set; }
+        /// <summary>
+        /// 是否拣货完成
+        /// </summary>
+        public bool IsPickDone { get; set; }
+        /// <summary>
+        /// 是否取消拣货
+        /// </summary>
+        public bool IsPickCancel { get; set; }
         /// <summary>
         /// 投料完成量
         /// </summary>

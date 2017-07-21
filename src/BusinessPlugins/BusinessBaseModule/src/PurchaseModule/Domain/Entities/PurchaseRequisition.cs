@@ -1,20 +1,23 @@
-﻿using BusinessPlugins.OrganizationModule.Domain;
+﻿using BusinessPlugins.BaseModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
+namespace BusinessPlugins.PurchaseModule.Domain.Entities
 {
     /// <summary>
-    /// 物料需求计划
-    /// 需求来源:主需求计划,主生产计划
+    /// 采购订单
     /// </summary>
     [ExportMany]
-    public class Mrp : IFullAudit<Mrp, Guid>
+    public class PurchaseRequisition : IFullAudit<PurchaseRequisition, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -25,17 +28,19 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 物料需求计划主数据属性
+        #region 采购申请信息
+
         /// <summary>
-        /// 计划单号
+        /// 申请日期
         /// </summary>
-        public string MrpNo { get; set; }
+        public DateTime RequisitionDate { get; set; }
+
         /// <summary>
-        /// 计划日期
+        /// 需求日期
         /// </summary>
-        public DateTime PlanDate { get; set; }
+        public DateTime NeedDate { get; set; }
         /// <summary>
-        /// 是否MRP完成
+        /// 是否完成
         /// </summary>
         public bool IsDone { get; set; }
         /// <summary>
@@ -47,6 +52,7 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         /// </summary>
         public string Remark { get; set; }
         #endregion
+
         #region 依赖对象引用
         /// <summary>
         /// 工厂
@@ -54,28 +60,28 @@ namespace BusinessPlugins.ProductionPlanModule.Domain.Entities
         public Guid PlantId { get; set; }
         public Plant Plant { get; set; }
         /// <summary>
-        /// 计划部门
+        /// 部门
         /// </summary>
-        public Nullable<Guid> DeptId { get; set; }
-        public Department PlanDept { get; set; }
+        public Guid DptmId { get; set; }
+        public Department Department { get; set; }
+
         /// <summary>
-        /// 明细行
+        /// 采购申请行
         /// </summary>
-        public List<MrpItem> Items { get; set; }
+        public List<PurchaseRequisitionItem> Items { get; set; }
         #endregion
 
-        #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<Mrp> builder)
+        public void Configure(IEntityMappingBuilder<PurchaseRequisition> builder)
         {
-            var nativeBuilder = builder.GetNativeBuilder();
+            //主键
             builder.Id(p => p.Id);
-            //Tenant
-            builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
+            //租户
+            builder.HasMany(i => i.OwnerTenant, i => i.OwnerTenantId);
             //工厂
-            builder.HasMany(m => m.Plant, m => m.PlantId);
-            //计划部门
-            builder.HasOne(m => m.PlanDept, m => m.DeptId);
+            builder.HasMany(i => i.Plant, i => i.PlantId);
+            //部门
+            builder.HasMany(i => i.Department, i => i.DptmId);
+
         }
-        #endregion
     }
 }
