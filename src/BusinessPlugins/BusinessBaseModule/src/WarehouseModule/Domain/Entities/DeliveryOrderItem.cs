@@ -83,7 +83,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
 
         public Nullable<Guid> SalOrdItemId { get; set; }
-        public SaleOrderItem SalOrdItem { get; set; }
+        public SalesOrderItem SalOrdItem { get; set; }
 
         public Nullable<Guid> PurOrdItemId { get; set; }
         public PurchaseOrderItem PurOrdItem { get; set; }

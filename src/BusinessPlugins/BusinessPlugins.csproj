@@ -25,6 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="BusinessBaseModule\src\WarehouseModule\Domain\Entities\InventoryRequisitionItem.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\InfrastructurePlugins\InfrastructurePlugins.csproj" />
   </ItemGroup>
 

@@ -56,7 +56,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// 销售订单
         /// </summary>
         public Nullable<Guid> SalOrdItemId { get; set; }
-        public SaleOrderItem SalOrdItem { get; set; }
+        public SalesOrderItem SalOrdItem { get; set; }
         /// <summary>
         /// 采购申请
         /// </summary>

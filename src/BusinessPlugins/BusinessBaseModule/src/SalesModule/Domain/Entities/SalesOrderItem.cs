@@ -1,21 +1,20 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
-using BusinessPlugins.ProductionModule.Domain.Entities;
 using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
-using BusinessPlugins.PurchaseModule.Domain.Entities;
-using BusinessPlugins.SubcontractModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.SalesModule.Domain.Entities
 {
+    /// <summary>
+    /// 销售订单项
+    /// </summary>
     [ExportMany]
-    public class SaleOrderItem : IFullAudit<SaleOrderItem, Guid>
+    public class SalesOrderItem : IFullAudit<SalesOrderItem, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -26,7 +25,6 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
 
         #endregion
-
         #region 订单行主数据属性
 
         /// <summary>
@@ -133,7 +131,6 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// </summary>
         public string Remark { get; set; }
         #endregion
-
         #region 依赖对象引用
         /// <summary>
         /// 产品版次
@@ -148,17 +145,17 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
 
         /// <summary>
-        /// 销售订单BOM ID
+        /// 销售订单BOM
         /// </summary>
 
-        public Nullable<Guid> ProdOrdBomId { get; set; }
+        public Nullable<Guid> MfdOrdBomId { get; set; }
 
-        public ManufactureBom ProdOrdBom { get; set; }
+        public ManufactureBom MfdOrdBom { get; set; }
         /// <summary>
         /// 销售订单抬头
         /// </summary>
-        public Guid SaleOrderId { get; set; }
-        public SaleOrder SaleOrder { get; set; }
+        public Guid SalesOrderId { get; set; }
+        public SalesOrder SalesOrder { get; set; }
         /// <summary>
         /// 主需求计划行
         /// </summary>
@@ -167,66 +164,22 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// 预留
         /// </summary>
         public Reservation Reservation { get; set; }
-        ///// <summary>
-        ///// MPS行
-        ///// </summary>
-        //public List<MpsItem> MpsItems { get; set; } = new List<MpsItem>();
-        ///// <summary>
-        ///// MRP行
-        ///// </summary>
-        //public List<MrpItem> MrpItems { get; set; } = new List<MrpItem>();
-        ///// <summary>
-        ///// 计划生产订单行
-        ///// </summary>
-        //public List<PlannedOrderItem> PlannedOrderItems { get; set; }
-        ///// <summary>
-        ///// 计划生产订单物料行
-        ///// </summary>
-        //public List<PlannedOrderMaterialItem> PlannedOrderMaterialItems { get; set; }
-
-        ///// <summary>
-        ///// 生产订单行
-        ///// </summary>
-        //public List<ProductionOrderItem> ProductionOrderItems { get; set; }
-        ///// <summary>
-        ///// 生产订单物料行
-        ///// </summary>
-        //public List<ProductionMaterialItem> ProductionOrderMaterialItems { get; set; }
-        ///// 采购申请行
-        ///// </summary>
-        //public List<PurchaseRequestItem> PurchaseRequestItems { get; set; }
-        ///// <summary>
-        ///// 采购申请物料行
-        ///// </summary>
-        //public List<PurchaseRequestMaterialItem> PurchaseRequestMaterialItems { get; set; }
-
-        ///// <summary>
-        ///// 采购订单行
-        ///// </summary>
-        //public List<PurchaseOrderItem> PurchaseOrderItems { get; set; }
-        ///// <summary>
-        ///// 采购物料行
-        ///// </summary>
-        //public List<PurchaseMaterialItem> PurchaseMaterialItems { get; set; }
-
-        //public List<SubcontractOrderItem> SubcontractOrderItems { get; set; }
         #endregion
-
-        public void Configure(IEntityMappingBuilder<SaleOrderItem> builder)
+        #region 实体对象关系配置
+        public void Configure(IEntityMappingBuilder<SalesOrderItem> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
             //Tenant
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //SaleOrder
-            builder.HasMany(i => i.SaleOrder, o => o.Items, i => i.SaleOrderId);
-
+            builder.HasMany(i => i.SalesOrder, o => o.Items, i => i.SalesOrderId);
             //产品版次
             builder.HasMany(i => i.ProductVersion, i => i.ProductVersionId);
             //产品特性值
             builder.HasOne(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
             //生产订单BOM
-            builder.HasMany(i => i.ProdOrdBom, i => i.ProdOrdBomId);
+            builder.HasMany(i => i.MfdOrdBom, i => i.MfdOrdBomId);
 
             //剩余数量
             nativeBuilder.Property(i => i.RemainQty)
@@ -247,5 +200,6 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
             nativeBuilder.Property(i => i.CostAmount)
               .HasComputedColumnSql("[CostPrice]*[SalesOrderQty]");
         }
+        #endregion
     }
 }

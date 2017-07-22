@@ -95,11 +95,14 @@ namespace BusinessPlugins.ProductionScheduleModule.Domain.Entities
         /// 销售订单行
         /// </summary>
         public Nullable<Guid> SalOrdItemId { get; set; }
-        public SaleOrderItem SalOrdItem { get; set; }
+        public SalesOrderItem SalOrdItem { get; set; }
+
         /// <summary>
-        /// 交货行
+        /// 库存订单行
         /// </summary>
-        public List<DeliveryOrderItem> DeliveryOrdItems { get; set; }
+        public Nullable<Guid> StockOrdItemId { get; set; }
+        public InventoryOrderItem StockOrdItem { get; set; }
+
         /// <summary>
         /// 产品特性值
         /// </summary>
@@ -108,13 +111,17 @@ namespace BusinessPlugins.ProductionScheduleModule.Domain.Entities
         public ProductFeatureValueGroup ProdFeatValGrp { get; set; }
 
         /// <summary>
-        /// 生产订单BOM
+        /// 制造BOM
         /// </summary>
 
         public Nullable<Guid> ProdOrdBomId { get; set; }
 
         public ManufactureBom ProdOrdBom { get; set; }
 
+        /// <summary>
+        /// 交货行
+        /// </summary>
+        public List<DeliveryOrderItem> DeliveryOrdItems { get; set; }
         /// <summary>
         /// MPS行
         /// </summary>

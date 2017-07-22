@@ -78,7 +78,7 @@ namespace BusinessPlugins.SubcontractModule.Domain.Entities
         /// 销售订单
         /// </summary>
         public Nullable<Guid> SaleOrderItemId { get; set; }
-        public SaleOrderItem SaleOrderItem { get; set; }
+        public SalesOrderItem SaleOrderItem { get; set; }
 
         /// <summary>
         /// 外包行

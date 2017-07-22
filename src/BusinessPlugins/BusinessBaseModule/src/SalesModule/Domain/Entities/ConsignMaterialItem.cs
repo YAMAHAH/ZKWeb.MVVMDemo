@@ -97,7 +97,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public Guid ConsignMaterialOrderId { get; set; }
         public ConsignMaterialOrder ConsignMaterialOrder { get; set; }
         public Nullable<Guid> SalesOrderItemId { get; set; }
-        public SaleOrderItem SaleOrderItem { get; set; }
+        public SalesOrderItem SaleOrderItem { get; set; }
 
         #endregion
 

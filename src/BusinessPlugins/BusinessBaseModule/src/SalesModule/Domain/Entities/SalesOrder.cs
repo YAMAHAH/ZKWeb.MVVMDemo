@@ -1,9 +1,7 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
-using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
-using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
 using ZKWeb.Database;
@@ -12,11 +10,10 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.SalesModule.Domain.Entities
 {
     /// <summary>
-    /// 客户订单
-    /// 客户,客户单号,客户交期
+    /// 销售订单
     /// </summary>
     [ExportMany]
-    public class SaleOrder : IFullAudit<SaleOrder, Guid>
+    public class SalesOrder : IFullAudit<SalesOrder, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -27,8 +24,6 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
 
         #endregion
-
-
         #region 主数据属性
         /// <summary>
         /// 登记日期
@@ -37,7 +32,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// <summary>
         /// 销售订单号码
         /// </summary>
-        public string SaleOrderNo { get; set; }
+        public string SaleOrderNumber { get; set; }
         /// <summary>
         /// 客户订单号码
         /// </summary>
@@ -53,7 +48,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// 按订单生产(make-to-order)指的是企业根据客户订单的需求量和交货期来进行生产安排(MTO),订货型
         /// 按库存生产(Make to Stock)又称为现货生产(MTS),备货型
         /// </summary>
-        public string OrderType { get; set; }
+        public SalesOrderType SalesOrderType { get; set; }
         /// <summary>
         /// 是否完成
         /// </summary>
@@ -67,7 +62,6 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// </summary>
         public string Remark { get; set; }
         #endregion
-
         #region 依赖对象引用
         /// <summary>
         /// 销达方
@@ -95,15 +89,14 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> SalesGroupId { get; set; }
         public SalesGroup SalesGroup { get; set; }
-        
+
         /// <summary>
         /// 项目行
         /// </summary>
-        public List<SaleOrderItem> Items { get; set; }
+        public List<SalesOrderItem> Items { get; set; }
         #endregion
-
-
-        public void Configure(IEntityMappingBuilder<SaleOrder> builder)
+        #region 实体对象关系配置
+        public void Configure(IEntityMappingBuilder<SalesOrder> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
@@ -123,5 +116,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
             //nativeBuilder.Property(p => p.UpdateTime)
             //    .ValueGeneratedOnAddOrUpdate();
         }
+        #endregion
+
     }
 }
