@@ -73,8 +73,8 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// <summary>
         /// 库存申请单
         /// </summary>
-        public Guid IvtyReqId { get; set; }
-        public InventoryRequisition InventoryRequisition { get; set; }
+        public Guid StockOrdId { get; set; }
+        public InventoryOrder InventoryOrder { get; set; }
 
         #endregion
 
@@ -90,7 +90,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             //库存地点
             builder.HasMany(g => g.StorageLocation, g => g.StorLocId);
             //库存申请单
-            builder.HasMany(i => i.InventoryRequisition, r => r.Items, i => i.IvtyReqId);
+            builder.HasMany(i => i.InventoryOrder, r => r.Items, i => i.StockOrdId);
             //产品版次
             builder.HasMany(i => i.ProductVersion, i => i.ProdVerId);
             //产品特性值

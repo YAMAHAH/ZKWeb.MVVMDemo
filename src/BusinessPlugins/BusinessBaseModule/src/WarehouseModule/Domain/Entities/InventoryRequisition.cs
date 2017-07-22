@@ -63,7 +63,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// <summary>
         /// 申请行
         /// </summary>
-        public List<InventoryOrderItem> Items { get; set; } = new List<InventoryOrderItem>();
+        public List<InventoryRequisitionItem> Items { get; set; } = new List<InventoryRequisitionItem>();
 
         #endregion
 
