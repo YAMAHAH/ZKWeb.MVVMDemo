@@ -5,7 +5,7 @@
         /// <summary>
         /// 标准采购
         /// </summary>
-        StandandPurchase = 0,
+        StandardPurchase = 0,
         /// <summary>
         /// 客供料
         /// </summary>

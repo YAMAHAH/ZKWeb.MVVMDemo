@@ -11,6 +11,9 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
     /// <summary>
     /// 库存申请单
+    /// 转储请求单->库存申请单
+    /// 库存盘点差异->库存申请单
+    /// 盘亏5000- ->库存申请单(2000)+ ->库存订单(3000)+ ->生产/采购订单(3000)+
     /// </summary>
     [ExportMany]
     public class InventoryRequisition : IFullAudit<InventoryRequisition, Guid>
@@ -24,12 +27,11 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
 
         #endregion
-
         #region 库存申请基本属性
         /// <summary>
-        /// 登记日期
+        /// 需求日期
         /// </summary>
-        public DateTime RecordDate { get; set; }
+        public DateTime NeedDate { get; set; }
         /// <summary>
         /// 申请单号
         /// </summary>
@@ -47,7 +49,6 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// </summary>
         public string Remark { get; set; }
         #endregion
-
         #region 依赖对象引用
         /// <summary>
         /// 工厂
@@ -66,11 +67,10 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public List<InventoryRequisitionItem> Items { get; set; } = new List<InventoryRequisitionItem>();
 
         #endregion
-
         #region 实体关系配置
         public virtual void Configure(IEntityMappingBuilder<InventoryRequisition> builder)
         {
-            var nbuidler = builder.GetNativeBuilder();
+            //主键
             builder.Id(p => p.Id);
             //租户
             builder.HasMany(g => g.OwnerTenant, g => g.OwnerTenantId);
@@ -80,6 +80,5 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(g => g.StorageLocation, g => g.StorLocId);
         }
         #endregion
-
     }
 }

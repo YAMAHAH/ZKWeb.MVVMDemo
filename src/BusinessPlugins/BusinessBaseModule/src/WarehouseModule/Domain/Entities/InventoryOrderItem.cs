@@ -1,6 +1,7 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
+using BusinessPlugins.ProductionScheduleModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
@@ -25,23 +26,32 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 
         #endregion
 
-        #region 库存申请基本属性
+        #region 库存订单基本属性
         /// <summary>
         /// 子号码
         /// </summary>
         public string ChildNumber { get; set; }
         /// <summary>
-        /// 申请日期
+        /// 日期
         /// </summary>
-        public DateTime RequisitionDate { get; set; }
+        public DateTime NeedDate { get; set; }
         /// <summary>
-        /// 申请数量
+        /// 订单数量
         /// </summary>
-        public Decimal RequisitionQty { get; set; }
+        public Decimal Quantity { get; set; }
         /// <summary>
         /// 单位
         /// </summary>
         public string Unit { get; set; }
+        /// <summary>
+        /// 换算率
+        /// </summary>
+        public decimal UnitRate { get; set; }
+        /// <summary>
+        /// 单重
+        /// </summary>
+        public decimal SingleWeight { get; set; }
+
         /// <summary>
         /// 明细行备注
         /// </summary>
@@ -75,6 +85,20 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// </summary>
         public Guid StockOrdId { get; set; }
         public InventoryOrder InventoryOrder { get; set; }
+        /// <summary>
+        /// 批号
+        /// </summary>
+        public string BatchNumber { get; set; }
+
+        public Nullable<Guid> StorageBinId { get; set; }
+        /// <summary>
+        /// 储位
+        /// </summary>
+        public StoragePosition StorageBin { get; set; }
+        /// <summary>
+        /// 主需求计划行
+        /// </summary>
+        public MdsItem MdsItem { get; set; }
 
         #endregion
 
@@ -89,7 +113,9 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(g => g.Plant, g => g.PlantId);
             //库存地点
             builder.HasMany(g => g.StorageLocation, g => g.StorLocId);
-            //库存申请单
+            //储位
+            builder.HasMany(g => g.StorageBin, g => g.StorageBinId);
+            //库存订单
             builder.HasMany(i => i.InventoryOrder, r => r.Items, i => i.StockOrdId);
             //产品版次
             builder.HasMany(i => i.ProductVersion, i => i.ProdVerId);

@@ -118,6 +118,11 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public Nullable<Guid> PldOrdItemId { get; set; }
         public PlannedOrderItem PldOrdItem { get; set; }
         /// <summary>
+        /// 库存订单
+        /// </summary>
+        public Nullable<Guid> InventoryOrderItemId { get; set; }
+        public InventoryOrderItem InventoryOrderItem { get; set; }
+        /// <summary>
         /// 主需求计划行
         /// </summary>
         public Nullable<Guid> MdsItemId { get; set; }
@@ -150,6 +155,8 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(i => i.PurOrdItem, i => i.PurOrdItemId);
             //生产订单
             builder.HasMany(i => i.MfdOrdItem, i => i.MfdOrdItemId);
+            //库存订单项
+            builder.HasMany(i => i.InventoryOrderItem, i => i.InventoryOrderItemId);
             //主需求计划行
             builder.HasMany(i => i.MdsItem, mi => mi.TransferOrdItems, i => i.MdsItemId);
         }

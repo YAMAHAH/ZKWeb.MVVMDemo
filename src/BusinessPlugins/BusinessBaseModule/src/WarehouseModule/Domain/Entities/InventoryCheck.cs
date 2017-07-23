@@ -10,10 +10,10 @@ using ZKWebStandard.Ioc;
 namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
     /// <summary>
-    /// 库存订单
+    /// 库存盘点单
     /// </summary>
     [ExportMany]
-    public class InventoryOrder : IFullAudit<InventoryOrder, Guid>
+    public class InventoryCheck : IFullAudit<InventoryCheck, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -24,20 +24,16 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
 
         #endregion
-
         #region 库存申请基本属性
         /// <summary>
-        /// 需求日期
+        /// 盘点日期
         /// </summary>
-        public DateTime NeedDate { get; set; }
+        public DateTime CheckDate { get; set; }
         /// <summary>
-        /// 库存订单号码
+        /// 盘点单号
         /// </summary>
-        public string StockOrderNumber { get; set; }
-        /// <summary>
-        /// 订单日期
-        /// </summary>
-        public DateTime OrderDate { get; set; }
+        public string CheckNumber { get; set; }
+
         /// <summary>
         /// 源单据号
         /// </summary>
@@ -47,7 +43,6 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         /// </summary>
         public string Remark { get; set; }
         #endregion
-
         #region 依赖对象引用
         /// <summary>
         /// 工厂
@@ -61,14 +56,13 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public StorageLocation StorageLocation { get; set; }
 
         /// <summary>
-        /// 申请行
+        /// 盘点行
         /// </summary>
-        public List<InventoryOrderItem> Items { get; set; } = new List<InventoryOrderItem>();
+        public List<InventoryCheckItem> Items { get; set; } = new List<InventoryCheckItem>();
 
         #endregion
-
         #region 实体关系配置
-        public virtual void Configure(IEntityMappingBuilder<InventoryOrder> builder)
+        public virtual void Configure(IEntityMappingBuilder<InventoryCheck> builder)
         {
             //主键
             builder.Id(p => p.Id);
@@ -80,6 +74,5 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             builder.HasMany(g => g.StorageLocation, g => g.StorLocId);
         }
         #endregion
-
     }
 }

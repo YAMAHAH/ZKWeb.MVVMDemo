@@ -31,6 +31,10 @@ namespace BusinessPlugins.ProductionModule.Domain.Entities
 
         #region 生产订单基本信息
         /// <summary>
+        /// 制造订单类型
+        /// </summary>
+        public ManufactureOrderType MoType { get; set; }
+        /// <summary>
         /// 生产订单编码
         /// </summary>
         public string MoCode { get; set; }

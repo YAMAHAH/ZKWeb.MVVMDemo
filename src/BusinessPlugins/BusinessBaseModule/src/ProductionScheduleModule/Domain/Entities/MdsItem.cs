@@ -100,8 +100,8 @@ namespace BusinessPlugins.ProductionScheduleModule.Domain.Entities
         /// <summary>
         /// 库存订单行
         /// </summary>
-        public Nullable<Guid> StockOrdItemId { get; set; }
-        public InventoryOrderItem StockOrdItem { get; set; }
+        public Nullable<Guid> InventoryOrderItemId { get; set; }
+        public InventoryOrderItem InventoryOrderItem { get; set; }
 
         /// <summary>
         /// 产品特性值
@@ -211,22 +211,25 @@ namespace BusinessPlugins.ProductionScheduleModule.Domain.Entities
         #region 实体关系配置
         public void Configure(IEntityMappingBuilder<MdsItem> builder)
         {
-            var nativeBuilder = builder.GetNativeBuilder();
+            //主键
             builder.Id(p => p.Id);
-            //Tenant
+            //租户
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //工厂
             builder.HasMany(m => m.Plant, m => m.PlantId);
-            //ProductVersion
+            //产品版本
             builder.HasMany(i => i.ProdVer, i => i.ProdVerId);
-            //SalesOrder
+            //销售订单
             builder.HasOne(i => i.SalOrdItem, s => s.MdsItem, i => i.SalOrdItemId);
+            //库存订单行
+            builder.HasOne(i => i.InventoryOrderItem, i => i.MdsItem, i => i.InventoryOrderItemId);
             //主需求计划
             builder.HasMany(i => i.Mds, m => m.Items, i => i.MdsId);
             //产品特性值
             builder.HasOne(i => i.ProdFeatValGrp, i => i.ProdFeatValGrpId);
             //生产订单BOM
             builder.HasMany(i => i.ProdOrdBom, i => i.ProdOrdBomId);
+
         }
         #endregion
     }

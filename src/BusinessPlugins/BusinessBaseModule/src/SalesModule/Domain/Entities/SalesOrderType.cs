@@ -33,7 +33,7 @@ namespace BusinessPlugins.SalesModule.Domain.Entities
         /// </summary>
         DelivFreeofCharge = 4,
         /// <summary>
-        /// 退货订单
+        /// 退货销售订单
         /// </summary>
         ReturnOrder = 5
 
