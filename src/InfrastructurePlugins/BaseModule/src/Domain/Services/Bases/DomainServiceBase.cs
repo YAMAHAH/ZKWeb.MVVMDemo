@@ -74,7 +74,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Services.Bases
         /// <param name="rootId"></param>
         protected virtual void UpdateNodeOrder(Guid childId, Guid rootId)
         {
-            UnitOfWork.GetRepository<TEntity, TPrimaryKey>();
+            //UnitOfWork.GetRepository<TEntity, TPrimaryKey>();
             throw new NotImplementedException();
         }
 

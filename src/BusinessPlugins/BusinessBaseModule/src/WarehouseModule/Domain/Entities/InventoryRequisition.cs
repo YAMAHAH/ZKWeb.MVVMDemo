@@ -11,9 +11,9 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
 {
     /// <summary>
     /// 库存申请单
-    /// 转储请求单->库存申请单
+    /// 转储请求单3000 1000->库存申请单
     /// 库存盘点差异->库存申请单
-    /// 盘亏5000- ->库存申请单(2000)+ ->库存订单(3000)+ ->生产/采购订单(3000)+
+    /// 盘亏5000- ->库存申请单(0)+ ->库存订单(0)+ ->生产/采购订单(5000)
     /// </summary>
     [ExportMany]
     public class InventoryRequisition : IFullAudit<InventoryRequisition, Guid>

@@ -1,8 +1,7 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
-using InfrastructurePlugins.BaseModule.Domain.Entities.Interfaces;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
-using InfrastructurePlugins.MultiTenantModule.Domain.Entities.Interfaces;
+using BusinessPlugins.ProductionModule.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using ZKWeb.Database;

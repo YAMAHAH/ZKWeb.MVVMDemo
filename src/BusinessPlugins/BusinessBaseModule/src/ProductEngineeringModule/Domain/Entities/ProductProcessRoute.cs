@@ -1,16 +1,16 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
-using BusinessPlugins.OrganizationModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
 {
+    /// <summary>
+    /// 产品工艺路线
+    /// </summary>
     [ExportMany]
     public class ProductProcessRoute : IFullAudit<ProductProcessRoute, Guid>
     {
@@ -37,17 +37,7 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
             nativeBuilder.HasOne(i => i.Product)
                 .WithMany()
                 .HasForeignKey(i => i.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
-            ////车间
-            //nativeBuilder.HasOne(i => i.Department)
-            //    .WithMany()
-            //    .HasForeignKey(i => i.DepartmentId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-            ////外协厂商
-            //nativeBuilder.HasOne(i => i.Partner)
-            //    .WithMany()
-            //    .HasForeignKey(i => i.PartnerId)
-            //    .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);     
         }
         #endregion
 
@@ -70,16 +60,6 @@ namespace BusinessPlugins.ProductEngineeringModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> ProductId { get; set; }
         public Product Product { get; set; }
-        ///// <summary>
-        ///// 生产车间
-        ///// </summary>
-        //public Nullable<Guid> DepartmentId { get; set; }
-        //public Department Department { get; set; }
-        ///// <summary>
-        ///// 外协厂商
-        ///// </summary>
-        //public Nullable<Guid> PartnerId { get; set; }
-        //public Partner Partner { get; set; }
         #endregion
     }
 }

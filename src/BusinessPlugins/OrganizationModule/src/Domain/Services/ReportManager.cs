@@ -8,7 +8,10 @@ using InfrastructurePlugins.BaseModule.Domain.Uow;
 
 namespace BusinessPlugins.OrganizationModule.Domain.Services
 {
-    public class ReportManager : DomainServiceBase<Report, Guid>
+    /// <summary>
+    /// 报表管理
+    /// </summary>
+    public class ReportManager : DomainServiceBase<Report, Guid>, IReportManager
     {
         protected override NodeOrderInfo CalaOrder(Report treeNode)
         {
@@ -48,7 +51,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
         /// 创建或更新根结点
         /// </summary>
         /// <param name="rootReport">根结点</param>
-        public void CreateOrUpdateRootReport(ref Report rootReport)
+        public void CreateOrUpdateRootNode(ref Report rootReport)
         {
             Func<Report, Report> getNewNode = rpt => new Report()
             {
@@ -101,7 +104,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
         /// 创建或更新子结点
         /// </summary>
         /// <param name="report">子结点</param>
-        public void CreateOrUpdateReport(ref Report report)
+        public void CreateOrUpdateChildNode(ref Report report)
         {
             if (report == null) throw new BadRequestException("请求对象为空.");
             if (report.ParentId == null || report.RootId.Equals(Guid.Empty))
@@ -147,7 +150,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
         /// 删除结点
         /// </summary>
         /// <param name="report"></param>
-        public void DeleteReport(Report report)
+        public void Remove(Report report)
         {
             var rptViewModel = report;
             var existNodeLists =
@@ -168,7 +171,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
         /// </summary>
         /// <param name="report"></param>
         /// <returns></returns>
-        public Report GetReport(Report report)
+        public Report Select(Report report)
         {
             if (report == null) throw new BadRequestException("请求对象为空.");
             if (report.Id == Guid.Empty || report.Id.Equals(DBNull.Value)) throw new BadRequestException("请求对象ID为空.");
@@ -185,10 +188,10 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
         /// </summary>
         /// <param name="nodeId"></param>
         /// <returns></returns>
-        public Report GetReport(Guid nodeId)
+        public Report Select(Guid nodeId)
         {
             if (nodeId == Guid.Empty) throw new BadRequestException("指定的结点ID为空.");
-            return GetReport(new Report { Id = nodeId });
+            return Select(new Report { Id = nodeId });
         }
     }
 }

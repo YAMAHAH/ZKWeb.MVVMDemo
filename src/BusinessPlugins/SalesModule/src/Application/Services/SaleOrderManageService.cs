@@ -8,8 +8,8 @@ namespace BusinessPlugins.SalesModule.Application.Services
     [ExportMany, SingletonReuse, Description("销售订单管理服务")]
     public class SaleOrderManageService : ApplicationServiceBase
     {
-        private SaleOrderManager xSaleOrderManager;
-        public SaleOrderManageService(SaleOrderManager saleOrderManager)
+        private SalesOrderManager xSaleOrderManager;
+        public SaleOrderManageService(SalesOrderManager saleOrderManager)
         {
             xSaleOrderManager = saleOrderManager;
         }

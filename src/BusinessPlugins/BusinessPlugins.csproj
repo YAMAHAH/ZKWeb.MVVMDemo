@@ -10,18 +10,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BusinessBaseModule\src\ProductionModule\Domain\Services\" />
-    <Folder Include="BusinessBaseModule\src\ProductionScheduleModule\Domain\Services\" />
-    <Folder Include="BusinessBaseModule\src\PurchaseModule\Domain\Services\" />
     <Folder Include="BusinessBaseModule\src\QualityControlModule\Domain\Services\" />
     <Folder Include="BusinessBaseModule\src\SubcontractModule\Domain\Services\" />
     <Folder Include="FinanceModule\src\Domain\" />
-    <Folder Include="ProductionModule\src\Domain\Services\" />
-    <Folder Include="ProductionScheduleModule\src\Domain\Services\" />
-    <Folder Include="PurchaseModule\src\Domain\Services\" />
     <Folder Include="QualityControlModule\src\Domain\Services\" />
     <Folder Include="SubcontractModule\src\Domain\Services\" />
-    <Folder Include="WarehouseModule\src\Domain\Services\" />
   </ItemGroup>
 
   <ItemGroup>

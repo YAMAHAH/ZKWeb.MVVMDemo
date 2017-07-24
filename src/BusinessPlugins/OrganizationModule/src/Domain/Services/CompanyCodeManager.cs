@@ -1,0 +1,15 @@
+﻿using BusinessPlugins.OrganizationModule.Domain.Entities;
+using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
+using System;
+using ZKWebStandard.Ioc;
+
+namespace BusinessPlugins.OrganizationModule.Domain.Services
+{
+    /// <summary>
+    /// 工厂管理
+    /// </summary>
+    [ExportMany]
+    public class CompanyCodeManager : DomainServiceBase<CompanyCode, Guid>, ICompanyCodeManager
+    {
+    }
+}

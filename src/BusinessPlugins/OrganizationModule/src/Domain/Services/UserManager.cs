@@ -29,7 +29,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
     /// 用户管理器
     /// </summary>
     [ExportMany, SingletonReuse]
-    public class UserManager : DomainServiceBase<User, Guid>
+    public class UserManager : DomainServiceBase<User, Guid>, IUserManager
     {
         /// <summary>
         /// 记住登陆时，保留会话的天数

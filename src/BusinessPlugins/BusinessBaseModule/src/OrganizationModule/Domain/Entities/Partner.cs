@@ -1,9 +1,10 @@
-﻿using InfrastructurePlugins.BaseModule.Components.Extensions;
+﻿using BusinessPlugins.BaseModule.Domain.Entities;
+using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BusinessPlugins.OrganizationModule.Domain.Entities
 {
@@ -23,6 +24,8 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         #endregion
 
         #region 合作伙伴基本信息
+
+        public PartnerType PartnerType { get; set; }
         public string Ptnno { get; set; }
         public string Ptncname { get; set; }
         public string Ptnename { get; set; }
@@ -37,9 +40,9 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
             builder.Id(p => p.Id);
             builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
 
-            nativeBuilder.HasDiscriminator<string>("Type")
-                .HasValue<Supplier>("Supplier")
-                .HasValue<Customer>("Customer");
+            //nativeBuilder.HasDiscriminator<string>("Type")
+            //    .HasValue<Supplier>("Supplier")
+            //    .HasValue<Customer>("Customer");
         }
     }
 }
