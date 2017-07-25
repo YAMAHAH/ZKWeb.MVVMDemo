@@ -35,11 +35,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         /// <summary>
         /// 岗位组所拥有的数据字段权限
         /// </summary>
-        public IList<DataFieldPrivilege> DataFieldPrivileges { get; set; } = new List<DataFieldPrivilege>();
-        /// <summary>
-        /// 岗位组所拥有的功能权限
-        /// </summary>
-        public IList<ActionPrivilege> ActionPrivileges { get; set; } = new List<ActionPrivilege>();
+        public IList<TemplatePrivilege> TemplatePrivileges { get; set; } = new List<TemplatePrivilege>();
         /// <summary>
         /// 岗位所拥有的角色
         /// </summary>

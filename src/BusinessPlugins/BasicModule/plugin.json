@@ -1,0 +1,9 @@
+{
+  "Name": "BasicModule",
+  "Version": "1.0",
+  "Description": "Business Basic entities and interfaces",
+  "Dependencies": [
+    "BaseModule",
+    "BusinessBaseModule"
+  ]
+}

@@ -1,18 +1,18 @@
-﻿using BusinessPlugins.BasicModule.Domain.Entities;
-using BusinessPlugins.OrganizationModule.Domain;
+﻿using BusinessPlugins.OrganizationModule.Domain;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using ZKWeb.Database;
+using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.WarehouseModule.Domain.Entities
+namespace BusinessPlugins.BasicModule.Domain.Entities
 {
     /// <summary>
-    /// 物料凭证
-    /// 收货=>物料凭证=>转储请求=>转储订单
+    /// 模板类
     /// </summary>
-    public class MaterialDocument : IFullAudit<MaterialDocument, Guid>
+    [ExportMany]
+    public class TemplateClass : IFullAudit<TemplateClass, Guid>
     {
         #region FullAudit接口实现
 
@@ -23,46 +23,46 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public Guid OwnerTenantId { get; set; }
         public Tenant OwnerTenant { get; set; }
         #endregion
-
-        #region 主生产计划行主数据属性
+        #region 模板类基本属性
         /// <summary>
-        /// 过账日期
+        /// 模板类名称
         /// </summary>
-        public DateTime PostDate { get; set; }
-        //交货单
-        public string DeliveryNumber { get; set; }
-        //提货单
-        public string PickupNumber { get; set; }
+        public string Name { get; set; }
         /// <summary>
-        /// 是否取消
+        /// 模板类标题
         /// </summary>
-        public bool IsCancel { get; set; }
+        public string Title { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
         public string Remark { get; set; }
+
         #endregion
         #region 依赖对象引用
         /// <summary>
-        /// 合作伙伴
+        /// 模块
         /// </summary>
-        public Nullable<Guid> PtnId { get; set; }
-        public Partner Partner { get; set; }
-
-        public List<MaterialDocumentItem> MatDocItems { get; set; }
+        public Guid ModuleId { get; set; }
+        public Module Module { get; set; }
+        /// <summary>
+        /// 类对象
+        /// </summary>
+        public List<TemplateClassObject> ClassObjects { get; set; }
+        /// <summary>
+        /// 模板集合
+        /// </summary>
+        public List<Template> Templetes { get; set; }
         #endregion
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<MaterialDocument> builder)
+        public void Configure(IEntityMappingBuilder<TemplateClass> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
             //Tenant
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
-            //工厂
-            builder.HasMany(m => m.Partner, m => m.PtnId);
+            //模块
+            builder.HasMany(tc => tc.Module, m => m.TemplateClasses, tc => tc.ModuleId);
         }
         #endregion
     }
-
-  
 }

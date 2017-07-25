@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BusinessPlugins.BaseModule.Domain.Entities
+﻿namespace BusinessPlugins.BaseModule.Domain.Entities
 {
+    /// <summary>
+    /// BOM行状态
+    /// </summary>
     public enum BomItemStatus
     {
         unConfirmed = 0,//待确认

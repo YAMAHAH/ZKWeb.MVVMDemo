@@ -1,12 +1,12 @@
-﻿using BusinessPlugins.OrganizationModule.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using BusinessPlugins.BasicModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Exceptions;
 using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
 using InfrastructurePlugins.BaseModule.Domain.Uow;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace BusinessPlugins.OrganizationModule.Domain.Services
+namespace BusinessPlugins.BasicModule.Domain.Services
 {
     /// <summary>
     /// 报表管理

@@ -35,11 +35,11 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         /// <summary>
         /// 角色所拥有的数据字段权限
         /// </summary>
-        public List<DataFieldPrivilege> DataFieldPrivileges { get; set; }
+        public List<TemplatePrivilege> TemplatePrivileges { get; set; }
         /// <summary>
         /// 角色所拥有的功能权限
         /// </summary>
-        public List<ActionPrivilege> ActionPrivileges { get; set; }
+        //public List<ActionPrivilege> ActionPrivileges { get; set; }
         /// <summary>
         /// 角色所拥有的员工
         /// </summary>

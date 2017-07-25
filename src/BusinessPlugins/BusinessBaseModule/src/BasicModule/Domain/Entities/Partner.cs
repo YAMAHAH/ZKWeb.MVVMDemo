@@ -1,12 +1,12 @@
 ﻿using BusinessPlugins.BaseModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.OrganizationModule.Domain.Entities
+namespace BusinessPlugins.BasicModule.Domain.Entities
 {
     /// <summary>
     /// 合作企业
@@ -37,9 +37,10 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         public void Configure(IEntityMappingBuilder<Partner> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
+            //主键
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
-
+            //租户
+            builder.HasMany(p => p.OwnerTenant, p => p.OwnerTenantId);
             //nativeBuilder.HasDiscriminator<string>("Type")
             //    .HasValue<Supplier>("Supplier")
             //    .HasValue<Customer>("Customer");

@@ -1,8 +1,8 @@
-﻿using BusinessPlugins.OrganizationModule.Domain.Entities;
+﻿using BusinessPlugins.BasicModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Domain.Services.Interfaces;
 using System;
 
-namespace BusinessPlugins.OrganizationModule.Domain.Services
+namespace BusinessPlugins.BasicModule.Domain.Services
 {
     /// <summary>
     /// 合作伙伴管理

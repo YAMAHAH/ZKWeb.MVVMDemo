@@ -15,11 +15,18 @@
     "SessionStateModule",
     "CaptchaModule",
     "BusinessBaseModule",
+    "BasicModule",
     "ProductEngineeringModule",
     "OrganizationModule",
     "CrudExampleModule",
     "CoreLibModule",
     "SalesModule",
+    "ProductionScheduleModule",
+    "ProductionModule",
+    "PurchaseModule",
+    "QualityControlModule",
+    "WarehouseModule",
+    "FinanceModule",
     "AngularSupportModule",
     "MVVM.Angular.Website"
   ]

@@ -1,18 +1,18 @@
-﻿using BusinessPlugins.BasicModule.Domain.Entities;
-using BusinessPlugins.OrganizationModule.Domain;
+﻿using BusinessPlugins.OrganizationModule.Domain;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using ZKWeb.Database;
+using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.WarehouseModule.Domain.Entities
+namespace BusinessPlugins.BasicModule.Domain.Entities
 {
     /// <summary>
-    /// 物料凭证
-    /// 收货=>物料凭证=>转储请求=>转储订单
+    /// 模块
     /// </summary>
-    public class MaterialDocument : IFullAudit<MaterialDocument, Guid>
+    [ExportMany]
+    public class Module : IFullAudit<Module, Guid>
     {
         #region FullAudit接口实现
 
@@ -24,45 +24,31 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
         public Tenant OwnerTenant { get; set; }
         #endregion
 
-        #region 主生产计划行主数据属性
+        #region 模板基本属性
         /// <summary>
-        /// 过账日期
+        /// 模板代号
         /// </summary>
-        public DateTime PostDate { get; set; }
-        //交货单
-        public string DeliveryNumber { get; set; }
-        //提货单
-        public string PickupNumber { get; set; }
+        public string ModuleCode { get; set; }
         /// <summary>
-        /// 是否取消
+        /// 模块名称
         /// </summary>
-        public bool IsCancel { get; set; }
+        public string ModuleName { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
         public string Remark { get; set; }
         #endregion
         #region 依赖对象引用
-        /// <summary>
-        /// 合作伙伴
-        /// </summary>
-        public Nullable<Guid> PtnId { get; set; }
-        public Partner Partner { get; set; }
-
-        public List<MaterialDocumentItem> MatDocItems { get; set; }
+        public List<TemplateClass> TemplateClasses { get; set; }
         #endregion
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<MaterialDocument> builder)
+        public void Configure(IEntityMappingBuilder<Module> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
             //Tenant
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
-            //工厂
-            builder.HasMany(m => m.Partner, m => m.PtnId);
         }
         #endregion
     }
-
-  
 }

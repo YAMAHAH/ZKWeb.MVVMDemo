@@ -6,7 +6,7 @@
     "BaseModule",
     "BusinessBaseModule",
     "MultiTenantModule",
-    "ProductEngineeringModule",
-    "OrganizationModule"
+    "BasicModule",
+    "ProductEngineeringModule"
   ]
 }

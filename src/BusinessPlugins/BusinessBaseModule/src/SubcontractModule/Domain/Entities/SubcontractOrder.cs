@@ -1,4 +1,5 @@
-﻿using BusinessPlugins.OrganizationModule.Domain;
+﻿using BusinessPlugins.BasicModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;

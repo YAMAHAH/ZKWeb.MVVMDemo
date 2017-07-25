@@ -1,7 +1,7 @@
 ﻿using BusinessPlugins.BaseModule.Domain.Entities;
+using BusinessPlugins.BasicModule.Domain.Entities;
 using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
-using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;

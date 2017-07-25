@@ -1,12 +1,9 @@
-﻿using BusinessPlugins.OrganizationModule.Domain;
-using BusinessPlugins.OrganizationModule.Domain.Entities;
+﻿using BusinessPlugins.BasicModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
-using Microsoft.EntityFrameworkCore.Metadata;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 

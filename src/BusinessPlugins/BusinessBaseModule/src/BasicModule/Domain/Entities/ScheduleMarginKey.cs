@@ -1,17 +1,17 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
-using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
+using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.BaseModule.Domain.Entities
+namespace BusinessPlugins.BasicModule.Domain.Entities
 {
     /// <summary>
-    /// 货币
+    /// 计划边际码
     /// </summary>
     [ExportMany]
-    public class Currency : IFullAudit<Currency, Guid>
+    public class ScheduleMarginKey : IFullAudit<ScheduleMarginKey, Guid>
     {
         #region FullAudit接口实现
         public Guid Id { get; set; }
@@ -23,19 +23,30 @@ namespace BusinessPlugins.BaseModule.Domain.Entities
         #endregion
         #region 主数据属性
         /// <summary>
-        /// 货币代码
+        /// 计划边际代码
         /// </summary>
-        public string CurrencyCode { get; set; }
+        public string MarginKeyCode { get; set; }
         /// <summary>
-        /// 货币名称
+        /// 计划边际名称
         /// </summary>
-        public string CurrencyName { get; set; }
+        public string MarginKeyName { get; set; }
         /// <summary>
-        /// 汇率
-        /// 主结算货币:人民币
-        /// 1美金 = ? 人民币
+        /// 末清期间,以天数计
         /// </summary>
-        public double ExchangeRate { get; set; }
+
+        public double LateDuringTime { get; set; }
+        /// <summary>
+        /// 产后缓存时间,以天数计
+        /// </summary>
+        public double PostnatalCacheTime { get; set; }
+        /// <summary>
+        /// 产前缓存时间,以天数计
+        /// </summary>
+        public double PrenatalCacheTime { get; set; }
+        /// <summary>
+        /// 下达期间,以天数计
+        /// </summary>
+        public int IssuedDuringTime { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
@@ -43,7 +54,7 @@ namespace BusinessPlugins.BaseModule.Domain.Entities
         #endregion
 
         #region 实体配置
-        public void Configure(IEntityMappingBuilder<Currency> builder)
+        public void Configure(IEntityMappingBuilder<ScheduleMarginKey> builder)
         {
             builder.Id(p => p.Id);
             //租户

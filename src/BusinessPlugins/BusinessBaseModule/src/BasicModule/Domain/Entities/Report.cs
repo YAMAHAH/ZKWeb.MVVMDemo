@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using ZKWeb.Database;
-using InfrastructurePlugins.BaseModule.Components.Extensions;
+﻿using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.BaseModule.Domain.Entities.Interfaces;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities.Interfaces;
-using ZKWeb.ORM.EFCore;
+using System;
+using System.Collections.Generic;
+using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
-namespace BusinessPlugins.OrganizationModule.Domain.Entities
+namespace BusinessPlugins.BasicModule.Domain.Entities
 {
     /// <summary>
     /// 报表

@@ -1,5 +1,8 @@
 ﻿namespace BusinessPlugins.BaseModule.Domain.Entities
 {
+    /// <summary>
+    /// 合作伙伴类型
+    /// </summary>
     public enum PartnerType
     {
         /// <summary>
