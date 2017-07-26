@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using InfrastructurePlugins.BaseModule.Components.Extensions;
+using InfrastructurePlugins.BaseModule.Domain.Entities.Interfaces;
+using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using ZKWeb.Database;
-using InfrastructurePlugins.BaseModule.Domain.Entities.Interfaces;
-using InfrastructurePlugins.BaseModule.Components.Extensions;
-using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
-using ZKWeb.ORM.EFCore;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.OrganizationModule.Domain.Entities
@@ -14,8 +12,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
     /// 岗位组
     /// </summary>
     [ExportMany]
-    public class PostGroup : IFullAudit<PostGroup, Guid>,
-        ITreeStructType<PostGroup, Guid>
+    public class PostGroup : IFullAudit<PostGroup, Guid>, ITreeStructType<PostGroup, Guid>
     {
         #region IFullAduit接口实现
         public Guid Id { get; set; }
@@ -31,6 +28,22 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         public Guid RootId { get; set; }
         public Guid? ParentId { get; set; }
         public PostGroup Parent { get; set; }
+        #endregion
+        #region 预排序遍历树算法
+        /// <summary>
+        /// 左结点序号
+        /// Modified Preorder Tree Traversal
+        /// </summary>
+        public int Lft { get; set; }
+        /// <summary>
+        /// 右结点序号
+        /// Modified Preorder Tree Traversal
+        /// </summary>
+        public int Rgt { get; set; }
+        /// <summary>
+        /// 结点所在的层次
+        /// </summary>
+        public int Level { get; set; }
         #endregion
         /// <summary>
         /// 岗位组所拥有的数据字段权限

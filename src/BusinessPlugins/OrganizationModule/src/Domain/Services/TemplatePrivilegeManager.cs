@@ -42,6 +42,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
             TemplatePrivilege xTempPriv = null;
             foreach (var tempPrivGroup in tempPrivGroups)
             {
+                xTempPriv = null;
                 foreach (var tempPriv in tempPrivGroup)
                 {
                     if (xTempPriv == null)
@@ -52,7 +53,6 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
                     ObjectOrOperation(tempPriv, xTempPriv);
                 }
                 userPrivilegeDicts.Add(xTempPriv.TemplateObjectId, xTempPriv);
-                xTempPriv = null;
             }
             return userPrivilegeDicts;
         }
@@ -63,6 +63,49 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
                                  .Where(filterExpression)
                                  .ToList();
         }
+
+        public ICollection<TemplatePrivilege> GetTemplatePrivileges(Guid employeeId, Guid tempId)
+        {
+            //获取用户id拥有的组,角色
+
+            //Guid[] postGroupIds;
+            //Guid[] roleIds;
+            UnitRepository.FastQueryAsReadOnly()
+                .Where(p => (p.EmployeeId == employeeId) && p.TemplateId == tempId)
+                .GroupBy(p => new { p.TemplateId, p.TemplateObjectId })
+                .Select(p => new
+                {
+                    p.Key.TemplateId,
+                    p.Key.TemplateObjectId,
+                    Visible = p.Max(t => t.Visible),
+                    Enable = p.Max(t => t.Enable),
+                    Editable = p.Max(t => t.Editable),
+                    Queryable = p.Max(t => t.Queryable)
+                });
+            //获取模板的权限字典
+            //把分组的结果传递给权限字典
+
+            //.Select(g => new
+            //{
+            //    g.TemplateId,
+            //    g.TemplateObjectId,
+            //    g.Visible,
+            //    g.Enable,
+            //    g.Editable,
+            //    g.Queryable,
+            //    BinVal = String.Concat(
+            //        Convert.ToInt32(g.Visible),
+            //        Convert.ToInt32(g.Enable),
+            //        Convert.ToInt32(g.Editable),
+            //        Convert.ToInt32(g.Queryable)),
+            //    DelVal = Convert.ToInt32(String.Concat(Convert.ToInt32(g.Visible),
+            //    Convert.ToInt32(g.Enable),
+            //    Convert.ToInt32(g.Editable),
+            //    Convert.ToInt32(g.Queryable), 10))
+            //});
+            return null;
+        }
+
         /// <summary>
         /// 对象或运算
         /// </summary>

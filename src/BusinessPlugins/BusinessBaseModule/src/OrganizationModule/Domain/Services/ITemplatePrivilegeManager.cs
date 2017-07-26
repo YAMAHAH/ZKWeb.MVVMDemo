@@ -71,7 +71,13 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
         /// <param name="filterExpression">条件表达式</param>
         /// <returns></returns>
         ICollection<TemplatePrivilege> GetTemplatePrivileges(Expression<Func<TemplatePrivilege, bool>> filterExpression);
-   
+        /// <summary>
+        /// 获取某个用户某个模板的权限
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <param name="tempId"></param>
+        /// <returns></returns>
+        ICollection<TemplatePrivilege> GetTemplatePrivileges(Guid employeeId,Guid tempId);
         /// <summary>
         /// 获取角色列表的权限数据
         /// </summary>

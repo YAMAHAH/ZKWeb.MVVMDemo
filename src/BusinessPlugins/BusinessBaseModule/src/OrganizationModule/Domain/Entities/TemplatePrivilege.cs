@@ -2,6 +2,7 @@
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
+using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
@@ -49,6 +50,17 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> PostGroupId { get; set; }
         public PostGroup PostGroup { get; set; }
+        /// <summary>
+        /// 父结点
+        /// </summary>
+        public Nullable<Guid> ParentId { get; set; }
+        public TemplatePrivilege Parent { get; set; }
+        /// <summary>
+        /// 子对象
+        /// </summary>
+        public List<TemplatePrivilege> Childs { get; set; }
+
+
         #endregion
 
         #region 模板权限基本属性
@@ -87,6 +99,8 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
             builder.HasMany(dp => dp.PostGroup, p => p.TemplatePrivileges, pd => pd.PostGroupId);
             //角色
             builder.HasMany(dp => dp.Role, r => r.TemplatePrivileges, pd => pd.RoleId);
+            //自身结点
+            builder.HasMany(to => to.Parent, to => to.Childs, to => to.ParentId);
         }
     }
 }

@@ -2,6 +2,7 @@
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
+using System.Collections.Generic;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
@@ -89,6 +90,13 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
         /// </summary>
         public Nullable<Guid> TempClsObjId { get; set; }
         public TemplateClassObject TemplateClassObject { get; set; }
+
+        public Nullable<Guid> ParentId { get; set; }
+        public TemplateObject Parent { get; set; }
+        /// <summary>
+        /// 子对象
+        /// </summary>
+        public List<TemplateObject> Childs { get; set; }
         #endregion
         #region 实体关系配置
         public void Configure(IEntityMappingBuilder<TemplateObject> builder)
@@ -101,6 +109,8 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
             builder.HasMany(m => m.Template, t => t.TemplateObjects, to => to.TempId);
             //模板类对象
             builder.HasOne(to => to.TemplateClassObject, to => to.TempClsObjId);
+            //自身结点
+            builder.HasMany(to => to.Parent, to => to.Childs, to => to.ParentId);
         }
         #endregion
     }

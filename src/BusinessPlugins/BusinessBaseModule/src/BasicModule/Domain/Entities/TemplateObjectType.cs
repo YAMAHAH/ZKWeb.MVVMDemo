@@ -9,6 +9,10 @@
         /// <summary>
         /// 功能
         /// </summary>
-        Action = 1
+        Action = 1,
+        /// <summary>
+        /// 虚拟组
+        /// </summary>
+        Group = 2
     }
 }
