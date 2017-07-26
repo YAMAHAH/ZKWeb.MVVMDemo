@@ -8,7 +8,7 @@ namespace BusinessPlugins.BasicModule.Domain.Services
     /// <summary>
     /// 合作伙伴管理
     /// </summary>
-    [ExportMany]
+    [ExportMany, SingletonReuse]
     public class PartnerManager : DomainServiceBase<Partner, Guid>, IPartnerManager
     {
     }

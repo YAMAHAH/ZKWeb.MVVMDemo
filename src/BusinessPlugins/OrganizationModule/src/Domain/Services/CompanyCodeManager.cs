@@ -8,7 +8,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
     /// <summary>
     /// 工厂管理
     /// </summary>
-    [ExportMany]
+    [ExportMany, SingletonReuse]
     public class CompanyCodeManager : DomainServiceBase<CompanyCode, Guid>, ICompanyCodeManager
     {
     }

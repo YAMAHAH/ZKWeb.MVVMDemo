@@ -8,7 +8,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
     /// <summary>
     /// 岗位管理
     /// </summary>
-    [ExportMany]
+    [ExportMany, SingletonReuse]
     public class PostGroupManager : DomainServiceBase<PostGroup, Guid>, IPostGroupManager
     {
     }

@@ -5,12 +5,14 @@ using InfrastructurePlugins.BaseModule.Domain.Uow;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.BasicModule.Domain.Services
 {
     /// <summary>
     /// 报表管理
     /// </summary>
+    [ExportMany, SingletonReuse]
     public class ReportManager : DomainServiceBase<Report, Guid>, IReportManager
     {
         protected override NodeOrderInfo CalaOrder(Report treeNode)

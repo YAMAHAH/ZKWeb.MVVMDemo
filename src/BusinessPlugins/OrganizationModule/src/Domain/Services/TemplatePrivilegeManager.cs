@@ -12,7 +12,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
     /// <summary>
     /// 模板权限管理
     /// </summary>
-    [ExportMany]
+    [ExportMany, SingletonReuse]
     public class TemplatePrivilegeManager : DomainServiceBase<TemplatePrivilege, Guid>, ITemplatePrivilegeManager
     {
         public ICollection<TemplatePrivilege> GetRoleTemplatePrivileges(Guid roleId)

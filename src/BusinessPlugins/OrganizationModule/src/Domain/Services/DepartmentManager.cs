@@ -8,7 +8,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
     /// <summary>
     /// 部门管理
     /// </summary>
-    [ExportMany]
+    [ExportMany, SingletonReuse]
     public class DepartmentManager : DomainServiceBase<Department, Guid>, IDepartmentManager
     {
     }

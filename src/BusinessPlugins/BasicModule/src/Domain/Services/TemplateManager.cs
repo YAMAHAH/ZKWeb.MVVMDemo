@@ -18,15 +18,20 @@ namespace BusinessPlugins.BasicModule.Domain.Services
     {
         private ITemplatePrivilegeManager xTempPrivManager;
         private IEmployeeManager xEmpManager;
-        public TemplateManager(ITemplatePrivilegeManager tempPrivManager, IEmployeeManager empManager)
+        private IEmployeePostGroupManager xEmpPostGrpManager;
+        public TemplateManager(
+            ITemplatePrivilegeManager tempPrivManager,
+            IEmployeeManager empManager,
+            IEmployeePostGroupManager empPostGrpManager)
         {
             xTempPrivManager = tempPrivManager;
             xEmpManager = empManager;
+            xEmpPostGrpManager = empPostGrpManager;
         }
         public Dictionary<Guid, TemplateObject> GetTemplateObjects(Guid empId, Guid tempId)
         {
             //获取员工分配的所有岗位组ID
-            var postGrpIds = xEmpManager.GetAllPostGroups(empId).Select(pg => pg.Id).ToList();
+            var postGrpIds = xEmpPostGrpManager.GetPostGroups(empId).Select(e => e.Id).ToList();
             //获取用户分配的角色ID列表
             var roleIds = xEmpManager.GetAllRoles(empId).Select(r => r.Id).ToList();
 
