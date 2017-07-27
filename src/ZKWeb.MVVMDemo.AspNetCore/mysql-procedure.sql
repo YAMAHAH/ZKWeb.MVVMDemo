@@ -16,6 +16,23 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`zkwebdb` /*!40100 DEFAULT CHARACTER SET
 
 USE `zkwebdb`;
 
+/* Procedure structure for procedure `getManyTreeNodes` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `getManyTreeNodes` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `getManyTreeNodes`(pTable VARCHAR(36),pkey VARCHAR(36),pNodeId longtext,pRootId longtext)
+BEGIN
+SET @exeSql=CONCAT("SELECT node.* FROM ",pTable ," AS node,", pTable," AS parent" ,
+		" WHERE node.lft BETWEEN parent.lft AND parent.rgt", " AND parent." , pkey ," in ( ",pNodeId, " ) And node.RootId in ( ",pRootId,
+		" ) ORDER BY node.lft ");    
+    PREPARE stmt FROM @exeSql;  
+    EXECUTE stmt;  
+    DEALLOCATE PREPARE stmt;
+    END */$$
+DELIMITER ;
+
 /* Procedure structure for procedure `getTreeNodePath` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `getTreeNodePath` */;

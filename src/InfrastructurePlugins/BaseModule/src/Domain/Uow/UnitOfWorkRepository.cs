@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using InfrastructurePlugins.BaseModule.Domain.Entities;
+using InfrastructurePlugins.BaseModule.Domain.PagedList;
+using InfrastructurePlugins.BaseModule.Domain.Uow.Extensions;
+using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
 using System;
@@ -10,10 +14,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ZKWeb.Database;
-using InfrastructurePlugins.BaseModule.Domain.Entities;
-using InfrastructurePlugins.BaseModule.Domain.PagedList;
-using InfrastructurePlugins.BaseModule.Domain.Uow.Extensions;
-using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
 
@@ -268,13 +268,54 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
         /// <param name="nodeId">结点ID</param>
         /// <param name="rootId">根结点ID</param>
         /// <returns></returns>
-        public List<TEntity> GetTreeNodes(string nodeId, string rootId)
+        public List<TEntity> GetTreeNodes(object nodeId, object rootId)
         {
+            var xNodeId = nodeId.ToString();
+            var xRootId = rootId.ToString();
             var allNodes = RawQuery("CALL getTreeNodes({0},{1},{2},{3})",
-                TableName, "Id", nodeId, rootId)
+                TableName, "Id", xNodeId, xRootId)
                 .ToList();
             return allNodes;
         }
+        public List<TEntity> FastGetTreeNodes(object nodeId, object rootId)
+        {
+            var xNodeId = nodeId.ToString();
+            var xRootId = rootId.ToString();
+            var allNodes = FastRawQuery("CALL getTreeNodes({0},{1},{2},{3})",
+                TableName, "Id", xNodeId, xRootId)
+                .ToList();
+            return allNodes;
+        }
+
+        public List<TEntity> GetManyTreeNodes(IList<object> nodeIds, IList<object> rootIds)
+        {
+            var xNodeIds = string.Join(",", nodeIds);
+            var xRootIds = string.Join(",", rootIds);
+            var allNodes = RawQuery("CALL getManyTreeNodes({0},{1},{2},{3})",
+                TableName, "Id", xNodeIds, xRootIds)
+                .ToList();
+            return allNodes;
+        }
+        public List<TEntity> FastGetManyTreeNodes(IList<object> nodeIds, IList<object> rootIds)
+        {
+            var xNodeIds = string.Join(",", nodeIds);
+            var xRootIds = string.Join(",", rootIds);
+            var allNodes = FastRawQuery("CALL getManyTreeNodes({0},{1},{2},{3})",
+                TableName, "Id", xNodeIds, xRootIds)
+                .ToList();
+            return allNodes;
+        }
+        //public ManyTreeNodeInfo GetManyTreeNodeInfo(IEnumerable<TPrimaryKey> ids,Func<TEntity,object> selector)
+        //{
+        //    var Ids = FastQueryAsReadOnly()
+        //    .Where(p => ids.Contains(p.Id))
+        //    .Select(selector);
+
+        //    //根据rootid和id查询出角色及子角色的对象
+        //    var nodeIds = Ids.Select(i => i.Id).Distinct().Cast<object>().ToList();
+        //    var rootIds = Ids.Select(i => i.RootId).Distinct().Cast<object>().ToList();
+        //}
+
         /// <summary>
         /// 获取指定结点所有子结点集合,包括根结点,性能差,未测试
         /// </summary>

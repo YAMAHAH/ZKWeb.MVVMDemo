@@ -89,6 +89,8 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         public void Configure(IEntityMappingBuilder<TemplatePrivilege> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
+            //创建索引
+            //nativeBuilder.HasIndex(r => r.RootId);
             //主键
             builder.Id(p => p.Id);
             //租户

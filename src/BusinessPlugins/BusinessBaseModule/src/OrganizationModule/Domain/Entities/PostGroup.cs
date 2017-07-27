@@ -66,8 +66,12 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         public void Configure(IEntityMappingBuilder<PostGroup> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
+            //主键
             builder.Id(p => p.Id);
-            builder.References(p => p.OwnerTenant, new EntityMappingOptions() { Nullable = false, CascadeDelete = false });
+            //租户
+            builder.HasMany(p => p.OwnerTenant, p => p.OwnerTenantId);
+            //创建索引
+            nativeBuilder.HasIndex(r => r.RootId);
         }
     }
 }

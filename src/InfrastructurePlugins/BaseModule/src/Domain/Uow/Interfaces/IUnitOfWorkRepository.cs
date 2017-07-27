@@ -116,7 +116,29 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         /// <param name="nodeId">结点ID</param>
         /// <param name="rootId">根结点ID</param>
         /// <returns></returns>
-        List<TEntity> GetTreeNodes(string nodeId, string rootId);
+        List<TEntity> GetTreeNodes(object nodeId, object rootId);
+        /// <summary>
+        /// 快速获取指定结点ID和根结点ID的结点集合
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <param name="rootId"></param>
+        /// <returns></returns>
+        List<TEntity> FastGetTreeNodes(object nodeId, object rootId);
+        /// <summary>
+        /// 快速获取指定列表的对象集合(IN方式)
+        /// </summary>
+        /// <param name="nodeIds">结点集合</param>
+        /// <param name="rootIds">根结点集合</param>
+        /// <returns></returns>
+        List<TEntity> FastGetManyTreeNodes(IList<object> nodeIds, IList<object> rootIds);
+        /// <summary>
+        /// 获取指定列表的对象集合(IN方式)
+        /// 
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <param name="rootId"></param>
+        /// <returns></returns>
+        List<TEntity> GetManyTreeNodes(IList<object> nodeIds, IList<object> rootIds);
         List<TEntity> GetTreeNodes(
             TEntity node,
             Expression<Func<TEntity, IEnumerable<TEntity>>> getCollection,
