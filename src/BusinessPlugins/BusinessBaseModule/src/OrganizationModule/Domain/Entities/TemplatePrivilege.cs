@@ -1,4 +1,5 @@
-﻿using BusinessPlugins.BasicModule.Domain.Entities;
+﻿using BusinessPlugins.BaseModule.Domain.Entities.Enums;
+using BusinessPlugins.BasicModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
@@ -70,6 +71,10 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         /// </summary>
         public TemplateObjectType TemplateObjectType { get; set; }
         /// <summary>
+        /// 选择状态
+        /// </summary>
+        public SelectedStatusEnum SelectedStatus { get; set; }
+        /// <summary>
         /// 可查
         /// </summary>
         public bool Queryable { get; set; }
@@ -78,7 +83,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         /// </summary>
         public bool Visible { get; set; }
         /// <summary>
-        /// 可编辑
+        /// 可编
         /// </summary>
         public bool Editable { get; set; }
         /// <summary>
@@ -88,9 +93,6 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         #endregion
         public void Configure(IEntityMappingBuilder<TemplatePrivilege> builder)
         {
-            var nativeBuilder = builder.GetNativeBuilder();
-            //创建索引
-            //nativeBuilder.HasIndex(r => r.RootId);
             //主键
             builder.Id(p => p.Id);
             //租户
@@ -101,7 +103,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
             builder.HasMany(dp => dp.PostGroup, p => p.TemplatePrivileges, pd => pd.PostGroupId);
             //角色
             builder.HasMany(dp => dp.Role, r => r.TemplatePrivileges, pd => pd.RoleId);
-            //自身结点
+            //父结点
             builder.HasMany(to => to.Parent, to => to.Childs, to => to.ParentId);
         }
     }

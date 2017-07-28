@@ -18,9 +18,9 @@ namespace BusinessPlugins.BasicModule.Domain.Services
     {
         public Dictionary<Guid, TemplateObject> GetTemplateObjects(Guid templateId)
         {
-            var tempObjRepository = UnitOfWork.GetUnitRepository<TemplateObject, Guid>();
+            var tempObjRep = UnitOfWork.GetUnitRepository<TemplateObject, Guid>();
 
-            return tempObjRepository.FastQueryAsReadOnly()
+            return tempObjRep.FastQueryAsReadOnly()
                 .Where(to => to.TempId == templateId)
                 .Include(t => t.Template)
                 .ToDictionary(t => t.Id);

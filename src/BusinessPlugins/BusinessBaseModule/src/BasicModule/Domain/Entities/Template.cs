@@ -23,7 +23,6 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
         public Guid OwnerTenantId { get; set; }
         public Tenant OwnerTenant { get; set; }
         #endregion
-
         #region 模板基本属性
 
         #endregion

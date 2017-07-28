@@ -1,4 +1,5 @@
-﻿using BusinessPlugins.OrganizationModule.Domain;
+﻿using BusinessPlugins.BaseModule.Domain.Entities.Enums;
+using BusinessPlugins.OrganizationModule.Domain;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
@@ -15,7 +16,6 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
     public class TemplateObject : IFullAudit<TemplateObject, Guid>
     {
         #region FullAudit接口实现
-
         public Guid Id { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
@@ -25,6 +25,10 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
         #endregion
         #region 模板对象基本属性
         public TemplateObjectType ObjectType { get; set; }
+        /// <summary>
+        /// 选择状态
+        /// </summary>
+        public SelectedStatusEnum SelectedStatus { get; set; }
         /// <summary>
         /// 对象名称
         /// </summary>

@@ -123,9 +123,9 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
             var allTempObjects = xTempManager.GetTemplateObjects(tempId);
 
             //获取模板权限对象仓储
-            var tempPrivRepository = UnitOfWork.GetUnitRepository<TemplatePrivilege, Guid>();
+            var tempPrivRep = UnitOfWork.GetUnitRepository<TemplatePrivilege, Guid>();
             //获取用户模板分配的权限对象字典
-            var userTempPrivDicts = tempPrivRepository.FastQueryAsReadOnly()
+            var userTempPrivDicts = tempPrivRep.FastQueryAsReadOnly()
                .Where(p => (p.EmployeeId == empId || postGrpIds.Contains((Guid)p.PostGroupId) || roleIds.Contains((Guid)p.RoleId)) && p.TemplateId == tempId)
                .GroupBy(p => new { p.TemplateId, p.TemplateObjectId })
                .Select(p => new
