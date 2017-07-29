@@ -18,6 +18,10 @@ namespace InfrastructurePlugins.BaseModule.Module
         /// </summary>
         public string TempName { get; set; }
         /// <summary>
+        /// 模板名称
+        /// </summary>
+        public string TempTitle { get; set; }
+        /// <summary>
         /// 模板类型
         /// </summary>
         public Type TempClassType { get; set; }
@@ -33,6 +37,19 @@ namespace InfrastructurePlugins.BaseModule.Module
         /// 模块类型
         /// </summary>
         public Type ModuleType { get; set; }
+
+        /// <summary>
+        /// 模块目录ID
+        /// </summary>
+        public string ModuleCatalogId { get; set; }
+        /// <summary>
+        /// 模块目录名称
+        /// </summary>
+        public string ModuleCatalogName { get; set; }
+        /// <summary>
+        /// 模块目录类型
+        /// </summary>
+        public Type ModuleCatalogType { get; set; }
         /// <summary>
         /// 模板字段特性集合
         /// </summary>

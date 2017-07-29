@@ -7,6 +7,9 @@ using ZKWebStandard.Ioc;
 
 namespace InfrastructurePlugins.BaseModule.Module
 {
+    /// <summary>
+    /// 模块管理器
+    /// </summary>
     [ExportMany, SingletonReuse]
     public class ModuleManager
     {
@@ -49,6 +52,17 @@ namespace InfrastructurePlugins.BaseModule.Module
         public List<Type> GetModuleComponents(Type moduleType)
         {
             return moduleComponentDict.GetOrCreate(moduleType, () => new List<Type>());
+        }
+
+        /// <summary>
+        /// 获取所有模块的模板对象信息
+        /// </summary>
+        /// <returns></returns>
+        public List<ComponentClassInfo> GetModuleComponentClassInfos()
+        {
+            var injector = ZKWeb.Application.Ioc;
+            var modules = injector.ResolveMany<IAngularModule>();
+            return modules.SelectMany(m => m.GetComponentClassInfoes()).ToList();
         }
     }
 }

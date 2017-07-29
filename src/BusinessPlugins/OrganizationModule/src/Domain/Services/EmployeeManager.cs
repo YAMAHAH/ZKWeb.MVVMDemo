@@ -120,7 +120,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
             var roleIds = GetAllRoles(empId).Select(r => r.Id).ToList();
 
             //获取模板的所有模板对象字典 
-            var allTempObjects = xTempManager.GetTemplateObjects(tempId);
+            var tempObjects = xTempManager.GetTemplateObjects(tempId);
 
             //获取模板权限对象仓储
             var tempPrivRep = UnitOfWork.GetUnitRepository<TemplatePrivilege, Guid>();
@@ -135,18 +135,20 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
                    Visible = p.Max(t => t.Visible),
                    Enable = p.Max(t => t.Enable),
                    Editable = p.Max(t => t.Editable),
-                   Queryable = p.Max(t => t.Queryable)
+                   Queryable = p.Max(t => t.Queryable),
+                   SelectedStatus = p.Max(t => t.SelectedStatus)
                }).ToDictionary(t => t.TemplateObjectId);
 
             //把用户权限字典赋值给模板对象字典
-            foreach (var tempPriv in userTempPrivDicts.Keys)
+            foreach (var privKey in userTempPrivDicts.Keys)
             {
-                allTempObjects[tempPriv].Enable = userTempPrivDicts[tempPriv].Enable;
-                allTempObjects[tempPriv].Visible = userTempPrivDicts[tempPriv].Visible;
-                allTempObjects[tempPriv].Editable = userTempPrivDicts[tempPriv].Editable;
-                allTempObjects[tempPriv].Queryable = userTempPrivDicts[tempPriv].Queryable;
+                tempObjects[privKey].Enable = userTempPrivDicts[privKey].Enable;
+                tempObjects[privKey].Visible = userTempPrivDicts[privKey].Visible;
+                tempObjects[privKey].Editable = userTempPrivDicts[privKey].Editable;
+                tempObjects[privKey].Queryable = userTempPrivDicts[privKey].Queryable;
+                tempObjects[privKey].SelectedStatus = userTempPrivDicts[privKey].SelectedStatus;
             }
-            return allTempObjects;
+            return tempObjects;
         }
     }
 }

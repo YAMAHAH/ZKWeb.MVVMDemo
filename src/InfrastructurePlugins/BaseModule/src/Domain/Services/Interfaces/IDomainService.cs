@@ -74,6 +74,12 @@ namespace InfrastructurePlugins.BaseModule.Domain.Services.Interfaces
         /// </summary>
         /// <param name="entity">实体</param>
         void Delete(TEntity entity);
+        /// <summary>
+        /// 批量保存实体
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <param name="update"></param>
+        void BatchSave(ref IEnumerable<TEntity> entities, Action<TEntity> update = null);
 
         /// <summary>
         /// 批量标记已删除或未删除

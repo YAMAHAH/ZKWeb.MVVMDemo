@@ -74,7 +74,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Bases
         {
             get
             {
-                if (xServiceId == null) xServiceId = MD5Utils.GetGuidByMD5(GetType().FullName, "X2");
+                if (xServiceId == null) xServiceId = MD5Utils.GetGuidStrByMD5(GetType().FullName, "X2");
                 return xServiceId;
             }
         }

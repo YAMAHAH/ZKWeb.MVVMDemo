@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+using BusinessPlugins.BasicModule.ModuleCatalogs;
+using BusinessPlugins.OrganizationModule.Application.Module;
+using BusinessPlugins.OrganizationModule.Components.ActionFilters;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Entities.UserTypes;
+using BusinessPlugins.OrganizationModule.Domain.Extensions;
+using BusinessPlugins.OrganizationModule.Domain.Services;
 using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
 using InfrastructurePlugins.BaseModule.Application.Services.Attributes;
@@ -14,13 +18,10 @@ using InfrastructurePlugins.MultiTenantModule.Application.Dtos;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using InfrastructurePlugins.MultiTenantModule.Domain.Filters;
 using InfrastructurePlugins.MultiTenantModule.Domain.Services;
-using BusinessPlugins.OrganizationModule.Application.Module;
-using BusinessPlugins.OrganizationModule.Components.ActionFilters;
-using BusinessPlugins.OrganizationModule.Domain.Entities;
-using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
-using BusinessPlugins.OrganizationModule.Domain.Entities.UserTypes;
-using BusinessPlugins.OrganizationModule.Domain.Extensions;
-using BusinessPlugins.OrganizationModule.Domain.Services;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
 
@@ -30,7 +31,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
     /// 租户管理服务
     /// </summary>
     [ExportMany, SingletonReuse, Description("租户管理服务")]
-    [ComponentClass(typeof(MultiTenantModule), typeof(TenantOutputDto), typeof(DeletedFilter), typeof(CreateTimeFilter))]
+    [ComponentClass(typeof(MultiTenantModule), typeof(OrganizationModuleCatalog), "租户管理", typeof(TenantOutputDto), typeof(DeletedFilter), typeof(CreateTimeFilter))]
     public class TenantManageService : ApplicationServiceBase
     {
         private TenantManager _tenantManager;

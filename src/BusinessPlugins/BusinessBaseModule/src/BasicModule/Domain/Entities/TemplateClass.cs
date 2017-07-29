@@ -43,7 +43,7 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
         /// 模块
         /// </summary>
         public Guid ModuleId { get; set; }
-        public Module Module { get; set; }
+        public ModuleCatalog Module { get; set; }
         /// <summary>
         /// 类对象
         /// </summary>

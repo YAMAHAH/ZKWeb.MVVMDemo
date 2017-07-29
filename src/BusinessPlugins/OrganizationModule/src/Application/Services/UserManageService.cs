@@ -22,6 +22,7 @@ using BusinessPlugins.OrganizationModule.Domain.Services;
 using ZKWeb.Web;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
+using BusinessPlugins.BasicModule.ModuleCatalogs;
 
 namespace BusinessPlugins.OrganizationModule.Application.Services
 {
@@ -29,7 +30,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
     /// 用户管理服务
     /// </summary>
     [ExportMany, SingletonReuse, Description("用户管理服务")]
-    [ComponentClass(typeof(UserManagerModule), typeof(UserOutputDto),
+    [ComponentClass(typeof(UserManagerModule), typeof(OrganizationModuleCatalog), "用户管理", typeof(UserOutputDto),
         typeof(DeletedFilter), typeof(CreateTimeFilter))]
     public class UserManageService : ApplicationServiceBase
     {

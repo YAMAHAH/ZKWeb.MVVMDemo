@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
+using InfrastructurePlugins.BaseModule.ModuleCatalogs;
 
 namespace InfrastructurePlugins.BaseModule.Application.Attributes
 {
@@ -14,6 +15,16 @@ namespace InfrastructurePlugins.BaseModule.Application.Attributes
         /// 模板的名称
         /// </summary>
         public string TempName { get; set; }
+
+        /// <summary>
+        /// 模板标题
+        /// </summary>
+        public string TempTitle { get; set; }
+
+        /// <summary>
+        /// 所属模块目录类型
+        /// </summary>
+        public Type ModuleCatalogType { get; set; }
 
         /// <summary>
         /// 所属模块类型
@@ -34,8 +45,10 @@ namespace InfrastructurePlugins.BaseModule.Application.Attributes
         /// </summary>
         public Type[] FilterTypes { get; set; } = new Type[] { };
 
-        public ComponentClassAttribute(Type pModuleType, params Type[] types)
+        public ComponentClassAttribute(Type pModuleType, Type moduleCatalog, string title, params Type[] types)
         {
+            ModuleCatalogType = moduleCatalog;
+            TempTitle = title;
             ModuleType = pModuleType;
             ComponentModels = types.Where(t => typeof(IOutputDto).IsAssignableFrom(t)).ToArray();
             FilterTypes = types.Where(t => t.IsQueryOrOperationFilter()).ToArray();

@@ -1,9 +1,9 @@
 ﻿using CoreLibModule.Utils;
+using InfrastructurePlugins.BaseModule.Application.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using InfrastructurePlugins.BaseModule.Application.Attributes;
 using ZKWebStandard.Ioc;
 
 namespace InfrastructurePlugins.BaseModule.Module
@@ -60,7 +60,7 @@ namespace InfrastructurePlugins.BaseModule.Module
         {
             get
             {
-                if (xModuleId == null) xModuleId = MD5Utils.GetGuidByMD5(GetType().FullName, "X2");
+                if (xModuleId == null) xModuleId = MD5Utils.GetGuidStrByMD5(GetType().FullName, "X2");
                 return xModuleId;
             }
         }
@@ -152,19 +152,23 @@ namespace InfrastructurePlugins.BaseModule.Module
                     var tempAttr = a.GetTypeInfo().GetCustomAttribute<ComponentClassAttribute>();
                     if (tempAttr != null)
                     {
-                        if (tempAttr.TemplateId == null) tempAttr.TemplateId = MD5Utils.GetGuidByMD5(a.FullName, "X2");
+                        if (tempAttr.TemplateId == null) tempAttr.TemplateId = MD5Utils.GetGuidStrByMD5(a.FullName, "X2");
                         if (tempAttr.TempClassType == null) tempAttr.TempClassType = a;
                         if (tempAttr.TempName == null) tempAttr.TempName = a.Name.Replace("Service", "");
                     }
 
                     return new ComponentClassInfo()
                     {
+                        ModuleCatalogId = MD5Utils.GetGuidStrByMD5(tempAttr.ModuleCatalogType.FullName, "X2"),
+                        ModuleCatalogName = tempAttr.ModuleCatalogType.Name,
+                        ModuleCatalogType = tempAttr.ModuleCatalogType,
                         ModuleType = moduleType,
-                        ModuleId = MD5Utils.GetGuidByMD5(GetType().FullName, "X2"),
+                        ModuleId = MD5Utils.GetGuidStrByMD5(GetType().FullName, "X2"),
                         ModuleName = moduleName,
                         TempClassType = a,
                         TempId = tempAttr?.TemplateId,
                         TempName = tempAttr?.TempName,
+                        TempTitle = tempAttr.TempTitle,
                         TempActions = a.GetTypeInfo().GetMethods()
                             .Where(m => m.GetCustomAttribute<ComponentMethodAttribute>() != null)
                             .Select(m => m.GetCustomAttribute<ComponentMethodAttribute>())

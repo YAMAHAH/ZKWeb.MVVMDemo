@@ -54,7 +54,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Services.Bases
         {
             get
             {
-                return Injector.Resolve<IRepository<TEntity, TPrimaryKey>>() ??
+                return Injector.Resolve<IRepository<TEntity, TPrimaryKey>>(IfUnresolved.ReturnDefault) ??
                        UnitOfWork.GetRepository<TEntity, TPrimaryKey>();
             }
         }
@@ -183,6 +183,15 @@ namespace InfrastructurePlugins.BaseModule.Domain.Services.Bases
             }
         }
 
+        public virtual void BatchSave(ref IEnumerable<TEntity> entities, Action<TEntity> update = null)
+        {
+            var uow = UnitOfWork;
+            using (uow.Scope())
+            {
+                Repository.BatchSave(ref entities, update);
+            }
+
+        }
         /// <summary>
         /// 批量标记已删除或未删除
         /// 返回标记的数量，不会实际删除

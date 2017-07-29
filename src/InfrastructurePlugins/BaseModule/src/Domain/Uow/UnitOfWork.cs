@@ -380,7 +380,7 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
                 repositoryFactories[type] = new GenericRepository<TEntity, TPrimaryKey>();
             }
 
-            return (GenericRepository<TEntity, TPrimaryKey>)repositories[type];
+            return (GenericRepository<TEntity, TPrimaryKey>)repositoryFactories[type];
         }
 
         /// <summary>

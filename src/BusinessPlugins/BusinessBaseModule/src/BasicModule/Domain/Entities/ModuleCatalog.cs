@@ -12,7 +12,7 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
     /// 模块
     /// </summary>
     [ExportMany]
-    public class Module : IFullAudit<Module, Guid>
+    public class ModuleCatalog : IFullAudit<ModuleCatalog, Guid>
     {
         #region FullAudit接口实现
 
@@ -42,12 +42,12 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
         public List<TemplateClass> TemplateClasses { get; set; }
         #endregion
         #region 实体关系配置
-        public void Configure(IEntityMappingBuilder<Module> builder)
+        public void Configure(IEntityMappingBuilder<ModuleCatalog> builder)
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            //Tenant
-            builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
+            ////Tenant
+            //builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
         }
         #endregion
     }
