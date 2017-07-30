@@ -46,8 +46,8 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
         {
             var nativeBuilder = builder.GetNativeBuilder();
             builder.Id(p => p.Id);
-            ////Tenant
-            //builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
+            //Tenant
+            builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
         }
         #endregion
     }

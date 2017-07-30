@@ -184,6 +184,7 @@ namespace InfrastructurePlugins.BaseModule.Module
                                 .SelectMany(p =>
                                 {
                                     var datafield = p.PropInfo.GetCustomAttribute<ComponentPropertyAttribute>();
+                                    datafield.GroupType = p.ParentType;
                                     var propType = p.PropInfo.PropertyType;
                                     if (datafield != null)
                                     {
@@ -199,16 +200,16 @@ namespace InfrastructurePlugins.BaseModule.Module
                                             }
                                         }
                                         if (datafield.Name == null) datafield.Name = p.PropInfo.Name;
-                                        if (datafield.Alias == null) datafield.Alias = p.PropInfo.Name;
+                                        if (datafield.Alias == null) datafield.Alias = p.ParentType.Name.Replace("OutputDto", "") + "_" + p.PropInfo.Name;
                                         if (nameLists.Contains(datafield.Alias))
                                         {
                                             datafield.Alias = p.ParentType.Name.Replace("OutputDto", "") + "_" + datafield.Name;
                                         }
                                         nameLists.Add(datafield.Alias);
                                     }
+
                                     return new ComponentPropertyAttribute[] { datafield };
-                                })
-                                .ToList(),
+                                }).ToList(),
 
                         TempFilters = tempAttr.FilterTypes
                     };
@@ -239,5 +240,6 @@ namespace InfrastructurePlugins.BaseModule.Module
         public Type ParentType { get; set; }
         public PropertyInfo PropInfo { get; set; }
     }
+
 
 }

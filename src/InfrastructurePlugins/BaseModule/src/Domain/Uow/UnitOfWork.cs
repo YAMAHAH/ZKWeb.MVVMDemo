@@ -99,6 +99,7 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
             public SimpleDisposable SimpleDisposable;
             public void Complete()
             {
+                SaveChanges();
                 Context.FinishTransaction();
             }
 

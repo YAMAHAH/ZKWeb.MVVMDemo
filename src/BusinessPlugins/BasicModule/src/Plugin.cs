@@ -22,6 +22,7 @@ namespace BusinessPlugins.BasicModule
         /// </summary>
         public Plugin()
         {
+            var ownerTenantId = Guid.Parse("0083d11b-6af1-101a-43d7-6f9e50c98925");
             //获取DI注入器
             var injector = ZKWeb.Application.Ioc;
             //获取所有的模块
@@ -34,7 +35,7 @@ namespace BusinessPlugins.BasicModule
                     ModuleCode = m.ModuleCode,
                     ModuleName = m.ModuleName,
                     Remark = m.ModuleRemark,
-                    OwnerTenantId = Guid.Parse("0083cd30-dd58-102a-77e2-a921c8e556bf")
+                    OwnerTenantId = ownerTenantId
                 });
             //获取模块仓储
             var moduleManRep = injector.Resolve<IModuleCatalogManager>();
@@ -51,7 +52,7 @@ namespace BusinessPlugins.BasicModule
                 Id = Guid.Parse(t.TempId),
                 ModuleId = Guid.Parse(t.ModuleCatalogId),
                 Name = t.TempName,
-                OwnerTenantId = Guid.Parse("0083cd30-dd58-102a-77e2-a921c8e556bf"),
+                OwnerTenantId = ownerTenantId,
                 Title = t.TempTitle,
                 ClassObjects = t.TempActions.Select(a => new TemplateClassObject()
                 {
@@ -59,32 +60,34 @@ namespace BusinessPlugins.BasicModule
                     TempClsId = Guid.Parse(t.TempId),
                     ObjectName = a.Name,
                     ObjectAlias = a.Name,
+                    ObjectGroup = t.TempClassType.Name.Replace("Service", ""),
                     ObjectTitle = a.Text,
                     Enable = a.Enable,
                     Visible = a.Enable,
                     ObjectType = TemplateObjectType.Action,
-                    OwnerTenantId = Guid.Parse("0083cd30-dd58-102a-77e2-a921c8e556bf")
+                    OwnerTenantId = ownerTenantId
                 })
                 .Union(t.TempDataFields.Select(a => new TemplateClassObject()
                 {
-                    Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + a.Name, "X2"),
+                    Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + a.Alias, "X2"),
                     TempClsId = Guid.Parse(t.TempId),
+                    ObjectGroup = a.GroupType.Name.Replace("OutputDto", ""),
                     ObjectName = a.Name,
+                    ObjectAlias = a.Alias,
+                    DataType = a.DataType,
                     ObjectTitle = a.Text,
                     Visible = a.Visible,
                     Editable = a.Editable,
                     Queryable = a.Queryable,
                     Required = a.required,
-                    ObjectAlias = a.Alias,
                     ObjectType = TemplateObjectType.DataField,
-                    OwnerTenantId = Guid.Parse("0083cd30-dd58-102a-77e2-a921c8e556bf")
-                }))
-                .ToList()
+                    OwnerTenantId = ownerTenantId
+                })).ToList()
             });
             //获取模板类服务
             var tempClsMan = injector.Resolve<ITemplateClassManager>();
             //保存数据
-            tempClsMan.BatchSave(ref tempClsEntities);
+            tempClsMan.BatchSave(tempClsEntities);
 
 
         }

@@ -110,11 +110,11 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
             //租户
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //模板
-            builder.HasMany(m => m.Template, t => t.TemplateObjects, to => to.TempId);
+            builder.HasMany(m => m.Template, t => t.TemplateObjects, t => t.TempId);
             //模板类对象
-            builder.HasOne(to => to.TemplateClassObject, to => to.TempClsObjId);
+            builder.HasOne(t => t.TemplateClassObject, t => t.TempClsObjId);
             //自身结点
-            builder.HasMany(to => to.Parent, to => to.Childs, to => to.ParentId);
+            builder.HasMany(t => t.Parent, t => t.Childs, t => t.ParentId);
         }
         #endregion
     }

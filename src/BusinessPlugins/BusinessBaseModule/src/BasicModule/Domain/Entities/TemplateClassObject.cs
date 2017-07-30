@@ -27,6 +27,10 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
 
         public TemplateObjectType ObjectType { get; set; }
         /// <summary>
+        /// 对象组
+        /// </summary>
+        public string ObjectGroup { get; set; }
+        /// <summary>
         /// 对象名称
         /// </summary>
         public string ObjectName { get; set; }
@@ -86,9 +90,9 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
             //租户
             builder.HasMany(m => m.OwnerTenant, m => m.OwnerTenantId);
             //模板类
-            builder.HasMany(tc => tc.TemplateClass, tc => tc.TempClsId);
+            builder.HasMany(t => t.TemplateClass, t => t.ClassObjects, t => t.TempClsId);
             //自身结点
-            builder.HasMany(to => to.Parent, to => to.Childs, to => to.ParentId);
+            builder.HasMany(t => t.Parent, t => t.Childs, t => t.ParentId);
         }
         #endregion
     }

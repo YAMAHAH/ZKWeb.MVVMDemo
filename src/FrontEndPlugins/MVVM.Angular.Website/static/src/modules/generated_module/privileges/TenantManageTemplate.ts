@@ -8,27 +8,27 @@ export class TenantManageTemplate {
     ModuleName = "MultiTenant";
     /** 数据字段 */
     dataFields = {
-        Name: {
+        Tenant_Name: {
             name: "Name", queryable: true, required: true, visible: true, editable: true, text: "租户名称",
             default: "", dataType: "String", componentType: ""
         },
-        IsMaster: {
+        Tenant_IsMaster: {
             name: "IsMaster", queryable: true, required: true, visible: true, editable: true, text: "是否主租户",
             default: "", dataType: "Boolean", componentType: ""
         },
-        SuperAdminName: {
+        Tenant_SuperAdminName: {
             name: "SuperAdminName", queryable: true, required: true, visible: true, editable: true, text: "超级管理员名称",
             default: "", dataType: "String", componentType: ""
         },
-        CreateTime: {
+        Tenant_CreateTime: {
             name: "CreateTime", queryable: true, required: true, visible: true, editable: true, text: "创建时间",
             default: "", dataType: "String", componentType: ""
         },
-        UpdateTime: {
+        Tenant_UpdateTime: {
             name: "UpdateTime", queryable: true, required: true, visible: true, editable: true, text: "更新时间",
             default: "", dataType: "String", componentType: ""
         },
-        Remark: {
+        Tenant_Remark: {
             name: "Remark", queryable: true, required: false, visible: true, editable: true, text: "备注",
             default: "", dataType: "String", componentType: ""
         }

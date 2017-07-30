@@ -5,6 +5,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     public class ComponentPropertyAttribute : Attribute
     {
+        public Type GroupType { get; set; }
         public Type TempClassType { get; set; }
         public string TempName { get; set; }
         public string Alias { get; set; }

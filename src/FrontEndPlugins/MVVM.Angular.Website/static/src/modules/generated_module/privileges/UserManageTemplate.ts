@@ -8,55 +8,55 @@ export class UserManageTemplate {
     ModuleName = "UserManager";
     /** 数据字段 */
     dataFields = {
-        Id: {
+        User_Id: {
             name: "Id", queryable: true, required: true, visible: true, editable: true, text: "用户Id",
             default: "", dataType: "Guid", componentType: ""
         },
-        Type: {
+        User_Type: {
             name: "Type", queryable: true, required: true, visible: true, editable: true, text: "用户类型",
             default: "", dataType: "String", componentType: ""
         },
-        Username: {
+        User_Username: {
             name: "Username", queryable: true, required: true, visible: true, editable: true, text: "用户名",
             default: "", dataType: "String", componentType: ""
         },
-        OwnerTenantId: {
+        User_OwnerTenantId: {
             name: "OwnerTenantId", queryable: true, required: true, visible: true, editable: true, text: "租户Id",
             default: "", dataType: "Guid", componentType: ""
         },
-        CreateTime: {
+        User_CreateTime: {
             name: "CreateTime", queryable: true, required: true, visible: true, editable: true, text: "创建时间",
             default: "", dataType: "String", componentType: ""
         },
-        UpdateTime: {
+        User_UpdateTime: {
             name: "UpdateTime", queryable: true, required: true, visible: true, editable: true, text: "更新时间",
             default: "", dataType: "String", componentType: ""
         },
-        Remark: {
+        User_Remark: {
             name: "Remark", queryable: true, required: true, visible: true, editable: true, text: "备注",
             default: "", dataType: "String", componentType: ""
         },
-        Deleted: {
+        User_Deleted: {
             name: "Deleted", queryable: true, required: true, visible: true, editable: true, text: "已删除",
             default: "", dataType: "Boolean", componentType: ""
         },
-        RoleIds: {
+        User_RoleIds: {
             name: "RoleIds", queryable: true, required: true, visible: true, editable: true, text: "角色Id列表",
             default: "", dataType: "Guid", componentType: ""
         },
-        Name: {
+        Role_Name: {
             name: "Name", queryable: true, required: true, visible: true, editable: true, text: "角色名称",
             default: "", dataType: "String", componentType: ""
         },
-        Privileges: {
+        Role_Privileges: {
             name: "Privileges", queryable: true, required: true, visible: true, editable: true, text: "权限列表",
             default: "", dataType: "String", componentType: ""
         },
-        PrivilegeNames: {
+        Role_PrivilegeNames: {
             name: "PrivilegeNames", queryable: true, required: true, visible: true, editable: true, text: "权限名称列表",
             default: "", dataType: "String", componentType: ""
         },
-        OwnerTenantName: {
+        Role_OwnerTenantName: {
             name: "OwnerTenantName", queryable: true, required: true, visible: true, editable: true, text: "租户名",
             default: "", dataType: "String", componentType: ""
         },
@@ -84,15 +84,15 @@ export class UserManageTemplate {
             name: "OwnerTenantName", queryable: true, required: true, visible: true, editable: true, text: "租户名称",
             default: "", dataType: "String", componentType: ""
         },
-        OwnerTenantIsMasterTenant: {
+        User_OwnerTenantIsMasterTenant: {
             name: "OwnerTenantIsMasterTenant", queryable: true, required: true, visible: true, editable: true, text: "主租户",
             default: "", dataType: "Boolean", componentType: ""
         },
-        AvatarImageBase64: {
+        User_AvatarImageBase64: {
             name: "AvatarImageBase64", queryable: true, required: true, visible: true, editable: true, text: "头像图片",
             default: "", dataType: "String", componentType: ""
         },
-        ImplementedTypes: {
+        User_ImplementedTypes: {
             name: "ImplementedTypes", queryable: true, required: true, visible: true, editable: true, text: "用户类型列表",
             default: "", dataType: "String", componentType: ""
         },

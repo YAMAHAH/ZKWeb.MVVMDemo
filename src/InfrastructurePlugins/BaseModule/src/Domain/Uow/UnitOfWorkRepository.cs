@@ -27,6 +27,13 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
         {
         }
 
+        #region 实体工具集
+        public EntityDiffer<TEntity, TPrimaryKey> GetEntityDiffer(IEnumerable<TEntity> existEntites,
+            IEnumerable<TEntity> nowEntities,
+            Func<TEntity, TPrimaryKey> getCompareKey)
+        {
+            return new EntityDiffer<TEntity, TPrimaryKey>(existEntites, nowEntities, getCompareKey);
+        }
         private string xTableName;
         /// <summary>
         /// 实体对应的表名
@@ -45,6 +52,8 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
                 return xTableName;
             }
         }
+        #endregion
+
 
         private IUnitOfWork _unitOfWork;
         private IUnitOfWork UnitOfWork
@@ -78,14 +87,14 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
         ///<param name="nowEntity">当前存在的实体</param>
         ///<param name="getChilds">获取1对多关系的实体回调</param>
         ///<param name="getCompareKey">实体差异比较条件回调</param>
-        ///<param name="getKey">实体更新获取数据库实体的条件回调</param>
+        ///<param name="getFilter">实体更新获取数据库实体的条件回调</param>
         /// <returns>VOID/returns>
         public void UpdateMany<TDetail, TKey>(
             TEntity existEntity,
             TEntity nowEntity,
             Func<TEntity, List<TDetail>> getChilds,
             Func<TDetail, TKey> getCompareKey,
-            Func<TDetail, TDetail, bool> getKey) where TDetail : class, IEntity<TPrimaryKey>, new()
+            Func<TDetail, TDetail, bool> getFilter) where TDetail : class, IEntity<TPrimaryKey>, new()
         {
             //更新主体实体
             UpdateValues(existEntity, nowEntity);
@@ -98,7 +107,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
             //实体修改
             foreach (var modEntity in entityDiff.ModifiedEntities)
             {
-                var oldEntity = getChilds(existEntity).Where(p => getKey(modEntity, p)).FirstOrDefault();
+                var oldEntity = getChilds(existEntity).Where(extEntity => getFilter(modEntity, extEntity)).FirstOrDefault();
                 UpdateValues(oldEntity, modEntity);
             }
         }
@@ -111,11 +120,11 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
         /// <param name="getExistLists">已存在的实体集合</param>
         /// <param name="getNowLists">最新的实体令集合</param>
         /// <param name="getCompareKey">集合实体比较的KEY</param>
-        /// <param name="getKey">获取实体的KEY</param>
+        /// <param name="getFilter">获取实体的条件</param>
         public void UpdateMany<T, TKey>(
             List<T> getExistLists, List<T> getNowLists,
             Func<T, TKey> getCompareKey,
-            Func<T, T, bool> getKey) where T : class, IEntity<TPrimaryKey>, new()
+            Func<T, T, bool> getFilter) where T : class, IEntity<TPrimaryKey>, new()
         {
             var entityDiff = new EntityDiffer<T, TKey>(getExistLists, getNowLists, getCompareKey);
             //删除实体
@@ -125,7 +134,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
             //修改实体
             foreach (var modEntity in entityDiff.ModifiedEntities)
             {
-                var oldEntity = getExistLists.Where(p => getKey(modEntity, p)).FirstOrDefault();
+                var oldEntity = getExistLists.Where(p => getFilter(modEntity, p)).FirstOrDefault();
                 UpdateValues(oldEntity, modEntity);
             }
         }
@@ -305,16 +314,6 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
                 .ToList();
             return allNodes;
         }
-        //public ManyTreeNodeInfo GetManyTreeNodeInfo(IEnumerable<TPrimaryKey> ids,Func<TEntity,object> selector)
-        //{
-        //    var Ids = FastQueryAsReadOnly()
-        //    .Where(p => ids.Contains(p.Id))
-        //    .Select(selector);
-
-        //    //根据rootid和id查询出角色及子角色的对象
-        //    var nodeIds = Ids.Select(i => i.Id).Distinct().Cast<object>().ToList();
-        //    var rootIds = Ids.Select(i => i.RootId).Distinct().Cast<object>().ToList();
-        //}
 
         /// <summary>
         /// 获取指定结点所有子结点集合,包括根结点,性能差,未测试
@@ -482,8 +481,37 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
         public void FastInsert(params TEntity[] entities)
         {
             var dbCtx = DbContext;
-            dbCtx.Set<TEntity>().AddRange(entities);
+            EntitySet().AddRange(entities);
             dbCtx.SaveChanges();
+        }
+        public void Insert(params TEntity[] entities)
+        {
+            var localEntities = entities;
+            var callbacks = Injector.ResolveMany<IEntityOperationHandler<TEntity>>().ToList();
+            foreach (var entity in localEntities)
+            {
+                callbacks.ForEach(c => c.BeforeSave(UnitOfWork.Context, entity));
+                EntitySet().Add(entity);
+            }
+            UnitOfWork.SaveChanges();
+            foreach (var entity in localEntities)
+            {
+                callbacks.ForEach(c => c.AfterSave(UnitOfWork.Context, entity));
+            }
+        }
+
+        public void Insert(TEntity entity)
+        {
+            //获取实体操作处理器
+            var callbacks = Injector.ResolveMany<IEntityOperationHandler<TEntity>>().ToList();
+            //实体保存前应用操作处理器
+            callbacks.ForEach(c => c.BeforeSave(UnitOfWork.Context, entity));
+            //添加实体
+            EntitySet().Add(entity);
+            //保存实体
+            UnitOfWork.SaveChanges();
+            //实体保存后处理
+            callbacks.ForEach(c => c.AfterSave(UnitOfWork.Context, entity));
         }
         /// <summary>
         /// 删除指定实体
@@ -498,6 +526,37 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
             dbCtx.SaveChanges();
             return removed;
         }
+        public EntityEntry<TEntity> Delete(TEntity entity)
+        {
+            var localEntity = entity;
+            //删除前应用工作单元的过滤器
+            var uow = UnitOfWork;
+            uow.WrapBeforeDeleteMethod<TEntity, TPrimaryKey>(e => { })(localEntity);
+            //获取实体操作处理器
+            var callbacks = Injector.ResolveMany<IEntityOperationHandler<TEntity>>().ToList();
+            callbacks.ForEach(c => c.BeforeDelete(UnitOfWork.Context, localEntity));
+            var removed = EntitySet().Remove(localEntity);
+            UnitOfWork.SaveChanges();
+            callbacks.ForEach(c => c.AfterDelete(UnitOfWork.Context, localEntity));
+            return removed;
+        }
+
+        public long Delete(params TEntity[] entities)
+        {
+            var localEntities = entities;
+            var callbacks = Injector.ResolveMany<IEntityOperationHandler<TEntity>>().ToList();
+            foreach (var entity in localEntities)
+            {
+                callbacks.ForEach(c => c.BeforeDelete(UnitOfWork.Context, entity));
+                EntitySet().Remove(entity);
+            }
+            UnitOfWork.SaveChanges();
+            foreach (var entity in localEntities)
+            {
+                callbacks.ForEach(c => c.AfterDelete(UnitOfWork.Context, entity));
+            }
+            return localEntities.Count();
+        }
         /// <summary>
         /// 批量删除实体
         /// </summary>
@@ -508,6 +567,35 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
             var dbCtx = DbContext;
             dbCtx.Set<TEntity>().RemoveRange(entities);
             dbCtx.SaveChanges();
+        }
+        public void Update(params TEntity[] entities)
+        {
+            var localEntities = entities;
+            var callbacks = Injector.ResolveMany<IEntityOperationHandler<TEntity>>().ToList();
+            foreach (var entity in localEntities)
+            {
+                callbacks.ForEach(c => c.BeforeSave(UnitOfWork.Context, entity));
+                EntitySet().Update(entity);
+            }
+            UnitOfWork.SaveChanges();
+            foreach (var entity in localEntities)
+            {
+                callbacks.ForEach(c => c.AfterSave(UnitOfWork.Context, entity));
+            }
+        }
+
+        public void Update(TEntity entity)
+        {
+            //获取实体操作处理器
+            var callbacks = Injector.ResolveMany<IEntityOperationHandler<TEntity>>().ToList();
+            //实体保存前应用操作处理器
+            callbacks.ForEach(c => c.BeforeSave(UnitOfWork.Context, entity));
+            //添加实体
+            EntitySet().Update(entity);
+            //保存实体
+            UnitOfWork.SaveChanges();
+            //实体保存后处理
+            callbacks.ForEach(c => c.AfterSave(UnitOfWork.Context, entity));
         }
         /// <summary>
         /// 更新实体
@@ -543,17 +631,6 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
             var uow = UnitOfWork;
             update = uow.WrapUpdateMethod<TEntity, TPrimaryKey>(update);
             uow.Context.Save(ref entity, update);
-        }
-
-        /// <summary>
-        /// 删除实体
-        /// 受这些过滤器的影响: 操作过滤器
-        /// </summary>
-        public virtual void Delete(TEntity entity)
-        {
-            var uow = UnitOfWork;
-            uow.WrapBeforeDeleteMethod<TEntity, TPrimaryKey>(e => { })(entity);
-            uow.Context.Delete(entity);
         }
 
         /// <summary>
@@ -596,7 +673,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
         /// 整体更新实体
         /// </summary>
         /// <param name="entities"></param>
-        public void Update(params TEntity[] entities)
+        public void Update(IEnumerable<TEntity> entities)
         {
             if (entities == null) throw new ArgumentNullException("entities");
 
@@ -990,6 +1067,8 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
                 return query.ToPagedListAsync(pageIndex, pageSize, 0, cancellationToken);
             }
         }
+
+
         #endregion
     }
 

@@ -9,16 +9,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using ZKWeb.Database;
 using InfrastructurePlugins.BaseModule.Domain.PagedList;
+using InfrastructurePlugins.BaseModule.Domain.Entities;
 
 namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
 {
     public interface IUnitOfWorkRepository<TEntity, TPrimaryKey> where TEntity : class, IEntity<TPrimaryKey>, new()
     {
+        #region 实体工具
+
         /// <summary>
         /// 对应的表名
         /// </summary>
         string TableName { get; }
-
+        /// <summary>
+        /// 获取实体差异集合
+        /// </summary>
+        /// <param name="existEntites">已存在数据库的实体集合</param>
+        /// <param name="nowEntities">当前的实体集合</param>
+        /// <param name="getCompareKey">比较实体的键，按主键来比较</param>
+        /// <returns></returns>
+        EntityDiffer<TEntity, TPrimaryKey> GetEntityDiffer(IEnumerable<TEntity> existEntites, IEnumerable<TEntity> nowEntities, Func<TEntity, TPrimaryKey> getCompareKey);
+        #endregion
         #region 一对多实体增删改查
         /// <summary>
         /// 更新1对多关系的实体值
@@ -27,14 +38,14 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         ///<param name="nowEntity">当前存在的实体</param>
         ///<param name="getChilds">获取1对多关系的实体回调</param>
         ///<param name="getCompareKey">实体差异比较条件回调</param>
-        ///<param name="getKey">实体更新获取数据库实体的条件回调</param>
+        ///<param name="getFilter">实体更新获取已存在实体的条件回调</param>
         /// <returns>VOID/returns>
         void UpdateMany<TDetail, TKey>(
             TEntity existEntity,
             TEntity nowEntity,
             Func<TEntity, List<TDetail>> getChilds,
             Func<TDetail, TKey> getCompareKey,
-            Func<TDetail, TDetail, bool> getKey)
+            Func<TDetail, TDetail, bool> getFilter)
             where TDetail : class, IEntity<TPrimaryKey>, new();
 
         /// <summary>
@@ -45,11 +56,11 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         /// <param name="getExistLists">已存在的实体集合</param>
         /// <param name="getNowLists">最新的实体令集合</param>
         /// <param name="getCompareKey">集合实体比较的KEY</param>
-        /// <param name="getKey">获取实体的KEY</param>
+        /// <param name="getFilter">获取已存在实体的条件</param>
         void UpdateMany<T, TKey>(
             List<T> getExistLists, List<T> getNowLists,
             Func<T, TKey> getCompareKey,
-            Func<T, T, bool> getKey) where T : class, IEntity<TPrimaryKey>, new();
+            Func<T, T, bool> getFilter) where T : class, IEntity<TPrimaryKey>, new();
 
         /// <summary>
         /// 更新主从表实体
@@ -155,7 +166,6 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
             Func<TEntity, List<TEntity>> getChilds,
             Action<TEntity> setPropertyValue);
         #endregion
-
         #region 实体增删改查
         /// <summary>
         /// 获取能跟踪上下文的实体集合
@@ -219,6 +229,33 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         /// <param name="entities"></param>
         void FastInsert(params TEntity[] entities);
         /// <summary>
+        /// 批量新增实体类型到数据库上下文
+        /// 受操作过滤器的影响
+        /// </summary>
+        /// <param name="entities"></param>
+        void Insert(params TEntity[] entities);
+        /// <summary>
+        /// 新增实体类型到数据库上下文
+        /// 受操作过滤器的影响
+        /// </summary>
+        /// <param name="entities"></param>
+        void Insert(TEntity entity);
+        /// <summary>
+        /// 批量删除实体，受操作处理器的影响
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        long Delete(params TEntity[] entities);
+
+        /// <summary>
+        /// 删除实体
+        /// 受操作处理器，操作过滤器的影响
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        EntityEntry<TEntity> Delete(TEntity entity);
+
+        /// <summary>
         /// 删除实体
         /// </summary>
         /// <param name="entity"></param>
@@ -229,6 +266,16 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         /// </summary>
         /// <param name="entities"></param>
         void FastDelete(params TEntity[] entities);
+        /// <summary>
+        /// 批量更新实体，受操作处理器的影响
+        /// </summary>
+        /// <param name="entities"></param>
+        void Update(params TEntity[] entities);
+        /// <summary>
+        /// 更新实体，受操作处理器的影响
+        /// </summary>
+        /// <param name="entity"></param>
+        void Update(TEntity entity);
         /// <summary>
         /// 更新实体
         /// </summary>
@@ -248,13 +295,6 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         /// <param name="entity"></param>
         /// <param name="update"></param>
         void Upsert(ref TEntity entity, Action<TEntity> update = null);
-
-        /// <summary>
-        /// 删除实体
-        /// 受这些过滤器的影响: 操作过滤器
-        /// </summary>
-        /// <param name="entity"></param>
-        void Delete(TEntity entity);
 
         /// <summary>
         /// 快速批量保存实体,包含新增,更新实体
@@ -288,7 +328,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         /// 整体更新
         /// </summary>
         /// <param name="entities">更新的实体</param>
-        void Update(params TEntity[] entities);
+        void Update(IEnumerable<TEntity> entities);
 
         /// <summary>
         /// 快速批量删除实体
@@ -456,5 +496,6 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
             bool disableTracking = true,
             CancellationToken cancellationToken = default(CancellationToken));
         #endregion
+
     }
 }
