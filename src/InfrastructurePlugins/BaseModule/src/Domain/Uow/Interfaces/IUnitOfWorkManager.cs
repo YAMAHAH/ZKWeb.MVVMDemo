@@ -3,30 +3,39 @@
 namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
 {
     /// <summary>
-    /// Unit of work manager.
-    /// Used to begin and control a unit of work.
+    /// 工作单元管理
     /// </summary>
     public interface IUnitOfWorkManager
     {
         /// <summary>
-        /// Gets currently active unit of work (or null if not exists).
+        /// 获取当前的工作单元
         /// </summary>
         IActiveUnitOfWork Current { get; }
 
         /// <summary>
-        /// Begins a new unit of work.
+        /// 创建具有事务功能的工作单元,使用默认的工作单元选项
         /// </summary>
-        /// <returns>A handle to be able to complete the unit of work</returns>
+        /// <param name="options"></param>
+        /// <returns></returns>
         IUnitOfWorkCompleteHandler Begin();
-
         /// <summary>
-        /// Begins a new unit of work.
+        /// 创建具有事务功能的工作单元
         /// </summary>
-        /// <returns>A handle to be able to complete the unit of work</returns>
+        /// <param name="options"></param>
+        /// <returns></returns>
         IUnitOfWorkCompleteHandler Begin(UnitOfWorkOptions options);
-
+        /// <summary>
+        /// 创建不具有事务能力的工作单元，嵌套时支持根据选项创建不同的工作单元
+        /// </summary>
+        /// <param name="forceNewScope"></param>
+        /// <returns></returns>
         IDisposable CreateUnitOfWork(bool forceNewScope = false);
 
+        /// <summary>
+        /// 创建具有自动提交事务能力的工作单元
+        /// </summary>
+        /// <param name="postAction"></param>
+        /// <param name="unitOfWorkOptions"></param>
         void CreateUnitOfWorkScope(Action postAction, UnitOfWorkOptions unitOfWorkOptions = null);
     }
 }

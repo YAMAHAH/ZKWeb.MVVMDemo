@@ -4,22 +4,19 @@ using System.Threading.Tasks;
 namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
 {
     /// <summary>
-    /// Used to complete a unit of work.
-    /// This interface can not be injected or directly used.
-    /// Use <see cref="IUnitOfWorkManager"/> instead.
+    /// 工作单元事务完成处理
     /// </summary>
     public interface IUnitOfWorkCompleteHandler : IDisposable
     {
         /// <summary>
-        /// Completes this unit of work.
-        /// It saves all changes and commit transaction if exists.
+        /// 保存并提交事务
         /// </summary>
         void Complete();
 
         /// <summary>
-        /// Completes this unit of work.
-        /// It saves all changes and commit transaction if exists.
+        /// 异步保存并提交事务
         /// </summary>
+        /// <returns></returns>
         Task CompleteAsync();
     }
 }

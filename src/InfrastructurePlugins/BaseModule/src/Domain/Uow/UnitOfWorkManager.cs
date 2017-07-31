@@ -31,34 +31,15 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
         {
             return Begin(null);
         }
-
-        /// <summary>
-        /// 创建具有事务功能的工作单元
-        /// </summary>
-        /// <param name="options"></param>
-        /// <returns></returns>
-
         public IUnitOfWorkCompleteHandler Begin(UnitOfWorkOptions options)
         {
-            return unitOfWorkProvider.CreateTransactionScope(options);
+            var scope = unitOfWorkProvider.CreateTransactionScope(options);
+            return scope;
         }
-
-        /// <summary>
-        /// 创建不具有事务能力的工作单元，嵌套时支持根据选项创建不同的工作单元
-        /// </summary>
-        /// <param name="forceNewScope"></param>
-        /// <returns></returns>
-
         public IDisposable CreateUnitOfWork(bool forceNewScope = false)
         {
             return unitOfWorkProvider.Scope(forceNewScope);
         }
-
-        /// <summary>
-        /// 创建具有自动提交事务能力的工作单元
-        /// </summary>
-        /// <param name="postAction"></param>
-        /// <param name="unitOfWorkOptions"></param>
         public void CreateUnitOfWorkScope(Action postAction, UnitOfWorkOptions unitOfWorkOptions = null)
         {
             unitOfWorkProvider.CreateTransactionScope(postAction, unitOfWorkOptions);

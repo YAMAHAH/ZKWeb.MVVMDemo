@@ -80,6 +80,44 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
             get { return (DbContext)UnitOfWork?.Context; }
         }
         #region 一对多实体增删改查
+
+        public void UpdateMany<TDetail, TProperty>(
+            IEnumerable<TEntity> nowEntities,
+            Func<TEntity, IList<TDetail>> getChilds,
+            Expression<Func<TEntity, TProperty>> getInclude) where TDetail : class, IEntity<TPrimaryKey>, new()
+        {
+            //获取更新实体的ID集
+            var entityIds = nowEntities.Select(t => t.Id).ToList();
+            //获取已经存在的实体
+            var existEntities = FastQuery()
+                 .Include(getInclude)
+                 .Where(t => entityIds.Contains(t.Id));
+
+            //实体差异比较
+            var entityDiff = GetEntityDiffer(existEntities, nowEntities, t => t.Id);
+            //实体删除
+            entityDiff.DeletedEntities.ForEach(delEntity => UpdateState(delEntity, EntityState.Deleted));
+            //实体新增
+            Insert(entityDiff.AddedEntities.ToArray());
+            //实体修改
+            foreach (var modEntity in entityDiff.ModifiedEntities)
+            {
+                var oldEntity = existEntities.Where(extEntity => extEntity.Id.Equals(modEntity.Id)).FirstOrDefault();
+                UpdateMany(oldEntity, modEntity, getChilds, t => t.Id, (exist, now) => exist.Id.Equals(now.Id));
+            }
+        }
+        public void UpdateMany<TDetail, TProperty>(
+           TEntity nowEntity,
+           Func<TEntity, IList<TDetail>> getChilds,
+           Expression<Func<TEntity, TProperty>> getInclude) where TDetail : class, IEntity<TPrimaryKey>, new()
+        {
+            var existEntity = FastQuery()
+                .Include(getInclude)
+                .Where(t => t.Id.Equals(nowEntity.Id))
+                .FirstOrDefault();
+            UpdateMany(existEntity, nowEntity, getChilds, t => t.Id, (exist, now) => exist.Id.Equals(now.Id));
+        }
+
         /// <summary>
         /// 更新1对多关系的实体值
         /// </summary>
@@ -92,7 +130,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
         public void UpdateMany<TDetail, TKey>(
             TEntity existEntity,
             TEntity nowEntity,
-            Func<TEntity, List<TDetail>> getChilds,
+            Func<TEntity, IList<TDetail>> getChilds,
             Func<TDetail, TKey> getCompareKey,
             Func<TDetail, TDetail, bool> getFilter) where TDetail : class, IEntity<TPrimaryKey>, new()
         {
@@ -122,7 +160,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
         /// <param name="getCompareKey">集合实体比较的KEY</param>
         /// <param name="getFilter">获取实体的条件</param>
         public void UpdateMany<T, TKey>(
-            List<T> getExistLists, List<T> getNowLists,
+            IList<T> getExistLists, IList<T> getNowLists,
             Func<T, TKey> getCompareKey,
             Func<T, T, bool> getFilter) where T : class, IEntity<TPrimaryKey>, new()
         {
@@ -152,9 +190,9 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
         public void UpdateMany<TDetail, TKey>(
             TEntity existEntity,
             TEntity nowEntity,
-            List<Func<TEntity, List<TDetail>>> getLists,
-            List<Func<TDetail, TKey>> getListCompareKey,
-            List<Func<TDetail, TDetail, bool>> getListKey)
+            IList<Func<TEntity, IList<TDetail>>> getLists,
+            IList<Func<TDetail, TKey>> getListCompareKey,
+            IList<Func<TDetail, TDetail, bool>> getListKey)
             where TDetail : class, IEntity<TPrimaryKey>, new()
         {
             for (int i = 0; i < getLists.Count; i++)
@@ -498,6 +536,10 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
             {
                 callbacks.ForEach(c => c.AfterSave(UnitOfWork.Context, entity));
             }
+        }
+        private bool delegate2(TEntity t)
+        {
+            return t.Id.Equals(Guid.NewGuid());
         }
 
         public void Insert(TEntity entity)

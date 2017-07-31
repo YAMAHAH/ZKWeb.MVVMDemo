@@ -43,10 +43,10 @@ namespace InfrastructurePlugins.BaseModule.Domain.Filters
             return query;
         }
 
-        /// <summary>
-        /// 过滤查询条件
-        /// </summary>
-        Expression<Func<TEntity, bool>> IEntityQueryFilter.FilterPredicate<TEntity, TPrimaryKey>(
+    /// <summary>
+    /// 过滤查询条件
+    /// </summary>
+    Expression<Func<TEntity, bool>> IEntityQueryFilter.FilterPredicate<TEntity, TPrimaryKey>(
             Expression<Func<TEntity, bool>> predicate)
         {
             if (DeletedTypeTrait<TEntity>.HaveDeleted)

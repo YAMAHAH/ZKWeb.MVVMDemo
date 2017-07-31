@@ -120,6 +120,51 @@ namespace ZKWeb.Plugins.Common.Base.src.Domain.Uow
                 var nativeContext = (DbContext)Context;
                 return nativeContext.SaveChangesAsync();
             }
+
+            /// <summary>
+            /// 在一定范围内禁用指定的过滤器
+            /// </summary>
+            /// <param name="filterNames">过滤器列表</param>
+            /// <returns></returns>
+            public IDisposable DisableFilter(params string[] filterNames)
+            {
+                var oldQueryFilters = QueryFilters;
+                var oldOperationFilters = OperationFilters;
+
+                QueryFilters = QueryFilters.Where(
+                    f => !filterNames.Contains(f.GetType().FullName)).ToList();
+
+                OperationFilters = OperationFilters.Where(
+                    f => !filterNames.Contains(f.GetType().FullName)).ToList();
+                return new SimpleDisposable(() =>
+                {
+                    QueryFilters = oldQueryFilters;
+                    OperationFilters = oldOperationFilters;
+                });
+            }
+            /// <summary>
+            /// 在一定范围内启用指定名称的过滤器
+            /// </summary>
+            /// <param name="uow">工作单元</param>
+            /// <param name="filterNames">过滤名称</param>
+            /// <returns></returns>
+            public IDisposable EnableFilter(params string[] filterNames)
+            {
+                var oldQueryFilters = QueryFilters;
+                var oldOperationFilters = OperationFilters;
+
+                QueryFilters = QueryFilters.Where(
+                    f => filterNames.Contains(f.GetType().FullName)).ToList();
+
+                OperationFilters = OperationFilters.Where(
+                    f => filterNames.Contains(f.GetType().FullName)).ToList();
+
+                return new SimpleDisposable(() =>
+                {
+                    QueryFilters = oldQueryFilters;
+                    OperationFilters = oldOperationFilters;
+                });
+            }
         }
 
         /// <summary>

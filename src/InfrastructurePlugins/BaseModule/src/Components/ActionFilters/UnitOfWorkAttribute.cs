@@ -1,6 +1,8 @@
-﻿using System;
-using System.Data;
+﻿using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
 using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
+using System;
+using System.Linq;
+using System.Data;
 using ZKWeb.Web;
 
 namespace InfrastructurePlugins.BaseModule.Application.Services.Attributes
@@ -23,7 +25,10 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Attributes
         /// 事务的隔离等级，默认是null
         /// </summary>
         public IsolationLevel? IsolationLevel { get; set; }
-
+        /// <summary>
+        /// 应用服务ID
+        /// </summary>
+        public Guid ServiceId { get; set; }
         /// <summary>
         /// 开启工作单元
         /// </summary>
@@ -36,22 +41,53 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Attributes
             }
             return new Func<IActionResult>(() =>
             {
-                var uow = ZKWeb.Application.Ioc.Resolve<IUnitOfWork>();
-                // 使用工作单元
-                using (uow.Scope())
+                var injector = ZKWeb.Application.Ioc;
+                var filterProviders = injector.ResolveMany<IUnitofworkServiceFilter>();
+                var filters = filterProviders.SelectMany(f => f.Filters(ServiceId)).ToArray();
+                //  var uow = injector.Resolve<IUnitOfWork>();
+                var uowMan = injector.Resolve<IUnitOfWorkManager>();
+                //获取用户+模板的过滤器
+
+                //启用过滤器
+                if (IsTransactional)
                 {
-                    // 并且使用事务
-                    if (IsTransactional)
+                    using (var unitMan = uowMan.Begin())
                     {
-                        uow.Context.BeginTransaction(IsolationLevel);
+                        using (uowMan.Current.DisableFilter(filters))
+                        {
+                            var result = action();
+                            unitMan.Complete();
+                            return result;
+                        }
                     }
-                    var result = action();
-                    if (IsTransactional)
-                    {
-                        uow.Context.FinishTransaction();
-                    }
-                    return result;
                 }
+                else
+                {
+                    using (uowMan.CreateUnitOfWork())
+                    {
+                        using (uowMan.Current.DisableFilter(filters))
+                        {
+                            var result = action();
+                            return result;
+                        }
+                    }
+                }
+                //using (uow.Scope())
+                //// 使用工作单元
+                //using (uow.DisableFilter())
+                //{
+                //    // 并且使用事务
+                //    if (IsTransactional)
+                //    {
+                //        uow.Context.BeginTransaction(IsolationLevel);
+                //    }
+                //    var result = action();
+                //    if (IsTransactional)
+                //    {
+                //        uow.Context.FinishTransaction();
+                //    }
+                //    return result;
+                //}
             });
         }
     }

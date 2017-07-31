@@ -4,6 +4,7 @@ using BusinessPlugins.BasicModule.ModuleCatalogs;
 using CoreLibModule.Utils;
 using InfrastructurePlugins.BaseModule.Module;
 using InfrastructurePlugins.BaseModule.ModuleCatalogs;
+using InfrastructurePlugins.MultiTenantModule.Domain.Services;
 using System;
 using System.Linq;
 using ZKWeb.Plugin;
@@ -22,9 +23,11 @@ namespace BusinessPlugins.BasicModule
         /// </summary>
         public Plugin()
         {
-            var ownerTenantId = Guid.Parse("0083d11b-6af1-101a-43d7-6f9e50c98925");
             //获取DI注入器
             var injector = ZKWeb.Application.Ioc;
+            //获取主租户
+            var tenantMan = injector.Resolve<TenantManager>();
+            var ownerTenantId = tenantMan.EnsureMasterTenant().Id;
             //获取所有的模块
             var modules = injector.ResolveMany<IModuleCatalog>();
             //生成相应的模块实体

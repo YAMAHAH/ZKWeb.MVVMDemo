@@ -249,6 +249,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Extensions
 
             uow.QueryFilters = uow.QueryFilters.Where(
                 f => !filterNames.Contains(f.GetType().FullName)).ToList();
+
             uow.OperationFilters = uow.OperationFilters.Where(
                 f => !filterNames.Contains(f.GetType().FullName)).ToList();
             return new SimpleDisposable(() =>

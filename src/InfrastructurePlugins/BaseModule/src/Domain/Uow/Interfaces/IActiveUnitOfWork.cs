@@ -42,22 +42,18 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         Task SaveChangesAsync();
 
         /// <summary>
-        /// Disables one or more data filters.
-        /// Does nothing for a filter if it's already disabled. 
-        /// Use this method in a using statement to re-enable filters if needed.
+        /// 在一定范围内禁用指定的过滤器
         /// </summary>
-        /// <param name="filterNames">One or more filter names. <see cref="AbpDataFilters"/> for standard filters.</param>
-        /// <returns>A <see cref="IDisposable"/> handle to take back the disable effect.</returns>
-        //IDisposable DisableFilter(params string[] filterNames);
+        /// <param name="filterNames">过滤器列表</param>
+        /// <returns></returns>
+        IDisposable DisableFilter(params string[] filterNames);
 
         /// <summary>
-        /// Enables one or more data filters.
-        /// Does nothing for a filter if it's already enabled.
-        /// Use this method in a using statement to re-disable filters if needed.
+        /// 在一定范围内启用指定名称的过滤器
         /// </summary>
-        /// <param name="filterNames">One or more filter names. <see cref="AbpDataFilters"/> for standard filters.</param>
-        /// <returns>A <see cref="IDisposable"/> handle to take back the enable effect.</returns>
-        //IDisposable EnableFilter(params string[] filterNames);
+        /// <param name="filterNames">过滤名称列表</param>
+        /// <returns></returns>
+        IDisposable EnableFilter(params string[] filterNames);
 
         /// <summary>
         /// Checks if a filter is enabled or not.

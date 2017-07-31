@@ -20,7 +20,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Bases
     /// 继承这个类以后，所有公有的函数都会运行在工作单元中
     /// 并且公有函数会对应一个Api地址，格式是"/api/类名/函数名"
     /// </summary>
-    public class ApplicationServiceBase :
+    public abstract class ApplicationServiceBase :
         IController,
         IApplicationService,
         IWebsiteStartHandler
@@ -55,12 +55,11 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Bases
                 //根据当前用户，服务ID，获取工作单元相应的过滤器,规则过滤器，并应用过滤器
                 //获取用户
                 //获取过滤器,应用过滤器
-                var userQueryFilters = Injector.Resolve<IUserQueryFilter>()?.UserQueryFilters(ServiceId);
-                if (userQueryFilters != null && userQueryFilters.Count > 0) xUnitOfWork.QueryFilters = userQueryFilters;
+                //var userQueryFilters = Injector.Resolve<IUserQueryFilter>()?.UserQueryFilters(ServiceId);
+                //if (userQueryFilters != null && userQueryFilters.Count > 0) xUnitOfWork.QueryFilters = userQueryFilters;
 
-                var userOperationFilters = Injector.Resolve<IUserOperationFilter>()?.UserOperationFilters(ServiceId);
-                if (userOperationFilters != null && userOperationFilters.Count > 0) xUnitOfWork.OperationFilters = userOperationFilters;
-                
+                //var userOperationFilters = Injector.Resolve<IUserOperationFilter>()?.UserOperationFilters(ServiceId);
+                //if (userOperationFilters != null && userOperationFilters.Count > 0) xUnitOfWork.OperationFilters = userOperationFilters;
                 return xUnitOfWork;
             }
         }
@@ -69,12 +68,12 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Bases
         /// </summary>
         protected virtual string UrlBase => $"/api/{GetType().Name}";
 
-        private string xServiceId;
-        public string ServiceId
+        private Guid xServiceId;
+        public Guid ServiceId
         {
             get
             {
-                if (xServiceId == null) xServiceId = MD5Utils.GetGuidStrByMD5(GetType().FullName, "X2");
+                if (xServiceId == null) xServiceId = MD5Utils.GetGuidByMD5(GetType().FullName, "X2");
                 return xServiceId;
             }
         }
@@ -97,9 +96,14 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Bases
                 // 创建函数委托
                 // 如果函数未标记[UnitOfWork]则手动包装该函数
                 var action = this.BuildActionDelegate(method);
-                if (method.GetCustomAttribute<UnitOfWorkAttribute>() == null)
+                var uowAttr = method.GetCustomAttribute<UnitOfWorkAttribute>();
+                if (uowAttr == null)
                 {
-                    action = new UnitOfWorkAttribute().Filter(action);
+                    action = new UnitOfWorkAttribute() { ServiceId = this.ServiceId }.Filter(action);
+                }
+                else
+                {
+                    uowAttr.ServiceId = this.ServiceId;
                 }
                 //如果函数未标记[DataSecurity]则手动包装该函数
                 if (method.GetCustomAttribute<DataSecurityAttribute>() == null)

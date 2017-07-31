@@ -32,6 +32,27 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         #endregion
         #region 一对多实体增删改查
         /// <summary>
+        /// 批量更新1对多实体
+        /// </summary>
+        /// <typeparam name="TDetail">从表实体</typeparam>
+        /// <param name="nowEntities">更新的实体集(主表实体)</param>
+        /// <param name="getChilds">主表的从表明细</param>
+        void UpdateMany<TDetail, TProperty>(
+           IEnumerable<TEntity> nowEntities,
+           Func<TEntity, IList<TDetail>> getChilds,
+           Expression<Func<TEntity, TProperty>> getInclude)
+            where TDetail : class, IEntity<TPrimaryKey>, new();
+        /// <summary>
+        /// 更新1对多关系的实体值
+        /// </summary>
+        /// <typeparam name="TDetail"></typeparam>
+        /// <param name="nowEntity">现在的实体</param>
+        /// <param name="getChilds">从表实体集合</param>
+        void UpdateMany<TDetail, TProperty>(
+          TEntity nowEntity,
+          Func<TEntity, IList<TDetail>> getChilds,
+          Expression<Func<TEntity, TProperty>> getInclude) where TDetail : class, IEntity<TPrimaryKey>, new();
+        /// <summary>
         /// 更新1对多关系的实体值
         /// </summary>
         ///<param name="existEntity">数据库存在的实体</param>
@@ -43,7 +64,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         void UpdateMany<TDetail, TKey>(
             TEntity existEntity,
             TEntity nowEntity,
-            Func<TEntity, List<TDetail>> getChilds,
+            Func<TEntity, IList<TDetail>> getChilds,
             Func<TDetail, TKey> getCompareKey,
             Func<TDetail, TDetail, bool> getFilter)
             where TDetail : class, IEntity<TPrimaryKey>, new();
@@ -58,7 +79,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         /// <param name="getCompareKey">集合实体比较的KEY</param>
         /// <param name="getFilter">获取已存在实体的条件</param>
         void UpdateMany<T, TKey>(
-            List<T> getExistLists, List<T> getNowLists,
+            IList<T> getExistLists, IList<T> getNowLists,
             Func<T, TKey> getCompareKey,
             Func<T, T, bool> getFilter) where T : class, IEntity<TPrimaryKey>, new();
 
@@ -76,9 +97,9 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces
         void UpdateMany<TDetail, TKey>(
             TEntity existEntity,
             TEntity nowEntity,
-            List<Func<TEntity, List<TDetail>>> getLists,
-            List<Func<TDetail, TKey>> getListCompareKey,
-            List<Func<TDetail, TDetail, bool>> getListKey)
+            IList<Func<TEntity, IList<TDetail>>> getLists,
+            IList<Func<TDetail, TKey>> getListCompareKey,
+            IList<Func<TDetail, TDetail, bool>> getListKey)
             where TDetail : class, IEntity<TPrimaryKey>, new();
 
         #endregion
