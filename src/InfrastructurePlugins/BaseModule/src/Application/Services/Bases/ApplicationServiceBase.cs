@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc.Routing;
-using CoreLibModule.Utils;
+﻿using CoreLibModule.Utils;
+using InfrastructurePlugins.BaseModule.Application.Extensions;
+using InfrastructurePlugins.BaseModule.Application.Services.Attributes;
+using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
+using InfrastructurePlugins.BaseModule.Application.Services.Structs;
+using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.FastReflection;
 using System.Linq;
 using System.Reflection;
-using InfrastructurePlugins.BaseModule.Application.Services.Attributes;
-using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
-using InfrastructurePlugins.BaseModule.Application.Services.Structs;
-using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
 using ZKWeb.Web;
 using ZKWebStandard.Ioc;
 using ZKWebStandard.Web;
@@ -125,12 +125,22 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Bases
                     requestMethod = actionAttribute.Method;
                     requestPath = actionAttribute.Path == "" ? requestPath : $"{UrlBase}/{actionAttribute.Path}";
                 }
+                // 请求时自动设置当前的Api信息
+                ApplicationServiceApiMethodInfo info = null;
+                var innerAction = action;
+                action = () =>
+                {
+                    Context.SetApiMethodInfo(info);
+                    return innerAction();
+                };
                 // 返回函数信息
-                var info = new ApplicationServiceApiMethodInfo(
+                info = new ApplicationServiceApiMethodInfo(
+                    ServiceId,
                     serviceClassType,
                     method.ReturnType,
                     method.Name,
-                    requestPath, requestMethod,
+                    requestPath,
+                    requestMethod,
                     method.FastGetCustomAttributes(typeof(Attribute), true).OfType<Attribute>(),
                     method.GetParameters().Select(p => new ApplicationServiceApiParameterInfo(
                         p.ParameterType,

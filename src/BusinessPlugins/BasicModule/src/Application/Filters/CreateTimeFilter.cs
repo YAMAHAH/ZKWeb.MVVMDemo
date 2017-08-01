@@ -1,14 +1,19 @@
-﻿using System;
+﻿using BusinessPlugins.BasicModule.Application.Module;
+using BusinessPlugins.BasicModule.Application.Services;
+using BusinessPlugins.BasicModule.ModuleCatalogs;
+using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Domain.Entities.Interfaces;
 using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
+using System;
 using ZKWebStandard.Ioc;
 
-namespace InfrastructurePlugins.BaseModule.Domain.Filters
+namespace BusinessPlugins.BasicModule.Application.Filters
 {
     /// <summary>
     /// 自动设置实体的创建时间
     /// </summary>
     [ExportMany]
+    [ComponentFilter(typeof(BasicModuleCatalog), typeof(GlobalManagerModule), typeof(GlobalManageService), "自动设置实体的创建时间")]
     public class CreateTimeFilter : IEntityOperationFilter
     {
         /// <summary>

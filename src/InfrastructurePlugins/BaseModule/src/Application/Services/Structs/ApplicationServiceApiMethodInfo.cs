@@ -9,6 +9,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Structs
     /// </summary>
     public class ApplicationServiceApiMethodInfo
     {
+        public Guid ServiceId { get; set; }
         /// <summary>
         /// 所属服务类类型
         /// </summary>
@@ -46,8 +47,8 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Structs
         /// <summary>
         /// 初始化
         /// </summary>
-        public ApplicationServiceApiMethodInfo(Type serviceClassType,
-            Type returnType, string name, string url,string method,
+        public ApplicationServiceApiMethodInfo(Guid serviceId, Type serviceClassType,
+            Type returnType, string name, string url, string method,
             IEnumerable<Attribute> attributes,
             IEnumerable<ApplicationServiceApiParameterInfo> parameters,
             Func<IActionResult> action)

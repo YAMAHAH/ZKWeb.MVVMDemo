@@ -61,6 +61,6 @@ namespace InfrastructurePlugins.BaseModule.Module
         /// <summary>
         /// 模板过滤器集合
         /// </summary>
-        public IEnumerable<Type> TempFilters { get; set; }
+        public IEnumerable<ComponentFilterAttribute> TempFilters { get; set; } = new List<ComponentFilterAttribute>();
     }
 }

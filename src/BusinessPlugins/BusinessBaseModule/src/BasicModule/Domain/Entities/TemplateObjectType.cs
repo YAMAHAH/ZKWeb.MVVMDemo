@@ -13,6 +13,10 @@
         /// <summary>
         /// 虚拟组
         /// </summary>
-        Group = 2
+        Group = 2,
+        /// <summary>
+        /// 过滤器
+        /// </summary>
+        Filter = 3
     }
 }

@@ -12,6 +12,7 @@ using InfrastructurePlugins.BaseModule.Domain.Uow.Extensions;
 using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
 using ZKWebStandard.Ioc;
 using ZKWebStandard.Utils;
+using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
 
 namespace InfrastructurePlugins.BaseModule.Domain.Services.Bases
 {
@@ -200,7 +201,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Services.Bases
         {
             var uow = UnitOfWork;
             using (uow.Scope())
-            using (uow.DisableQueryFilter(typeof(DeletedFilter)))
+            using (uow.DisableQueryFilter(typeof(IDeletedFilter)))
             {
                 var entities = Repository.Query().Where(e => ids.Contains(e.Id)).ToList();
                 var entitiesRef = entities.AsEnumerable();
@@ -216,7 +217,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Services.Bases
         {
             var uow = UnitOfWork;
             using (uow.Scope())
-            using (uow.DisableQueryFilter(typeof(DeletedFilter)))
+            using (uow.DisableQueryFilter(typeof(IDeletedFilter)))
             {
                 return Repository.BatchDelete(e => ids.Contains(e.Id));
             }

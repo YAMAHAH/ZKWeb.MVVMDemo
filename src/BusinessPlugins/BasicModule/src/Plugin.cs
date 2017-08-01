@@ -69,7 +69,19 @@ namespace BusinessPlugins.BasicModule
                     Visible = a.Enable,
                     ObjectType = TemplateObjectType.Action,
                     OwnerTenantId = ownerTenantId
-                })
+                }).Union(t.TempFilters.Select(f => new TemplateClassObject()
+                {
+                    Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + f.FilterType.Name, "X2"),
+                    TempClsId = Guid.Parse(t.TempId),
+                    ObjectName = f.FilterType.Name,
+                    ObjectAlias = f.FilterType.Name,
+                    ObjectGroup = t.TempClassType.Name.Replace("Service", ""),
+                    ObjectTitle = f.FilterText,
+                    Enable = true,
+                    Visible = true,
+                    ObjectType = TemplateObjectType.Filter,
+                    OwnerTenantId = ownerTenantId
+                }))
                 .Union(t.TempDataFields.Select(a => new TemplateClassObject()
                 {
                     Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + a.Alias, "X2"),

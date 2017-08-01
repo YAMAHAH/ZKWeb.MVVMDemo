@@ -1,19 +1,24 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using BusinessPlugins.BasicModule.Application.Module;
+using BusinessPlugins.BasicModule.Application.Services;
+using BusinessPlugins.BasicModule.ModuleCatalogs;
+using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Domain.Entities.Interfaces;
 using InfrastructurePlugins.BaseModule.Domain.Entities.TypeTraits;
 using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
 using ZKWebStandard.Ioc;
 
-namespace InfrastructurePlugins.BaseModule.Domain.Filters
+namespace BusinessPlugins.BasicModule.Application.Filters
 {
     /// <summary>
     /// 根据删除状态过滤查询
     /// 字段没有删除状态时返回原查询
     /// </summary>
     [ExportMany]
-    public class DeletedFilter : IEntityQueryFilter
+    [ComponentFilter(typeof(BasicModuleCatalog), typeof(GlobalManagerModule), typeof(GlobalManageService), "根据删除状态过滤查询")]
+    public class DeletedFilter : IDeletedFilter
     {
         /// <summary>
         /// true: 查询已删除的对象
@@ -43,11 +48,11 @@ namespace InfrastructurePlugins.BaseModule.Domain.Filters
             return query;
         }
 
-    /// <summary>
-    /// 过滤查询条件
-    /// </summary>
-    Expression<Func<TEntity, bool>> IEntityQueryFilter.FilterPredicate<TEntity, TPrimaryKey>(
-            Expression<Func<TEntity, bool>> predicate)
+        /// <summary>
+        /// 过滤查询条件
+        /// </summary>
+        Expression<Func<TEntity, bool>> IEntityQueryFilter.FilterPredicate<TEntity, TPrimaryKey>(
+                Expression<Func<TEntity, bool>> predicate)
         {
             if (DeletedTypeTrait<TEntity>.HaveDeleted)
             {

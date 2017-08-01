@@ -1,5 +1,6 @@
 ﻿using CoreLibModule.Utils;
 using InfrastructurePlugins.BaseModule.Application.Attributes;
+using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -211,10 +212,33 @@ namespace InfrastructurePlugins.BaseModule.Module
                                     return new ComponentPropertyAttribute[] { datafield };
                                 }).ToList(),
 
-                        TempFilters = tempAttr.FilterTypes
+                        TempFilters = Injector.ResolveMany<IEntityOperationFilter>()
+                        .Select(f => f.GetType())
+                        .Where(f =>
+                        {
+                            var filterAttr = f.GetTypeInfo().GetCustomAttribute<ComponentFilterAttribute>();
+                            return filterAttr != null && filterAttr.ModuleType == GetType();
+                        })
+                        .Select(m =>
+                        {
+                            var filterAttr = m.GetTypeInfo().GetCustomAttribute<ComponentFilterAttribute>();
+                            filterAttr.FilterType = m;
+                            return filterAttr;
+                        })
+                        .Union(Injector.ResolveMany<IEntityQueryFilter>()
+                        .Select(f => f.GetType())
+                        .Where(f =>
+                            {
+                                var filterAttr = f.GetTypeInfo().GetCustomAttribute<ComponentFilterAttribute>();
+                                return filterAttr != null && filterAttr.ModuleType == GetType();
+                            }).Select(m =>
+                            {
+                                var filterAttr = m.GetTypeInfo().GetCustomAttribute<ComponentFilterAttribute>();
+                                filterAttr.FilterType = m;
+                                return filterAttr;
+                            })).ToList()
                     };
-                })
-                .ToList();
+                }).ToList();
             return tempObjects;
         }
         /// <summary>

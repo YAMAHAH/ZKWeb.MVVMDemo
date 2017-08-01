@@ -1,9 +1,8 @@
-﻿using System;
+﻿using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Components.Extensions;
+using System;
 using System.Linq;
 using System.Reflection;
-using InfrastructurePlugins.BaseModule.Application.Dtos;
-using InfrastructurePlugins.BaseModule.Components.Extensions;
-using InfrastructurePlugins.BaseModule.ModuleCatalogs;
 
 namespace InfrastructurePlugins.BaseModule.Application.Attributes
 {

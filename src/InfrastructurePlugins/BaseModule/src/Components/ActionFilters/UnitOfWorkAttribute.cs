@@ -1,9 +1,11 @@
-﻿using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
+﻿using InfrastructurePlugins.BaseModule.Application.Extensions;
+using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
 using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
 using System;
-using System.Linq;
 using System.Data;
+using System.Linq;
 using ZKWeb.Web;
+using ZKWebStandard.Web;
 
 namespace InfrastructurePlugins.BaseModule.Application.Services.Attributes
 {
@@ -42,6 +44,8 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Attributes
             return new Func<IActionResult>(() =>
             {
                 var injector = ZKWeb.Application.Ioc;
+                IHttpContext httpContext = HttpManager.CurrentContext;
+                var serviceId = httpContext.GetApiMethodInfo();
                 var filterProviders = injector.ResolveMany<IUnitofworkServiceFilter>();
                 var filters = filterProviders.SelectMany(f => f.Filters(ServiceId)).ToArray();
                 //  var uow = injector.Resolve<IUnitOfWork>();

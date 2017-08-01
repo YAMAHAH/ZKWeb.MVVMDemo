@@ -31,7 +31,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
     /// 租户管理服务
     /// </summary>
     [ExportMany, SingletonReuse, Description("租户管理服务")]
-    [ComponentClass(typeof(MultiTenantModule), typeof(OrganizationModuleCatalog), "租户管理", typeof(TenantOutputDto), typeof(DeletedFilter), typeof(CreateTimeFilter))]
+    [ComponentClass(typeof(MultiTenantModule), typeof(OrganizationModuleCatalog), "租户管理", typeof(TenantOutputDto))]
     public class TenantManageService : ApplicationServiceBase
     {
         private TenantManager _tenantManager;

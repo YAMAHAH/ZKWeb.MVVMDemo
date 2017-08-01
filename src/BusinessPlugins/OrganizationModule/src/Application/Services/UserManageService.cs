@@ -1,17 +1,5 @@
 ﻿using AutoMapper;
-using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using ZKWeb.Localize;
-using InfrastructurePlugins.BaseModule.Application.Attributes;
-using InfrastructurePlugins.BaseModule.Application.Dtos;
-using InfrastructurePlugins.BaseModule.Application.Services.Bases;
-using InfrastructurePlugins.BaseModule.Components.Exceptions;
-using InfrastructurePlugins.BaseModule.Domain.Filters;
-using InfrastructurePlugins.BaseModule.Template;
-using InfrastructurePlugins.MultiTenantModule.Domain.Services;
+using BusinessPlugins.BasicModule.ModuleCatalogs;
 using BusinessPlugins.OrganizationModule.Application.Dtos;
 using BusinessPlugins.OrganizationModule.Application.Module;
 using BusinessPlugins.OrganizationModule.Components.ActionFilters;
@@ -19,10 +7,22 @@ using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
 using BusinessPlugins.OrganizationModule.Domain.Extensions;
 using BusinessPlugins.OrganizationModule.Domain.Services;
+using BusinessPlugins.ProductEngineeringModule.Domain.Entities;
+using InfrastructurePlugins.BaseModule.Application.Attributes;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Services.Bases;
+using InfrastructurePlugins.BaseModule.Components.Exceptions;
+using InfrastructurePlugins.BaseModule.Domain.Filters;
+using InfrastructurePlugins.BaseModule.Template;
+using InfrastructurePlugins.MultiTenantModule.Domain.Services;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using ZKWeb.Localize;
 using ZKWeb.Web;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
-using BusinessPlugins.BasicModule.ModuleCatalogs;
 
 namespace BusinessPlugins.OrganizationModule.Application.Services
 {
@@ -30,8 +30,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
     /// 用户管理服务
     /// </summary>
     [ExportMany, SingletonReuse, Description("用户管理服务")]
-    [ComponentClass(typeof(UserManagerModule), typeof(OrganizationModuleCatalog), "用户管理", typeof(UserOutputDto),
-        typeof(DeletedFilter), typeof(CreateTimeFilter))]
+    [ComponentClass(typeof(UserManagerModule), typeof(OrganizationModuleCatalog), "用户管理", typeof(UserOutputDto))]
     public class UserManageService : ApplicationServiceBase
     {
         private UserManager _userManager;

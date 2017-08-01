@@ -1,19 +1,20 @@
 ﻿using AutoMapper;
+using BusinessPlugins.OrganizationModule.Application.Dtos;
+using BusinessPlugins.OrganizationModule.Components.ActionFilters;
+using BusinessPlugins.OrganizationModule.Components.GenericConfigs;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Services;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Extensions;
+using InfrastructurePlugins.BaseModule.Application.Services.Bases;
+using InfrastructurePlugins.TaskSchedulerModule.Application.Dtos;
+using InfrastructurePlugins.TaskSchedulerModule.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using ZKWeb.Cache;
 using ZKWeb.Localize;
-using InfrastructurePlugins.BaseModule.Application.Dtos;
-using InfrastructurePlugins.BaseModule.Application.Services.Bases;
-using BusinessPlugins.OrganizationModule.Application.Dtos;
-using BusinessPlugins.OrganizationModule.Components.ActionFilters;
-using BusinessPlugins.OrganizationModule.Components.GenericConfigs;
-using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
-using BusinessPlugins.OrganizationModule.Domain.Services;
-using InfrastructurePlugins.TaskSchedulerModule.Application.Dtos;
-using InfrastructurePlugins.TaskSchedulerModule.Domain.Entities;
 using ZKWeb.Plugin;
 using ZKWebStandard.Ioc;
 using ZKWebStandard.Utils;
@@ -112,6 +113,13 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
                     nameof(ScheduledTaskLogOutputDto.TaskId),
                     (c, q) => q.Where(t => t.Task.Id.Contains((string)c.Value)))
                 .ToResponse<ScheduledTaskLogOutputDto>();
+        }
+
+        [Description("获取当前的Api函数信息")]
+        public string GetApiMethodInfo()
+        {
+            var info = Context.GetApiMethodInfo();
+            return info.Name;
         }
     }
 }
