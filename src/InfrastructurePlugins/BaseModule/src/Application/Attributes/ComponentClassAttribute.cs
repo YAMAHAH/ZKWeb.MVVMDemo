@@ -6,10 +6,13 @@ using System.Reflection;
 
 namespace InfrastructurePlugins.BaseModule.Application.Attributes
 {
+    /// <summary>
+    /// 组件类
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class ComponentClassAttribute : Attribute
     {
-        public string TemplateId { get; set; }
+        public Guid TemplateId { get; set; }
         /// <summary>
         /// 模板的名称
         /// </summary>

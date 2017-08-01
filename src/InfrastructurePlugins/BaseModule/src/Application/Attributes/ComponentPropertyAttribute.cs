@@ -2,6 +2,9 @@
 
 namespace InfrastructurePlugins.BaseModule.Application.Attributes
 {
+    /// <summary>
+    /// 组件属性
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     public class ComponentPropertyAttribute : Attribute
     {

@@ -2,6 +2,9 @@
 
 namespace InfrastructurePlugins.BaseModule.Application.Attributes
 {
+    /// <summary>
+    /// 组件功能
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class ComponentMethodAttribute:Attribute
     {

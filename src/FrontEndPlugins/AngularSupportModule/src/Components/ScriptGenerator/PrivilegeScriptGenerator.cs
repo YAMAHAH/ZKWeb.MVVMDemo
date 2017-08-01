@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
+using InfrastructurePlugins.BaseModule.Components.Extensions;
+using InfrastructurePlugins.BaseModule.Template;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.FastReflection;
@@ -6,10 +10,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using ZKWeb.Localize;
-using InfrastructurePlugins.BaseModule.Components.Extensions;
-using InfrastructurePlugins.BaseModule.Template;
-using BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfaces;
-using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
 using ZKWeb.Plugins.OrganizationModule.Components.PrivilegeProviders.Interfaces;
 using ZKWebStandard.Ioc;
 
@@ -135,7 +135,7 @@ export class {{templateName}} {
                     Dictionary<string, string> propValues = new Dictionary<string, string>()
                     {
                         {"propName","TemplateId" },
-                        {"propValue",tpl.TempId.AutoDoubleQuotes() }
+                        {"propValue",tpl.TempId.ToString().AutoDoubleQuotes() }
                     };
                     propBuilder.Clear();
                     propBuilder.AddGroupValues(propValues);
@@ -150,7 +150,7 @@ export class {{templateName}} {
                     propValues = new Dictionary<string, string>()
                     {
                         {"propName","ModuleId" },
-                        {"propValue",tpl.ModuleId.AutoDoubleQuotes() }
+                        {"propValue",tpl.ModuleId.ToString().AutoDoubleQuotes() }
                     };
                     propBuilder.AddGroupValues(propValues);
 
@@ -204,7 +204,6 @@ export class {{templateName}} {
                     strBuilder.Clear();
                     foreach (var action in tpl.TempFilters)
                     {
-
                     }
                     var filters = strBuilder.ToString();
                     StringTemplateBuilder strTemp = new StringTemplateBuilder() { Template = classTemplate };

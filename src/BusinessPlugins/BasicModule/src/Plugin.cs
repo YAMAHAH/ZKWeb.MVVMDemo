@@ -5,7 +5,6 @@ using CoreLibModule.Utils;
 using InfrastructurePlugins.BaseModule.Module;
 using InfrastructurePlugins.BaseModule.ModuleCatalogs;
 using InfrastructurePlugins.MultiTenantModule.Domain.Services;
-using System;
 using System.Linq;
 using ZKWeb.Plugin;
 using ZKWebStandard.Ioc;
@@ -52,15 +51,15 @@ namespace BusinessPlugins.BasicModule
             //生成相应的模板类实体
             var tempClsEntities = tempClsInfos.Select(t => new TemplateClass()
             {
-                Id = Guid.Parse(t.TempId),
-                ModuleId = Guid.Parse(t.ModuleCatalogId),
+                Id = t.TempId,
+                ModuleId = t.ModuleCatalogId,
                 Name = t.TempName,
                 OwnerTenantId = ownerTenantId,
                 Title = t.TempTitle,
                 ClassObjects = t.TempActions.Select(a => new TemplateClassObject()
                 {
-                    Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + a.Name, "X2"),
-                    TempClsId = Guid.Parse(t.TempId),
+                    Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + a.Name),
+                    TempClsId = t.TempId,
                     ObjectName = a.Name,
                     ObjectAlias = a.Name,
                     ObjectGroup = t.TempClassType.Name.Replace("Service", ""),
@@ -71,10 +70,10 @@ namespace BusinessPlugins.BasicModule
                     OwnerTenantId = ownerTenantId
                 }).Union(t.TempFilters.Select(f => new TemplateClassObject()
                 {
-                    Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + f.FilterType.Name, "X2"),
-                    TempClsId = Guid.Parse(t.TempId),
+                    Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + f.FilterType.Name),
+                    TempClsId = t.TempId,
                     ObjectName = f.FilterType.Name,
-                    ObjectAlias = f.FilterType.Name,
+                    ObjectAlias = f.FilterType.FullName,
                     ObjectGroup = t.TempClassType.Name.Replace("Service", ""),
                     ObjectTitle = f.FilterText,
                     Enable = true,
@@ -84,8 +83,8 @@ namespace BusinessPlugins.BasicModule
                 }))
                 .Union(t.TempDataFields.Select(a => new TemplateClassObject()
                 {
-                    Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + a.Alias, "X2"),
-                    TempClsId = Guid.Parse(t.TempId),
+                    Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + a.Alias),
+                    TempClsId = t.TempId,
                     ObjectGroup = a.GroupType.Name.Replace("OutputDto", ""),
                     ObjectName = a.Name,
                     ObjectAlias = a.Alias,
@@ -103,8 +102,6 @@ namespace BusinessPlugins.BasicModule
             var tempClsMan = injector.Resolve<ITemplateClassManager>();
             //保存数据
             tempClsMan.BatchSave(tempClsEntities);
-
-
         }
     }
 }

@@ -12,7 +12,7 @@ namespace InfrastructurePlugins.BaseModule.Module
         /// <summary>
         /// 模板ID
         /// </summary>
-        public string TempId { get; set; }
+        public Guid TempId { get; set; }
         /// <summary>
         /// 模板名称
         /// </summary>
@@ -28,7 +28,7 @@ namespace InfrastructurePlugins.BaseModule.Module
         /// <summary>
         /// 模块ID
         /// </summary>
-        public string ModuleId { get; set; }
+        public Guid ModuleId { get; set; }
         /// <summary>
         /// 模块名称
         /// </summary>
@@ -41,7 +41,7 @@ namespace InfrastructurePlugins.BaseModule.Module
         /// <summary>
         /// 模块目录ID
         /// </summary>
-        public string ModuleCatalogId { get; set; }
+        public Guid ModuleCatalogId { get; set; }
         /// <summary>
         /// 模块目录名称
         /// </summary>

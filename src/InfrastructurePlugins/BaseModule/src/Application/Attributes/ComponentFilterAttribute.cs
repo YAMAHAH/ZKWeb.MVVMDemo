@@ -2,6 +2,9 @@
 
 namespace InfrastructurePlugins.BaseModule.Application.Attributes
 {
+    /// <summary>
+    /// 组件过滤器
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class ComponentFilterAttribute : Attribute
     {

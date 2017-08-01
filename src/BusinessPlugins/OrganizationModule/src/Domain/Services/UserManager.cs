@@ -1,23 +1,23 @@
-﻿using System;
+﻿using BusinessPlugins.OrganizationModule.Components.ExtraConfigKeys;
+using BusinessPlugins.OrganizationModule.Components.UserLoginHandlers.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
+using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
+using BusinessPlugins.OrganizationModule.Domain.Extensions;
+using InfrastructurePlugins.BaseModule.Components.Exceptions;
+using InfrastructurePlugins.BaseModule.Components.Global;
+using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
+using InfrastructurePlugins.BaseModule.Domain.Repositories.Interfaces;
+using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
+using InfrastructurePlugins.BaseModule.Domain.Uow.Extensions;
+using InfrastructurePlugins.MultiTenantModule.Domain.Filters;
+using InfrastructurePlugins.SessionStateModule.Domain.Extensions;
+using InfrastructurePlugins.SessionStateModule.Domain.Services;
+using System;
 using System.Collections.Generic;
 using System.DrawingCore;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using InfrastructurePlugins.BaseModule.Components.Exceptions;
-using InfrastructurePlugins.BaseModule.Components.Global;
-using InfrastructurePlugins.BaseModule.Domain.Filters;
-using InfrastructurePlugins.BaseModule.Domain.Repositories.Interfaces;
-using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
-using InfrastructurePlugins.BaseModule.Domain.Uow.Extensions;
-using InfrastructurePlugins.MultiTenantModule.Domain.Filters;
-using BusinessPlugins.OrganizationModule.Components.ExtraConfigKeys;
-using BusinessPlugins.OrganizationModule.Components.UserLoginHandlers.Interfaces;
-using BusinessPlugins.OrganizationModule.Domain.Entities;
-using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
-using BusinessPlugins.OrganizationModule.Domain.Extensions;
-using InfrastructurePlugins.SessionStateModule.Domain.Extensions;
-using InfrastructurePlugins.SessionStateModule.Domain.Services;
 using ZKWeb.Server;
 using ZKWeb.Storage;
 using ZKWebStandard.Extensions;
@@ -78,7 +78,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
         public override void Save(ref User entity, Action<User> update = null)
         {
             using (UnitOfWork.Scope())
-            using (UnitOfWork.DisableFilter(typeof(DeletedFilter)))
+            using (UnitOfWork.DisableFilter(typeof(IDeletedFilter)))
             {
                 UnitOfWork.Context.BeginTransaction();
                 var e = entity;

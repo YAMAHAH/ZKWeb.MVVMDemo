@@ -53,15 +53,15 @@ namespace InfrastructurePlugins.BaseModule.Module
                 return ModuleManager.GetModuleComponents(GetType());
             }
         }
-        private string xModuleId;
+        private Guid xModuleId;
         /// <summary>
         /// 模块ID
         /// </summary>
-        public string ModuleId
+        public Guid ModuleId
         {
             get
             {
-                if (xModuleId == null) xModuleId = MD5Utils.GetGuidStrByMD5(GetType().FullName, "X2");
+                if (xModuleId == null) xModuleId = MD5Utils.GetGuidByMD5(GetType().FullName);
                 return xModuleId;
             }
         }
@@ -153,21 +153,21 @@ namespace InfrastructurePlugins.BaseModule.Module
                     var tempAttr = a.GetTypeInfo().GetCustomAttribute<ComponentClassAttribute>();
                     if (tempAttr != null)
                     {
-                        if (tempAttr.TemplateId == null) tempAttr.TemplateId = MD5Utils.GetGuidStrByMD5(a.FullName, "X2");
+                        if (tempAttr.TemplateId == Guid.Empty) tempAttr.TemplateId = MD5Utils.GetGuidByMD5(a.FullName);
                         if (tempAttr.TempClassType == null) tempAttr.TempClassType = a;
                         if (tempAttr.TempName == null) tempAttr.TempName = a.Name.Replace("Service", "");
                     }
 
                     return new ComponentClassInfo()
                     {
-                        ModuleCatalogId = MD5Utils.GetGuidStrByMD5(tempAttr.ModuleCatalogType.FullName, "X2"),
+                        ModuleCatalogId = MD5Utils.GetGuidByMD5(tempAttr.ModuleCatalogType.FullName),
                         ModuleCatalogName = tempAttr.ModuleCatalogType.Name,
                         ModuleCatalogType = tempAttr.ModuleCatalogType,
                         ModuleType = moduleType,
-                        ModuleId = MD5Utils.GetGuidStrByMD5(GetType().FullName, "X2"),
+                        ModuleId = MD5Utils.GetGuidByMD5(GetType().FullName),
                         ModuleName = moduleName,
                         TempClassType = a,
-                        TempId = tempAttr?.TemplateId,
+                        TempId = tempAttr.TemplateId,
                         TempName = tempAttr?.TempName,
                         TempTitle = tempAttr.TempTitle,
                         TempActions = a.GetTypeInfo().GetMethods()
@@ -208,7 +208,6 @@ namespace InfrastructurePlugins.BaseModule.Module
                                         }
                                         nameLists.Add(datafield.Alias);
                                     }
-
                                     return new ComponentPropertyAttribute[] { datafield };
                                 }).ToList(),
 

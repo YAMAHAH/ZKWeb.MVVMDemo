@@ -2,13 +2,16 @@
 
 namespace InfrastructurePlugins.BaseModule.Application.Attributes
 {
+    /// <summary>
+    /// NG模块
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class AngularModuleAttribute : Attribute
     {
         /// <summary>
         /// 模块ID
         /// </summary>
-        public string ModuleId { get; set; }
+        public Guid ModuleId { get; set; }
         /// <summary>
         /// 模块名称
         /// </summary>
@@ -22,10 +25,10 @@ namespace InfrastructurePlugins.BaseModule.Application.Attributes
         /// </summary>
         public Type[] TemplateTypes { get; set; }
 
-        public AngularModuleAttribute(string pModuleName,params Type[] pTemplateTypes)
+        public AngularModuleAttribute(string moduleName, params Type[] templateTypes)
         {
-            ModuleName = pModuleName;
-            TemplateTypes = pTemplateTypes;
+            ModuleName = moduleName;
+            TemplateTypes = templateTypes;
         }
     }
 }
