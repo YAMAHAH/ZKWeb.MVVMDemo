@@ -21,6 +21,7 @@ namespace FrontEndPlugins.AngularSupportModule.Components.ScriptGenerator
     [ExportMany]
     public class PrivilegeScriptGenerator
     {
+
         /// <summary>
         /// 生成用户类型列表的脚本
         /// </summary>

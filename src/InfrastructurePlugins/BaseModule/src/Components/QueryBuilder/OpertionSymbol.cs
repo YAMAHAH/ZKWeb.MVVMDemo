@@ -1,17 +1,5 @@
-﻿using System;
-
-namespace InfrastructurePlugins.BaseModule.Utils
+﻿namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 {
-    public class QueryCondtion
-    {
-        public Type ProperyType { get; set; }
-        public string PropertyName { get; set; }
-        public OpertionSymbol OpertionSymbol { get; set; }
-        public object Value1 { get; set; }
-        public object Value2 { get; set; }
-        public ConcatType Concat { get; set; }
-    }
-
     public enum OpertionSymbol
     {
         /// <summary>
@@ -37,28 +25,5 @@ namespace InfrastructurePlugins.BaseModule.Utils
         NotBetween = 17, //不介于 A...B之间
         Fuzzy = 18, //（支持：1,2,3 或 1-3；如果不符合前面规则，即认为模糊查询
         NotFuzzy = 19
-    }
-
-    /// <summary>
-    /// 条件连接串
-    /// </summary>
-    public enum ConcatType
-    {
-        /// <summary>
-        /// 无
-        /// </summary>
-        None = 0,
-        /// <summary>
-        /// 与
-        /// </summary>
-        AndAlso = 1,
-        /// <summary>
-        /// 或
-        /// </summary>
-        OrElse = 2,
-        /// <summary>
-        /// 非
-        /// </summary>
-        Not = 3
     }
 }
