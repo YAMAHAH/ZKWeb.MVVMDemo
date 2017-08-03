@@ -12,6 +12,19 @@ namespace BusinessPlugins.BasicModule.Domain.Services
         /// </summary>
         /// <param name="tempId"></param>
         /// <returns></returns>
-        Dictionary<Guid, TemplateObject> GetTemplateObjects(Guid tempId);    
+        Dictionary<Guid, TemplateObject> GetTemplateObjects(Guid tempId);
+        /// <summary>
+        /// 获取多个模板的对象字典
+        /// </summary>
+        /// <param name="tempIds"></param>
+        /// <returns></returns>
+        Dictionary<string, Dictionary<Guid, TemplateObject>> GetTemplateObjects(IList<KeyValuePair<Guid, Guid>> userTempIds);
+        /// <summary>
+        /// 获取某个模板某个对象
+        /// </summary>
+        /// <param name="tempId"></param>
+        /// <param name="objectId"></param>
+        /// <returns></returns>
+        TemplateObject GetTemplateObject(Guid tempId, Guid objectId);
     }
 }

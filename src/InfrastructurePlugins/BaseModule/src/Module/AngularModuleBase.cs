@@ -172,7 +172,17 @@ namespace InfrastructurePlugins.BaseModule.Module
                         TempTitle = tempAttr.TempTitle,
                         TempActions = a.GetTypeInfo().GetMethods()
                             .Where(m => m.GetCustomAttribute<ComponentMethodAttribute>() != null)
-                            .Select(m => m.GetCustomAttribute<ComponentMethodAttribute>())
+                            .Select(m =>
+                            {
+                                var methodAttr = m.GetCustomAttribute<ComponentMethodAttribute>();
+                                methodAttr.ActionId = MD5Utils.GetGuidByMD5(a.FullName + m.Name);
+                                methodAttr.ActionName = m.Name;
+                                if (string.IsNullOrEmpty(methodAttr.Name))
+                                {
+                                    methodAttr.Name = m.Name;
+                                }
+                                return methodAttr;
+                            })
                             .ToList(),
 
                         TempDataFields = tempAttr.ComponentModels

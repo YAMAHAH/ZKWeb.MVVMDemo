@@ -58,10 +58,10 @@ namespace BusinessPlugins.BasicModule
                 Title = t.TempTitle,
                 ClassObjects = t.TempActions.Select(a => new TemplateClassObject()
                 {
-                    Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + a.Name),
+                    Id = MD5Utils.GetGuidByMD5(t.TempClassType.FullName + a.ActionName),
                     TempClsId = t.TempId,
                     ObjectName = a.Name,
-                    ObjectAlias = a.Name,
+                    ObjectAlias = a.ActionName,
                     ObjectGroup = t.TempClassType.Name.Replace("Service", ""),
                     ObjectTitle = a.Text,
                     Enable = a.Enable,

@@ -1,6 +1,6 @@
-﻿using System;
-using BusinessPlugins.OrganizationModule.Domain.Services;
+﻿using BusinessPlugins.OrganizationModule.Domain.Services;
 using BusinessPlugins.OrganizationModule.Domain.Structs;
+using System;
 using ZKWeb.Web;
 using ZKWebStandard.Web;
 
@@ -20,6 +20,10 @@ namespace BusinessPlugins.OrganizationModule.Components.ActionFilters
         /// 是否要求主租户
         /// </summary>
         public bool RequireMasterTenant { get; set; }
+        /// <summary>
+        /// 是否要求验证配置权限
+        /// </summary>
+        public bool RequireValidConfig { get; set; }
         /// <summary>
         /// 要求的用户类型
         /// </summary>
@@ -43,7 +47,15 @@ namespace BusinessPlugins.OrganizationModule.Components.ActionFilters
             RequirePrivileges = privileges;
             HttpMethod = null;
         }
-
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        public CheckPrivilegeAttribute(bool requireMasterTenant, params string[] privileges)
+        {
+            RequireMasterTenant = requireMasterTenant;
+            RequirePrivileges = privileges;
+            HttpMethod = null;
+        }
         /// <summary>
         /// 初始化
         /// </summary>
@@ -56,7 +68,14 @@ namespace BusinessPlugins.OrganizationModule.Components.ActionFilters
             RequirePrivileges = privileges;
             HttpMethod = null;
         }
-
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        public CheckPrivilegeAttribute()
+        {
+            RequireValidConfig = true;
+            HttpMethod = null;
+        }
         /// <summary>
         /// 执行前检查权限
         /// </summary>
@@ -71,6 +90,7 @@ namespace BusinessPlugins.OrganizationModule.Components.ActionFilters
                 {
                     var requirement = new AuthRequirement(
                         RequireMasterTenant,
+                        RequireValidConfig,
                         RequireUserType,
                         RequirePrivileges);
                     var privilegeManager = ZKWeb.Application.Ioc.Resolve<PrivilegeManager>();

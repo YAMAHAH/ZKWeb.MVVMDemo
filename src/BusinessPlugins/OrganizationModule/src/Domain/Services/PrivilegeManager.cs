@@ -1,18 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using ZKWeb.Localize;
-using InfrastructurePlugins.BaseModule.Components.Exceptions;
-using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
+﻿using BusinessPlugins.BasicModule.Cache;
 using BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfaces;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.OrganizationModule.Domain.Entities.Interfaces;
 using BusinessPlugins.OrganizationModule.Domain.Extensions;
 using BusinessPlugins.OrganizationModule.Domain.Structs;
+using InfrastructurePlugins.BaseModule.Application.Extensions;
+using InfrastructurePlugins.BaseModule.Components.Exceptions;
+using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
 using InfrastructurePlugins.SessionStateModule.Domain.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using ZKWeb.Localize;
 using ZKWeb.Plugins.OrganizationModule.Components.PrivilegeProviders.Interfaces;
 using ZKWebStandard.Ioc;
+using ZKWebStandard.Web;
 
 namespace BusinessPlugins.OrganizationModule.Domain.Services
 {
@@ -75,6 +78,21 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
             return true;
         }
 
+        public bool HasConfigPrivilege(User user)
+        {
+            var empId = (Guid)user.EmployeeId;
+            if (empId == Guid.Empty)
+            {
+                return false;
+            }
+            //获取服务ActionInfo
+            var action = HttpManager.CurrentContext.GetApiMethodInfo();
+            //从缓存中获取用户权限
+            var cacheMan = Injector.Resolve<ICacheManager>();
+            var tempObject = cacheMan.GetUserTemplateObject(empId, action.ServiceId, action.ActionId);
+            return tempObject != null && tempObject.Enable;
+        }
+
         /// <summary>
         /// 检查用户是否满足指定的权限要求
         /// </summary>
@@ -107,6 +125,15 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
                 errorMessage = new T("Action require user to be '{0}', and have privileges '{1}'",
                     new T(requirement.RequireUserType?.Name),
                     string.Join(",", requirement.RequirePrivileges.Select(p => translator.Translate(p))));
+                return false;
+            }
+            //验证用户配置权限
+            if (requirement.RequireValidConfig && (user == null && !HasConfigPrivilege(user)))
+            {
+                var translator = ZKWeb.Application.Ioc.Resolve<IPrivilegeTranslator>();
+                errorMessage = new T("Action require user to be '{0}', and have privileges '{1}'",
+                    new T(requirement.RequireUserType?.Name),
+                     translator.Translate(HttpManager.CurrentContext.GetApiMethodInfo().Name));
                 return false;
             }
             errorMessage = null;

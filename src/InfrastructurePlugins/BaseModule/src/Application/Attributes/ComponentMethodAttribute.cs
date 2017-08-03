@@ -9,6 +9,14 @@ namespace InfrastructurePlugins.BaseModule.Application.Attributes
     public class ComponentMethodAttribute:Attribute
     {
         /// <summary>
+        /// 功能ID
+        /// </summary>
+        public Guid ActionId { get; set; }
+        /// <summary>
+        /// 原始功能名称
+        /// </summary>
+        public string ActionName { get; set; }
+        /// <summary>
         /// 所属模板类类型
         /// </summary>
         public Type TempClassType { get; set; }

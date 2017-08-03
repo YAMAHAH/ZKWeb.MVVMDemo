@@ -15,6 +15,9 @@ namespace BusinessPlugins.OrganizationModule.Domain.Structs
         /// 要求的用户类型
         /// </summary>
         public Type RequireUserType { get; set; }
+
+        public bool RequireValidConfig { get; set; }
+
         /// <summary>
         /// 要求的权限列表
         /// </summary>
@@ -31,9 +34,10 @@ namespace BusinessPlugins.OrganizationModule.Domain.Structs
         /// <summary>
         /// 初始化
         /// </summary>
-        public AuthRequirement(bool requireMasterTenant, Type requireUserType, string[] requirePrivileges)
+        public AuthRequirement(bool requireMasterTenant, bool requireValidConfig, Type requireUserType, string[] requirePrivileges)
         {
             RequireMasterTenant = requireMasterTenant;
+            RequireValidConfig = requireValidConfig;
             RequireUserType = requireUserType;
             RequirePrivileges = requirePrivileges;
         }

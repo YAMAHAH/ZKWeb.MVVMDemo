@@ -135,6 +135,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Bases
                 };
                 // 返回函数信息
                 info = new ApplicationServiceApiMethodInfo(
+                    MD5Utils.GetGuidByMD5(serviceClassType.FullName + method.Name),
                     ServiceId,
                     serviceClassType,
                     method.ReturnType,
