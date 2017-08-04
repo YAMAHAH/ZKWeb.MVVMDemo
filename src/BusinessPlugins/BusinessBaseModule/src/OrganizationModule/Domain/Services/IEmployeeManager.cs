@@ -30,6 +30,13 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
         ICollection<PostGroup> GetAllPostGroups(Guid[] empIds);
 
         /// <summary>
+        /// 获取所有用户分配的所有组和单个用户分配的组的ID字典
+        /// </summary>
+        /// <param name="userTempIds"></param>
+        /// <returns></returns>
+        Dictionary<string, List<Guid>> GetAllPostGroups(IList<KeyValuePair<Guid, Guid>> userTempIds);
+
+        /// <summary>
         /// 获取员工所拥有的所有角色
         /// </summary>
         /// <param name="empId"></param>
@@ -46,6 +53,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
         ICollection<Roles> GetAllRoles(Guid empId);
 
         ICollection<Roles> GetAllRoles(Guid[] empId);
+        Dictionary<string, List<Guid>> GetAllRoles(IList<KeyValuePair<Guid, Guid>> userTempIds);
 
         /// <summary>
         /// 获取某个员工某个模板权限的模板对象字典
@@ -70,6 +78,12 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
         /// <returns></returns>
         TemplateObject GetTemplateObjectPrivilege(Guid empId, Guid tempId, Guid objectId);
 
+        /// <summary>
+        /// 获取某个用户拥有的所有模板
+        /// </summary>
+        /// <param name="empId"></param>
+        /// <returns></returns>
+        List<Template> GetTemplatePrivileges(Guid empId);
 
     }
 }

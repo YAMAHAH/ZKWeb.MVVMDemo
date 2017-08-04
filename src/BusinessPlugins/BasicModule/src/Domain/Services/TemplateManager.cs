@@ -1,5 +1,6 @@
 ﻿using BusinessPlugins.BasicModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
+using InfrastructurePlugins.BaseModule.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace BusinessPlugins.BasicModule.Domain.Services
             var result = userTempIds
                 .Select(k => new { userId = k.Key, tempId = k.Value })
                 .Join(temp, a => a.tempId, t => t.Key, (a, k) => new { userId = a.userId, tempId = a.tempId, tempObjs = k.Value.ToDictionary(t => t.Id) })
-                .ToDictionary(r => r.userId.ToString() + "_" + r.tempId.ToString(), k => k.tempObjs);
+                .ToDictionary(r => string.Join("_", r.userId, r.tempId), k => k.tempObjs);
 
             return result;
 

@@ -90,7 +90,34 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
             //从缓存中获取用户权限
             var cacheMan = Injector.Resolve<ICacheManager>();
             var tempObject = cacheMan.GetUserTemplateObject(empId, action.ServiceId, action.ActionId);
-            return tempObject != null && tempObject.Enable;
+            return tempObject != null && tempObject.Enable && tempObject.Visible;
+        }
+        /// <summary>
+        /// 判定用户是否有某个模板某个对象的权限
+        /// </summary>
+        /// <param name="empId"></param>
+        /// <param name="serviceId"></param>
+        /// <param name="actionId"></param>
+        /// <returns></returns>
+        public bool HasPrivilege(Guid empId, Guid serviceId, Guid actionId)
+        {
+            //从缓存中获取用户权限
+            var cacheMan = Injector.Resolve<ICacheManager>();
+            var tempObject = cacheMan.GetUserTemplateObject(empId, serviceId, actionId);
+            return tempObject != null && tempObject.Enable && tempObject.Visible;
+        }
+        /// <summary>
+        ///判定用户是否有某个模板的权限
+        /// </summary>
+        /// <param name="empId">用户</param>
+        /// <param name="serviceId">模板</param>
+        /// <returns></returns>
+        public bool HasPrivilege(Guid empId, Guid serviceId)
+        {
+            //从缓存中获取用户模板权限
+            var cacheMan = Injector.Resolve<ICacheManager>();
+            var tempObject = cacheMan.GetUserTemplateDictionary(empId, serviceId);
+            return tempObject != null;
         }
 
         /// <summary>

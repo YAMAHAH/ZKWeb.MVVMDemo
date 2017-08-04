@@ -26,5 +26,10 @@ namespace BusinessPlugins.BasicModule.Cache
         /// 更新缓存数据
         /// </summary>
         void UpdateCache();
+
+        /// <summary>
+        /// 清理过期的缓存信息
+        /// </summary>
+        void CleanCacheKey();
     }
 }
