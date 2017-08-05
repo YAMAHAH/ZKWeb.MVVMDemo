@@ -1,7 +1,6 @@
 ﻿using BusinessPlugins.BasicModule.Domain.Entities;
 using System;
 using System.Collections.Generic;
-using ZKWebStandard.Collections;
 
 namespace BusinessPlugins.BasicModule.Cache
 {
@@ -23,6 +22,13 @@ namespace BusinessPlugins.BasicModule.Cache
         /// <returns></returns>
         Dictionary<Guid, TemplateObject> GetUserTemplateDictionary(Guid userId, Guid tempId);
         /// <summary>
+        /// 获取用户多个模板的字典
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="tempIds"></param>
+        /// <returns></returns>
+        Dictionary<string, Dictionary<Guid, TemplateObject>> GetUserTemplateDictionary(Guid userId, Guid[] tempIds);
+        /// <summary>
         /// 更新缓存数据
         /// </summary>
         void UpdateCache();
@@ -31,5 +37,9 @@ namespace BusinessPlugins.BasicModule.Cache
         /// 清理过期的缓存信息
         /// </summary>
         void CleanCacheKey();
+        /// <summary>
+        /// 清除所有的缓存
+        /// </summary>
+        void CleanCache();
     }
 }

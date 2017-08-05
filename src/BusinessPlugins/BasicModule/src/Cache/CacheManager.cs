@@ -96,6 +96,39 @@ namespace BusinessPlugins.BasicModule.Cache
             return tempObjDictCache;
         }
 
+        public Dictionary<string, Dictionary<Guid, TemplateObject>> GetUserTemplateDictionary(Guid userId, Guid[] tempIds)
+        {
+            //保存从数据库提取的模板ID
+            var needUpdateTempIds = new Guid[] { };
+            Dictionary<string, Dictionary<Guid, TemplateObject>> results = new Dictionary<string, Dictionary<Guid, TemplateObject>>();
+            //从缓存中取,如果没有记录数据库提取的模板ID
+            foreach (var tempId in tempIds)
+            {
+                Dictionary<Guid, TemplateObject> cacheValue;
+                if (xUserPrivCache.TryGetValue(GetCacheKey(userId, tempId), out cacheValue))
+                {
+                    results.Add(string.Join("_", userId, tempId), cacheValue);
+                }
+                else
+                {
+                    needUpdateTempIds.Append(tempId);
+                }
+            }
+            //生成用户模板ID键值对
+            var UserTempIds = needUpdateTempIds.Select(c => new KeyValuePair<Guid, Guid>(userId, c)).ToList();
+            //从数据中读取
+            var empMan = Injector.Resolve<IEmployeeManager>();
+            var userTempObjs = empMan.GetTemplateObjectPrivileges(UserTempIds);
+            //添加到缓存
+            foreach (var dict in userTempObjs)
+            {
+                var newKey = dict.Key.Replace("_", "_" + PrivilegeUpdateId.ToString() + "_");
+                //添加到缓存
+                xUserPrivCache.Put(newKey, dict.Value, KeepTime);
+                results.Add(dict.Key, dict.Value);
+            }
+            return results;
+        }
         public TemplateObject GetUserTemplateObject(Guid userId, Guid tempId, Guid objectId)
         {
             TemplateObject tempObjCache = null;
@@ -155,6 +188,11 @@ namespace BusinessPlugins.BasicModule.Cache
             }
             //更新完成时重新生成ID
             AddOrUpdateId(xPrivilegeUpdateIdKey, newUpdateId);
+        }
+
+        public void CleanCache()
+        {
+            xUserPrivCache.Clear();
         }
     }
 }

@@ -1,11 +1,9 @@
-﻿using InfrastructurePlugins.BaseModule.Application.Extensions;
-using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
+﻿using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
 using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
 using System;
 using System.Data;
 using System.Linq;
 using ZKWeb.Web;
-using ZKWebStandard.Web;
 
 namespace InfrastructurePlugins.BaseModule.Application.Services.Attributes
 {
@@ -44,20 +42,18 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Attributes
             return new Func<IActionResult>(() =>
             {
                 var injector = ZKWeb.Application.Ioc;
-                IHttpContext httpContext = HttpManager.CurrentContext;
-                var serviceId = httpContext.GetApiMethodInfo();
-                var filterProviders = injector.ResolveMany<IUnitofworkServiceFilter>();
-                var filters = filterProviders.SelectMany(f => f.Filters(ServiceId)).ToArray();
+
+                var filterProvider = injector.Resolve<IUserTemplateFilterProvider>();
+                var disFilters = filterProvider.DisabledFilter().ToArray();
+
                 //  var uow = injector.Resolve<IUnitOfWork>();
                 var uowMan = injector.Resolve<IUnitOfWorkManager>();
-                //获取用户+模板的过滤器
-
                 //启用过滤器
                 if (IsTransactional)
                 {
                     using (var unitMan = uowMan.Begin())
                     {
-                        using (uowMan.Current.DisableFilter(filters))
+                        using (uowMan.Current.DisableFilter(disFilters))
                         {
                             var result = action();
                             unitMan.Complete();
@@ -69,7 +65,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Attributes
                 {
                     using (uowMan.CreateUnitOfWork())
                     {
-                        using (uowMan.Current.DisableFilter(filters))
+                        using (uowMan.Current.DisableFilter(disFilters))
                         {
                             var result = action();
                             return result;

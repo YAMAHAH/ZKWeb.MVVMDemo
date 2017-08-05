@@ -1,6 +1,5 @@
 ﻿using BusinessPlugins.BasicModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
-using InfrastructurePlugins.BaseModule.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

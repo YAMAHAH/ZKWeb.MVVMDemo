@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using InfrastructurePlugins.BaseModule.Application.Services.Structs;
+using System;
 
 namespace InfrastructurePlugins.BaseModule.Application.Services.Interfaces
 {
@@ -14,5 +15,9 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Interfaces
         /// </summary>
         /// <returns></returns>
         IEnumerable<ApplicationServiceApiMethodInfo> GetApiMethods();
+        /// <summary>
+        /// 服务ID
+        /// </summary>
+        Guid ServiceId { get; }
     }
 }

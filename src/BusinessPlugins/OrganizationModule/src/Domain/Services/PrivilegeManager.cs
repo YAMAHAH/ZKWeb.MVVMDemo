@@ -90,7 +90,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
             //从缓存中获取用户权限
             var cacheMan = Injector.Resolve<ICacheManager>();
             var tempObject = cacheMan.GetUserTemplateObject(empId, action.ServiceId, action.ActionId);
-            return tempObject != null && tempObject.Enable && tempObject.Visible;
+            return tempObject != null && tempObject.Enable;
         }
         /// <summary>
         /// 判定用户是否有某个模板某个对象的权限
@@ -104,7 +104,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
             //从缓存中获取用户权限
             var cacheMan = Injector.Resolve<ICacheManager>();
             var tempObject = cacheMan.GetUserTemplateObject(empId, serviceId, actionId);
-            return tempObject != null && tempObject.Enable && tempObject.Visible;
+            return tempObject != null && tempObject.Enable;
         }
         /// <summary>
         ///判定用户是否有某个模板的权限

@@ -499,5 +499,14 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
                 .ToList();
             return userTemps.Count() > 0 ? userTemps : null;
         }
+
+        public List<TemplateFilter> GetTemplateFilter(Guid empId)
+        {
+            //获取用户所拥有的组
+            //获取用户所分配组的所有角色
+            //获取用户所拥有的角色
+            //查找出所有用户或用户组或角色所有的模板过滤器
+            return null;
+        }
     }
 }
