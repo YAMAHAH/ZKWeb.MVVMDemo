@@ -35,23 +35,30 @@ namespace BusinessPlugins.OrganizationModule.Application.Components.Filters
             var session = sessionManager.GetSession();
 
             var user = session.GetUser();
-            var empId = (Guid)user.EmployeeId;
-            //
-            var tempId = HttpManager.CurrentContext.GetApiMethodInfo().ServiceId;
-            //获取全局服务ID
-            var globalTempId = (Guid)injector.Resolve<IGlobalManageService>()?.ServiceId;
-            //缓存管理
-            var cacheMan = injector.Resolve<ICacheManager>();
-            //获取模板
-            var userTempObjDict = cacheMan.GetUserTemplateDictionary(empId, new Guid[] { tempId, globalTempId });
+            var empId = user?.EmployeeId ?? Guid.Empty;
+            if (empId == Guid.Empty)
+            {
+                return new string[] { };
+            }
+            else
+            {
+                var tempId = HttpManager.CurrentContext.GetApiMethodInfo().ServiceId;
+                //获取全局服务ID
+                var globalTempId = injector.Resolve<IGlobalManageService>()?.ServiceId ?? Guid.Empty;
+                if (tempId == Guid.Empty || globalTempId == Guid.Empty) return null;
+                //缓存管理
+                var cacheMan = injector.Resolve<ICacheManager>();
+                //获取模板
+                var userTempObjDict = cacheMan.GetUserTemplateDictionary(empId, new Guid[] { tempId, globalTempId });
 
-            //获取用户模板所有的过滤器
-            var userFilters = userTempObjDict.Values
-                .SelectMany(t => t.Values)
-                .Where(filter)
-                .Select(f => f.ObjectAlias)
-                .ToArray();
-            return userFilters;
+                //获取用户模板所有的过滤器
+                var userFilters = userTempObjDict.Values
+                    .SelectMany(t => t.Values)
+                    .Where(filter)
+                    .Select(f => f.ObjectAlias)
+                    .ToArray();
+                return userFilters;
+            }
         }
     }
 }

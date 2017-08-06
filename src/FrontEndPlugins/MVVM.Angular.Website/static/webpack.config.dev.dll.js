@@ -121,9 +121,9 @@ var defaultConfig = {
         stats: "normal",
         historyApiFallback: true,
         compress: true,
-        // proxy: {
-        //     "/api": "http://localhost:53128"
-        // }
+        proxy: {
+            "/api": "http://localhost:53128"
+        }
     },
     node: {
         global: true,

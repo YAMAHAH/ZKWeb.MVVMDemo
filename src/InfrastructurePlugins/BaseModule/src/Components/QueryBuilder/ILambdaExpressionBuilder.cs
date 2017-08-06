@@ -15,7 +15,13 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// </summary>
         /// <param name="body"></param>
         /// <returns></returns>
-        LambdaExpression GetLambdaExpression(Expression body);
+        Expression<Func<T, bool>> GetLambdaExpression(Expression body);
+        /// <summary>
+        /// 生成lambda表达式树
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        Expression<Func<T, bool>> GenerateLambdaExpression(QueryCondition root);
         /// <summary>
         /// 解析字符串生成表达式树
         /// ParameterExpression x = Expression.Parameter(typeof(int), "x");

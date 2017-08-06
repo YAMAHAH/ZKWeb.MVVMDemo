@@ -19,7 +19,7 @@ namespace InfrastructurePlugins.BaseModule.Domain.Uow
     [ExportMany, SingletonReuse]
     public class UnitOfWorkManager : IUnitOfWorkManager
     {
-        public IActiveUnitOfWork Current => ZKWeb.Application.Ioc.Resolve<IUnitOfWork>().Current;
+        public IActiveUnitOfWork Current => unitOfWorkProvider.Current;
 
         private IUnitOfWork unitOfWorkProvider => ZKWeb.Application.Ioc.Resolve<IUnitOfWork>();
 

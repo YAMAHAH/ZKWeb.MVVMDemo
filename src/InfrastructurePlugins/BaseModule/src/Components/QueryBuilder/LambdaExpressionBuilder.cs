@@ -39,13 +39,20 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         public string ParameterName { get; set; }
         public ParameterExpression[] Parameters { get; set; }
         public ICollection<QueryCondition> QueryCondtions { get; set; }
+
+        public Expression<Func<T, bool>> GenerateLambdaExpression(QueryCondition root)
+        {
+            RecursionGenerateExpression(root);
+            return GetLambdaExpression(root.Expression);
+        }
+
         /// <summary>
         /// 获取某个结点的表达式树
         /// </summary>
         /// <typeparam name="TFunc"></typeparam>
         /// <param name="body"></param>
         /// <returns></returns>
-        public LambdaExpression GetLambdaExpression(Expression body)
+        public Expression<Func<T, bool>> GetLambdaExpression(Expression body)
         {
             return Expression.Lambda<Func<T, bool>>(body, this.Parameters);
         }

@@ -1,4 +1,5 @@
 ﻿using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
+using InfrastructurePlugins.BaseModule.Domain.Uow.Extensions;
 using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
 using System;
 using System.Data;
@@ -46,7 +47,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Attributes
                 var filterProvider = injector.Resolve<IUserTemplateFilterProvider>();
                 var disFilters = filterProvider.DisabledFilter().ToArray();
 
-                //  var uow = injector.Resolve<IUnitOfWork>();
+                //var uow = injector.Resolve<IUnitOfWork>();
                 var uowMan = injector.Resolve<IUnitOfWorkManager>();
                 //启用过滤器
                 if (IsTransactional)

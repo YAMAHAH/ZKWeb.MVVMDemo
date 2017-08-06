@@ -99,7 +99,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Bases
                 var uowAttr = method.GetCustomAttribute<UnitOfWorkAttribute>();
                 if (uowAttr == null)
                 {
-                    action = new UnitOfWorkAttribute() { ServiceId = this.ServiceId }.Filter(action);
+                    action = new UnitOfWorkAttribute() { ServiceId = this.ServiceId, IsTransactional = true }.Filter(action);
                 }
                 else
                 {

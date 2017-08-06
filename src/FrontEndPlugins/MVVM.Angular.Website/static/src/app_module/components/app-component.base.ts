@@ -48,7 +48,6 @@ export abstract class AppComponentBase {
         if (!!!clientDataModel) {
             //随机生成密钥
             let randomKey = GuidUtils.uuid(16, 16);
-            debugger;
             //RSA公钥密钥
             let rsaKey = RSAUtils.genRSAKey();
 

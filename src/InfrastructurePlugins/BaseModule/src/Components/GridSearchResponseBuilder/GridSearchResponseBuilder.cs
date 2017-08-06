@@ -1,17 +1,16 @@
 ﻿using AutoMapper;
+using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
+using InfrastructurePlugins.BaseModule.Domain.Services.Interfaces;
+using InfrastructurePlugins.BaseModule.Domain.Uow.Extensions;
+using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.FastReflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using ZKWeb.Database;
-using InfrastructurePlugins.BaseModule.Application.Dtos;
-using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
-using InfrastructurePlugins.BaseModule.Domain.Services.Interfaces;
-using InfrastructurePlugins.BaseModule.Domain.Uow.Extensions;
-using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
 using ZKWebStandard.Extensions;
 
 namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder

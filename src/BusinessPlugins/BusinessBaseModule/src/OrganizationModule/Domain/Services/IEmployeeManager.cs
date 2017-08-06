@@ -84,6 +84,18 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
         /// <param name="empId"></param>
         /// <returns></returns>
         List<Template> GetTemplatePrivileges(Guid empId);
-
+        /// <summary>
+        /// 获取某个员工的所有模板自定义过滤器
+        /// </summary>
+        /// <param name="empId"></param>
+        /// <returns></returns>
+        List<TemplateFilter> GetTemplateFilter(Guid empId);
+        /// <summary>
+        /// 获取某个员工某个模板所有的自定义过滤器
+        /// </summary>
+        /// <param name="empId"></param>
+        /// <param name="tempId"></param>
+        /// <returns></returns>
+        List<TemplateFilter> GetTemplateFilter(Guid empId, Guid tempId);
     }
 }

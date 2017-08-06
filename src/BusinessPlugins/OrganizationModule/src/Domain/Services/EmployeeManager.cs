@@ -488,7 +488,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
             var tempPrivRep = UnitOfWork.GetUnitRepository<TemplatePrivilege, Guid>();
             //获取用户分配的模板ID
             var userTempIds = tempPrivRep.FastQueryAsReadOnly()
-               .Where(p => (p.EmployeeId == empId || postGrpIds.Contains((Guid)p.PostGroupId) || roleIds.Contains((Guid)p.RoleId)))
+               .Where(p => (p.EmployeeId == empId || postGrpIds.Contains(p.PostGroupId ?? Guid.Empty) || roleIds.Contains(p.RoleId ?? Guid.Empty)))
                .GroupBy(p => p.TemplateId)
                .Select(t => t.Key);
             //获取模板仓储
@@ -502,11 +502,33 @@ namespace BusinessPlugins.OrganizationModule.Domain.Services
 
         public List<TemplateFilter> GetTemplateFilter(Guid empId)
         {
-            //获取用户所拥有的组
-            //获取用户所分配组的所有角色
-            //获取用户所拥有的角色
+            //获取员工分配的所有岗位组ID
+            var postGrpIds = GetAllPostGroups(empId).Select(e => e.Id).ToList();
+            //获取用户分配的角色ID列表
+            var roleIds = GetAllRoles(empId).Select(r => r.Id).ToList();
+
+            return GetTemplateFilter(f => f.EmpId == empId || postGrpIds.Contains((Guid)f.PostGroupId) || roleIds.Contains((Guid)f.RoleId));
+        }
+
+        public List<TemplateFilter> GetTemplateFilter(Guid empId, Guid tempId)
+        {
+            //获取员工分配的所有岗位组ID
+            var postGrpIds = GetAllPostGroups(empId).Select(e => e.Id).ToList();
+            //获取用户分配的角色ID列表
+            var roleIds = GetAllRoles(empId).Select(r => r.Id).ToList();
+            return GetTemplateFilter(f => (f.EmpId == empId || postGrpIds.Contains((Guid)f.PostGroupId) || roleIds.Contains((Guid)f.RoleId)) && f.TempId == tempId);
+        }
+
+        private List<TemplateFilter> GetTemplateFilter(Func<TemplateFilter, bool> filter)
+        {
+            //获取模板过滤器仓储
+            var tempFilterRep = UnitOfWork.GetUnitRepository<TemplateFilter, Guid>();
             //查找出所有用户或用户组或角色所有的模板过滤器
-            return null;
+            var tempFilters = tempFilterRep.FastQueryAsReadOnly()
+                .Where(filter)
+                .Distinct()
+                .ToList();
+            return tempFilters;
         }
     }
 }
