@@ -61,6 +61,40 @@ namespace InfrastructurePlugins.SessionStateModule.Domain.Services
             return session;
         }
 
+        public virtual Session FastGetSession()
+        {
+            // Http上下文不存在时返回一个随机会话
+            if (!HttpManager.CurrentContextExists)
+            {
+                var randomSession = new Session();
+                randomSession.ReGenerateId();
+                return randomSession;
+            }
+            // 从Http上下文中获取会话
+            // 因为一次请求中可能会调用多次GetSession，应该确保返回同一个对象
+            var context = HttpManager.CurrentContext;
+            var session = context.GetData<Session>(SessionContextKey, null);
+            if (session != null)
+            {
+                return session;
+            }
+            // 从数据库中获取会话
+            // 当前没有会话时返回新的会话
+            var sessionIdStore = Application.Ioc.Resolve<ISessionIdStore>();
+            session = UnitRepository.FastGet(s => s.Id == sessionIdStore.GetSessionId());
+            if (session == null)
+            {
+                session = new Session()
+                {
+                    IpAddress = context.Request.RemoteIpAddress.ToString(),
+                    RememberLogin = false,
+                    Expires = DateTime.UtcNow.AddHours(1)
+                };
+                session.ReGenerateId();
+            }
+            context.PutData(SessionContextKey, session);
+            return session;
+        }
         /// <summary>
         /// 添加或更新当前的会话
         /// 必要时发送会话Id到客户端

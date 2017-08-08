@@ -15,6 +15,7 @@ namespace ZKWeb.MVVMDemo.AspNetCore
         /// </summary>
         public override void Configure(IApplicationBuilder app)
         {
+            app.UseCors("defaultCors");
             ModulePluginManager.Instance.Initialize(typeof(MainModulePlugin));
             ModulePluginManager.Instance.StartModules();
             // 使用错误提示页面
@@ -27,8 +28,8 @@ namespace ZKWeb.MVVMDemo.AspNetCore
             {
                 app.UseStatusCodePages();
             }
- 
-            app.UseCors("defaultCors");
+
+
 
             // 使用Swagger中间件
             app.UseSwagger();

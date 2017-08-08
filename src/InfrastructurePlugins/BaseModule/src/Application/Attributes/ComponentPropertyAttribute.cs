@@ -8,6 +8,15 @@ namespace InfrastructurePlugins.BaseModule.Application.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     public class ComponentPropertyAttribute : Attribute
     {
+        /// <summary>
+        /// 源实体路径
+        /// a.b表示a对象的b属性
+        /// </summary>
+        public string SrcModelPath { get; set; }
+        /// <summary>
+        /// 源实体的属性
+        /// </summary>
+        public string SrcModelProp { get; set; }
         public Type GroupType { get; set; }
         public Type TempClassType { get; set; }
         public string TempName { get; set; }

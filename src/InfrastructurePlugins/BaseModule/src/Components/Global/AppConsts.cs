@@ -18,6 +18,7 @@
         /// 客户端发过来的会话Id
         /// </summary>
         public static string SessionHeaderIn = "X-ZKWeb-SessionId";
+        public static string SessionContextKey = "ZKWeb.Session";
         /// <summary>
         /// 发送给客户端的会话Id
         /// </summary>

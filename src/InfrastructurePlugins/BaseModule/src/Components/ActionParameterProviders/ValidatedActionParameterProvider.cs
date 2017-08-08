@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json;
-using CoreLibModule;
+﻿using CoreLibModule;
 using CoreLibModule.Utils;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
 using InfrastructurePlugins.BaseModule.Application.Extensions;
 using InfrastructurePlugins.BaseModule.Components.Exceptions;
 using InfrastructurePlugins.BaseModule.Components.Global;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using ZKWeb.Web;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Web;
@@ -41,19 +41,20 @@ namespace InfrastructurePlugins.BaseModule.Components.ActionParameterProviders
                     //从会话中取出客户端密钥 上下文->会话ID->密钥
                     //使用密钥解密
                     var sessionId = httpContext.Request.GetHeader(AppConsts.SessionHeaderIn);
-                    if (sessionId == null) throw new BadRequestException("会话不充许为空");
                     IClientDataManager clientDataMan = ZKWeb.Application.Ioc.Resolve<IClientDataManager>();
                     var secretKey = clientDataMan.GetData(sessionId)?.SecretKey;
-
-                    try
+                    if (!string.IsNullOrEmpty(secretKey))
                     {
-                        jsonBody = AESUtils.DecryptToUtf8String(secretKey, ((IEncryptInput)encryptObj).data).Result;
+                        try
+                        {
+                            jsonBody = AESUtils.DecryptToUtf8String(secretKey, ((IEncryptInput)encryptObj).data).Result;
+                        }
+                        catch (Exception)
+                        {
+                            throw new BadRequestException("解密错误：前端与后端的加密密钥不一致.");
+                        }
+                        return JsonConvert.DeserializeObject<IDictionary<string, object>>(jsonBody);
                     }
-                    catch (Exception)
-                    {
-                        throw new BadRequestException("解密错误：前端与后端的加密密钥不一致.");
-                    }
-                    return JsonConvert.DeserializeObject<IDictionary<string, object>>(jsonBody);
                 }
                 return new Dictionary<string, object>();
             });

@@ -74,7 +74,7 @@ export abstract class AppComponentBase {
                 .subscribe(res => {
                     let chiperText = AESUtils.EncryptToBase64String(clientData.SecretKey, res.TestData);
                     if (chiperText === res.ProcessResult) {
-                        resolve(true);
+                        resolve( true );
                     } else {
                         resolve(false);
                     }

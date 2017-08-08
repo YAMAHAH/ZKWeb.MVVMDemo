@@ -20,7 +20,7 @@ var webpackConfig = {
         new ngtools.AotPlugin({
             tsConfigPath: path.resolve(__dirname, './tsconfig.json'),
             skipMetadataEmit: false,
-            entryModule: path.resolve(__dirname, './src/modules/app_module/app.module#AppModule'),
+            entryModule: path.resolve(__dirname, './src/app_module/app.module#AppModule'),
             compilerOptions: {
                 emitDecoratorMetadata: true,
                 experimentalDecorators: true,

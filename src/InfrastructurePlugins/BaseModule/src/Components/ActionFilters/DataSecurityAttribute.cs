@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json;
-using CoreLibModule;
-using CoreLibModule.Utils;
-using System;
+﻿using CoreLibModule.Utils;
 using InfrastructurePlugins.BaseModule.Components.Exceptions;
 using InfrastructurePlugins.BaseModule.Components.Global;
+using Newtonsoft.Json;
+using System;
 using ZKWeb.Web;
 using ZKWeb.Web.ActionResults;
 using ZKWebStandard.Web;
@@ -40,17 +39,17 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Attributes
                 IClientDataManager clientDataMan = ZKWeb.Application.Ioc.Resolve<IClientDataManager>();
                 //从本地字典取
                 secretKey = clientDataMan.GetData(sessionId)?.SecretKey;
-                if (secretKey == null) throw new BadRequestException("前端与后端的加密密钥不一致.");
+                if (string.IsNullOrEmpty(secretKey)) throw new BadRequestException("前端与后端的加密密钥不一致.");
 
                 dynamic content;
-                if (actionResult is PlainResult)
+                if (!string.IsNullOrEmpty(secretKey) && actionResult is PlainResult)
                 {
                     content = ((PlainResult)actionResult).Text;
                     string chiperText = AESUtils.EncryptToBase64String(secretKey, content);
                     var encryptObj = new { requestId = Guid.NewGuid().ToString(), data = chiperText, encrypt = true, signature = "" };
                     ((PlainResult)actionResult).Text = JsonConvert.SerializeObject(encryptObj);
                 }
-                else if (actionResult is JsonResult)
+                else if (!string.IsNullOrEmpty(secretKey) && actionResult is JsonResult)
                 {
                     content = ((JsonResult)actionResult).Object;
                     string contentString = JsonConvert.SerializeObject(content);

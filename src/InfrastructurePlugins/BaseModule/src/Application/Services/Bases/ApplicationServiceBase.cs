@@ -96,14 +96,15 @@ namespace InfrastructurePlugins.BaseModule.Application.Services.Bases
                 // 创建函数委托
                 // 如果函数未标记[UnitOfWork]则手动包装该函数
                 var action = this.BuildActionDelegate(method);
+                var serviceId = MD5Utils.GetGuidByMD5(GetType().FullName, "X2");
                 var uowAttr = method.GetCustomAttribute<UnitOfWorkAttribute>();
                 if (uowAttr == null)
                 {
-                    action = new UnitOfWorkAttribute() { ServiceId = this.ServiceId, IsTransactional = true }.Filter(action);
+                    action = new UnitOfWorkAttribute() { ServiceId = serviceId, IsTransactional = true }.Filter(action);
                 }
                 else
                 {
-                    uowAttr.ServiceId = this.ServiceId;
+                    uowAttr.ServiceId = serviceId;
                 }
                 //如果函数未标记[DataSecurity]则手动包装该函数
                 if (method.GetCustomAttribute<DataSecurityAttribute>() == null)

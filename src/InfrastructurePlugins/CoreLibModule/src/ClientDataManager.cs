@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using InfrastructurePlugins.BaseModule.Components.Global;
+﻿using InfrastructurePlugins.BaseModule.Components.Global;
 using InfrastructurePlugins.SessionStateModule.Domain.Services;
+using System.Collections.Concurrent;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
 
@@ -9,7 +9,7 @@ namespace CoreLibModule
     [ExportMany, SingletonReuse]
     public class ClientDataManager : IClientDataManager
     {
-        private Dictionary<string, ClientData> clientDatas = new Dictionary<string, ClientData>();
+        private ConcurrentDictionary<string, ClientData> clientDatas = new ConcurrentDictionary<string, ClientData>();
 
         public ClientData GetData(string key)
         {
@@ -33,7 +33,8 @@ namespace CoreLibModule
 
         public void RemoveData(string key)
         {
-            if (clientDatas.ContainsKey(key)) clientDatas.Remove(key);
+            ClientData cdValue;
+            if (clientDatas.ContainsKey(key)) clientDatas.TryRemove(key, out cdValue);
         }
         public bool HasKey(string key)
         {

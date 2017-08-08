@@ -26,6 +26,11 @@ namespace BusinessPlugins.BasicModule.Cache
     [ExportMany, SingletonReuse]
     public class CacheManager : ICacheManager
     {
+        //CacheManager<T>
+        //cache.get<T>(userid,tempid) cache.get<T>(userid,tempid,objid)
+        //key = getpeof(T).name +  userid,tempid + objid   <tyep,
+
+
         private string xPrivilegeUpdateIdKey = "PrivilegeUpdateId";
         private ConcurrentDictionary<string, Guid> xUpdateIdDict = new ConcurrentDictionary<string, Guid>();
 

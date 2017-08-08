@@ -34,7 +34,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Components.Filters
             var sessionManager = injector.Resolve<SessionManager>();
             var session = sessionManager.GetSession();
 
-            var user = session.GetUser();
+            var user = session?.GetUser() ?? null;
             var empId = user?.EmployeeId ?? Guid.Empty;
             if (empId == Guid.Empty)
             {

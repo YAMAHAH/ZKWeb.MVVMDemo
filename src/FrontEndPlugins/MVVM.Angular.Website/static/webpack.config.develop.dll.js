@@ -39,6 +39,11 @@ var webpackConfig = {
             { from: path.resolve(__dirname, "./src/app-config.json"), to: "app-config.json" }
         ]),
         new NamedModulesPlugin(),
+        new webpack.DllReferencePlugin({
+            context: '.',
+            manifest: require('./bin/debug/dll/manifest/vendor-manifest-dev.json'),
+            sourceType: 'var'
+        })
     ],
     module: {
         rules: [{

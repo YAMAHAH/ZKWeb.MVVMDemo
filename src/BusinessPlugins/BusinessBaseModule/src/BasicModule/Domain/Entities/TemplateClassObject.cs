@@ -25,6 +25,17 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
         #endregion
         #region 模板类对象基本属性
 
+        /// <summary>
+        /// 源实体的组名
+        /// SaleOrder
+        /// </summary>
+        public string SrcObjectGroup { get; set; }
+        /// <summary>
+        /// 源实体对象名称
+        /// SaleOrderNumber
+        /// </summary>
+        public string SrcObjectName { get; set; }
+
         public TemplateObjectType ObjectType { get; set; }
         /// <summary>
         /// 对象组

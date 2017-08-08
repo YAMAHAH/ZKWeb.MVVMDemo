@@ -29,7 +29,7 @@ namespace ZKWeb.MVVMDemo.AspNetCore
                     {
                         //添加cros
                         s.AddCors(options => options.AddPolicy("defaultCors",
-                             p => p.WithOrigins("*")
+                             p => p.WithOrigins("*","http://localhost:9000","http://localhost:53128")
                                     .AllowAnyMethod()
                                     .AllowAnyHeader()
                                     .AllowCredentials()

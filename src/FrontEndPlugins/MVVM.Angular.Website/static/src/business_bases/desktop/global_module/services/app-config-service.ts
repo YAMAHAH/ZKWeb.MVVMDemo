@@ -47,23 +47,23 @@ export class AppConfigService {
     }
 
     /** 初始应用配置 */
-    initConfig(confifg: AppConfig) {
-        this._apiUrlBase = confifg.apiUrlBase || (location.protocol + "//" + location.host);
-        this._language = confifg.language || null;
-        this._defaultLanguage = confifg.defaultLanguage || "zh-CN";
-        this._languageHeader = confifg.languageHeader || "X-ZKWeb-Language";
-        this._languageKey = confifg.languageKey || "ZKWeb-Language";
-        this._timezone = confifg.timezone || null;
-        this._defaultTimezone = confifg.defaultTimezone || "Asia/Shanghai";
-        this._timezoneHeader = confifg.timezoneHeader || "X-ZKWeb-Timezone";
-        this._timezoneKey = confifg.timezoneKey || "ZKWeb-Timezone";
-        this._loginUrl = confifg.loginUrl || ["/admin", "login"];
-        this._sessionIdHeader = confifg.sessionIdHeader || "X-ZKWeb-SessionId";
-        this._sessionIdSetHeader = confifg.sessionIdSetHeader || "X-Set-ZKWeb-SessionId";
-        this._sessionIdKey = confifg.sessionIdKey || "ZKWeb-SessionId";
-        this._enableEncrypt = confifg.enableEncrypt || false;
-        this._enableSignature = confifg.enableSignature || false;
-        this._saveToLocal = confifg.saveToLocal || false;
+    initConfig(config: AppConfig) {
+        this._apiUrlBase = config.apiUrlBase || (location.protocol + "//" + location.host);
+        this._language = config.language || null;
+        this._defaultLanguage = config.defaultLanguage || "zh-CN";
+        this._languageHeader = config.languageHeader || "X-ZKWeb-Language";
+        this._languageKey = config.languageKey || "ZKWeb-Language";
+        this._timezone = config.timezone || null;
+        this._defaultTimezone = config.defaultTimezone || "Asia/Shanghai";
+        this._timezoneHeader = config.timezoneHeader || "X-ZKWeb-Timezone";
+        this._timezoneKey = config.timezoneKey || "ZKWeb-Timezone";
+        this._loginUrl = config.loginUrl || ["/admin", "login"];
+        this._sessionIdHeader = config.sessionIdHeader || "X-ZKWeb-SessionId";
+        this._sessionIdSetHeader = config.sessionIdSetHeader || "X-Set-ZKWeb-SessionId";
+        this._sessionIdKey = config.sessionIdKey || "ZKWeb-SessionId";
+        this._enableEncrypt = config.enableEncrypt || false;
+        this._enableSignature = config.enableSignature || false;
+        this._saveToLocal = config.saveToLocal || false;
     }
 
     /** 获取Api的基础地址 */

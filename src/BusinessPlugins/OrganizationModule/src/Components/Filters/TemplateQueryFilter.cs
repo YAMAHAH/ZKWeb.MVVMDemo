@@ -41,38 +41,38 @@ namespace BusinessPlugins.OrganizationModule.Application.Components.Filters
 
         private Expression<Func<TEntity, bool>> GetUserFilter<TEntity>()
         {
-            //根据userId + tempId + filterId ,查找对应的条件
-            var injector = ZKWeb.Application.Ioc;
+            return null;
+            //根据userId + tempId + filterId , tempId + filterId查找对应的条件
+            //var injector = ZKWeb.Application.Ioc;
+            //var sessionManager = injector.Resolve<SessionManager>();
+            //var session = sessionManager.FastGetSession();
 
-            var sessionManager = injector.Resolve<SessionManager>();
-            var session = sessionManager.GetSession();
+            //var user = session.GetUser();
+            //var empId = user?.EmployeeId ?? Guid.Empty;
 
-            var user = session.GetUser();
-            var empId = user?.EmployeeId ?? Guid.Empty;
-
-            if (empId == Guid.Empty)
-            {
-                return null;
-            }
-            else
-            {
-                var tempId = HttpManager.CurrentContext.GetApiMethodInfo().ServiceId;
-                //缓存管理
-                var empMan = injector.Resolve<IEmployeeManager>();
-                //获取模板
-                var userTempFilters = empMan.GetTemplateFilter(empId, tempId);
-                var root = new QueryCondition() { IsChildExpress = true };
-                var queryConds = userTempFilters.Select(f =>
-                {
-                    var qc = JsonConvert.DeserializeObject<QueryCondition>(f.ConditionJson);
-                    qc.IsChildExpress = true;
-                    qc.Concat = ConcatType.OrElse;
-                    return qc;
-                });
-                root.Childs.AddRange(queryConds);
-                var expBuilder = new LambdaExpressionBuilder<TEntity>();
-                return expBuilder.GenerateLambdaExpression(root);
-            }
+            //if (empId == Guid.Empty)
+            //{
+            //    return null;
+            //}
+            //else
+            //{
+            //    var tempId = HttpManager.CurrentContext.GetApiMethodInfo().ServiceId;
+            //    //
+            //    var empMan = injector.Resolve<IEmployeeManager>();
+            //    //获取模板
+            //    var userTempFilters = empMan.GetTemplateFilter(empId, tempId);
+            //    var root = new QueryCondition() { IsChildExpress = true };
+            //    var queryConds = userTempFilters.Select(f =>
+            //    {
+            //        var qc = JsonConvert.DeserializeObject<QueryCondition>(f.ConditionJson);
+            //        qc.IsChildExpress = true;
+            //        qc.Concat = ConcatType.OrElse;
+            //        return qc;
+            //    });
+            //    root.Childs.AddRange(queryConds);
+            //    var expBuilder = new LambdaExpressionBuilder<TEntity>();
+            //    return expBuilder.GenerateLambdaExpression(root);
+            //}
         }
 
         /// <summary>

@@ -15,7 +15,6 @@ import { FormCaptchaComponent } from './components/form-captcha.component';
 import { FormUploadComponent } from './components/form-upload.component';
 
 import { FormSubmitButtonComponent } from './components/form-submit-button.component';
-import { TransPipe } from './pipes/trans-pipe';
 import { InputTextModule } from 'primeng/components/inputtext/inputtext';
 import { DropdownModule } from 'primeng/components/dropdown/dropdown';
 import { MultiSelectModule } from 'primeng/components/multiselect/multiselect';

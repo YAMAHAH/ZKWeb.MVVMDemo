@@ -5,11 +5,12 @@ import { GlobalModule } from "@global_module/global.module";
 import { RouterModule } from '@angular/router';
 import { appRootRoutesConfig } from './appRootRoutesConfig';
 import { AppComponent } from './components/app.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
     imports: [
         BrowserModule,
-        BrowserAnimationsModule,
+        BrowserAnimationsModule, HttpClientModule,
         GlobalModule.forRoot(),
         RouterModule.forRoot(appRootRoutesConfig)
     ],

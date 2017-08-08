@@ -14,6 +14,7 @@ import { EncryptOutput } from "@business_bases/desktop/global_module/models/encr
 import { AppStoreService } from './app-store-service';
 import { ClientDataModel } from '../models/client-data-model';
 import { isJson } from '@core/utils/type-utils';
+import {HttpClient} from '@angular/common/http';
 
 // 调用远程Api的服务
 @Injectable()
@@ -70,6 +71,7 @@ export class AppApiService {
     constructor(
         protected http: Http,
         protected appConfigService: AppConfigService,
+        private httpClient:HttpClient,
         protected appStoreService: AppStoreService
     ) {
         // 设置http头
