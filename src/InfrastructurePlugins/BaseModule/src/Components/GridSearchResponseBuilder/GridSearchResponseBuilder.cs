@@ -23,16 +23,15 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
     public class GridSearchResponseBuilder<TEntity, TPrimaryKey>
         where TEntity : class, IEntity, IEntity<TPrimaryKey>
     {
-        public delegate IQueryable<TEntity> QueryFilterDelegate(IQueryable<TEntity> query);
-        public delegate IQueryable<TEntity> QueryColumnFilterDelegate(
-            GridSearchColumnFilter columnFilter, IQueryable<TEntity> query);
+        //public delegate IQueryable<TEntity> QueryFilterDelegate(IQueryable<TEntity> query);
+        //public delegate IQueryable<TEntity> QueryColumnFilterDelegate(GridSearchColumnFilter columnFilter, IQueryable<TEntity> query);
         protected GridSearchRequestDto _request;
         protected IList<IEntityQueryFilter> _enableFilters;
         protected IList<Type> _disableFilters;
         protected IList<Expression<Func<TEntity, bool>>> _keywordConditions;
-        protected IList<QueryFilterDelegate> _customQueryFilters;
-        protected QueryFilterDelegate _customQuerySorter;
-        protected IDictionary<string, QueryColumnFilterDelegate> _customColumnFilters;
+        protected IList<QueryFilterDelegate<TEntity>> _customQueryFilters;
+        protected QueryFilterDelegate<TEntity> _customQuerySorter;
+        protected IDictionary<string, QueryColumnFilterDelegate<TEntity,TPrimaryKey>> _customColumnFilters;
 
         public GridSearchResponseBuilder(GridSearchRequestDto request)
         {
@@ -40,9 +39,9 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             _enableFilters = new List<IEntityQueryFilter>();
             _disableFilters = new List<Type>();
             _keywordConditions = new List<Expression<Func<TEntity, bool>>>();
-            _customQueryFilters = new List<QueryFilterDelegate>();
+            _customQueryFilters = new List<QueryFilterDelegate<TEntity>>();
             _customQuerySorter = null;
-            _customColumnFilters = new Dictionary<string, QueryColumnFilterDelegate>();
+            _customColumnFilters = new Dictionary<string, QueryColumnFilterDelegate<TEntity,TPrimaryKey>>();
         }
 
         /// <summary>
@@ -105,7 +104,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// 指定自定义的查询过滤函数
         /// </summary>
         public virtual GridSearchResponseBuilder<TEntity, TPrimaryKey>
-            FilterQuery(QueryFilterDelegate filterFunc)
+            FilterQuery(QueryFilterDelegate<TEntity> filterFunc)
         {
             _customQueryFilters.Add(filterFunc);
             return this;
@@ -115,7 +114,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// 指定自定义的查询排序函数
         /// </summary>
         public virtual GridSearchResponseBuilder<TEntity, TPrimaryKey>
-            SortQuery(QueryFilterDelegate sortFunc)
+            SortQuery(QueryFilterDelegate<TEntity> sortFunc)
         {
             _customQuerySorter = sortFunc;
             return this;
@@ -125,7 +124,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// 指定自定义的列过滤函数
         /// </summary>
         public virtual GridSearchResponseBuilder<TEntity, TPrimaryKey>
-            FilterColumnWith(string column, QueryColumnFilterDelegate columnFilter)
+            FilterColumnWith(string column, QueryColumnFilterDelegate<TEntity,TPrimaryKey> columnFilter)
         {
             _customColumnFilters[column] = columnFilter;
             return this;
@@ -235,7 +234,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             foreach (var columnFilter in _request.ColumnFilters)
             {
                 // 有自定义过滤器时使用自定义过滤器
-                QueryColumnFilterDelegate customColumnFilter;
+                QueryColumnFilterDelegate<TEntity,TPrimaryKey> customColumnFilter;
                 if (_customColumnFilters.TryGetValue(columnFilter.Column, out customColumnFilter))
                 {
                     query = customColumnFilter(columnFilter, query);

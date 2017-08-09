@@ -56,9 +56,13 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static LambdaExpression Property<T>(this ILambdaExpressionBuilder<T> q, string propertyName)
         {
-            //记得要加上属性名称
+            var props = propertyName.Split('.');
             ParameterExpression paraExpr = Expression.Parameter(typeof(T), q.ParameterName);
-            Expression propExpr = paraExpr.Property(propertyName);
+            Expression propExpr = paraExpr.Property(props[0]);
+            foreach (var prop in props.Skip(1))
+            {
+                propExpr = paraExpr.Property(prop);
+            }
             return Expression.Lambda(propExpr, paraExpr);
         }
 

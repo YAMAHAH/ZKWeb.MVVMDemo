@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
-using Newtonsoft.Json;
-using System;
-using System.Linq;
-using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using BusinessPlugins.OrganizationModule.Application.Dtos;
-using BusinessPlugins.OrganizationModule.Components.GenericConfigs;
 using BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfaces;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.OrganizationModule.Domain.Extensions;
 using BusinessPlugins.OrganizationModule.Domain.Services;
+using InfrastructurePlugins.BaseModule.Components.DtoToModelMap;
+using Newtonsoft.Json;
+using System;
+using System.Linq;
 using ZKWeb.Storage;
 using ZKWebStandard.Ioc;
 
@@ -22,6 +21,13 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
     {
         public OrganizationMapperProfile(UserManager userManager)
         {
+            //创建DTO与Model映射关系
+            new CreateDtoToModelMap<User, UserOutputDto, Guid>()
+                .ForMember(u => u.CreateTime, u => u.CreateTime.ToString())
+                .ForMember(u => u.Remark, u => u.Remark + u.Username)
+                .ForMember(d => d.OwnerTenantName, u => u.OwnerTenant.Name)
+                .ForMember(d => d.OwnerTenantName, (u, q) => { return q; })
+                ;
             // 用户
             CreateMap<UserInputDto, User>()
                 .ForMember(d => d.OwnerTenantId, m => m.Ignore()); // 租户Id为了安全原因需要手动设置
@@ -61,8 +67,9 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
                 .ForMember(d => d.OwnerTenantName, m => m.ResolveUsing(r => r.OwnerTenant?.Name));
 
             // 网站设置
-           // CreateMap<WebsiteSettingsDto, WebsiteSettings>();
-           // CreateMap<WebsiteSettings, WebsiteSettingsDto>();
+            // CreateMap<WebsiteSettingsDto, WebsiteSettings>();
+            // CreateMap<WebsiteSettings, WebsiteSettingsDto>();
+
         }
     }
 }
