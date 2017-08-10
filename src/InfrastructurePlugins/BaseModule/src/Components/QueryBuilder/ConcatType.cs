@@ -1,7 +1,7 @@
 ﻿namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 {
     /// <summary>
-    /// 条件连接串
+    /// 条件连接符
     /// </summary>
     public enum ConcatType
     {

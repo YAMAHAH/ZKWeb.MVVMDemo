@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
+using InfrastructurePlugins.BaseModule.Components.QueryBuilder;
 using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
 using InfrastructurePlugins.BaseModule.Domain.Services.Interfaces;
 using InfrastructurePlugins.BaseModule.Domain.Uow.Extensions;
@@ -23,15 +25,13 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
     public class GridSearchResponseBuilder<TEntity, TPrimaryKey>
         where TEntity : class, IEntity, IEntity<TPrimaryKey>
     {
-        //public delegate IQueryable<TEntity> QueryFilterDelegate(IQueryable<TEntity> query);
-        //public delegate IQueryable<TEntity> QueryColumnFilterDelegate(GridSearchColumnFilter columnFilter, IQueryable<TEntity> query);
         protected GridSearchRequestDto _request;
         protected IList<IEntityQueryFilter> _enableFilters;
         protected IList<Type> _disableFilters;
         protected IList<Expression<Func<TEntity, bool>>> _keywordConditions;
         protected IList<QueryFilterDelegate<TEntity>> _customQueryFilters;
         protected QueryFilterDelegate<TEntity> _customQuerySorter;
-        protected IDictionary<string, QueryColumnFilterDelegate<TEntity,TPrimaryKey>> _customColumnFilters;
+        protected IDictionary<string, QueryColumnFilterDelegate<TEntity, TPrimaryKey>> _customColumnFilters;
 
         public GridSearchResponseBuilder(GridSearchRequestDto request)
         {
@@ -41,7 +41,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             _keywordConditions = new List<Expression<Func<TEntity, bool>>>();
             _customQueryFilters = new List<QueryFilterDelegate<TEntity>>();
             _customQuerySorter = null;
-            _customColumnFilters = new Dictionary<string, QueryColumnFilterDelegate<TEntity,TPrimaryKey>>();
+            _customColumnFilters = new Dictionary<string, QueryColumnFilterDelegate<TEntity, TPrimaryKey>>();
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// 指定自定义的列过滤函数
         /// </summary>
         public virtual GridSearchResponseBuilder<TEntity, TPrimaryKey>
-            FilterColumnWith(string column, QueryColumnFilterDelegate<TEntity,TPrimaryKey> columnFilter)
+            FilterColumnWith(string column, QueryColumnFilterDelegate<TEntity, TPrimaryKey> columnFilter)
         {
             _customColumnFilters[column] = columnFilter;
             return this;
@@ -234,7 +234,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             foreach (var columnFilter in _request.ColumnFilters)
             {
                 // 有自定义过滤器时使用自定义过滤器
-                QueryColumnFilterDelegate<TEntity,TPrimaryKey> customColumnFilter;
+                QueryColumnFilterDelegate<TEntity, TPrimaryKey> customColumnFilter;
                 if (_customColumnFilters.TryGetValue(columnFilter.Column, out customColumnFilter))
                 {
                     query = customColumnFilter(columnFilter, query);
@@ -449,11 +449,51 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                 }
                 // 根据构建出来的条件筛选
                 var predicate = Expression.Lambda<Func<TEntity, bool>>(bodyExpr, paramExpr);
-                query = query.Where(predicate);
+                query = query.Where(predicate).Where(predicate).Where(predicate);
             }
             return query;
         }
 
+
+        protected virtual IQueryable<TEntity> ApplyColumnFilter2(IQueryable<TEntity> query)
+        {
+            // 无列查询条件时跳过
+            if (_request.ColumnFilters == null || _request.ColumnFilters.Count == 0)
+            {
+                return query;
+            }
+            //获取用户模板预设的过滤条件
+            var userPresetFilterProv = ZKWeb.Application.Ioc.Resolve<IUserPresetTemplateFilterProvider>();
+            var userPresetFilter = userPresetFilterProv.GetUserPresetFilter<TEntity>();
+
+            // 按列查询条件进行过滤
+            var entityType = typeof(TEntity);
+            foreach (var columnFilter in _request.ColumnFilters)
+            {
+                // 有自定义过滤器时使用自定义过滤器
+                QueryColumnFilterDelegate<TEntity, TPrimaryKey> customColumnFilter;
+                if (_customColumnFilters.TryGetValue(columnFilter.Column, out customColumnFilter))
+                {
+                    query = customColumnFilter(columnFilter, query);
+                    continue;
+                }
+            }
+
+            var root = new ColumnQueryCondition() { IsChildExpress = true };
+            var cqconds = Mapper.Map<List<ColumnQueryCondition>>(_request.ColumnFilters);
+
+            root.Childs.AddRange(cqconds);
+            var expBuilder = new LambdaExpressionBuilder<TEntity>();
+            var columnFilterExpr = expBuilder.GenerateLambdaExpression(root);
+            
+            
+            //合并表达式
+            var paramExpr = Expression.Parameter(entityType, "e");
+            var bodyExpr = Expression.AndAlso(userPresetFilter.Body, columnFilterExpr.Body);
+            var predicate = Expression.Lambda<Func<TEntity, bool>>(bodyExpr, paramExpr);
+
+            return query.Where(predicate);
+        }
 
         /// <summary>
         /// 调用自定义的过滤函数

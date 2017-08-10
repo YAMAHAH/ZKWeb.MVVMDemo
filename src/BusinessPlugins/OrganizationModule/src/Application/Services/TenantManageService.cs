@@ -60,6 +60,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
         [CheckPrivilege(true, typeof(IAmAdmin), "Tenant:View")]
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
+
             var response = request.BuildResponse<Tenant, Guid>()
                 .FilterKeywordWith(t => t.Name)
                 .FilterKeywordWith(t => t.Remark)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 {
@@ -38,9 +39,9 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public string ParameterName { get; set; }
         public ParameterExpression[] Parameters { get; set; }
-        public ICollection<QueryCondition> QueryCondtions { get; set; }
+        public ICollection<ColumnQueryCondition> QueryCondtions { get; set; }
 
-        public Expression<Func<T, bool>> GenerateLambdaExpression(QueryCondition root)
+        public Expression<Func<T, bool>> GenerateLambdaExpression(ColumnQueryCondition root)
         {
             RecursionGenerateExpression(root);
             return GetLambdaExpression(root.Expression);
@@ -70,7 +71,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// 递归生成表达式
         /// </summary>
         /// <param name="c"></param>
-        private void RecursionGenerateExpression(QueryCondition c)
+        private void RecursionGenerateExpression(ColumnQueryCondition c)
         {
             //生成相应的表达式树
             if (!c.IsChildExpress) GenerateExpression(c);
@@ -81,13 +82,17 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 ConcatExpression(c, t, c.Childs.First() == t);
             }
         }
+
         /// <summary>
         /// 生成单个条件的表达式
         /// </summary>
         /// <param name="qc"></param>
-        private void GenerateExpression(QueryCondition qc)
+        private void GenerateExpression(ColumnQueryCondition qc)
         {
+            //(e)=>Test(e,qc)
+
             Expression expr = null;
+
             //根据操作符生成相应的表达式
             switch (qc.OpertionSymbol)
             {
@@ -163,7 +168,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// <param name="p"></param>
         /// <param name="c"></param>
         /// <param name="first"></param>
-        private void ConcatExpression(QueryCondition p, QueryCondition c, bool first)
+        private void ConcatExpression(ColumnQueryCondition p, ColumnQueryCondition c, bool first)
         {
             if (first)
             {

@@ -8,7 +8,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
     {
         string ParameterName { get; set; }
         ParameterExpression[] Parameters { get; set; }
-        ICollection<QueryCondition> QueryCondtions { get; set; }
+        ICollection<ColumnQueryCondition> QueryCondtions { get; set; }
         /// <summary>
         /// 获取某个查询条件结点的表达式生成对应的表达式树
         /// 结点的结果由子结点拼接而成
@@ -21,7 +21,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// </summary>
         /// <param name="root"></param>
         /// <returns></returns>
-        Expression<Func<T, bool>> GenerateLambdaExpression(QueryCondition root);
+        Expression<Func<T, bool>> GenerateLambdaExpression(ColumnQueryCondition root);
         /// <summary>
         /// 解析字符串生成表达式树
         /// ParameterExpression x = Expression.Parameter(typeof(int), "x");

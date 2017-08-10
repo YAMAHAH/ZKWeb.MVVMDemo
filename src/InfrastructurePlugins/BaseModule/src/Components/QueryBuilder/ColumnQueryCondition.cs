@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 {
-    public class QueryCondition
+    public class ColumnQueryCondition
     {
         /// <summary>
         /// 子表达式
@@ -37,7 +37,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// <summary>
         /// 子表达式查询条件
         /// </summary>
-        public List<QueryCondition> Childs { get; set; } = new List<QueryCondition>();
+        public List<ColumnQueryCondition> Childs { get; set; } = new List<ColumnQueryCondition>();
         /// <summary>
         /// 条件表达式树
         /// </summary>

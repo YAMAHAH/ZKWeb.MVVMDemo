@@ -147,7 +147,7 @@ namespace InfrastructurePlugins.BaseModule.Utils
             return Expression.Lambda<Func<T, bool>>(expression, this.Parameters);
         }
 
-        public ICollection<QueryCondition> QueryCondtions { get; set; }
+        public ICollection<ColumnQueryCondition> QueryCondtions { get; set; }
         /// <summary>
         /// 获取某个结点的表达式树
         /// </summary>
@@ -163,7 +163,7 @@ namespace InfrastructurePlugins.BaseModule.Utils
         /// 递归生成表达式
         /// </summary>
         /// <param name="c"></param>
-        public void RecursionGenerateExpression(QueryCondition c)
+        public void RecursionGenerateExpression(ColumnQueryCondition c)
         {
             //生成相应的表达式树
             if (!c.IsChildExpress) GenerateExpression(c);
@@ -178,7 +178,7 @@ namespace InfrastructurePlugins.BaseModule.Utils
         /// 生成单个条件的表达式
         /// </summary>
         /// <param name="qc"></param>
-        public void GenerateExpression(QueryCondition qc)
+        public void GenerateExpression(ColumnQueryCondition qc)
         {
             //根据操作符生成相应的表达式
             switch (qc.OpertionSymbol)
@@ -253,7 +253,7 @@ namespace InfrastructurePlugins.BaseModule.Utils
         /// <param name="p"></param>
         /// <param name="c"></param>
         /// <param name="first"></param>
-        public void ConcatExpression(QueryCondition p, QueryCondition c, bool first)
+        public void ConcatExpression(ColumnQueryCondition p, ColumnQueryCondition c, bool first)
         {
             if (first)
             {
@@ -374,13 +374,13 @@ namespace InfrastructurePlugins.BaseModule.Utils
         string ParameterName { get; set; }
         ParameterExpression[] Parameters { get; set; }
         void MakeExpression();
-        ICollection<QueryCondition> QueryCondtions { get; set; }
+        ICollection<ColumnQueryCondition> QueryCondtions { get; set; }
         void AppendExpression(QueryExpression expression);
     }
 
     public static class IQueryBuilderExtensions
     {
-        public static IQueryBuilder<T> SetQueryCondtion<T>(this IQueryBuilder<T> q, ICollection<QueryCondition> queryCondtions)
+        public static IQueryBuilder<T> SetQueryCondtion<T>(this IQueryBuilder<T> q, ICollection<ColumnQueryCondition> queryCondtions)
         {
             q.QueryCondtions = queryCondtions;
             return q;

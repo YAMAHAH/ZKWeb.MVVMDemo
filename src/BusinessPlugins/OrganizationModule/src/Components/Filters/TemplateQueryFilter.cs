@@ -41,7 +41,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Components.Filters
 
         private Expression<Func<TEntity, bool>> GetUserFilter<TEntity>()
         {
-            return null;
+            return t => true;
             //根据userId + tempId + filterId , tempId + filterId查找对应的条件
             //var injector = ZKWeb.Application.Ioc;
             //var sessionManager = injector.Resolve<SessionManager>();

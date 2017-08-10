@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="BasicModule\src\Application\Mapper\" />
     <Folder Include="BusinessBaseModule\src\QualityControlModule\Domain\Services\" />
     <Folder Include="BusinessBaseModule\src\SubcontractModule\Domain\Services\" />
     <Folder Include="FinanceModule\src\Domain\" />

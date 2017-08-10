@@ -5,6 +5,19 @@ using ZKWeb.Database;
 namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
 {
     /// <summary>
+    /// 查询条件调用函数委托
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TPrimaryKey"></typeparam>
+    /// <param name="columnFilter"></param>
+    /// <param name="entity"></param>
+    /// <returns></returns>
+    public delegate bool QueryColumnFilterFunc<TEntity, TPrimaryKey>(
+        TEntity entity,
+        GridSearchColumnFilter columnFilter
+    ) where TEntity : class, IEntity, IEntity<TPrimaryKey>;
+
+    /// <summary>
     /// 列查询过滤委托
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
