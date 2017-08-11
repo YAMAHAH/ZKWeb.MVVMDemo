@@ -39,10 +39,10 @@ namespace InfrastructurePlugins.BaseModule.Application.Dtos
         /// <typeparam name="TEntity">实体类型</typeparam>
         /// <typeparam name="TPrimaryKey">主键类型</typeparam>
         /// <returns></returns>
-        public GridSearchResponseBuilder<TEntity, TPrimaryKey> BuildResponse<TEntity, TPrimaryKey>()
-            where TEntity : class, IEntity, IEntity<TPrimaryKey>
+        public GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey> BuildResponse<TEntity, TDto, TPrimaryKey>()
+            where TEntity : class, IEntity, IEntity<TPrimaryKey> where TDto : IOutputDto
         {
-            return new GridSearchResponseBuilder<TEntity, TPrimaryKey>(this);
+            return new GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>(this);
         }
     }
 }

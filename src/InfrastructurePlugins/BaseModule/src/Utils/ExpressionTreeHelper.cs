@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -203,5 +204,44 @@ namespace InfrastructurePlugins.BaseModule.Utils
             ConstantExpression constant = Expression.Constant(propertyValue, typeof(string));
             return Expression.Lambda<Func<T, bool>>(Expression.Not(Expression.Call(member, method, constant)), parameter);
         }
+        public static Expression<Func<T, bool>> ContainsIn<T, TValue>(TValue[] arr, string fieldname)
+        {
+            ParameterExpression entity = Expression.Parameter(typeof(T), "e");
+            MemberExpression member = Expression.Property(entity, fieldname);
+            var containsMethods = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public)
+            .Where(m => m.Name == "Contains");
+            MethodInfo method = null;
+            foreach (var m in containsMethods)
+            {
+                if (m.GetParameters().Count() == 2)
+                {
+                    method = m;
+                    break;
+                }
+            }
+            method = method.MakeGenericMethod(member.Type);
+            var exprContains = Expression.Call(method, new Expression[] { Expression.Constant(arr), member });
+            return Expression.Lambda<Func<T, bool>>(exprContains, entity);
+        }
+        public static Expression<Func<T, bool>> NotContainsIn<T, TValue>(TValue[] arr, string fieldname)
+        {
+            ParameterExpression entity = Expression.Parameter(typeof(T), "e");
+            MemberExpression member = Expression.Property(entity, fieldname);
+            var containsMethods = typeof(Enumerable).GetMethods(BindingFlags.Static | BindingFlags.Public)
+            .Where(m => m.Name == "Contains");
+            MethodInfo method = null;
+            foreach (var m in containsMethods)
+            {
+                if (m.GetParameters().Count() == 2)
+                {
+                    method = m;
+                    break;
+                }
+            }
+            method = method.MakeGenericMethod(member.Type);
+            var exprContains = Expression.Call(method, new Expression[] { Expression.Constant(arr), member });
+            return Expression.Lambda<Func<T, bool>>(Expression.Not(exprContains), entity);
+        }
+
     }
 }

@@ -1,7 +1,6 @@
 import { GridSearchColumnFilterMatchMode } from './grid-search-column-filter-match-mode';
 import { OpertionSymbol } from './opertion-symbol';
 import { ConcatType } from './concat-type';
-import { Expression } from './expression';
 
 /** 列过滤信息 */
 export class GridSearchColumnFilter {
@@ -27,6 +26,4 @@ export class GridSearchColumnFilter {
     public Concat: ConcatType;
     /** Childs */
     public Childs: GridSearchColumnFilter[];
-    /** Expression */
-    public Expression: Expression;
 }

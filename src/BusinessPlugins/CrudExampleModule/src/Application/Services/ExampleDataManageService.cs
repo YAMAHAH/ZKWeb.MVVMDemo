@@ -29,10 +29,10 @@ namespace BusinessPlugins.CrudExampleModule.Application.Services
         [CheckPrivilege(typeof(IAmAdmin), "ExampleData:View")]
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
-            return request.BuildResponse<ExampleData, Guid>()
+            return request.BuildResponse<ExampleData, ExampleDataOutputDto, Guid>()
                 .FilterKeywordWith(t => t.Name)
                 .FilterKeywordWith(t => t.Description)
-                .ToResponse<ExampleDataOutputDto>();
+                .ToResponse();
         }
 
         [Description("编辑数据")]

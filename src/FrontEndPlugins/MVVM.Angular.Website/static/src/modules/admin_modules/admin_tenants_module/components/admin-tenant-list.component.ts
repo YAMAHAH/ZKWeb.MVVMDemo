@@ -41,6 +41,7 @@ export class AdminTenantListComponent extends CrudWithDialogBaseComponent {
         this.editForm.addControl("SuperAdminPassword", new FormControl("", Validators.minLength(6)));
         this.editForm.addControl("SuperAdminConfirmPassword", new FormControl("", Validators.minLength(6)));
         this.editForm.addControl("Remark", new FormControl(""));
+        
     }
 
     submitSearch(request: GridSearchRequestDto) {

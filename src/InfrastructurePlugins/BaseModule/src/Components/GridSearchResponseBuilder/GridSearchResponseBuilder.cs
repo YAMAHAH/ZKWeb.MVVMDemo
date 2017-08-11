@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
 using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
+using InfrastructurePlugins.BaseModule.Components.DtoToModelMap;
 using InfrastructurePlugins.BaseModule.Components.QueryBuilder;
 using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
 using InfrastructurePlugins.BaseModule.Domain.Services.Interfaces;
@@ -14,6 +16,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using ZKWeb.Database;
 using ZKWebStandard.Extensions;
+using ZKWebStandard.Ioc;
 
 namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
 {
@@ -22,8 +25,8 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
     /// </summary>
     /// <typeparam name="TEntity">实体类型</typeparam>
     /// <typeparam name="TPrimaryKey">主键类型</typeparam>
-    public class GridSearchResponseBuilder<TEntity, TPrimaryKey>
-        where TEntity : class, IEntity, IEntity<TPrimaryKey>
+    public class GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>
+        where TEntity : class, IEntity, IEntity<TPrimaryKey> where TDto : IOutputDto
     {
         protected GridSearchRequestDto _request;
         protected IList<IEntityQueryFilter> _enableFilters;
@@ -32,6 +35,8 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         protected IList<QueryFilterDelegate<TEntity>> _customQueryFilters;
         protected QueryFilterDelegate<TEntity> _customQuerySorter;
         protected IDictionary<string, QueryColumnFilterDelegate<TEntity, TPrimaryKey>> _customColumnFilters;
+
+        protected IMapper mapper;
 
         public GridSearchResponseBuilder(GridSearchRequestDto request)
         {
@@ -42,12 +47,70 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             _customQueryFilters = new List<QueryFilterDelegate<TEntity>>();
             _customQuerySorter = null;
             _customColumnFilters = new Dictionary<string, QueryColumnFilterDelegate<TEntity, TPrimaryKey>>();
+
+            mapper = ColumnQueryFilterProfile();
+        }
+
+        private IMapper ColumnQueryFilterProfile()
+        {
+            var rejector = ZKWeb.Application.Ioc;
+            var dtoMapper = rejector.Resolve<IDtoToModelMapper>();
+            var dtoMap = dtoMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
+            var dtoAutoMapper = dtoMapper.GetDtoMapper<TDto>();
+            if (dtoAutoMapper == null)
+            {
+                var mapperConf = new MapperConfiguration(cfg => cfg.CreateMap<GridSearchColumnFilter, ColumnQueryCondition>()
+                    .ForMember(m => m.SrcExpression, opt => opt.ResolveUsing(m =>
+                    {
+                        var dtoMapVal = dtoMap?.GetMember(m.Column);
+                        return dtoMapVal == null ? null : dtoMapVal.Expression;
+                    }))
+                    .ForMember(m => m.PropertyName, opt => opt.MapFrom(m => m.Column))
+                    .ForMember(m => m.Value1, opt => opt.ResolveUsing(m =>
+                    {
+                        if (m.Value != null)
+                        {
+                            return m.Value;
+                        }
+                        return m.Value1;
+                    }))
+                    .ForMember(m => m.Value2, opt => opt.ResolveUsing(m => typeof(TDto).FullName))
+                    .ForMember(m => m.OpertionSymbol, opt => opt.ResolveUsing(m =>
+                    {
+                        if (m.OpertionSymbol == OpertionSymbol.None)
+                        {
+                            switch (m.MatchMode)
+                            {
+                                case GridSearchColumnFilterMatchMode.Default:
+                                    return OpertionSymbol.Like;
+                                case GridSearchColumnFilterMatchMode.EndsWith:
+                                    return OpertionSymbol.EndsWith;
+                                case GridSearchColumnFilterMatchMode.Equals:
+                                    return OpertionSymbol.Equals;
+                                case GridSearchColumnFilterMatchMode.In:
+                                    return OpertionSymbol.In;
+                                case GridSearchColumnFilterMatchMode.StartsWith:
+                                    return OpertionSymbol.StartsWith;
+                                default:
+                                    break;
+                            }
+                        }
+                        return m.OpertionSymbol;
+                    }))
+                    .ForMember(m => m.ProperyType, opt => opt.ResolveUsing(m =>
+                    {
+                        var dtoMapVal = dtoMap?.GetMember(m.Column);
+                        return dtoMapVal == null ? m.ProperyType : dtoMapVal.ColumnType;
+                    })));
+                return mapperConf.CreateMapper();
+            }
+            return dtoAutoMapper;
         }
 
         /// <summary>
         /// 启用查询过滤器
         /// </summary>
-        public virtual GridSearchResponseBuilder<TEntity, TPrimaryKey>
+        public virtual GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>
             EnableQueryFilter(IEntityQueryFilter filter)
         {
             _enableFilters.Add(filter);
@@ -57,7 +120,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// <summary>
         /// 禁用查询过滤器
         /// </summary>
-        public virtual GridSearchResponseBuilder<TEntity, TPrimaryKey>
+        public virtual GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>
             DisableQueryFilter(Type type)
         {
             _disableFilters.Add(type);
@@ -67,7 +130,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// <summary>
         /// 指定过滤关键词时使用的成员
         /// </summary>
-        public virtual GridSearchResponseBuilder<TEntity, TPrimaryKey>
+        public virtual GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>
             FilterKeywordWith<TMember>(Expression<Func<TEntity, TMember>> memberExpr)
         {
             var paramExpr = memberExpr.Parameters[0];
@@ -93,7 +156,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// <summary>
         /// 指定过滤关键词时使用的条件
         /// </summary>
-        public virtual GridSearchResponseBuilder<TEntity, TPrimaryKey>
+        public virtual GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>
             FilterKeywordWithCondition(Expression<Func<TEntity, bool>> conditionExpr)
         {
             _keywordConditions.Add(conditionExpr);
@@ -103,7 +166,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// <summary>
         /// 指定自定义的查询过滤函数
         /// </summary>
-        public virtual GridSearchResponseBuilder<TEntity, TPrimaryKey>
+        public virtual GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>
             FilterQuery(QueryFilterDelegate<TEntity> filterFunc)
         {
             _customQueryFilters.Add(filterFunc);
@@ -113,7 +176,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// <summary>
         /// 指定自定义的查询排序函数
         /// </summary>
-        public virtual GridSearchResponseBuilder<TEntity, TPrimaryKey>
+        public virtual GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>
             SortQuery(QueryFilterDelegate<TEntity> sortFunc)
         {
             _customQuerySorter = sortFunc;
@@ -123,7 +186,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// <summary>
         /// 指定自定义的列过滤函数
         /// </summary>
-        public virtual GridSearchResponseBuilder<TEntity, TPrimaryKey>
+        public virtual GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>
             FilterColumnWith(string column, QueryColumnFilterDelegate<TEntity, TPrimaryKey> columnFilter)
         {
             _customColumnFilters[column] = columnFilter;
@@ -449,13 +512,13 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                 }
                 // 根据构建出来的条件筛选
                 var predicate = Expression.Lambda<Func<TEntity, bool>>(bodyExpr, paramExpr);
-                query = query.Where(predicate).Where(predicate).Where(predicate);
+                query = query.Where(predicate);
             }
             return query;
         }
 
 
-        protected virtual IQueryable<TEntity> ApplyColumnFilter2(IQueryable<TEntity> query)
+        protected virtual IQueryable<TEntity> ApplyColumnFilterQuery(IQueryable<TEntity> query)
         {
             // 无列查询条件时跳过
             if (_request.ColumnFilters == null || _request.ColumnFilters.Count == 0)
@@ -468,31 +531,20 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
 
             // 按列查询条件进行过滤
             var entityType = typeof(TEntity);
-            foreach (var columnFilter in _request.ColumnFilters)
-            {
-                // 有自定义过滤器时使用自定义过滤器
-                QueryColumnFilterDelegate<TEntity, TPrimaryKey> customColumnFilter;
-                if (_customColumnFilters.TryGetValue(columnFilter.Column, out customColumnFilter))
-                {
-                    query = customColumnFilter(columnFilter, query);
-                    continue;
-                }
-            }
 
             var root = new ColumnQueryCondition() { IsChildExpress = true };
-            var cqconds = Mapper.Map<List<ColumnQueryCondition>>(_request.ColumnFilters);
+            var cqconds = mapper.Map<List<ColumnQueryCondition>>(_request.ColumnFilters.ToList());
 
             root.Childs.AddRange(cqconds);
-            var expBuilder = new LambdaExpressionBuilder<TEntity>();
-            var columnFilterExpr = expBuilder.GenerateLambdaExpression(root);
-            
-            
-            //合并表达式
+            //var expBuilder = new LambdaExpressionBuilder<TEntity>();
+            Expression<Func<TEntity, bool>> columnFilterExpr = e => true; // expBuilder.GenerateLambdaExpression(root);
+
+            ////合并表达式
             var paramExpr = Expression.Parameter(entityType, "e");
             var bodyExpr = Expression.AndAlso(userPresetFilter.Body, columnFilterExpr.Body);
             var predicate = Expression.Lambda<Func<TEntity, bool>>(bodyExpr, paramExpr);
 
-            return query.Where(predicate);
+            return predicate == null ? query : query.Where(predicate);
         }
 
         /// <summary>
@@ -534,7 +586,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             return query;
         }
         protected static readonly MethodInfo _sortQueryGenericMethod =
-            typeof(GridSearchResponseBuilder<TEntity, TPrimaryKey>).FastGetMethod(
+            typeof(GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>).FastGetMethod(
                 nameof(SortQueryGeneric), BindingFlags.NonPublic | BindingFlags.Instance);
 
         /// <summary>
@@ -586,8 +638,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// 创建搜索回应
         /// </summary>
         /// <returns></returns>
-        public virtual GridSearchResponseDto ToResponse<TDto>()
-            where TDto : IOutputDto
+        public virtual GridSearchResponseDto ToResponse()
         {
             return GetScopeInvoker()(() =>
             {
@@ -598,6 +649,8 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                 {
                     // 按关键词进行过滤
                     query = ApplyKeywordFilter(query);
+                    //
+                    ApplyColumnFilterQuery(query);
                     // 按列查询条件进行过滤
                     query = ApplyColumnFilter(query);
                     // 调用自定义的过滤函数

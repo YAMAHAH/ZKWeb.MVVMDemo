@@ -1,4 +1,5 @@
-﻿using InfrastructurePlugins.BaseModule.Application.Attributes;
+﻿using AutoMapper;
+using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
 using InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder;
 using System;
@@ -6,7 +7,6 @@ using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
-using ZKWebStandard.Extensions;
 
 namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
 {
@@ -14,6 +14,24 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
     public class DtoToModelMapper : IDtoToModelMapper
     {
         private ConcurrentDictionary<string, IDtoToModelMap> xDtoToModelMaps = new ConcurrentDictionary<string, IDtoToModelMap>();
+        private ConcurrentDictionary<string, IMapper> xDtoMapperMaps = new ConcurrentDictionary<string, IMapper>();
+        public IMapper GetDtoMapper<TDto>()
+            where TDto : IOutputDto
+        {
+            var key = typeof(TDto).FullName;
+            IMapper value;
+            xDtoMapperMaps.TryGetValue(key, out value);
+            return value == null ? null : value;
+        }
+
+        public bool AddOrUpdateMapper<TDto>(IMapper dtoMapper)
+             where TDto : IOutputDto
+        {
+            if (dtoMapper == null) return false;
+            var key = typeof(TDto).FullName;
+            IMapper value = xDtoMapperMaps.AddOrUpdate(key, dtoMapper, (k, v) => v = dtoMapper);
+            return value != null;
+        }
         public ICreateDtoToModelMap<TModel, TDto, TPrimaryKey> GetDtoToModelMap<TModel, TDto, TPrimaryKey>()
             where TDto : IOutputDto where TModel : class, IEntity, IEntity<TPrimaryKey>
         {
@@ -22,6 +40,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             xDtoToModelMaps.TryGetValue(key, out value);
             return value == null ? null : value as ICreateDtoToModelMap<TModel, TDto, TPrimaryKey>;
         }
+
         public bool AddOrUpdateMap<TModel, TDto, TPrimaryKey>(IDtoToModelMap dtoToModelMap)
          where TDto : IOutputDto where TModel : class, IEntity, IEntity<TPrimaryKey>
         {
@@ -58,6 +77,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             var value = new DtoToModelMapValue<TModel, TPrimaryKey>()
             {
                 Column = prop,
+                ColumnType = typeof(TMember),
                 Expression = mapOptions.Expression,
                 ColumnFilter = mapOptions.ColumnFilter,
                 TemplateObjectInfo = mapOptions.TemplateObjectInfo,
@@ -74,7 +94,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             return expValue;
         }
 
-        public DtoToModelMapValue<TModel, TPrimaryKey> GetMember<TMember>(string destMember)
+        public DtoToModelMapValue<TModel, TPrimaryKey> GetMember(string destMember)
         {
             var propKey = destMember;
             DtoToModelMapValue<TModel, TPrimaryKey> expValue;
@@ -88,6 +108,15 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
     {
         CreateDtoToModelMap<TModel, TDto, TPrimaryKey> ForMember<TMember>(Expression<Func<TDto, TMember>> destMember,
         Action<DtoMapOption<TModel, TPrimaryKey>> optionAction);
+
+        DtoToModelMapValue<TModel, TPrimaryKey> GetMember<TMember>(Expression<Func<TDto, TMember>> destMember);
+        /// <summary>
+        /// 根据名称获取相应的映射对象
+        /// </summary>
+        /// <typeparam name="TMember"></typeparam>
+        /// <param name="destMember"></param>
+        /// <returns></returns>
+        DtoToModelMapValue<TModel, TPrimaryKey> GetMember(string destMember);
     }
 
     public interface IDtoToModelMap
@@ -99,6 +128,8 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
          where TModel : class, IEntity, IEntity<TPrimaryKey>
     {
         public string Column { get; set; }
+
+        public Type ColumnType { get; set; }
 
         public Expression Expression { get; set; }
 
@@ -153,6 +184,9 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
            where TDto : IOutputDto where TModel : class, IEntity, IEntity<TPrimaryKey>;
         bool AddOrUpdateMap<TModel, TDto, TPrimaryKey>(IDtoToModelMap dtoToModelMap)
           where TDto : IOutputDto where TModel : class, IEntity, IEntity<TPrimaryKey>;
+
+        IMapper GetDtoMapper<TDto>() where TDto : IOutputDto;
+        bool AddOrUpdateMapper<TDto>(IMapper dtoMapper) where TDto : IOutputDto;
     }
     public interface IValueResolver<in TSource, in TDestination, TDestMember>
     {

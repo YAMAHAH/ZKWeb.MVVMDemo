@@ -5,85 +5,86 @@
     /// </summary>
     public enum OpertionSymbol
     {
+        None = 0,
         /// <summary>
         /// 等于
         /// </summary>
-        Equals = 0,
+        Equals = 1,
         /// <summary>
         /// 不等于
         /// </summary>
-        NotEquals = 1,
+        NotEquals = 2,
         /// <summary>
         /// 大于
         /// </summary>
-        GreaterThan = 2,
+        GreaterThan = 3,
         /// <summary>
         ///  不大于
         /// </summary>
-        NotGreaterThan = 3,
+        NotGreaterThan = 4,
         /// <summary>
         /// 大于等于
         /// </summary>
-        GreaterThanOrEqueals = 4,
+        GreaterThanOrEqueals = 5,
         /// <summary>
         /// 小于
         /// </summary>
-        LessThan = 5,
+        LessThan = 6,
         /// <summary>
         /// 不小于
         /// </summary>
-        NotLessThan = 6,
+        NotLessThan = 7,
         /// <summary>
         /// 小于等于
         /// </summary>
-        LessThanOrEqual = 7,
+        LessThanOrEqual = 8,
         /// <summary>
         /// 包含
         /// </summary>
-        Like = 8,
+        Like = 9,
         /// <summary>
         /// 不包含
         /// </summary>
-        NotLike = 9,
+        NotLike = 10,
         /// <summary>
         /// 以...开头
         /// </summary>
-        StartsWith = 10,
+        StartsWith = 11,
         /// <summary>
         ///  不以...开头
         /// </summary>
-        NotStartsWith = 11,
+        NotStartsWith = 12,
         /// <summary>
         /// /以...结尾
         /// </summary>
-        EndsWith = 12,
+        EndsWith = 13,
         /// <summary>
         /// 不以...结尾
         /// </summary>
-        NotEndsWith = 13,
+        NotEndsWith = 14,
         /// <summary>
         /// 值在集合内
         /// </summary>
-        In = 14,
+        In = 15,
         /// <summary>
         /// 值不在集合内
         /// </summary>
-        NotIn = 15,
+        NotIn = 16,
         /// <summary>
         /// 介于 A...B之间
         /// </summary>
-        Between = 16,
+        Between = 17,
         /// <summary>
         /// 不介于 A...B之间
         /// </summary>
-        NotBetween = 17,
+        NotBetween = 18,
         /// <summary>
         /// （支持：1,2,3 或 1-3；如果不符合前面规则，即认为模糊查询
         /// </summary>
-        Fuzzy = 18,
+        Fuzzy = 19,
         /// <summary>
         /// 
         /// </summary>
-        NotFuzzy = 19
+        NotFuzzy = 20
     }
 }

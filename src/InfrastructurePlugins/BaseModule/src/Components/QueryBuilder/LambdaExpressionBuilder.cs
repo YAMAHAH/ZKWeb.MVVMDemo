@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 {
@@ -12,7 +11,14 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
     {
         public LambdaExpressionBuilder()
         {
-            ParameterName = "p";
+            ParameterName = "e";
+            CreateParaExpr(ParameterName);
+        }
+
+        private void CreateParaExpr(string paraName = "e")
+        {
+            ParameterExpression paraExpr = Expression.Parameter(typeof(T), paraName);
+            Parameters.Append(paraExpr);
         }
         /// <summary>
         /// 暂时不用
@@ -30,12 +36,13 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         {
             if (string.IsNullOrEmpty(paraName))
             {
-                ParameterName = "p";
+                ParameterName = "e";
             }
             else
             {
                 ParameterName = paraName;
             }
+            CreateParaExpr(ParameterName);
         }
         public string ParameterName { get; set; }
         public ParameterExpression[] Parameters { get; set; }
@@ -89,72 +96,90 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// <param name="qc"></param>
         private void GenerateExpression(ColumnQueryCondition qc)
         {
-            //(e)=>Test(e,qc)
-
             Expression expr = null;
 
             //根据操作符生成相应的表达式
             switch (qc.OpertionSymbol)
             {
                 case OpertionSymbol.Equals:
-                    expr = this.Equals(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.Equals(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
+                    this.Equals(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
                     break;
                 case OpertionSymbol.NotEquals:
-                    expr = this.NotEquals(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.NotEquals(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
+                       this.NotEquals(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
                     break;
                 case OpertionSymbol.GreaterThan:
-                    expr = this.GreaterThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.GreaterThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
+                        this.GreaterThan(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
                     break;
                 case OpertionSymbol.NotGreaterThan:
-                    expr = this.NotGreaterThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.NotGreaterThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
+                        this.NotGreaterThan(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
                     break;
                 case OpertionSymbol.GreaterThanOrEqueals:
-                    expr = this.GreaterThanOrEquals(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.GreaterThanOrEquals(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
+                        this.GreaterThanOrEquals(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
                     break;
                 case OpertionSymbol.LessThan:
-                    expr = this.LessThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.LessThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
+                        this.LessThan(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
                     break;
                 case OpertionSymbol.NotLessThan:
-                    expr = this.LessThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.LessThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
+                         this.LessThan(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
                     break;
                 case OpertionSymbol.LessThanOrEqual:
-                    expr = this.LessThanOrEqual(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.LessThanOrEqual(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
+                        this.LessThanOrEqual(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
                     break;
                 case OpertionSymbol.Like:
-                    expr = this.Like<T>(qc.PropertyName, qc.Value1 as string, qc.Concat);
+                    expr = qc.SrcExpression == null ? this.Like<T>(qc.PropertyName, qc.Value1 as string, qc.Concat) :
+                        this.Like<T>(qc.SrcExpression, qc.Value1 as string, qc.Concat);
                     break;
                 case OpertionSymbol.NotLike:
-                    expr = this.NotLike<T>(qc.PropertyName, qc.Value1 as string, qc.Concat);
+                    expr = qc.SrcExpression == null ? this.NotLike<T>(qc.PropertyName, qc.Value1 as string, qc.Concat) :
+                        this.NotLike<T>(qc.SrcExpression, qc.Value1 as string, qc.Concat);
                     break;
                 case OpertionSymbol.StartsWith:
-                    expr = this.StartsWith(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.StartsWith(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat) :
+                        this.StartsWith(qc.SrcExpression, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
                     break;
                 case OpertionSymbol.NotStartsWith:
-                    expr = this.StartsWith(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.StartsWith(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat) :
+                        this.StartsWith(qc.SrcExpression, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
                     break;
                 case OpertionSymbol.EndsWith:
-                    expr = this.EndsWith(qc.PropertyName, qc.Value1 as string, qc.Concat);
+                    expr = qc.SrcExpression == null ? this.EndsWith(qc.PropertyName, qc.Value1 as string, qc.Concat) :
+                        this.EndsWith(qc.SrcExpression, qc.Value1 as string, qc.Concat);
                     break;
                 case OpertionSymbol.NotEndsWith:
-                    expr = this.NotEndsWith(qc.PropertyName, qc.Value1 as string, qc.Concat);
+                    expr = qc.SrcExpression == null ? this.NotEndsWith(qc.PropertyName, qc.Value1 as string, qc.Concat) :
+                        this.NotEndsWith(qc.SrcExpression, qc.Value1 as string, qc.Concat);
                     break;
                 case OpertionSymbol.In:
-                    expr = this.In(qc.PropertyName, qc.Concat, ConverterHelper.ChangeType(qc.Value1, typeof(object[])));
+                    expr = qc.SrcExpression == null ? this.In(qc.PropertyName, qc.Concat, ConverterHelper.ChangeType(qc.Value1, typeof(object[]))) :
+                        this.In(qc.SrcExpression, qc.Concat, ConverterHelper.ChangeType(qc.Value1, typeof(object[])));
                     break;
                 case OpertionSymbol.NotIn:
-                    expr = this.NotIn(qc.PropertyName, qc.Concat, ConverterHelper.ChangeType(qc.Value1, typeof(object[])));
+                    expr = qc.SrcExpression == null ? this.NotIn(qc.PropertyName, qc.Concat, ConverterHelper.ChangeType(qc.Value1, typeof(object[]))) :
+                        this.NotIn(qc.SrcExpression, qc.Concat, ConverterHelper.ChangeType(qc.Value1, typeof(object[])));
                     break;
                 case OpertionSymbol.Between:
-                    expr = this.Between(qc.PropertyName, qc.Value1, qc.Value2, qc.Concat);
+                    expr = qc.SrcExpression == null ? this.Between(qc.PropertyName, qc.Value1, qc.Value2, qc.Concat) :
+                        this.Between(qc.SrcExpression, qc.Value1, qc.Value2, qc.Concat);
                     break;
                 case OpertionSymbol.NotBetween:
-                    expr = this.NotBetween(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), ConverterHelper.ChangeType(qc.Value2, qc.ProperyType), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.NotBetween(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), ConverterHelper.ChangeType(qc.Value2, qc.ProperyType), qc.Concat) :
+                        this.NotBetween(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), ConverterHelper.ChangeType(qc.Value2, qc.ProperyType), qc.Concat);
                     break;
                 case OpertionSymbol.Fuzzy:
-                    expr = this.Fuzzy(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.Fuzzy(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat) :
+                        this.Fuzzy(qc.SrcExpression, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
                     break;
                 case OpertionSymbol.NotFuzzy:
-                    expr = this.NotFuzzy(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
+                    expr = qc.SrcExpression == null ? this.NotFuzzy(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat) :
+                        this.NotFuzzy(qc.SrcExpression, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
                     break;
                 default:
                     break;

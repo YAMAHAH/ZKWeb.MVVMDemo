@@ -61,10 +61,10 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
 
-            var response = request.BuildResponse<Tenant, Guid>()
+            var response = request.BuildResponse<Tenant, TenantOutputDto, Guid>()
                 .FilterKeywordWith(t => t.Name)
                 .FilterKeywordWith(t => t.Remark)
-                .ToResponse<TenantOutputDto>();
+                .ToResponse();
             UpdateSuperAdminName(response.Result.OfType<TenantOutputDto>());
             return response;
         }

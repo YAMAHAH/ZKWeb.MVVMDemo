@@ -50,7 +50,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
         [ComponentMethod("Search", "搜索", true, true)]
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
-            return request.BuildResponse<User, Guid>()
+            return request.BuildResponse<User, UserOutputDto, Guid>()
                 .FilterKeywordWith(t => t.Username)
                 .FilterKeywordWith(t => t.Remark)
                 .FilterColumnWith(
@@ -64,7 +64,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
                         }
                         return q;
                     })
-                .ToResponse<UserOutputDto>();
+                .ToResponse();
 
         }
 

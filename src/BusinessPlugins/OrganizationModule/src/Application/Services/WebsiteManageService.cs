@@ -97,22 +97,22 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
         [CheckPrivilege(typeof(IAmAdmin), "ScheduledTask:View")]
         public GridSearchResponseDto SearchScheduledTasks(GridSearchRequestDto request)
         {
-            return request.BuildResponse<ScheduledTask, string>()
+            return request.BuildResponse<ScheduledTask, ScheduledTaskOutputDto, string>()
                 .FilterKeywordWith(t => t.Id)
-                .ToResponse<ScheduledTaskOutputDto>();
+                .ToResponse();
         }
 
         [Description("搜索定时任务记录")]
         [CheckPrivilege(typeof(IAmAdmin), "ScheduledTask:View")]
         public GridSearchResponseDto SearchScheduledTaskLogs(GridSearchRequestDto request)
         {
-            return request.BuildResponse<ScheduledTaskLog, Guid>()
+            return request.BuildResponse<ScheduledTaskLog, ScheduledTaskLogOutputDto, Guid>()
                 .FilterKeywordWith(t => t.Task.Id)
                 .FilterKeywordWith(t => t.Error)
                 .FilterColumnWith(
                     nameof(ScheduledTaskLogOutputDto.TaskId),
                     (c, q) => q.Where(t => t.Task.Id.Contains((string)c.Value)))
-                .ToResponse<ScheduledTaskLogOutputDto>();
+                .ToResponse();
         }
 
         [Description("获取当前的Api函数信息")]

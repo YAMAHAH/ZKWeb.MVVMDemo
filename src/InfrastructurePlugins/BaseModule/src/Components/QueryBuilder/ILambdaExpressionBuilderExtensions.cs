@@ -13,6 +13,76 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         {
             q.QueryCondtions = queryCondtions;
         }
+        public static Expression ContainsOr<T, TValue>(this ILambdaExpressionBuilder<T> q, LambdaExpression valueSelector, IEnumerable<TValue> values)
+        {
+            var startsWithMethod = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
+            var startWiths = values.Select(value => Expression.Call(
+                valueSelector.Body,
+                startsWithMethod,
+                Expression.Constant(value, typeof(TValue))))
+                .Cast<Expression>();
+            var body = startWiths.Aggregate(((accumulate, equal) => Expression.Or(accumulate, equal)));
+            //var p = Expression.Parameter(typeof(T));
+            //return Expression.Lambda(body, p);
+            return body;
+        }
+
+        public static Expression ContainsIn<T, TValue>(this ILambdaExpressionBuilder<T> q, LambdaExpression valueSelector, IEnumerable<TValue> values)
+        {
+            var containsMethods = typeof(Enumerable)
+                .GetMethods(BindingFlags.Static | BindingFlags.Public)
+                .Where(m => m.Name == "Contains");
+
+            MethodInfo method = null;
+
+            foreach (var m in containsMethods)
+            {
+                if (m.GetParameters().Count() == 2)
+                {
+                    method = m;
+                    break;
+                }
+            }
+
+            method = method.MakeGenericMethod(valueSelector.Type);
+
+            var exprContains = Expression.Call(method, new Expression[] { Expression.Constant(values), valueSelector });
+
+            return exprContains;
+        }
+
+        
+        public static Expression BuildOrExpression<T, TValue>(
+            Expression<Func<T, TValue>> valueSelector, IEnumerable<TValue> values)
+        {
+            if (null == valueSelector)
+                throw new ArgumentNullException("valueSelector");
+
+            if (null == values)
+                throw new ArgumentNullException("values");
+
+            ParameterExpression p = valueSelector.Parameters.Single();
+
+            if (!values.Any())
+                return Expression.Lambda(Expression.Constant(true), p);
+
+            var equals = values.Select(value =>
+                (Expression)Expression.Equal(
+                     valueSelector.Body,
+                     Expression.Constant(
+                         value,
+                         typeof(TValue)
+                     )
+                )
+            );
+
+            var body = equals.Aggregate<Expression>(
+                     (accumulate, equal) => Expression.Or(accumulate, equal)
+             );
+            //  return Expression.Lambda<Func<TElement, bool>>(body, p);
+            return body;
+        }
+
         /// <summary>
         /// 获取成员表达式
         /// </summary>
@@ -503,7 +573,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                     typeof(string).GetMethod("EndsWith", new Type[] { typeof(string) }),
                     Expression.Constant(value)
                 );
-                //  q.AppendExpression(new QueryExpression(methodExpr, concat));
             }
             return methodExpr;
         }
@@ -521,7 +590,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                     typeof(string).GetMethod("EndsWith", new Type[] { typeof(string) }),
                     Expression.Constant(value)
                 );
-                // q.AppendExpression(new QueryExpression(methodExpr, concat));
             }
             return methodExpr;
         }
@@ -623,8 +691,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 
             var methodExpr = Expression.Equal(left, right);
 
-            // q.AppendExpression(new QueryExpression(methodExpr, concat));
-
             return methodExpr;
         }
 
@@ -649,8 +715,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 
             var methodExpr = Expression.Equal(left, right);
 
-            //q.AppendExpression(new QueryExpression(methodExpr, concat));
-
             return methodExpr;
         }
         public static Expression NotEquals<T, P>(this ILambdaExpressionBuilder<T> q, LambdaExpression property, P value, ConcatType concat = ConcatType.AndAlso)
@@ -669,8 +733,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             }
 
             var methodExpr = Expression.NotEqual(left, right);
-
-            // q.AppendExpression(new QueryExpression(methodExpr, concat));
             return methodExpr;
         }
         public static Expression NotEquals<T, P>(this ILambdaExpressionBuilder<T> q, Expression<Func<T, P>> property, P value, ConcatType concat)
@@ -690,7 +752,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 
             var methodExpr = Expression.NotEqual(left, right);
 
-            // q.AppendExpression(new QueryExpression(methodExpr, concat));
             return methodExpr;
         }
         public static Expression NotEquals<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, P value, ConcatType concat = ConcatType.AndAlso)
@@ -1059,9 +1120,9 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 //如果是Nullable<X>类型，则转化成X类型
                 if (type.IsNullableType())
                 {
-                    //type = type.GetNonNullableType();
+                    type = type.GetNonNullableType();
 
-                    //nonNullValues = values.Select(v => Convert.ChangeType(v, type)).ToArray();
+                    nonNullValues = values.Select(v => Convert.ChangeType(v, type)).ToArray();
                 }
 
                 var method = method_Contains.MakeGenericMethod(new Type[] { type });
@@ -1073,10 +1134,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                     Expression.Constant(nonNullValues),
                     propertyBody
                 );
-
-                // q.AppendExpression(new QueryExpression(methodExpr, concat));
             }
-
             return methodExpr;
         }
         public static Expression In<T, P>(this ILambdaExpressionBuilder<T> q, LambdaExpression property, ConcatType concat = ConcatType.AndAlso, params P[] values)
@@ -1090,9 +1148,9 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 //如果是Nullable<X>类型，则转化成X类型
                 if (type.IsNullableType())
                 {
-                    //type = type.GetNonNullableType();
+                    type = type.GetNonNullableType();
 
-                    //nonNullValues = values.Select(v => Convert.ChangeType(v, type)).ToArray();
+                    nonNullValues = values.Select(v => Convert.ChangeType(v, type)).ToArray();
                 }
 
                 var method = method_Contains.MakeGenericMethod(new Type[] { type });
@@ -1104,8 +1162,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                     Expression.Constant(nonNullValues),
                     propertyBody
                 );
-
-                // q.AppendExpression(new QueryExpression(methodExpr, concat));
             }
 
             return methodExpr;
@@ -1126,9 +1182,9 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 //如果是Nullable<X>类型，则转化成X类型
                 if (type.IsNullableType())
                 {
-                    //type = type.GetNonNullableType();
+                    type = type.GetNonNullableType();
 
-                    //nonNullValues = values.Select(v => Convert.ChangeType(v, type)).ToArray();
+                    nonNullValues = values.Select(v => Convert.ChangeType(v, type)).ToArray();
                 }
 
                 var method = method_Contains.MakeGenericMethod(new Type[] { type });
@@ -1140,8 +1196,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                     Expression.Constant(nonNullValues),
                     propertyBody
                 );
-
-                // q.AppendExpression(new QueryExpression(Expression.Not(methodExpr), concat));
             }
 
             return methodExpr;
@@ -1157,9 +1211,9 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 //如果是Nullable<X>类型，则转化成X类型
                 if (type.IsNullableType())
                 {
-                    //type = type.GetNonNullableType();
+                    type = type.GetNonNullableType();
 
-                    //nonNullValues = values.Select(v => Convert.ChangeType(v, type)).ToArray();
+                    nonNullValues = values.Select(v => Convert.ChangeType(v, type)).ToArray();
                 }
 
                 var method = method_Contains.MakeGenericMethod(new Type[] { type });
@@ -1171,8 +1225,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                    Expression.Constant(nonNullValues),
                    propertyBody
                );
-
-                // q.AppendExpression(new QueryExpression(Expression.Not(methodExpr), concat));
             }
 
             return Expression.Not(methodExpr);

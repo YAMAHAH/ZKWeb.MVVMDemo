@@ -48,9 +48,5 @@ namespace InfrastructurePlugins.BaseModule.Application.Dtos
         /// 子表达式查询条件
         /// </summary>
         public List<GridSearchColumnFilter> Childs { get; set; } = new List<GridSearchColumnFilter>();
-        /// <summary>
-        /// 条件表达式树
-        /// </summary>
-        public Expression Expression { get; set; }
     }
 }

@@ -52,19 +52,8 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
     [ExportMany]
     public class OrganizationMapperProfile : Profile
     {
-        private bool TestFunc(User u, GridSearchColumnFilter c)
-        {
-            var roleIds = c.Value.ConvertOrDefault<IList<Guid>>();
-            if (roleIds != null)
-            {
-                return u.Roles.Any(r => roleIds.Contains(r.To.Id));
-            }
-            return false;
-        }
         public OrganizationMapperProfile(UserManager userManager)
         {
-            new CreateDtoToModelMap<User, UserOutputDto, Guid>()
-                 .ForMember(d => d.OwnerTenantId, (opt) => opt.Map((u, c) => TestFunc(u, c)));
             // 用户
             CreateMap<UserInputDto, User>()
                 .ForMember(d => d.OwnerTenantId, m => m.Ignore()); // 租户Id为了安全原因需要手动设置

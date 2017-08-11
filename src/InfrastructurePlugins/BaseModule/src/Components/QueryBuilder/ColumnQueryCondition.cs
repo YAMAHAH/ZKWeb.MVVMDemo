@@ -13,7 +13,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// <summary>
         /// 属性类型
         /// </summary>
-        public Type ProperyType { get; set; }
+        public Type ProperyType { get; set; } = typeof(object);
         /// <summary>
         /// 属性名称
         /// </summary>
@@ -42,5 +42,10 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// 条件表达式树
         /// </summary>
         public Expression Expression { get; set; }
+
+        /// <summary>
+        /// 源条件表达式树
+        /// </summary>
+        public LambdaExpression SrcExpression { get; set; }
     }
 }

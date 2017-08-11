@@ -32,10 +32,10 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
         [CheckPrivilege(typeof(IAmAdmin), "Role:View")]
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
-            return request.BuildResponse<Role, Guid>()
+            return request.BuildResponse<Role,RoleOutputDto, Guid>()
                 .FilterKeywordWith(t => t.Name)
                 .FilterKeywordWith(t => t.Remark)
-                .ToResponse<RoleOutputDto>();
+                .ToResponse();
         }
 
         [Description("编辑角色")]

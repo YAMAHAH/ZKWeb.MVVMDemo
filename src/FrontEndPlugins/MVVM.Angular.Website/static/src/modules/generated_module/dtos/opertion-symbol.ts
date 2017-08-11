@@ -1,43 +1,45 @@
 /** OpertionSymbol */
 export enum OpertionSymbol {
+    /** None */
+    None = 0,
     /** Equals */
-    Equals = 0,
+    Equals = 1,
     /** NotEquals */
-    NotEquals = 1,
+    NotEquals = 2,
     /** GreaterThan */
-    GreaterThan = 2,
+    GreaterThan = 3,
     /** NotGreaterThan */
-    NotGreaterThan = 3,
+    NotGreaterThan = 4,
     /** GreaterThanOrEqueals */
-    GreaterThanOrEqueals = 4,
+    GreaterThanOrEqueals = 5,
     /** LessThan */
-    LessThan = 5,
+    LessThan = 6,
     /** NotLessThan */
-    NotLessThan = 6,
+    NotLessThan = 7,
     /** LessThanOrEqual */
-    LessThanOrEqual = 7,
+    LessThanOrEqual = 8,
     /** Like */
-    Like = 8,
+    Like = 9,
     /** NotLike */
-    NotLike = 9,
+    NotLike = 10,
     /** StartsWith */
-    StartsWith = 10,
+    StartsWith = 11,
     /** NotStartsWith */
-    NotStartsWith = 11,
+    NotStartsWith = 12,
     /** EndsWith */
-    EndsWith = 12,
+    EndsWith = 13,
     /** NotEndsWith */
-    NotEndsWith = 13,
+    NotEndsWith = 14,
     /** In */
-    In = 14,
+    In = 15,
     /** NotIn */
-    NotIn = 15,
+    NotIn = 16,
     /** Between */
-    Between = 16,
+    Between = 17,
     /** NotBetween */
-    NotBetween = 17,
+    NotBetween = 18,
     /** Fuzzy */
-    Fuzzy = 18,
+    Fuzzy = 19,
     /** NotFuzzy */
-    NotFuzzy = 19
+    NotFuzzy = 20
 }
