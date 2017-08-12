@@ -8,6 +8,19 @@ using InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder;
 namespace InfrastructurePlugins.BaseModule.Application.Dtos
 {
     /// <summary>
+    /// 字段排序元数据
+    /// </summary>
+    [Description("字段排序元数据")]
+    public class SortMeta
+    {
+        [Description("排序字段")]
+        public string Field { get; set; }
+        [Description("是否升序")]
+        public bool Order { get; set; }
+    }
+
+
+    /// <summary>
     /// 表格搜索请求
     /// </summary>
     [Description("表格搜索请求")]
@@ -15,16 +28,25 @@ namespace InfrastructurePlugins.BaseModule.Application.Dtos
     {
         [Description("关键字")]
         public string Keyword { get; set; }
+
         [Description("当前页，从0开始")]
         public int Page { get; set; }
+
         [Description("单页数量")]
         public int PageSize { get; set; }
+
         [Description("排序字段")]
         public string OrderBy { get; set; }
+
         [Description("是否升序")]
         public bool Ascending { get; set; }
+
+        [Description("多字段排序信息")]
+        public SortMeta[] MultiSortMeta { get; set; }
+
         [Description("列过滤条件")]
         public IList<GridSearchColumnFilter> ColumnFilters { get; set; }
+
         [Description("附加数据")]
         public object Extra { get; set; }
 

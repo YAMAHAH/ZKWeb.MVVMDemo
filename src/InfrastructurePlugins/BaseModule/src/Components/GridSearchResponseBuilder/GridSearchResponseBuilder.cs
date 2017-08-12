@@ -17,6 +17,7 @@ using System.Reflection;
 using ZKWeb.Database;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
+using System.Linq.Dynamic.Core;
 
 namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
 {
@@ -607,7 +608,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                 orderProperty = entityType.FastGetProperty(_request.OrderBy);
                 if (orderProperty == null)
                 {
-                    entityType.FastGetProperty(_request.OrderBy + "Text");
+                    orderProperty = entityType.FastGetProperty(_request.OrderBy + "Text");
                 }
             }
             if (orderProperty == null)

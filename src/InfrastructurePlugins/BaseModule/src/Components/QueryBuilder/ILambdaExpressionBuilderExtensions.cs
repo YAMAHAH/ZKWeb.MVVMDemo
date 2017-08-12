@@ -51,7 +51,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             return exprContains;
         }
 
-        
+
         public static Expression BuildOrExpression<T, TValue>(
             Expression<Func<T, TValue>> valueSelector, IEnumerable<TValue> values)
         {
@@ -1098,6 +1098,11 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                          select m
                         ).First();
 
+        private static MethodInfo GetMethod<TResult>(string name, int parameterCount = 0, Func<MethodInfo, bool> predicate = null) =>
+          GetMethod(name, parameterCount, mi => mi.ReturnType == typeof(TResult) && (predicate == null || predicate(mi)));
+
+        private static MethodInfo GetMethod(string name, int parameterCount = 0, Func<MethodInfo, bool> predicate = null) =>
+            typeof(Queryable).GetTypeInfo().GetDeclaredMethods(name).Single(mi => mi.GetParameters().Length == parameterCount + 1 && (predicate == null || predicate(mi)));
         /// <summary>
         /// 建立 In 查询条件
         /// </summary>

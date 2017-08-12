@@ -1,3 +1,4 @@
+import { SortMeta } from './sort-meta';
 import { GridSearchColumnFilter } from './grid-search-column-filter';
 
 /** 表格搜索请求 */
@@ -12,6 +13,8 @@ export class GridSearchRequestDto {
     public OrderBy: string;
     /** 是否升序 */
     public Ascending: boolean;
+    /** 多字段排序信息 */
+    public MultiSortMeta: SortMeta[];
     /** 列过滤条件 */
     public ColumnFilters: GridSearchColumnFilter[];
     /** 附加数据 */

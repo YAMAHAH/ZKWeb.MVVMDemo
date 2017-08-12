@@ -9,6 +9,8 @@ import { AppPrivilegeService } from '@auth_module/services/app-privilege-service
 import { AppTranslationService } from '@global_module/services/app-translation-service';
 import { GridSearchColumnFilter } from "@generated_module/dtos/grid-search-column-filter";
 import { GridSearchColumnFilterMatchMode } from "@generated_module/dtos/grid-search-column-filter-match-mode";
+import { LazyLoadEvent } from "primeng/components/common/api";
+import { SortMeta } from '../../../../modules/generated_module/dtos/sort-meta';
 
 /** 增删查改页的组件基类 */
 export abstract class CrudBaseComponent implements OnInit {
@@ -97,7 +99,7 @@ export abstract class CrudBaseComponent implements OnInit {
     /** 搜索数据
         应该绑定表格的onLazyLoad事件
         例如(onLazyLoad)="search($event)" */
-    search(e, noDelay = false) {
+    search(e: LazyLoadEvent, noDelay = false) {
         // 检查是否多余搜索
         // 如果搜索条件和上次的一致则跳过搜索
         let json = JSON.stringify(e);
@@ -131,6 +133,17 @@ export abstract class CrudBaseComponent implements OnInit {
         request.OrderBy = e.sortField;
         request.Ascending = e.sortOrder > 0;
         request.ColumnFilters = [];
+
+        let sortMetas = e.multiSortMeta || [];
+        let endSortMetas: SortMeta[] = [];
+        sortMetas.forEach(val => {
+            let sortMeta = new SortMeta();
+            sortMeta.Field = val.field;
+            sortMeta.Order = !!!val.order;
+            endSortMetas.push(sortMeta);
+        });
+        request.MultiSortMeta = endSortMetas;
+
         let filters = e.filters || {};
         for (let key in filters) {
             if (!filters.hasOwnProperty(key)) {
@@ -150,8 +163,9 @@ export abstract class CrudBaseComponent implements OnInit {
                 columnFilter.MatchMode = GridSearchColumnFilterMatchMode.In;
             }
             columnFilter.Value = value.value;
-            request.ColumnFilters.push(columnFilter);
+            request.ColumnFilters.push(columnFilter); 
         }
+        console.log("search datatable", request);
         // 调用搜索函数
         let setSearchResult = (value: any[], totalRecords: number) => {
             this.value = value;
