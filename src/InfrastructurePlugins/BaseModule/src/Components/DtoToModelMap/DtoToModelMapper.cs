@@ -4,6 +4,7 @@ using InfrastructurePlugins.BaseModule.Application.Dtos;
 using InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
@@ -122,6 +123,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
     public interface IDtoToModelMap
     {
         string Name { get; set; }
+        void Register();
     }
 
     public class DtoToModelMapValue<TModel, TPrimaryKey>
@@ -131,18 +133,21 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
 
         public Type ColumnType { get; set; }
 
-        public Expression Expression { get; set; }
+        public LambdaExpression Expression { get; set; }
 
         public QueryColumnFilterDelegate<TModel, TPrimaryKey> ColumnFilter { get; set; }
 
         public QueryColumnFilterFunc<TModel, TPrimaryKey> ColumnFilterFunc { get; set; }
 
         public ComponentPropertyAttribute TemplateObjectInfo { get; set; }
+
+        public LambdaExpression KeywordFilterExpression { get; set; }
     }
 
     public class DtoMapOption<TModel, TPrimaryKey> where TModel : class, IEntity, IEntity<TPrimaryKey>
     {
-        public Expression Expression { get; set; }
+        public LambdaExpression Expression { get; set; }
+        public LambdaExpression KeywordFilterExpression { get; set; }
 
         public QueryColumnFilterDelegate<TModel, TPrimaryKey> ColumnFilter { get; set; }
 
@@ -150,9 +155,15 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
 
         public ComponentPropertyAttribute TemplateObjectInfo { get; set; } = new ComponentPropertyAttribute();
 
+
         public DtoMapOption<TModel, TPrimaryKey> Map<TMember>(Expression<Func<TModel, TMember>> expression)
         {
             this.Expression = expression;
+            return this;
+        }
+        public DtoMapOption<TModel, TPrimaryKey> MapKeywordFilter<TMember>(Expression<Func<TModel, TMember>> expression)
+        {
+            this.KeywordFilterExpression = expression;
             return this;
         }
 

@@ -8,19 +8,28 @@ using InfrastructurePlugins.BaseModule.Domain.Filters.Interfaces;
 using InfrastructurePlugins.BaseModule.Domain.Services.Interfaces;
 using InfrastructurePlugins.BaseModule.Domain.Uow.Extensions;
 using InfrastructurePlugins.BaseModule.Domain.Uow.Interfaces;
+using InfrastructurePlugins.BaseModule.Utils;
 using System;
 using System.Collections.Generic;
 using System.FastReflection;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Reflection;
 using ZKWeb.Database;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
-using System.Linq.Dynamic.Core;
+//using System.Linq.Dynamic.Core;
 
 namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
 {
+    public class DynamicOrdering
+    {
+        public LambdaExpression Selector;
+        public bool Ascending;
+        public string MethodName;
+    }
+
     /// <summary>
     /// 表格搜索回应的构建器
     /// </summary>
@@ -52,10 +61,11 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             mapper = ColumnQueryFilterProfile();
         }
 
+        protected IContainer Rejector => ZKWeb.Application.Ioc;
+
         private IMapper ColumnQueryFilterProfile()
         {
-            var rejector = ZKWeb.Application.Ioc;
-            var dtoMapper = rejector.Resolve<IDtoToModelMapper>();
+            var dtoMapper = Rejector.Resolve<IDtoToModelMapper>();
             var dtoMap = dtoMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
             var dtoAutoMapper = dtoMapper.GetDtoMapper<TDto>();
             if (dtoAutoMapper == null)
@@ -621,6 +631,78 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             return query;
         }
 
+        private Expression BuildAny<TSource>(Expression memberExpr, string propName, Expression<Func<TSource, bool>> predicate)
+        {
+            var overload = typeof(Queryable).GetMethods().Single(
+                      method => method.Name == "Any"
+                              && method.IsGenericMethodDefinition
+                              && method.GetGenericArguments().Length == 2
+                              && method.GetParameters().Length == 2);
+
+            var call = Expression.Call(
+                overload,
+                Expression.PropertyOrField(memberExpr, propName),
+                predicate);
+
+            return call;
+        }
+        private LambdaExpression GetPropertyExpression(ParameterExpression paraExpr, string propertyName)
+        {
+            var props = propertyName.Split('.');
+            Expression propExpr = paraExpr;
+            foreach (var prop in props)
+            {
+                propExpr = propExpr.Property(prop);
+            }
+            return Expression.Lambda(propExpr, paraExpr);
+        }
+        protected virtual IQueryable<TEntity> ApplySorter2(IQueryable<TEntity> query)
+        {
+            // 有自定义的排序函数时使用自定义的排序函数
+            if (_customQuerySorter != null)
+            {
+                return _customQuerySorter(query);
+            }
+            //获取前端传来的排序数据
+            var entityType = typeof(TEntity);
+            ParameterExpression paraExpr = Expression.Parameter(entityType, "e");
+            var sortMetas = _request.MultiSortMeta;
+            var dtoMapper = Rejector.Resolve<IDtoToModelMapper>();
+            var dtoMap = dtoMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
+            //从缓存中找到对应的字段的表达式,生成新的排序实体
+            IList<DynamicOrdering> dynamicOrderings = new List<DynamicOrdering>();
+            foreach (var sortMeta in sortMetas)
+            {
+                var colMapVal = dtoMap?.GetMember(sortMeta.Field);
+                var dynamicOrdering = new DynamicOrdering()
+                {
+                    Ascending = sortMeta.Order,
+                    Selector = (LambdaExpression)colMapVal?.Expression ?? GetPropertyExpression(paraExpr, sortMeta.Field),
+                    MethodName = sortMetas.First() == sortMeta ?
+                                 sortMeta.Order ? "OrderBy" : "OrderByDescending" :
+                                 sortMeta.Order ? "ThenBy" : "ThenByDescending"
+                };
+                dynamicOrderings.Add(dynamicOrdering);
+            }
+            // 按查询给出的列进行排序，如果列不存在则按Id进行排序
+            if (dynamicOrderings.Count == 0) return query.OrderBy(t => t.Id);
+
+            object orderResult = query;
+            foreach (var dynOrd in dynamicOrderings)
+            {
+                var propType = dynOrd.Selector.ReturnType;
+                // Type delegateType = typeof(Func<,>).MakeGenericType(typeof(TEntity), propType);
+                // LambdaExpression lambda = Expression.Lambda(delegateType, dynOrd.Selector.Body, paraExpr);
+                orderResult = typeof(Queryable).GetMethods().Single(
+                       method => method.Name == dynOrd.MethodName
+                               && method.IsGenericMethodDefinition
+                               && method.GetGenericArguments().Length == 2
+                               && method.GetParameters().Length == 2)
+                       .MakeGenericMethod(typeof(TEntity), propType)
+                       .Invoke(null, new object[] { orderResult, dynOrd.Selector });
+            }
+            return (IQueryable<TEntity>)orderResult;
+        }
         /// <summary>
         /// 对查询进行分页
         /// </summary>
@@ -630,7 +712,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             if (skipCount > 0)
             {
                 // ef core的bug，skip 0会导致排序失效
-                query = query.Skip(skipCount);
+                query = query.Skip(skipCount);query.Any(t=>Guid.Empty.Equals(t.Id));
             }
             return query.Take(_request.PageSize);
         }
@@ -657,7 +739,9 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                     // 调用自定义的过滤函数
                     query = ApplyCustomFilter(query);
                     // 按自定义的排序函数或者请求的排序字段进行排序
-                    query = ApplySorter(query);
+                    //query = ApplySorter(query);
+                    //
+                    query = ApplySorter2(query);
                     // 获取总数量
                     var count = query.LongCount();
                     // 对查询进行分页

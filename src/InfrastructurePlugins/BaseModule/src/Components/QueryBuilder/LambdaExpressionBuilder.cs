@@ -18,7 +18,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         private void CreateParaExpr(string paraName = "e")
         {
             ParameterExpression paraExpr = Expression.Parameter(typeof(T), paraName);
-            Parameters.Append(paraExpr);
+            Parameters[Parameters.Length] = paraExpr;
         }
         /// <summary>
         /// 暂时不用

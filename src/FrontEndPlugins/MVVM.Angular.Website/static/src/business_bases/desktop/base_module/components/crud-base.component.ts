@@ -10,7 +10,7 @@ import { AppTranslationService } from '@global_module/services/app-translation-s
 import { GridSearchColumnFilter } from "@generated_module/dtos/grid-search-column-filter";
 import { GridSearchColumnFilterMatchMode } from "@generated_module/dtos/grid-search-column-filter-match-mode";
 import { LazyLoadEvent } from "primeng/components/common/api";
-import { SortMeta } from '../../../../modules/generated_module/dtos/sort-meta';
+import { SortMetaDto } from '@generated_module/dtos/sort-meta-dto';
 
 /** 增删查改页的组件基类 */
 export abstract class CrudBaseComponent implements OnInit {
@@ -134,10 +134,10 @@ export abstract class CrudBaseComponent implements OnInit {
         request.Ascending = e.sortOrder > 0;
         request.ColumnFilters = [];
 
-        let sortMetas = e.multiSortMeta || [];
-        let endSortMetas: SortMeta[] = [];
+        let sortMetas = e.multiSortMeta || [{ field: e.sortField, order: e.sortOrder }];
+        let endSortMetas: SortMetaDto[] = [];
         sortMetas.forEach(val => {
-            let sortMeta = new SortMeta();
+            let sortMeta = new SortMetaDto();
             sortMeta.Field = val.field;
             sortMeta.Order = !!!val.order;
             endSortMetas.push(sortMeta);
@@ -163,7 +163,7 @@ export abstract class CrudBaseComponent implements OnInit {
                 columnFilter.MatchMode = GridSearchColumnFilterMatchMode.In;
             }
             columnFilter.Value = value.value;
-            request.ColumnFilters.push(columnFilter); 
+            request.ColumnFilters.push(columnFilter);
         }
         console.log("search datatable", request);
         // 调用搜索函数

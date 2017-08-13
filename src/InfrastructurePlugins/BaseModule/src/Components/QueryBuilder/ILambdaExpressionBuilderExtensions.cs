@@ -51,7 +51,27 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             return exprContains;
         }
 
+        public static Expression Any<T, TSource>(this ILambdaExpressionBuilder<T> q, string memberName, Expression<Func<TSource, bool>> predicate)
+        {
+            var memberExpr = GetProperty(q, memberName);
+            return Any(q, memberExpr, predicate);
+        }
+        public static Expression Any<T, TSource>(this ILambdaExpressionBuilder<T> q, Expression memberExpr, Expression<Func<TSource, bool>> predicate)
+        {
+            var ce = Expression.Constant(predicate.Compile());
+            return Expression.Call(typeof(Enumerable), "Any", new Type[] { typeof(TSource) }, memberExpr, ce); ;
+        }
 
+        public static Expression All<T, TSource>(this ILambdaExpressionBuilder<T> q, string memberName, Expression<Func<TSource, bool>> predicate)
+        {
+            var memberExpr = GetProperty(q, memberName);
+            return All(q, memberExpr, predicate);
+        }
+        public static Expression All<T, TSource>(this ILambdaExpressionBuilder<T> q, Expression memberExpr, Expression<Func<TSource, bool>> predicate)
+        {
+            var ce = Expression.Constant(predicate.Compile());
+            return Expression.Call(typeof(Enumerable), "All", new Type[] { typeof(TSource) }, memberExpr, ce);
+        }
         public static Expression BuildOrExpression<T, TValue>(
             Expression<Func<T, TValue>> valueSelector, IEnumerable<TValue> values)
         {
@@ -66,15 +86,11 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             if (!values.Any())
                 return Expression.Lambda(Expression.Constant(true), p);
 
-            var equals = values.Select(value =>
-                (Expression)Expression.Equal(
-                     valueSelector.Body,
-                     Expression.Constant(
-                         value,
-                         typeof(TValue)
-                     )
+            var equals = values.Select(
+                value => (Expression)Expression.Equal(valueSelector.Body,
+                Expression.Constant(value, typeof(TValue))
                 )
-            );
+                );
 
             var body = equals.Aggregate<Expression>(
                      (accumulate, equal) => Expression.Or(accumulate, equal)
@@ -124,14 +140,14 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             }
             return memberExpr;
         }
-        public static LambdaExpression Property<T>(this ILambdaExpressionBuilder<T> q, string propertyName)
+        public static LambdaExpression GetProperty<T>(this ILambdaExpressionBuilder<T> q, string propertyName)
         {
             var props = propertyName.Split('.');
             ParameterExpression paraExpr = Expression.Parameter(typeof(T), q.ParameterName);
-            Expression propExpr = paraExpr.Property(props[0]);
-            foreach (var prop in props.Skip(1))
+            Expression propExpr = paraExpr;
+            foreach (var prop in props)
             {
-                propExpr = paraExpr.Property(prop);
+                propExpr = propExpr.Property(prop);
             }
             return Expression.Lambda(propExpr, paraExpr);
         }
@@ -194,7 +210,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression Between<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, P from, P to, ConcatType concat = ConcatType.AndAlso)
         {
-            return Between<T, P>(q, Property<T>(q, propertyName), from, to, concat);
+            return Between<T, P>(q, GetProperty<T>(q, propertyName), from, to, concat);
         }
 
         /// <summary>
@@ -254,7 +270,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression NotBetween<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, P from, P to, ConcatType concat = ConcatType.AndAlso)
         {
-            return NotBetween<T, P>(q, Property<T>(q, propertyName), from, to, concat);
+            return NotBetween<T, P>(q, GetProperty<T>(q, propertyName), from, to, concat);
         }
 
         /// <summary>
@@ -317,7 +333,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression Between<T>(this ILambdaExpressionBuilder<T> q, string propertyName, string from, string to, ConcatType concat = ConcatType.AndAlso)
         {
-            return Between<T>(q, Property<T>(q, propertyName), from, to, concat);
+            return Between<T>(q, GetProperty<T>(q, propertyName), from, to, concat);
         }
 
         public static Expression NotBetween<T>(this ILambdaExpressionBuilder<T> q, LambdaExpression property, string from, string to, ConcatType concat = ConcatType.AndAlso)
@@ -370,7 +386,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 
         public static Expression NotBetween<T>(this ILambdaExpressionBuilder<T> q, string propertyName, string from, string to, ConcatType concat = ConcatType.AndAlso)
         {
-            return NotBetween<T>(q, Property<T>(q, propertyName), from, to, concat);
+            return NotBetween<T>(q, GetProperty<T>(q, propertyName), from, to, concat);
         }
         #endregion
 
@@ -424,7 +440,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 
         public static Expression Like<T>(this ILambdaExpressionBuilder<T> q, string propertyName, string value, ConcatType concat = ConcatType.AndAlso)
         {
-            var propExpr = Property<T>(q, propertyName);
+            var propExpr = GetProperty<T>(q, propertyName);
             return Like<T>(q, propExpr, value, concat);
         }
 
@@ -474,7 +490,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 
         public static Expression NotLike<T>(this ILambdaExpressionBuilder<T> q, string propertyName, string value, ConcatType concat = ConcatType.AndAlso)
         {
-            return NotLike<T>(q, Property<T>(q, propertyName), value, concat);
+            return NotLike<T>(q, GetProperty<T>(q, propertyName), value, concat);
         }
         #endregion
 
@@ -512,7 +528,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression StartsWith<T>(this ILambdaExpressionBuilder<T> q, string propertyName, string value, ConcatType concat = ConcatType.AndAlso)
         {
-            return StartsWith<T>(q, Property<T>(q, propertyName), value, concat);
+            return StartsWith<T>(q, GetProperty<T>(q, propertyName), value, concat);
         }
         /// <summary>
         /// 不以...开头
@@ -547,7 +563,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 
         public static Expression NotStartsWith<T>(this ILambdaExpressionBuilder<T> q, string propertyName, string value, ConcatType concat = ConcatType.AndAlso)
         {
-            return NotStartsWith<T>(q, Property<T>(q, propertyName), value, concat);
+            return NotStartsWith<T>(q, GetProperty<T>(q, propertyName), value, concat);
         }
         #endregion
 
@@ -596,7 +612,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 
         public static Expression EndsWith<T>(this ILambdaExpressionBuilder<T> q, string propertyName, string value, ConcatType concat = ConcatType.AndAlso)
         {
-            return EndsWith<T>(q, Property<T>(q, propertyName), value, concat);
+            return EndsWith<T>(q, GetProperty<T>(q, propertyName), value, concat);
         }
         /// <summary>
         /// 不以...结尾
@@ -642,7 +658,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 
         public static Expression NotEndsWith<T>(this ILambdaExpressionBuilder<T> q, string propertyName, string value, ConcatType concat = ConcatType.AndAlso)
         {
-            return NotEndsWith<T>(q, Property<T>(q, propertyName), value, concat);
+            return NotEndsWith<T>(q, GetProperty<T>(q, propertyName), value, concat);
         }
         #endregion
 
@@ -696,7 +712,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 
         public static Expression Equals<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, P value, ConcatType concat = ConcatType.AndAlso)
         {
-            return Equals<T, P>(q, Property<T>(q, propertyName), value, concat);
+            return Equals<T, P>(q, GetProperty<T>(q, propertyName), value, concat);
         }
         public static Expression Equals<T, P>(this ILambdaExpressionBuilder<T> q, LambdaExpression property, P value, ConcatType concat = ConcatType.AndAlso)
         {
@@ -756,7 +772,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression NotEquals<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, P value, ConcatType concat = ConcatType.AndAlso)
         {
-            return NotEquals<T, P>(q, Property<T>(q, propertyName), value, concat);
+            return NotEquals<T, P>(q, GetProperty<T>(q, propertyName), value, concat);
         }
         #endregion
 
@@ -792,7 +808,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression GreaterThan<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, P value, ConcatType concat = ConcatType.AndAlso)
         {
-            return GreaterThan<T, P>(q, Property<T>(q, propertyName), value, concat);
+            return GreaterThan<T, P>(q, GetProperty<T>(q, propertyName), value, concat);
         }
         public static Expression GreaterThan<T, P>(this ILambdaExpressionBuilder<T> q, LambdaExpression property, P value, ConcatType concat = ConcatType.AndAlso)
         {
@@ -837,7 +853,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression NotGreaterThan<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, P value, ConcatType concat = ConcatType.AndAlso)
         {
-            return NotGreaterThan<T, P>(q, Property<T>(q, propertyName), value, concat);
+            return NotGreaterThan<T, P>(q, GetProperty<T>(q, propertyName), value, concat);
         }
 
         public static Expression NotGreaterThan<T, P>(this ILambdaExpressionBuilder<T> q, Expression<Func<T, P>> property, P value, ConcatType concat)
@@ -895,7 +911,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression GreaterThanOrEquals<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, P value, ConcatType concat = ConcatType.AndAlso)
         {
-            return GreaterThanOrEquals<T, P>(q, Property<T>(q, propertyName), value, concat);
+            return GreaterThanOrEquals<T, P>(q, GetProperty<T>(q, propertyName), value, concat);
         }
         public static Expression GreaterThanOrEquals<T, P>(this ILambdaExpressionBuilder<T> q, LambdaExpression property, P value, ConcatType concat = ConcatType.AndAlso)
         {
@@ -975,7 +991,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression LessThan<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, P value, ConcatType concat = ConcatType.AndAlso)
         {
-            return LessThan<T, P>(q, Property<T>(q, propertyName), value, concat);
+            return LessThan<T, P>(q, GetProperty<T>(q, propertyName), value, concat);
         }
 
         public static Expression NotLessThan<T, P>(this ILambdaExpressionBuilder<T> q, Expression<Func<T, P>> property, P value, ConcatType concat)
@@ -1022,7 +1038,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression NotLessThan<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, P value, ConcatType concat = ConcatType.AndAlso)
         {
-            return NotLessThan<T, P>(q, Property<T>(q, propertyName), value, concat);
+            return NotLessThan<T, P>(q, GetProperty<T>(q, propertyName), value, concat);
         }
         #endregion
 
@@ -1080,7 +1096,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression LessThanOrEqual<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, P value, ConcatType concat = ConcatType.AndAlso)
         {
-            return LessThanOrEqual<T, P>(q, Property<T>(q, propertyName), value, concat);
+            return LessThanOrEqual<T, P>(q, GetProperty<T>(q, propertyName), value, concat);
         }
         #endregion
 
@@ -1173,7 +1189,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression In<T, P>(this ILambdaExpressionBuilder<T> q, string propertyName, ConcatType concat = ConcatType.AndAlso, params P[] values)
         {
-            return In<T, P>(q, Property<T>(q, propertyName), concat, values);
+            return In<T, P>(q, GetProperty<T>(q, propertyName), concat, values);
         }
 
         public static Expression NotIn<T, P>(this ILambdaExpressionBuilder<T> q, LambdaExpression property, ConcatType concat = ConcatType.AndAlso, params P[] values)
@@ -1236,7 +1252,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression NotIn<T, P>(this ILambdaExpressionBuilder<T> q, string property, ConcatType concat = ConcatType.AndAlso, params P[] values)
         {
-            return NotIn<T, P>(q, Property<T>(q, property), concat, values);
+            return NotIn<T, P>(q, GetProperty<T>(q, property), concat, values);
         }
         #endregion
 
@@ -1311,7 +1327,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression Fuzzy<T>(this ILambdaExpressionBuilder<T> q, string propertyName, string expression, ConcatType concat = ConcatType.AndAlso)
         {
-            return Fuzzy<T>(q, Property<T>(q, propertyName), expression, concat);
+            return Fuzzy<T>(q, GetProperty<T>(q, propertyName), expression, concat);
         }
 
         public static Expression NotFuzzy<T>(this ILambdaExpressionBuilder<T> q, LambdaExpression property, string expression, ConcatType concat = ConcatType.AndAlso)
@@ -1345,7 +1361,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression NotFuzzy<T>(this ILambdaExpressionBuilder<T> q, string propertyName, string expression, ConcatType concat = ConcatType.AndAlso)
         {
-            return NotFuzzy<T>(q, Property<T>(q, propertyName), expression, concat);
+            return NotFuzzy<T>(q, GetProperty<T>(q, propertyName), expression, concat);
         }
         public static Expression NotFuzzy<T>(this ILambdaExpressionBuilder<T> q, Expression<Func<T, string>> property, string expression, ConcatType concat)
         {

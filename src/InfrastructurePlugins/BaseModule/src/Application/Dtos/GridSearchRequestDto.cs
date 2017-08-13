@@ -1,9 +1,7 @@
-﻿using System;
+﻿using InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using ZKWeb.Database;
-using InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder;
 
 namespace InfrastructurePlugins.BaseModule.Application.Dtos
 {
@@ -11,7 +9,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Dtos
     /// 字段排序元数据
     /// </summary>
     [Description("字段排序元数据")]
-    public class SortMeta
+    public class SortMetaDto : IInputDto
     {
         [Description("排序字段")]
         public string Field { get; set; }
@@ -42,7 +40,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Dtos
         public bool Ascending { get; set; }
 
         [Description("多字段排序信息")]
-        public SortMeta[] MultiSortMeta { get; set; }
+        public SortMetaDto[] MultiSortMeta { get; set; }
 
         [Description("列过滤条件")]
         public IList<GridSearchColumnFilter> ColumnFilters { get; set; }

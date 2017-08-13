@@ -16,34 +16,34 @@ using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.OrganizationModule.Application.Mappers
 {
-    [ExportMany]
-    public class UserOutputDtoMap : CreateDtoToModelMap<User, UserOutputDto, Guid>
-    {
-        public UserOutputDtoMap()
-        {
+    //[ExportMany]
+    //public class UserOutputDtoMap : CreateDtoToModelMap<User, UserOutputDto, Guid>
+    //{
+    //    public UserOutputDtoMap()
+    //    {
             
-            ForMember(u => u.CreateTime, opt => opt.Map(m => m.CreateTime.ToString()));
+    //        ForMember(u => u.CreateTime, opt => opt.Map(m => m.CreateTime.ToString()));
 
-            ForMember(u => u.Remark, opt => opt.Map(m => m.Remark + m.Username));
+    //        ForMember(u => u.Remark, opt => opt.Map(m => m.Remark + m.Username));
 
-            ForMember(d => d.OwnerTenantName, opt => opt.Map(m => m.OwnerTenant.Name).Map(m => { m.Editable = true; }));
+    //        ForMember(d => d.OwnerTenantName, opt => opt.Map(m => m.OwnerTenant.Name).Map(m => { m.Editable = true; }));
 
-            ForMember(d => d.OwnerTenantName, opt => opt.Map((u, q) => { return q; }).Map(u => u.OwnerTenant.Name));
+    //        ForMember(d => d.OwnerTenantName, opt => opt.Map((u, q) => { return q; }).Map(u => u.OwnerTenant.Name));
 
-            ForMember(d => d.OwnerTenantId, (opt) => opt.Map((u, c) => TestFunc(u, c)));
+    //        ForMember(d => d.OwnerTenantId, (opt) => opt.Map((u, c) => TestFunc(u, c)));
 
-        }
+    //    }
 
-        private bool TestFunc(User u, GridSearchColumnFilter c)
-        {
-            var roleIds = c.Value.ConvertOrDefault<IList<Guid>>();
-            if (roleIds != null)
-            {
-                return u.Roles.Any(r => roleIds.Contains(r.To.Id));
-            }
-            return false;
-        }
-    }
+    //    private bool TestFunc(User u, GridSearchColumnFilter c)
+    //    {
+    //        var roleIds = c.Value.ConvertOrDefault<IList<Guid>>();
+    //        if (roleIds != null)
+    //        {
+    //            return u.Roles.Any(r => roleIds.Contains(r.To.Id));
+    //        }
+    //        return false;
+    //    }
+    //}
 
 
     /// <summary>

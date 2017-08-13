@@ -12,13 +12,14 @@ using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
 using InfrastructurePlugins.BaseModule.Application.Services.Bases;
 using InfrastructurePlugins.BaseModule.Components.Exceptions;
-using InfrastructurePlugins.BaseModule.Domain.Filters;
 using InfrastructurePlugins.BaseModule.Template;
 using InfrastructurePlugins.MultiTenantModule.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using ZKWeb.Localize;
 using ZKWeb.Web;
 using ZKWebStandard.Extensions;
@@ -44,6 +45,22 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
             _teantManager = tenantManager;
         }
 
+        private Expression BuildAny<TEntity, TSource>(string propName, Expression<Func<TSource, bool>> predicate)
+        {
+            var ce = Expression.Constant(predicate.Compile());
+            var overload = typeof(Enumerable).GetMethods().Single(
+                      method => method.Name == "Any"
+                              && method.IsGenericMethodDefinition
+                              && method.GetGenericArguments().Length == 1
+                              && method.GetParameters().Length == 2)
+                              .MakeGenericMethod(typeof(TSource));
+
+            var paraExpr = Expression.Parameter(typeof(TEntity), "e");
+            var propExpr = Expression.Property(paraExpr, propName);
+            var call = Expression.Call(overload, propExpr, ce);
+            Expression.Call(typeof(Enumerable), "Any", new Type[] { typeof(TSource) }, paraExpr, ce);
+            return call;
+        }
         [Action("Search", HttpMethods.POST)]
         [Description("搜索用户")]
         [CheckPrivilege(typeof(IAmAdmin), "User:View")]
@@ -65,7 +82,6 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
                         return q;
                     })
                 .ToResponse();
-
         }
 
         [Action("test", HttpMethods.GET)]
