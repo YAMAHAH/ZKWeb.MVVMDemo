@@ -30,7 +30,7 @@ namespace InfrastructurePlugins.BaseModule.src
                 cfg.FindAndAutoMapTypes();
                 cfg.AddCustomizeProfiles();
             });
-            var dtoMaps = injector.ResolveMany<IDtoToModelMap>();
+            var dtoMaps = injector.ResolveMany<IDtoToModelMapperBase>();
             foreach (var map in dtoMaps)
             {
                 map.Register();

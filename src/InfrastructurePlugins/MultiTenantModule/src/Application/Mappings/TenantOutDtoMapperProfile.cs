@@ -6,16 +6,20 @@ using ZKWebStandard.Ioc;
 
 namespace InfrastructurePlugins.MultiTenantModule.Application.Mappings
 {
+    /// <summary>
+    /// 租户全局数据配置
+    /// </summary>
     [ExportMany]
-    public class TenantOutDtoMapperProfile : CreateDtoToModelMap<Tenant, TenantOutputDto, Guid>
+    public class TenantOutDtoMapperProfile : DtoToModelMapProfile<Tenant, TenantOutputDto, Guid>
     {
         public TenantOutDtoMapperProfile()
         {
-            ForMember(u => u.CreateTime, opt => opt.Map(m => m.CreateTime.ToString())).
-            ForMember(u => u.Remark, opt => opt.Map(m => m.Remark)).
-            ForMember(d => d.UpdateTime, opt => opt.Map(m => m.UpdateTime.ToString()).Map(m => { m.Editable = true; })).
-            ForMember(d => d.IsMaster, opt => opt.Map(u => u.Id)).
-            ForMember(d => d.Name, (opt) => opt.Map(t => t.Name));
+            FilterKeywordWith(t => new { t.Name, t.Remark })
+                .ForMember(u => u.CreateTime, opt => opt.Map(m => m.CreateTime.ToString()))
+                .ForMember(u => u.Remark, opt => opt.Map(m => m.Remark))
+                .ForMember(d => d.UpdateTime, opt => opt.Map(m => m.UpdateTime.ToString()).Map(m => { m.Editable = true; }))
+                .ForMember(d => d.IsMaster, opt => opt.Map(u => u.Id))
+                .ForMember(d => d.Name, (opt) => opt.Map(t => t.Name));
         }
     }
 }

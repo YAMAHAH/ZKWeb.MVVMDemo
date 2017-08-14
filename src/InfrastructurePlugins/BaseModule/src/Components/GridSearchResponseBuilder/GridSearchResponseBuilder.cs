@@ -19,7 +19,6 @@ using System.Reflection;
 using ZKWeb.Database;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
-//using System.Linq.Dynamic.Core;
 
 namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
 {
@@ -63,17 +62,27 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
 
         protected IContainer Rejector => ZKWeb.Application.Ioc;
 
+        private IDtoToModelMapProfile<TEntity, TDto, TPrimaryKey> GetDtoToModelMapper
+        {
+            get
+            {
+                var dtoMapper = Rejector.Resolve<IDtoToModelMapper>();
+                var dtoMap = dtoMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
+                return dtoMap;
+            }
+        }
+
         private IMapper ColumnQueryFilterProfile()
         {
-            var dtoMapper = Rejector.Resolve<IDtoToModelMapper>();
-            var dtoMap = dtoMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
-            var dtoAutoMapper = dtoMapper.GetDtoMapper<TDto>();
-            if (dtoAutoMapper == null)
+            var dtmMapper = Rejector.Resolve<IDtoToModelMapper>();
+            var dtmProfile = dtmMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
+            var dtmAutoMapper = dtmMapper.GetDtoMapper<TDto>();
+            if (dtmAutoMapper == null)
             {
                 var mapperConf = new MapperConfiguration(cfg => cfg.CreateMap<GridSearchColumnFilter, ColumnQueryCondition>()
                     .ForMember(m => m.SrcExpression, opt => opt.ResolveUsing(m =>
                     {
-                        var dtoMapVal = dtoMap?.GetMember(m.Column);
+                        var dtoMapVal = dtmProfile?.GetMember(m.Column);
                         return dtoMapVal == null ? null : dtoMapVal.Expression;
                     }))
                     .ForMember(m => m.PropertyName, opt => opt.MapFrom(m => m.Column))
@@ -110,12 +119,12 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                     }))
                     .ForMember(m => m.ProperyType, opt => opt.ResolveUsing(m =>
                     {
-                        var dtoMapVal = dtoMap?.GetMember(m.Column);
+                        var dtoMapVal = dtmProfile?.GetMember(m.Column);
                         return dtoMapVal == null ? m.ProperyType : dtoMapVal.ColumnType;
                     })));
                 return mapperConf.CreateMapper();
             }
-            return dtoAutoMapper;
+            return dtmAutoMapper;
         }
 
         /// <summary>
@@ -142,26 +151,52 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// 指定过滤关键词时使用的成员
         /// </summary>
         public virtual GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>
-            FilterKeywordWith<TMember>(Expression<Func<TEntity, TMember>> memberExpr)
+            FilterKeywordWith<TMember>(Expression<Func<TEntity, TMember>> memberSelector)
         {
-            var paramExpr = memberExpr.Parameters[0];
-            var bodyExpr = memberExpr.Body;
-            Expression newBodyExpr;
-            if (typeof(TMember) == typeof(string))
+            var paramExpr = memberSelector.Parameters[0];
+            List<dynamic> memberExprs;
+            if (memberSelector.Body.NodeType == ExpressionType.New)
             {
-                newBodyExpr = Expression.Call(
-                    bodyExpr,
-                    typeof(string).FastGetMethod(nameof(string.Contains)),
-                    Expression.Constant(_request.Keyword));
+                NewExpression newExpr = (NewExpression)memberSelector.Body;
+                memberExprs = newExpr.Arguments.Select(propExpr =>
+                 {
+                     dynamic exprInfo = new
+                     {
+                         ReturnType = propExpr.Type,
+                         Expr = propExpr
+                     };
+                     return exprInfo;
+                 }).ToList();
             }
             else
             {
-                newBodyExpr = Expression.Equal(
-                    bodyExpr,
-                    Expression.Constant(_request.Keyword));
+                dynamic exprInfo = new
+                {
+                    ReturnType = typeof(TMember),
+                    Expr = memberSelector.Body
+                };
+                memberExprs = new List<dynamic>() { exprInfo };
             }
-            var conditionExpr = Expression.Lambda<Func<TEntity, bool>>(newBodyExpr, paramExpr);
-            return FilterKeywordWithCondition(conditionExpr);
+            foreach (dynamic bodyExpr in memberExprs)
+            {
+                Expression newBodyExpr;
+                if (bodyExpr.ReturnType == typeof(string))
+                {
+                    newBodyExpr = Expression.Call(
+                        bodyExpr.Expr,
+                        typeof(string).FastGetMethod(nameof(string.Contains)),
+                        Expression.Constant(_request.Keyword));
+                }
+                else
+                {
+                    newBodyExpr = Expression.Equal(
+                        bodyExpr.Expr,
+                        Expression.Constant(_request.Keyword));
+                }
+                var conditionExpr = Expression.Lambda<Func<TEntity, bool>>(newBodyExpr, paramExpr);
+                FilterKeywordWithCondition(conditionExpr);
+            }
+            return this;
         }
 
         /// <summary>
@@ -270,14 +305,20 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
 
         /// <summary>
         /// 按关键词进行过滤
+        /// 当关键值为空或者没有自定义条件,也没有全局配置条件就返回原有查询
+        /// 自定义条件优先于全局配置条件
         /// </summary>
         protected virtual IQueryable<TEntity> ApplyKeywordFilter(IQueryable<TEntity> query)
         {
-            // 无关键字或无过滤条件时跳过
-            if (string.IsNullOrEmpty(_request.Keyword) || _keywordConditions.Count == 0)
+            //获取预定义的关键字模糊查询字段
+            var globalKeywordFilter = GetDtoToModelMapper?.KeywordFilterExpression;
+            // 无关键字或无过滤条件且全局配置为空时跳过
+            if (string.IsNullOrEmpty(_request.Keyword) || (globalKeywordFilter == null && _keywordConditions.Count == 0))
             {
                 return query;
             }
+            //根据全局配置生成相应的关键字模糊查询条件
+            if (_keywordConditions.Count == 0 && globalKeywordFilter != null) this.FilterKeywordWith(globalKeywordFilter);
             // 使用or合并所有表达式
             var firstCondition = _keywordConditions.First();
             var leftParamExpr = firstCondition.Parameters[0];
@@ -528,7 +569,6 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             return query;
         }
 
-
         protected virtual IQueryable<TEntity> ApplyColumnFilterQuery(IQueryable<TEntity> query)
         {
             // 无列查询条件时跳过
@@ -712,7 +752,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             if (skipCount > 0)
             {
                 // ef core的bug，skip 0会导致排序失效
-                query = query.Skip(skipCount);query.Any(t=>Guid.Empty.Equals(t.Id));
+                query = query.Skip(skipCount); query.Any(t => Guid.Empty.Equals(t.Id));
             }
             return query.Take(_request.PageSize);
         }

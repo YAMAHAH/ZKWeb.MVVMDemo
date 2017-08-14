@@ -68,8 +68,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
             return request.BuildResponse<User, UserOutputDto, Guid>()
-                .FilterKeywordWith(t => t.Username)
-                .FilterKeywordWith(t => t.Remark)
+                .FilterKeywordWith(t => new { t.Username, t.Remark })
                 .FilterColumnWith(
                     nameof(UserOutputDto.Roles),
                     (c, q) =>

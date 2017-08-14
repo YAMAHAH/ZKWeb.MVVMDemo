@@ -60,11 +60,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
         [CheckPrivilege(true, typeof(IAmAdmin), "Tenant:View")]
         public GridSearchResponseDto Search(GridSearchRequestDto request)
         {
-
-            var response = request.BuildResponse<Tenant, TenantOutputDto, Guid>()
-                .FilterKeywordWith(t => t.Name)
-                .FilterKeywordWith(t => t.Remark)
-                .ToResponse();
+            var response = request.BuildResponse<Tenant, TenantOutputDto, Guid>().ToResponse();
             UpdateSuperAdminName(response.Result.OfType<TenantOutputDto>());
             return response;
         }
