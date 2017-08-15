@@ -6,7 +6,7 @@ using InfrastructurePlugins.BaseModule.Components.DtoToModelMap;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Linq.Expressions;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
 
@@ -40,6 +40,16 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
                      return q.Where(u => u.Roles.Any(r => roleIds.Contains(r.To.Id)));
                  }
                  return q;
+             }))
+             .ForMember(u => u.Roles, opt => opt.MapColumnFilterWrapper(c =>
+             {
+                 var roleIds = c.Value.ConvertOrDefault<IList<Guid>>();
+                 if (roleIds != null)
+                 {
+                     Expression<Func<User, bool>> expr = e => roleIds.Count > 0; //e.Roles.Any(); //r => roleIds.Contains(r.To.Id)
+                     return expr;
+                 }
+                 return u => false;
              }))
              ;
         }

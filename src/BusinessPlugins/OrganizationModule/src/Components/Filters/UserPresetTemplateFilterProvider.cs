@@ -31,7 +31,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Components.Filters
 
             if (empId == Guid.Empty)
             {
-                return t => true;
+                return e => true;
             }
             else
             {

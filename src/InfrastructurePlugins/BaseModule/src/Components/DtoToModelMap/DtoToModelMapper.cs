@@ -70,9 +70,9 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             mapper.AddOrUpdateMap<TModel, TDto, TPrimaryKey>(this);
         }
 
-        DtoMapOption<TModel, TPrimaryKey> mapOptions = new DtoMapOption<TModel, TPrimaryKey>();
+        DtoToModelMapOption<TModel, TPrimaryKey> mapOptions = new DtoToModelMapOption<TModel, TPrimaryKey>();
         public DtoToModelMapProfile<TModel, TDto, TPrimaryKey> ForMember<TMember>(Expression<Func<TDto, TMember>> destMember,
-         Action<DtoMapOption<TModel, TPrimaryKey>> optionAction)
+         Action<DtoToModelMapOption<TModel, TPrimaryKey>> optionAction)
         {
             optionAction(mapOptions);
             var prop = destMember.Body.ToString().Split('.')[1];
@@ -82,7 +82,8 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                 ColumnType = typeof(TMember),
                 Expression = mapOptions.Expression,
                 ColumnFilter = mapOptions.ColumnFilter,
-                IsCustomColumnFilter = mapOptions.ColumnFilter != null,
+                ColumnFilterWrapper = mapOptions.ColumnFilterWrapper,
+                IsCustomColumnFilter = mapOptions.ColumnFilter != null || mapOptions.ColumnFilterWrapper != null,
                 TemplateObjectInfo = mapOptions.TemplateObjectInfo,
                 ColumnFilterFunc = mapOptions.ColumnFilterFunc
             };
@@ -128,7 +129,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// <param name="optionAction"></param>
         /// <returns></returns>
         DtoToModelMapProfile<TModel, TDto, TPrimaryKey> ForMember<TMember>(Expression<Func<TDto, TMember>> destMember,
-        Action<DtoMapOption<TModel, TPrimaryKey>> optionAction);
+        Action<DtoToModelMapOption<TModel, TPrimaryKey>> optionAction);
         /// <summary>
         /// 设置TDTO的默认关键字过滤字段
         /// </summary>
@@ -169,44 +170,54 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
 
         public QueryColumnFilterDelegate<TModel, TPrimaryKey> ColumnFilter { get; set; }
 
+        public ColumnFilterWrapperDelegate<TModel, TPrimaryKey> ColumnFilterWrapper { get; set; }
+
         public bool IsCustomColumnFilter { get; set; }
         public QueryColumnFilterFunc<TModel, TPrimaryKey> ColumnFilterFunc { get; set; }
 
         public ComponentPropertyAttribute TemplateObjectInfo { get; set; }
     }
 
-    public class DtoMapOption<TModel, TPrimaryKey> where TModel : class, IEntity, IEntity<TPrimaryKey>
+    public class DtoToModelMapOption<TModel, TPrimaryKey> where TModel : class, IEntity, IEntity<TPrimaryKey>
     {
         public LambdaExpression Expression { get; set; }
 
         public QueryColumnFilterDelegate<TModel, TPrimaryKey> ColumnFilter { get; set; }
 
+        public ColumnFilterWrapperDelegate<TModel, TPrimaryKey> ColumnFilterWrapper { get; set; }
+
         public QueryColumnFilterFunc<TModel, TPrimaryKey> ColumnFilterFunc { get; set; }
 
         public ComponentPropertyAttribute TemplateObjectInfo { get; set; } = new ComponentPropertyAttribute();
 
-        public DtoMapOption<TModel, TPrimaryKey> Map<TMember>(Expression<Func<TModel, TMember>> expression)
+        public DtoToModelMapOption<TModel, TPrimaryKey> Map<TMember>(Expression<Func<TModel, TMember>> expression)
         {
             this.Expression = expression;
             return this;
         }
-        public DtoMapOption<TModel, TPrimaryKey> Map(Expression<Func<TModel, GridSearchColumnFilter, bool>> expression)
+        public DtoToModelMapOption<TModel, TPrimaryKey> Map(Expression<Func<TModel, GridSearchColumnFilter, bool>> expression)
         {
             this.Expression = expression;
             return this;
         }
-        public DtoMapOption<TModel, TPrimaryKey> MapColumnFilter(QueryColumnFilterDelegate<TModel, TPrimaryKey> columnFilter)
+        public DtoToModelMapOption<TModel, TPrimaryKey> MapColumnFilter(QueryColumnFilterDelegate<TModel, TPrimaryKey> columnFilter)
         {
             ColumnFilter = columnFilter;
             return this;
         }
-        public DtoMapOption<TModel, TPrimaryKey> Map(Action<ComponentPropertyAttribute> objectInfoAction)
+
+        public DtoToModelMapOption<TModel, TPrimaryKey> MapColumnFilterWrapper(ColumnFilterWrapperDelegate<TModel, TPrimaryKey> columnFilterWrapper)
+        {
+            ColumnFilterWrapper = columnFilterWrapper;
+            return this;
+        }
+        public DtoToModelMapOption<TModel, TPrimaryKey> Map(Action<ComponentPropertyAttribute> objectInfoAction)
         {
             objectInfoAction(TemplateObjectInfo);
             return this;
         }
 
-        public DtoMapOption<TModel, TPrimaryKey> MapFunc(QueryColumnFilterFunc<TModel, TPrimaryKey> columnFilterFunc)
+        public DtoToModelMapOption<TModel, TPrimaryKey> MapFunc(QueryColumnFilterFunc<TModel, TPrimaryKey> columnFilterFunc)
         {
             ColumnFilterFunc = columnFilterFunc;
             return this;

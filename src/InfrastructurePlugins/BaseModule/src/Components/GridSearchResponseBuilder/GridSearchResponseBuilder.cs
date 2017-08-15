@@ -83,7 +83,12 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                     .ForMember(m => m.SrcExpression, opt => opt.ResolveUsing(m =>
                     {
                         var dtoMapVal = dtmProfile?.GetMember(m.Column);
-                        return dtoMapVal == null ? null : dtoMapVal.Expression;
+                        var cqExpr = dtoMapVal.Expression;
+                        if (dtoMapVal.ColumnFilterWrapper != null)
+                        {
+                            cqExpr = dtoMapVal.ColumnFilterWrapper(m);
+                        }
+                        return dtoMapVal == null ? null : cqExpr;
                     }))
                     .ForMember(m => m.IsCustomColumnFilter, opt => opt.ResolveUsing(m =>
                     {
@@ -591,17 +596,6 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             var root = new ColumnQueryCondition() { IsChildExpress = true };
             var cqconds = mapper.Map<List<ColumnQueryCondition>>(_request.ColumnFilters.ToList());
 
-            //var customs = cqconds.Where(c => c.IsCustomColumnFilter).ToList();
-            //QueryColumnFilterDelegate<TEntity, TPrimaryKey> customColumnFilter;
-            //foreach (var item in customs)
-            //{
-            //    if (_customColumnFilters.TryGetValue(item.PropertyName, out customColumnFilter))
-            //    {
-            //        query = customColumnFilter(columnFilter, query);
-            //        continue;
-            //    }
-            //}
-           
             root.Childs.AddRange(cqconds);
             var expBuilder = new LambdaExpressionBuilder<TEntity>();
             var rootExpr = expBuilder.GenerateLambdaExpression(root);

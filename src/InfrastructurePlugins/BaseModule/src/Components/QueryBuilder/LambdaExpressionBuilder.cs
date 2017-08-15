@@ -99,7 +99,11 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         private void GenerateExpression(ColumnQueryCondition qc)
         {
             Expression expr = null;
-
+            if (qc.IsCustomColumnFilter)
+            {
+                qc.Expression = qc.SrcExpression.Body;
+                return;
+            }
             //根据操作符生成相应的表达式
             switch (qc.OpertionSymbol)
             {
