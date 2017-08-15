@@ -18,8 +18,9 @@ namespace InfrastructurePlugins.MultiTenantModule.Application.Mappings
                 .ForMember(u => u.CreateTime, opt => opt.Map(m => m.CreateTime.ToString()))
                 .ForMember(u => u.Remark, opt => opt.Map(m => m.Remark))
                 .ForMember(d => d.UpdateTime, opt => opt.Map(m => m.UpdateTime.ToString()).Map(m => { m.Editable = true; }))
-                .ForMember(d => d.IsMaster, opt => opt.Map(u => u.Id))
+                .ForMember(d => d.IsMaster, opt => opt.Map(u => u.IsMaster))
                 .ForMember(d => d.Name, (opt) => opt.Map(t => t.Name));
+                
         }
     }
 }

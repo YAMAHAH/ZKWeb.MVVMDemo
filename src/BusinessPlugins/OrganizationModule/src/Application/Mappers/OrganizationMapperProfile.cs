@@ -4,48 +4,14 @@ using BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfa
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.OrganizationModule.Domain.Extensions;
 using BusinessPlugins.OrganizationModule.Domain.Services;
-using InfrastructurePlugins.BaseModule.Application.Dtos;
-using InfrastructurePlugins.BaseModule.Components.DtoToModelMap;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using ZKWeb.Storage;
-using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
 
 namespace BusinessPlugins.OrganizationModule.Application.Mappers
 {
-    //[ExportMany]
-    //public class UserOutputDtoMap : CreateDtoToModelMap<User, UserOutputDto, Guid>
-    //{
-    //    public UserOutputDtoMap()
-    //    {
-            
-    //        ForMember(u => u.CreateTime, opt => opt.Map(m => m.CreateTime.ToString()));
-
-    //        ForMember(u => u.Remark, opt => opt.Map(m => m.Remark + m.Username));
-
-    //        ForMember(d => d.OwnerTenantName, opt => opt.Map(m => m.OwnerTenant.Name).Map(m => { m.Editable = true; }));
-
-    //        ForMember(d => d.OwnerTenantName, opt => opt.Map((u, q) => { return q; }).Map(u => u.OwnerTenant.Name));
-
-    //        ForMember(d => d.OwnerTenantId, (opt) => opt.Map((u, c) => TestFunc(u, c)));
-
-    //    }
-
-    //    private bool TestFunc(User u, GridSearchColumnFilter c)
-    //    {
-    //        var roleIds = c.Value.ConvertOrDefault<IList<Guid>>();
-    //        if (roleIds != null)
-    //        {
-    //            return u.Roles.Any(r => roleIds.Contains(r.To.Id));
-    //        }
-    //        return false;
-    //    }
-    //}
-
-
     /// <summary>
     /// AutoMapper的配置
     /// </summary>

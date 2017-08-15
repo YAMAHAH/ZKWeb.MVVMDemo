@@ -82,6 +82,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                 ColumnType = typeof(TMember),
                 Expression = mapOptions.Expression,
                 ColumnFilter = mapOptions.ColumnFilter,
+                IsCustomColumnFilter = mapOptions.ColumnFilter != null,
                 TemplateObjectInfo = mapOptions.TemplateObjectInfo,
                 ColumnFilterFunc = mapOptions.ColumnFilterFunc
             };
@@ -168,6 +169,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
 
         public QueryColumnFilterDelegate<TModel, TPrimaryKey> ColumnFilter { get; set; }
 
+        public bool IsCustomColumnFilter { get; set; }
         public QueryColumnFilterFunc<TModel, TPrimaryKey> ColumnFilterFunc { get; set; }
 
         public ComponentPropertyAttribute TemplateObjectInfo { get; set; }
@@ -183,7 +185,6 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
 
         public ComponentPropertyAttribute TemplateObjectInfo { get; set; } = new ComponentPropertyAttribute();
 
-
         public DtoMapOption<TModel, TPrimaryKey> Map<TMember>(Expression<Func<TModel, TMember>> expression)
         {
             this.Expression = expression;
@@ -194,7 +195,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             this.Expression = expression;
             return this;
         }
-        public DtoMapOption<TModel, TPrimaryKey> Map(QueryColumnFilterDelegate<TModel, TPrimaryKey> columnFilter)
+        public DtoMapOption<TModel, TPrimaryKey> MapColumnFilter(QueryColumnFilterDelegate<TModel, TPrimaryKey> columnFilter)
         {
             ColumnFilter = columnFilter;
             return this;

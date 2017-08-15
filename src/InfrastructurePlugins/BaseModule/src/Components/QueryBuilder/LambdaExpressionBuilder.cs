@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
+using ZKWebStandard.Extensions;
 
 namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 {
@@ -18,7 +19,8 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         private void CreateParaExpr(string paraName = "e")
         {
             ParameterExpression paraExpr = Expression.Parameter(typeof(T), paraName);
-            Parameters[Parameters.Length] = paraExpr;
+
+            Parameters = new ParameterExpression[] { paraExpr };
         }
         /// <summary>
         /// 暂时不用
@@ -62,7 +64,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// <returns></returns>
         public Expression<Func<T, bool>> GetLambdaExpression(Expression body)
         {
-            return Expression.Lambda<Func<T, bool>>(body, this.Parameters);
+            return Expression.Lambda<Func<T, bool>>(body == null ? Expression.Constant(true) : body, this.Parameters);
         }
 
         public LambdaExpression ParseLambda(ParameterExpression[] parameters, Type resultType, string expression, params object[] values)
@@ -134,12 +136,12 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                         this.LessThanOrEqual(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
                     break;
                 case OpertionSymbol.Like:
-                    expr = qc.SrcExpression == null ? this.Like<T>(qc.PropertyName, qc.Value1 as string, qc.Concat) :
-                        this.Like<T>(qc.SrcExpression, qc.Value1 as string, qc.Concat);
+                    expr = qc.SrcExpression == null ? this.Like<T>(qc.PropertyName, Convert.ToString(qc.Value1)) :
+                        this.Like<T>(qc.SrcExpression, qc.Value1 as string);
                     break;
                 case OpertionSymbol.NotLike:
-                    expr = qc.SrcExpression == null ? this.NotLike<T>(qc.PropertyName, qc.Value1 as string, qc.Concat) :
-                        this.NotLike<T>(qc.SrcExpression, qc.Value1 as string, qc.Concat);
+                    expr = qc.SrcExpression == null ? this.NotLike<T>(qc.PropertyName, Convert.ToString(qc.Value1)) :
+                        this.NotLike<T>(qc.SrcExpression, qc.Value1 as string);
                     break;
                 case OpertionSymbol.StartsWith:
                     expr = qc.SrcExpression == null ? this.StartsWith(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat) :
@@ -150,11 +152,11 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                         this.StartsWith(qc.SrcExpression, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
                     break;
                 case OpertionSymbol.EndsWith:
-                    expr = qc.SrcExpression == null ? this.EndsWith(qc.PropertyName, qc.Value1 as string, qc.Concat) :
+                    expr = qc.SrcExpression == null ? this.EndsWith(qc.PropertyName, Convert.ToString(qc.Value1), qc.Concat) :
                         this.EndsWith(qc.SrcExpression, qc.Value1 as string, qc.Concat);
                     break;
                 case OpertionSymbol.NotEndsWith:
-                    expr = qc.SrcExpression == null ? this.NotEndsWith(qc.PropertyName, qc.Value1 as string, qc.Concat) :
+                    expr = qc.SrcExpression == null ? this.NotEndsWith(qc.PropertyName, Convert.ToString(qc.Value1), qc.Concat) :
                         this.NotEndsWith(qc.SrcExpression, qc.Value1 as string, qc.Concat);
                     break;
                 case OpertionSymbol.In:

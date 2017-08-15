@@ -45,7 +45,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Components.Filters
                 {
                     var qc = JsonConvert.DeserializeObject<ColumnQueryCondition>(f.ConditionJson);
                     qc.IsChildExpress = true;
-                    qc.Concat = ConcatType.OrElse;
+                    qc.Concat = f.ConcatType == ConcatType.None ? ConcatType.OrElse : f.ConcatType;
                     return qc;
                 });
                 root.Childs.AddRange(queryConds);

@@ -1,6 +1,7 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
+using InfrastructurePlugins.BaseModule.Components.QueryBuilder;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 using System;
 using ZKWeb.Database;
@@ -40,6 +41,8 @@ namespace BusinessPlugins.BasicModule.Domain.Entities
         /// </summary>
         public Guid FilterId { get; set; }
         public string FilterFullName { get; set; }
+
+        public ConcatType ConcatType { get; set; }
 
         #endregion
 

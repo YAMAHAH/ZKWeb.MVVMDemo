@@ -62,13 +62,13 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
 
         protected IContainer Rejector => ZKWeb.Application.Ioc;
 
-        private IDtoToModelMapProfile<TEntity, TDto, TPrimaryKey> GetDtoToModelMapper
+        private IDtoToModelMapProfile<TEntity, TDto, TPrimaryKey> DtoToModelProfile
         {
             get
             {
-                var dtoMapper = Rejector.Resolve<IDtoToModelMapper>();
-                var dtoMap = dtoMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
-                return dtoMap;
+                var dtoToModelMapper = Rejector.Resolve<IDtoToModelMapper>();
+                var dtoMapProfile = dtoToModelMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
+                return dtoMapProfile;
             }
         }
 
@@ -84,6 +84,11 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                     {
                         var dtoMapVal = dtmProfile?.GetMember(m.Column);
                         return dtoMapVal == null ? null : dtoMapVal.Expression;
+                    }))
+                    .ForMember(m => m.IsCustomColumnFilter, opt => opt.ResolveUsing(m =>
+                    {
+                        var dtoMapVal = dtmProfile?.GetMember(m.Column);
+                        return dtoMapVal == null ? false : dtoMapVal.IsCustomColumnFilter;
                     }))
                     .ForMember(m => m.PropertyName, opt => opt.MapFrom(m => m.Column))
                     .ForMember(m => m.Value1, opt => opt.ResolveUsing(m =>
@@ -311,7 +316,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         protected virtual IQueryable<TEntity> ApplyKeywordFilter(IQueryable<TEntity> query)
         {
             //获取预定义的关键字模糊查询字段
-            var globalKeywordFilter = GetDtoToModelMapper?.KeywordFilterExpression;
+            var globalKeywordFilter = DtoToModelProfile?.KeywordFilterExpression;
             // 无关键字或无过滤条件且全局配置为空时跳过
             if (string.IsNullOrEmpty(_request.Keyword) || (globalKeywordFilter == null && _keywordConditions.Count == 0))
             {
@@ -337,7 +342,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// <summary>
         /// 按列查询条件进行过滤
         /// </summary>
-        protected virtual IQueryable<TEntity> ApplyColumnFilter(IQueryable<TEntity> query)
+        protected virtual IQueryable<TEntity> ApplyColumnFilterOld(IQueryable<TEntity> query)
         {
             // 无列查询条件时跳过
             if (_request.ColumnFilters == null || _request.ColumnFilters.Count == 0)
@@ -569,7 +574,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             return query;
         }
 
-        protected virtual IQueryable<TEntity> ApplyColumnFilterQuery(IQueryable<TEntity> query)
+        protected virtual IQueryable<TEntity> ApplyColumnFilter(IQueryable<TEntity> query)
         {
             // 无列查询条件时跳过
             if (_request.ColumnFilters == null || _request.ColumnFilters.Count == 0)
@@ -586,13 +591,30 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             var root = new ColumnQueryCondition() { IsChildExpress = true };
             var cqconds = mapper.Map<List<ColumnQueryCondition>>(_request.ColumnFilters.ToList());
 
+            //var customs = cqconds.Where(c => c.IsCustomColumnFilter).ToList();
+            //QueryColumnFilterDelegate<TEntity, TPrimaryKey> customColumnFilter;
+            //foreach (var item in customs)
+            //{
+            //    if (_customColumnFilters.TryGetValue(item.PropertyName, out customColumnFilter))
+            //    {
+            //        query = customColumnFilter(columnFilter, query);
+            //        continue;
+            //    }
+            //}
+           
             root.Childs.AddRange(cqconds);
-            //var expBuilder = new LambdaExpressionBuilder<TEntity>();
-            Expression<Func<TEntity, bool>> columnFilterExpr = e => true; // expBuilder.GenerateLambdaExpression(root);
+            var expBuilder = new LambdaExpressionBuilder<TEntity>();
+            var rootExpr = expBuilder.GenerateLambdaExpression(root);
+            Expression<Func<TEntity, bool>> columnFilterExpr = rootExpr;
 
             ////合并表达式
-            var paramExpr = Expression.Parameter(entityType, "e");
-            var bodyExpr = Expression.AndAlso(userPresetFilter.Body, columnFilterExpr.Body);
+            var paramExpr = userPresetFilter.Parameters[0];
+            var leftBodyExpr = userPresetFilter.Body;
+            var rightParamExpr = columnFilterExpr.Parameters[0];
+            var visitor = new ReplaceExpressionVisitor(rightParamExpr, paramExpr);
+            var rightBodyExpr = visitor.Visit(columnFilterExpr.Body);
+            var bodyExpr = Expression.AndAlso(leftBodyExpr, rightBodyExpr);
+
             var predicate = Expression.Lambda<Func<TEntity, bool>>(bodyExpr, paramExpr);
 
             return predicate == null ? query : query.Where(predicate);
@@ -643,7 +665,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// <summary>
         /// 按自定义的排序函数或者请求的排序字段进行排序
         /// </summary>
-        protected virtual IQueryable<TEntity> ApplySorter(IQueryable<TEntity> query)
+        protected virtual IQueryable<TEntity> ApplySorterOld(IQueryable<TEntity> query)
         {
             // 有自定义的排序函数时使用自定义的排序函数
             if (_customQuerySorter != null)
@@ -696,7 +718,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             }
             return Expression.Lambda(propExpr, paraExpr);
         }
-        protected virtual IQueryable<TEntity> ApplySorter2(IQueryable<TEntity> query)
+        protected virtual IQueryable<TEntity> ApplySorter(IQueryable<TEntity> query)
         {
             // 有自定义的排序函数时使用自定义的排序函数
             if (_customQuerySorter != null)
@@ -707,23 +729,20 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             var entityType = typeof(TEntity);
             ParameterExpression paraExpr = Expression.Parameter(entityType, "e");
             var sortMetas = _request.MultiSortMeta;
-            var dtoMapper = Rejector.Resolve<IDtoToModelMapper>();
-            var dtoMap = dtoMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
             //从缓存中找到对应的字段的表达式,生成新的排序实体
-            IList<DynamicOrdering> dynamicOrderings = new List<DynamicOrdering>();
-            foreach (var sortMeta in sortMetas)
+            IList<DynamicOrdering> dynamicOrderings = sortMetas.Select(sortMeta =>
             {
-                var colMapVal = dtoMap?.GetMember(sortMeta.Field);
-                var dynamicOrdering = new DynamicOrdering()
+                var colMapVal = DtoToModelProfile?.GetMember(sortMeta.Field);
+                return new DynamicOrdering()
                 {
                     Ascending = sortMeta.Order,
-                    Selector = (LambdaExpression)colMapVal?.Expression ?? GetPropertyExpression(paraExpr, sortMeta.Field),
+                    Selector = colMapVal?.Expression ?? GetPropertyExpression(paraExpr, sortMeta.Field),
                     MethodName = sortMetas.First() == sortMeta ?
                                  sortMeta.Order ? "OrderBy" : "OrderByDescending" :
                                  sortMeta.Order ? "ThenBy" : "ThenByDescending"
                 };
-                dynamicOrderings.Add(dynamicOrdering);
-            }
+            }).ToList();
+
             // 按查询给出的列进行排序，如果列不存在则按Id进行排序
             if (dynamicOrderings.Count == 0) return query.OrderBy(t => t.Id);
 
@@ -772,16 +791,12 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                 {
                     // 按关键词进行过滤
                     query = ApplyKeywordFilter(query);
-                    //
-                    ApplyColumnFilterQuery(query);
                     // 按列查询条件进行过滤
                     query = ApplyColumnFilter(query);
                     // 调用自定义的过滤函数
                     query = ApplyCustomFilter(query);
                     // 按自定义的排序函数或者请求的排序字段进行排序
-                    //query = ApplySorter(query);
-                    //
-                    query = ApplySorter2(query);
+                    query = ApplySorter(query);
                     // 获取总数量
                     var count = query.LongCount();
                     // 对查询进行分页

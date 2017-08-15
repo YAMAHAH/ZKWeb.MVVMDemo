@@ -7,6 +7,10 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
     public class ColumnQueryCondition
     {
         /// <summary>
+        /// 自定义列过滤条件
+        /// </summary>
+        public bool IsCustomColumnFilter { get; set; }
+        /// <summary>
         /// 子表达式
         /// </summary>
         public bool IsChildExpress { get; set; }
