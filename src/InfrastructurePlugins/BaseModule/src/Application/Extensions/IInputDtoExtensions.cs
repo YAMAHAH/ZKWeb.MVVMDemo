@@ -10,9 +10,15 @@ using InfrastructurePlugins.BaseModule.Components.Exceptions;
 using InfrastructurePlugins.BaseModule.Components.ValidationMessageProviders.Interfaces;
 using ZKWebStandard.Ioc;
 using FluentValidation;
+using ZKWebStandard.Web;
 
 namespace InfrastructurePlugins.BaseModule.Application.Extensions
 {
+    public class NullInputDto : IInputDto
+    {
+
+    }
+
     /// <summary>
     /// 输入传输对象的扩展函数
     /// </summary>
@@ -48,8 +54,19 @@ namespace InfrastructurePlugins.BaseModule.Application.Extensions
         /// </summary>
         public static bool IsValid<T>(this IInputDto inputDto)
         {
+            //new T("{0} is required", name)
             IList<string> errors;
             return IsValid<T>(inputDto, out errors);
+        }
+        /// <summary>
+        /// 检查数据传输对象是否合法
+        /// </summary>
+        /// <param name="inputDto"></param>
+        /// <returns></returns>
+        public static bool IsValid(this IInputDto inputDto)
+        {
+            IList<string> errors;
+            return IsValid<NullInputDto>(inputDto, out errors);
         }
 
         /// <summary>
@@ -98,11 +115,10 @@ namespace InfrastructurePlugins.BaseModule.Application.Extensions
                 {
                     foreach (var failure in results.Errors)
                     {
-
+                        errors.Add(failure.ErrorMessage);
                     }
                 }
             }
-
             return errors.Count == 0;
         }
 

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
+using ZKWeb.Localize;
 using ZKWebStandard.Ioc;
 
 namespace InfrastructurePlugins.BaseModule.Application.Validators
@@ -9,7 +10,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Validators
     {
         public GridSearchRequestValidation()
         {
-            RuleFor(c => c.PageSize).GreaterThan(0);
+            RuleFor(c => c.PageSize).GreaterThan(0).WithMessage(new T("{0} must be greater than zero", "Page size"));
         }
     }
 }
