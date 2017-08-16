@@ -25,6 +25,10 @@ namespace InfrastructurePlugins.BaseModule.Application.Dtos
         /// </summary>
         public Type ProperyType { get; set; }
         /// <summary>
+        /// 正则表达式
+        /// </summary>
+        public string RegExp { get; set; }
+        /// <summary>
         /// 属性名称
         /// </summary>
         public string PropertyName { get; set; }

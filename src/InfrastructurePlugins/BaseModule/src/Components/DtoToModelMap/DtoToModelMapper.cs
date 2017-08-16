@@ -205,7 +205,11 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             ColumnFilter = columnFilter;
             return this;
         }
-
+        /// <summary>
+        /// 映射列过滤包装函数
+        /// </summary>
+        /// <param name="columnFilterWrapper"></param>
+        /// <returns></returns>
         public DtoToModelMapOption<TModel, TPrimaryKey> MapColumnFilterWrapper(ColumnFilterWrapperDelegate<TModel, TPrimaryKey> columnFilterWrapper)
         {
             ColumnFilterWrapper = columnFilterWrapper;

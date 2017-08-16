@@ -85,6 +85,10 @@
         /// <summary>
         /// 
         /// </summary>
-        NotFuzzy = 20
+        NotFuzzy = 20,
+        /// <summary>
+        /// 正则
+        /// </summary>
+        RegExp = 21
     }
 }

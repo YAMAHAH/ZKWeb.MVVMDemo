@@ -15,6 +15,7 @@ namespace BusinessPlugins.CrudExampleModule.Application.Mappers
         {
             CreateMap<ExampleData, ExampleDataOutputDto>();
             CreateMap<ExampleDataInputDto, ExampleData>();
+
         }
     }
 }

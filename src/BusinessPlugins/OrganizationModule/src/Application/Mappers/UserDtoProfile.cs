@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
 
@@ -32,21 +33,13 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
              .ForMember(r => r.Type, opt => opt.Map(r => r.Type))
              .ForMember(r => r.Privileges, opt => opt.Map(r => r.GetPrivileges()))
              .ForMember(u => u.RoleIds, opt => opt.Map(u => u.Roles.Select(r => r.To.Id).ToList()))
-             .ForMember(u => u.Roles, opt => opt.MapColumnFilter((c, q) =>
-             {
-                 var roleIds = c.Value.ConvertOrDefault<IList<Guid>>();
-                 if (roleIds != null)
-                 {
-                     return q.Where(u => u.Roles.Any(r => roleIds.Contains(r.To.Id)));
-                 }
-                 return q;
-             }))
              .ForMember(u => u.Roles, opt => opt.MapColumnFilterWrapper(c =>
              {
                  var roleIds = c.Value.ConvertOrDefault<IList<Guid>>();
+                 
                  if (roleIds != null)
                  {
-                     Expression<Func<User, bool>> expr = e => roleIds.Count > 0; //e.Roles.Any(); //r => roleIds.Contains(r.To.Id)
+                     Expression<Func<User, bool>> expr = e => Regex.IsMatch(e.Id.ToString(), ".*") && e.Roles.Any(r => roleIds.Contains(r.To.Id));
                      return expr;
                  }
                  return u => false;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
-using ZKWebStandard.Extensions;
+using System.Text.RegularExpressions;
 
 namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 {
@@ -92,6 +92,24 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             }
         }
 
+        protected class ReplaceExpressionVisitor : ExpressionVisitor
+        {
+            private readonly Expression _oldValue;
+            private readonly Expression _newValue;
+
+            public ReplaceExpressionVisitor(Expression oldValue, Expression newValue)
+            {
+                _oldValue = oldValue;
+                _newValue = newValue;
+            }
+
+            public override Expression Visit(Expression node)
+            {
+                if (node == _oldValue)
+                    return _newValue;
+                return base.Visit(node);
+            }
+        }
         /// <summary>
         /// 生成单个条件的表达式
         /// </summary>
@@ -101,9 +119,19 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             Expression expr = null;
             if (qc.IsCustomColumnFilter)
             {
-                qc.Expression = qc.SrcExpression.Body;
+                var leftParamExpr = this.Parameters[0];
+                var rightParamExpr = qc.SrcExpression.Parameters[0];
+                var visitor = new ReplaceExpressionVisitor(rightParamExpr, leftParamExpr);
+                var rightBodyExpr = visitor.Visit(qc.SrcExpression.Body);
+                qc.Expression = rightBodyExpr;
                 return;
             }
+            //if (!string.IsNullOrEmpty(qc.RegExp))
+            //{
+            //    var regExpr = this.RegExp(qc.SrcExpression, qc.RegExp);
+            //    qc.Expression = regExpr;
+            //    return;
+            //}
             //根据操作符生成相应的表达式
             switch (qc.OpertionSymbol)
             {
@@ -186,6 +214,10 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 case OpertionSymbol.NotFuzzy:
                     expr = qc.SrcExpression == null ? this.NotFuzzy(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat) :
                         this.NotFuzzy(qc.SrcExpression, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
+                    break;
+                case OpertionSymbol.RegExp:
+                    expr = qc.SrcExpression == null ? this.RegExp(qc.PropertyName, qc.Value1.ToString()) :
+                        this.RegExp(qc.SrcExpression, qc.Value1.ToString());
                     break;
                 default:
                     break;

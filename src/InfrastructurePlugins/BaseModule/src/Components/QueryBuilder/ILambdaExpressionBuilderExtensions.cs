@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 {
@@ -72,7 +73,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         public static Expression Any<T, TSource>(this ILambdaExpressionBuilder<T> q, LambdaExpression memberExpr, Expression<Func<TSource, bool>> predicate)
         {
             var ce = Expression.Constant(predicate.Compile());
-            return Expression.Call(typeof(Enumerable), "Any", new Type[] { typeof(TSource) }, memberExpr, ce); ;
+            return Expression.Call(typeof(Enumerable), "Any", new Type[] { typeof(TSource) }, memberExpr, ce);
         }
 
         public static Expression All<T, TSource>(this ILambdaExpressionBuilder<T> q, string memberName, Expression<Func<TSource, bool>> predicate)
@@ -84,6 +85,23 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         {
             var ce = Expression.Constant(predicate.Compile());
             return Expression.Call(typeof(Enumerable), "All", new Type[] { typeof(TSource) }, memberExpr, ce);
+        }
+
+        public static Expression RegExp<T>(this ILambdaExpressionBuilder<T> q, LambdaExpression memberExpr, string pattern)
+        {
+            Expression finalExpr = memberExpr;
+            if (memberExpr.ReturnType != typeof(string))
+            {
+                //转换成字符串表达式
+                finalExpr = Expression.Call(memberExpr, "ToString", new Type[] { });
+            }
+            var patternCe = Expression.Constant(pattern);
+            return Expression.Call(typeof(Regex), "IsMatch", new Type[] { typeof(string), typeof(string) }, memberExpr, patternCe);
+        }
+        public static Expression RegExp<T>(this ILambdaExpressionBuilder<T> q, string property, string pattern)
+        {
+            var memberExpr = GetPropertyExpression(q, property);
+            return RegExp(q, memberExpr, pattern);
         }
         public static Expression BuildOrExpression<T, TValue>(this ILambdaExpressionBuilder<T> q,
             Expression<Func<T, TValue>> valueSelector, IEnumerable<TValue> values)

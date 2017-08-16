@@ -9,6 +9,7 @@ using InfrastructurePlugins.BaseModule.Application.Dtos;
 using InfrastructurePlugins.BaseModule.Components.Exceptions;
 using InfrastructurePlugins.BaseModule.Components.ValidationMessageProviders.Interfaces;
 using ZKWebStandard.Ioc;
+using FluentValidation;
 
 namespace InfrastructurePlugins.BaseModule.Application.Extensions
 {
@@ -45,16 +46,17 @@ namespace InfrastructurePlugins.BaseModule.Application.Extensions
         /// <summary>
         /// 检查数据传输对象是否合法
         /// </summary>
-        public static bool IsValid(this IInputDto inputDto)
+        public static bool IsValid<T>(this IInputDto inputDto)
         {
             IList<string> errors;
-            return IsValid(inputDto, out errors);
+            return IsValid<T>(inputDto, out errors);
         }
 
         /// <summary>
         /// 检查数据传输对象是否合法，不合法时返回错误消息
+        /// 支持数据注解和FluentValidation方式
         /// </summary>
-        public static bool IsValid(this IInputDto inputDto, out IList<string> errors)
+        public static bool IsValid<TInputDto>(this IInputDto inputDto, out IList<string> errors)
         {
             errors = new List<string>();
             var properties = inputDto.GetType().FastGetProperties();
@@ -87,16 +89,30 @@ namespace InfrastructurePlugins.BaseModule.Application.Extensions
                         .FastInvoke(null, attribute, propertyName));
                 }
             }
+
+            var validator = ZKWeb.Application.Ioc.Resolve<IValidator<TInputDto>>(IfUnresolved.ReturnDefault);
+            if (validator != null)
+            {
+                var results = validator.Validate(inputDto);
+                if (!results.IsValid)
+                {
+                    foreach (var failure in results.Errors)
+                    {
+
+                    }
+                }
+            }
+
             return errors.Count == 0;
         }
 
         /// <summary>
         /// 检查数据传输对象是否合法，不合法时抛出例外
         /// </summary>
-        public static void Validate(this IInputDto inputDto)
+        public static void Validate<T>(this IInputDto inputDto)
         {
             IList<string> errors;
-            if (!inputDto.IsValid(out errors))
+            if (!inputDto.IsValid<T>(out errors))
             {
                 throw new BadRequestException(string.Join("\r\n", errors));
             }

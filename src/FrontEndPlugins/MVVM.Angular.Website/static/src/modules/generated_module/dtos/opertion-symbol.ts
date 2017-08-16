@@ -41,5 +41,7 @@ export enum OpertionSymbol {
     /** Fuzzy */
     Fuzzy = 19,
     /** NotFuzzy */
-    NotFuzzy = 20
+    NotFuzzy = 20,
+    /** RegExp */
+    RegExp = 21
 }

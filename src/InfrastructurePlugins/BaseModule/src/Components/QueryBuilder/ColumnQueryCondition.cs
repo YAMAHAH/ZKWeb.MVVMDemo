@@ -51,5 +51,9 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// 源条件表达式树
         /// </summary>
         public LambdaExpression SrcExpression { get; set; }
+        /// <summary>
+        /// 正则表达式
+        /// </summary>
+        public string RegExp { get; set; }
     }
 }

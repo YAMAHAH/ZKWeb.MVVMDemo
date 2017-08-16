@@ -13,5 +13,6 @@ namespace BusinessPlugins.OrganizationModule.Application.Dtos
         public string NewPassword { get; set; }
         [Description("确认信密码"), Required, StringLength(int.MaxValue, MinimumLength = 6)]
         public string ConfirmNewPassword { get; set; }
+
     }
 }

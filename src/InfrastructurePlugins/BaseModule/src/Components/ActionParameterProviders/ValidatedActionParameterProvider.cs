@@ -68,7 +68,7 @@ namespace InfrastructurePlugins.BaseModule.Components.ActionParameterProviders
             if (result is IInputDto &&
                 method.GetCustomAttribute<NoParameterValidationAttribute>() == null)
             {
-                ((IInputDto)result).Validate();
+                ((IInputDto)result).Validate<T>();
             }
             return result;
         }

@@ -608,7 +608,6 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             var visitor = new ReplaceExpressionVisitor(rightParamExpr, paramExpr);
             var rightBodyExpr = visitor.Visit(columnFilterExpr.Body);
             var bodyExpr = Expression.AndAlso(leftBodyExpr, rightBodyExpr);
-
             var predicate = Expression.Lambda<Func<TEntity, bool>>(bodyExpr, paramExpr);
 
             return predicate == null ? query : query.Where(predicate);

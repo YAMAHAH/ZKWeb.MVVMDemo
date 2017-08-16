@@ -27,6 +27,7 @@
 	
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="6.1.0" />
+		<PackageReference Include="FluentValidation" Version="7.1.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="1.0.4.6" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
 		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.7.6" />

@@ -14,6 +14,8 @@ export class GridSearchColumnFilter {
     public IsChildExpress: boolean;
     /** ProperyType */
     public ProperyType: any;
+    /** RegExp */
+    public RegExp: string;
     /** PropertyName */
     public PropertyName: string;
     /** OpertionSymbol */

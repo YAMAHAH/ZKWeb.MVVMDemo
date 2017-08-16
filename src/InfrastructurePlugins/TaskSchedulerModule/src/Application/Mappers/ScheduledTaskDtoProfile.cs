@@ -1,9 +1,6 @@
 ﻿using InfrastructurePlugins.BaseModule.Components.DtoToModelMap;
 using InfrastructurePlugins.TaskSchedulerModule.Application.Dtos;
 using InfrastructurePlugins.TaskSchedulerModule.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using ZKWebStandard.Ioc;
 
 namespace InfrastructurePlugins.TaskSchedulerModule.Application.Mappers
