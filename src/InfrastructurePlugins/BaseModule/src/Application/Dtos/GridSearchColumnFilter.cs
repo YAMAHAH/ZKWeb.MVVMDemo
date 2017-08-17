@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq.Expressions;
 
 namespace InfrastructurePlugins.BaseModule.Application.Dtos
 {
@@ -16,41 +15,30 @@ namespace InfrastructurePlugins.BaseModule.Application.Dtos
         [Description("过滤值")]
         public object Value { get; set; }
 
-        /// <summary>
-        /// 子表达式
-        /// </summary>
+        [Description("子表达式")]
         public bool IsChildExpress { get; set; }
-        /// <summary>
-        /// 属性类型
-        /// </summary>
+
+        [Description("属性类型")]
         public Type ProperyType { get; set; }
-        /// <summary>
-        /// 正则表达式
-        /// </summary>
+
+        [Description("正则表达式")]
         public string RegExp { get; set; }
-        /// <summary>
-        /// 属性名称
-        /// </summary>
+
+        [Description("属性名称")]
         public string PropertyName { get; set; }
-        /// <summary>
-        /// 操作符
-        /// </summary>
+
+        [Description("操作符")]
         public OpertionSymbol OpertionSymbol { get; set; }
-        /// <summary>
-        /// 值1
-        /// </summary>
+
+        [Description("值1")]
         public object Value1 { get; set; }
-        /// <summary>
-        /// 值2
-        /// </summary>
+
+        [Description("值2")]
         public object Value2 { get; set; }
-        /// <summary>
-        /// 逻辑连接符
-        /// </summary>
+
+        [Description("逻辑连接符")]
         public ConcatType Concat { get; set; }
-        /// <summary>
-        /// 子表达式查询条件
-        /// </summary>
+        [Description("子表达式查询条件")]
         public List<GridSearchColumnFilter> Childs { get; set; } = new List<GridSearchColumnFilter>();
     }
 }

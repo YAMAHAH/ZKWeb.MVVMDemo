@@ -47,6 +47,21 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
 
         protected IMapper mapper;
 
+        protected IQueryable<TEntity> customQuery;
+
+        private ParameterExpression xParaExpr;
+        protected ParameterExpression ParaExpression
+        {
+            get
+            {
+                if (xParaExpr == null)
+                {
+                    var entityType = typeof(TEntity);
+                    xParaExpr = Expression.Parameter(entityType, "e");
+                }
+                return xParaExpr;
+            }
+        }
         public GridSearchResponseBuilder(GridSearchRequestDto request)
         {
             _request = request;
@@ -58,6 +73,11 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             _customColumnFilters = new Dictionary<string, QueryColumnFilterDelegate<TEntity, TPrimaryKey>>();
 
             mapper = ColumnQueryFilterProfile();
+        }
+
+        public GridSearchResponseBuilder(GridSearchRequestDto request, IQueryable<TEntity> query) : this(request)
+        {
+            customQuery = query;
         }
 
         protected IContainer Rejector => ZKWeb.Application.Ioc;
@@ -83,12 +103,12 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                     .ForMember(m => m.SrcExpression, opt => opt.ResolveUsing(m =>
                     {
                         var dtoMapVal = dtmProfile?.GetMember(m.Column);
-                        var cqExpr = dtoMapVal.Expression;
-                        if (dtoMapVal.ColumnFilterWrapper != null)
+                        var cqExpr = dtoMapVal?.Expression;
+                        if (dtoMapVal?.ColumnFilterWrapper != null)
                         {
                             cqExpr = dtoMapVal.ColumnFilterWrapper(m);
                         }
-                        return dtoMapVal == null ? null : cqExpr;
+                        return dtoMapVal == null ? GetPropertyExpression(ParaExpression, m.Column) : cqExpr;
                     }))
                     .ForMember(m => m.IsCustomColumnFilter, opt => opt.ResolveUsing(m =>
                     {
@@ -130,7 +150,8 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                     .ForMember(m => m.ProperyType, opt => opt.ResolveUsing(m =>
                     {
                         var dtoMapVal = dtmProfile?.GetMember(m.Column);
-                        return dtoMapVal == null ? m.ProperyType : dtoMapVal.ColumnType;
+                        var propType = m.ProperyType == null ? GetPropertyExpression(ParaExpression, m.Column).ReturnType : m.ProperyType;
+                        return dtoMapVal == null ? propType : dtoMapVal.ColumnType;
                     })));
                 return mapperConf.CreateMapper();
             }
@@ -743,8 +764,6 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             foreach (var dynOrd in dynamicOrderings)
             {
                 var propType = dynOrd.Selector.ReturnType;
-                // Type delegateType = typeof(Func<,>).MakeGenericType(typeof(TEntity), propType);
-                // LambdaExpression lambda = Expression.Lambda(delegateType, dynOrd.Selector.Body, paraExpr);
                 orderResult = typeof(Queryable).GetMethods().Single(
                        method => method.Name == dynOrd.MethodName
                                && method.IsGenericMethodDefinition
@@ -754,10 +773,11 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                        .Invoke(null, new object[] { orderResult, dynOrd.Selector });
             }
             return (IQueryable<TEntity>)orderResult;
-        }
-        /// <summary>
-        /// 对查询进行分页
-        /// </summary>
+        }   // Type delegateType = typeof(Func<,>).MakeGenericType(typeof(TEntity), propType);
+            // LambdaExpression lambda = Expression.Lambda(delegateType, dynOrd.Selector.Body, paraExpr);
+            /// <summary>
+            /// 对查询进行分页
+            /// </summary>
         protected virtual IQueryable<TEntity> ApplyPagination(IQueryable<TEntity> query)
         {
             var skipCount = _request.Page * _request.PageSize;
@@ -775,12 +795,14 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         /// <returns></returns>
         public virtual GridSearchResponseDto ToResponse()
         {
-            return GetScopeInvoker()(() =>
+            if (customQuery == null)
             {
-                // 获取领域服务
-                var domainService = ZKWeb.Application.Ioc.Resolve<IDomainService<TEntity, TPrimaryKey>>();
-                // 获取查询对象
-                return domainService.GetMany<GridSearchResponseDto>(query =>
+                return GetScopeInvoker()(() =>
+                {
+                    // 获取领域服务
+                    var domainService = ZKWeb.Application.Ioc.Resolve<IDomainService<TEntity, TPrimaryKey>>();
+                    // 获取查询对象
+                    return domainService.GetMany<GridSearchResponseDto>(query =>
                 {
                     // 按关键词进行过滤
                     query = ApplyKeywordFilter(query);
@@ -799,7 +821,33 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                     var dtos = records.Select(r => (object)Mapper.Map<TDto>(r)).ToList();
                     return new GridSearchResponseDto(count, dtos);
                 });
+                });
+            }
+            return ToResponse(customQuery);
+        }
+
+        private GridSearchResponseDto ToResponse(IQueryable<TEntity> query)
+        {
+            return GetScopeInvoker()(() =>
+            {
+                // 按关键词进行过滤
+                query = ApplyKeywordFilter(query);
+                // 按列查询条件进行过滤
+                query = ApplyColumnFilter(query);
+                // 调用自定义的过滤函数
+                query = ApplyCustomFilter(query);
+                // 按自定义的排序函数或者请求的排序字段进行排序
+                query = ApplySorter(query);
+                // 获取总数量
+                var count = query.LongCount();
+                // 对查询进行分页
+                query = ApplyPagination(query);
+                // 构建搜索回应
+                var records = query.ToList();
+                var dtos = records.Select(r => (object)Mapper.Map<TDto>(r)).ToList();
+                return new GridSearchResponseDto(count, dtos);
             });
         }
+
     }
 }

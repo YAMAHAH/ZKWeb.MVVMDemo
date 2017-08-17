@@ -10,22 +10,22 @@ export class GridSearchColumnFilter {
     public MatchMode: GridSearchColumnFilterMatchMode;
     /** 过滤值 */
     public Value: any;
-    /** IsChildExpress */
+    /** 子表达式 */
     public IsChildExpress: boolean;
-    /** ProperyType */
+    /** 属性类型 */
     public ProperyType: any;
-    /** RegExp */
+    /** 正则表达式 */
     public RegExp: string;
-    /** PropertyName */
+    /** 属性名称 */
     public PropertyName: string;
-    /** OpertionSymbol */
+    /** 操作符 */
     public OpertionSymbol: OpertionSymbol;
-    /** Value1 */
+    /** 值1 */
     public Value1: any;
-    /** Value2 */
+    /** 值2 */
     public Value2: any;
-    /** Concat */
+    /** 逻辑连接符 */
     public Concat: ConcatType;
-    /** Childs */
+    /** 子表达式查询条件 */
     public Childs: GridSearchColumnFilter[];
 }

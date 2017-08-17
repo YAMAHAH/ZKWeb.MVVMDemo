@@ -11,6 +11,8 @@ using InfrastructurePlugins.BaseModule.Components.ValidationMessageProviders.Int
 using ZKWebStandard.Ioc;
 using FluentValidation;
 using ZKWebStandard.Web;
+using System.Dynamic;
+using ZKWeb.Web.ActionResults;
 
 namespace InfrastructurePlugins.BaseModule.Application.Extensions
 {
@@ -75,6 +77,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Extensions
         /// </summary>
         public static bool IsValid<TInputDto>(this IInputDto inputDto, out IList<string> errors)
         {
+           // List<ExpandoObject> errorResults = new List<ExpandoObject>();
             errors = new List<string>();
             var properties = inputDto.GetType().FastGetProperties();
             foreach (var property in properties)
@@ -101,9 +104,12 @@ namespace InfrastructurePlugins.BaseModule.Application.Extensions
                     {
                         continue;
                     }
-                    errors.Add((string)FormatValidationErrorMethod
+                    var errorMsg = (string)FormatValidationErrorMethod
                         .MakeGenericMethod(attribute.GetType())
-                        .FastInvoke(null, attribute, propertyName));
+                        .FastInvoke(null, attribute, propertyName);
+                    errors.Add(errorMsg);
+
+                    // errorResults.Add(NewErrorMessage(propertyName, errorMsg));
                 }
             }
 
@@ -116,12 +122,20 @@ namespace InfrastructurePlugins.BaseModule.Application.Extensions
                     foreach (var failure in results.Errors)
                     {
                         errors.Add(failure.ErrorMessage);
+                        // errorResults.Add(NewErrorMessage(failure.PropertyName, failure.ErrorMessage));
                     }
                 }
             }
             return errors.Count == 0;
         }
 
+        private static ExpandoObject NewErrorMessage(string propName, string errorMsg)
+        {
+            dynamic errorResult = new ExpandoObject();
+            errorResult.PropName = propName;
+            errorResult.ErrorMessage = errorMsg;
+            return errorResult;
+        }
         /// <summary>
         /// 检查数据传输对象是否合法，不合法时抛出例外
         /// </summary>
@@ -130,6 +144,10 @@ namespace InfrastructurePlugins.BaseModule.Application.Extensions
             IList<string> errors;
             if (!inputDto.IsValid<T>(out errors))
             {
+                //直接返回对象信息
+                //var response = HttpManager.CurrentContext.Response;
+                //new JsonResult(errors).WriteResponse(response);
+                //response.End();
                 throw new BadRequestException(string.Join("\r\n", errors));
             }
         }

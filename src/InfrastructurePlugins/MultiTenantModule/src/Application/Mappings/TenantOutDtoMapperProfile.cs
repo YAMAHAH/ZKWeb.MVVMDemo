@@ -16,12 +16,12 @@ namespace InfrastructurePlugins.MultiTenantModule.Application.Mappings
         {
             FilterKeywordWith(t => new { t.Name, t.Remark })
                 .ForMember(u => u.CreateTime, opt => opt.Map(m => m.CreateTime.ToString()))
-                .ForMember(u => u.Remark, opt => opt.Map(m => m.Remark))
-                .ForMember(d => d.UpdateTime, opt => opt.Map(m => m.UpdateTime.ToString()).Map(m => { m.Editable = true; }))
-                .ForMember(d => d.IsMaster, opt => opt.Map(u => u.IsMaster))
+                // .ForMember(u => u.Remark, opt => opt.Map(m => m.Remark))
+                .ForMember(d => d.UpdateTime, opt => opt.Map(m => m.UpdateTime.ToString()).Map(m => { m.Editable = true; }));
+            // .ForMember(d => d.IsMaster, opt => opt.Map(u => u.IsMaster))
 
-                .ForMember(d => d.Name, (opt) => opt.Map(t => t.Name));
-                
+            // .ForMember(d => d.Name, (opt) => opt.Map(t => t.Name));
+
         }
     }
 }

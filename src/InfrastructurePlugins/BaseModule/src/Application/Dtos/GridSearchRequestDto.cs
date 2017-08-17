@@ -1,6 +1,7 @@
 ﻿using InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using ZKWeb.Database;
 
 namespace InfrastructurePlugins.BaseModule.Application.Dtos
@@ -57,12 +58,26 @@ namespace InfrastructurePlugins.BaseModule.Application.Dtos
         /// 开始构建搜索回应
         /// </summary>
         /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <typeparam name="TDto">OutputDto类型</typeparam>
         /// <typeparam name="TPrimaryKey">主键类型</typeparam>
         /// <returns></returns>
         public GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey> BuildResponse<TEntity, TDto, TPrimaryKey>()
             where TEntity : class, IEntity, IEntity<TPrimaryKey> where TDto : IOutputDto
         {
             return new GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>(this);
+        }
+        /// <summary>
+        /// 构建搜索回应
+        /// </summary>
+        /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <typeparam name="TDto">OutputDto类型</typeparam>
+        /// <typeparam name="TPrimaryKey">主键类型</typeparam>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey> BuildResponse<TEntity, TDto, TPrimaryKey>(IQueryable<TEntity> query)
+           where TEntity : class, IEntity, IEntity<TPrimaryKey> where TDto : IOutputDto
+        {
+            return new GridSearchResponseBuilder<TEntity, TDto, TPrimaryKey>(this, query);
         }
     }
 }

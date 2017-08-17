@@ -135,10 +135,14 @@ namespace InfrastructurePlugins.BaseModule.Domain.Services.Bases
         {
             using (UnitOfWork.Scope())
             {
-                return fetch(Repository.Query());
+                return fetch(GetQuery());
             }
         }
 
+        protected virtual IQueryable<TEntity> GetQuery()
+        {
+            return Repository.Query();
+        }
         /// <summary>
         /// 计算符合条件的实体数量
         /// </summary>
