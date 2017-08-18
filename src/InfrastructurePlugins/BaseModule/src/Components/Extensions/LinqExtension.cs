@@ -33,13 +33,7 @@ namespace InfrastructurePlugins.BaseModule.Components.Extensions
         //}
 
     }
-    public static class QueryableExtensions
-    {
-        public static ProjectionExpression<TSource> Project<TSource>(this IQueryable<TSource> source)
-        {
-            return new ProjectionExpression<TSource>(source);
-        }
-    }
+
 
     public class ProjectionExpression<TSource>
     {

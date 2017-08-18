@@ -103,17 +103,25 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                     .ForMember(m => m.SrcExpression, opt => opt.ResolveUsing(m =>
                     {
                         var dtoMapVal = dtmProfile?.GetMember(m.Column);
+
                         var cqExpr = dtoMapVal?.Expression;
                         if (dtoMapVal?.ColumnFilterWrapper != null)
                         {
                             cqExpr = dtoMapVal.ColumnFilterWrapper(m);
                         }
-                        return dtoMapVal == null ? GetPropertyExpression(ParaExpression, m.Column) : cqExpr;
+                        //创建实体
+                        if (dtoMapVal == null)
+                        {
+                            cqExpr = GetPropertyExpression(ParaExpression, m.Column);
+                            var val = dtmProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
+                            dtmProfile.AddOrUpdate(val.Column, val);
+                        }
+                        return cqExpr;
                     }))
                     .ForMember(m => m.IsCustomColumnFilter, opt => opt.ResolveUsing(m =>
                     {
                         var dtoMapVal = dtmProfile?.GetMember(m.Column);
-                        return dtoMapVal == null ? false : dtoMapVal.IsCustomColumnFilter;
+                        return dtoMapVal.IsCustomColumnFilter;
                     }))
                     .ForMember(m => m.PropertyName, opt => opt.MapFrom(m => m.Column))
                     .ForMember(m => m.Value1, opt => opt.ResolveUsing(m =>
@@ -150,8 +158,15 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                     .ForMember(m => m.ProperyType, opt => opt.ResolveUsing(m =>
                     {
                         var dtoMapVal = dtmProfile?.GetMember(m.Column);
-                        var propType = m.ProperyType == null ? GetPropertyExpression(ParaExpression, m.Column).ReturnType : m.ProperyType;
-                        return dtoMapVal == null ? propType : dtoMapVal.ColumnType;
+
+                        if (dtoMapVal == null)
+                        {
+                            var cqExpr = GetPropertyExpression(ParaExpression, m.Column);
+                            dtoMapVal = dtmProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
+                            dtmProfile.AddOrUpdate(dtoMapVal.Column, dtoMapVal);
+                        }
+                        var propType = m.ProperyType ?? dtoMapVal.ColumnType;
+                        return propType;
                     })));
                 return mapperConf.CreateMapper();
             }
@@ -764,6 +779,8 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             foreach (var dynOrd in dynamicOrderings)
             {
                 var propType = dynOrd.Selector.ReturnType;
+                // Type delegateType = typeof(Func<,>).MakeGenericType(typeof(TEntity), propType);
+                // LambdaExpression lambda = Expression.Lambda(delegateType, dynOrd.Selector.Body, paraExpr);
                 orderResult = typeof(Queryable).GetMethods().Single(
                        method => method.Name == dynOrd.MethodName
                                && method.IsGenericMethodDefinition
@@ -773,11 +790,10 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                        .Invoke(null, new object[] { orderResult, dynOrd.Selector });
             }
             return (IQueryable<TEntity>)orderResult;
-        }   // Type delegateType = typeof(Func<,>).MakeGenericType(typeof(TEntity), propType);
-            // LambdaExpression lambda = Expression.Lambda(delegateType, dynOrd.Selector.Body, paraExpr);
-            /// <summary>
-            /// 对查询进行分页
-            /// </summary>
+        }
+        /// <summary>
+        /// 对查询进行分页
+        /// </summary>
         protected virtual IQueryable<TEntity> ApplyPagination(IQueryable<TEntity> query)
         {
             var skipCount = _request.Page * _request.PageSize;

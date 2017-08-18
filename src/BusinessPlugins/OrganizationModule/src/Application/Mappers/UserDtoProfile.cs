@@ -24,7 +24,14 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
             FilterKeywordWith(u => new { u.Username, u.Remark })
              .ForMember(r => r.CreateTime, opt => opt.Map(m => m.CreateTime.ToString()))
              .ForMember(r => r.UpdateTime, opt => opt.Map(m => m.UpdateTime.ToString()))
-             .ForMember(r => r.Id, opt => opt.Map(m => m.Id))
+             .ForMember(r => r.Id, opt => opt.Map(m => m.Id)
+                        .Map(a =>
+                        {
+                            a.Editable = true;
+                            a.Text = "主键";
+                            a.required = true;
+                        })
+             )
              .ForMember(r => r.Username, opt => opt.Map(u => u.Username))
              .ForMember(r => r.OwnerTenantName, (opt) => opt.Map(t => t.OwnerTenant.Name))
              .ForMember(r => r.OwnerTenantId, opt => opt.Map(r => r.OwnerTenantId))
@@ -36,7 +43,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
              .ForMember(u => u.Roles, opt => opt.MapColumnFilterWrapper(c =>
              {
                  var roleIds = c.Value.ConvertOrDefault<IList<Guid>>();
-                 
+
                  if (roleIds != null)
                  {
                      Expression<Func<User, bool>> expr = e => Regex.IsMatch(e.Id.ToString(), ".*") && e.Roles.Any(r => roleIds.Contains(r.To.Id));

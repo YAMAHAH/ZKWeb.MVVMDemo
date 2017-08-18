@@ -38,7 +38,13 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             var key = typeof(TDto).FullName;
             IDtoToModelMapperBase value;
             xDtoToModelMaps.TryGetValue(key, out value);
-            return value == null ? null : value as IDtoToModelMapProfile<TModel, TDto, TPrimaryKey>;
+            //没有新增
+            if (value == null)
+            {
+                value = new DtoToModelMapProfile<TModel, TDto, TPrimaryKey>();
+                AddOrUpdateMap<TModel, TDto, TPrimaryKey>(value);
+            }
+            return value as IDtoToModelMapProfile<TModel, TDto, TPrimaryKey>;
         }
 
         public bool AddOrUpdateMap<TModel, TDto, TPrimaryKey>(IDtoToModelMapperBase dtoToModelMap)
@@ -87,8 +93,23 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                 TemplateObjectInfo = mapOptions.TemplateObjectInfo,
                 ColumnFilterFunc = mapOptions.ColumnFilterFunc
             };
-            xDtoToModelMap.AddOrUpdate(prop, value, (k, v) => v = value);
+            AddOrUpdate(prop, value);
             return this;
+        }
+
+        public DtoToModelMapValue<TModel, TPrimaryKey> CreateMapValue(string column, Type columnType, LambdaExpression expression)
+        {
+            return new DtoToModelMapValue<TModel, TPrimaryKey>()
+            {
+                Column = column,
+                ColumnType = columnType,
+                Expression = expression
+            };
+        }
+
+        public void AddOrUpdate(string propName, DtoToModelMapValue<TModel, TPrimaryKey> value)
+        {
+            var result = xDtoToModelMap.AddOrUpdate(propName, value, (k, v) => v = value);
         }
 
         public DtoToModelMapProfile<TModel, TDto, TPrimaryKey> FilterKeywordWith(Expression<Func<TModel, object>> selector)
@@ -121,6 +142,19 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// 获取outputDto的关键字过滤字段选择表达式树
         /// </summary>
         Expression<Func<TModel, object>> KeywordFilterExpression { get; set; }
+        /// <summary>
+        /// 创建新实例
+        /// </summary>
+        /// <param name="column"></param>
+        /// <param name="columnType"></param>
+        /// <returns></returns>
+        DtoToModelMapValue<TModel, TPrimaryKey> CreateMapValue(string column, Type columnType, LambdaExpression expression);
+        /// <summary>
+        /// 添加新值
+        /// </summary>
+        /// <param name="propName"></param>
+        /// <param name="value"></param>
+        void AddOrUpdate(string propName, DtoToModelMapValue<TModel, TPrimaryKey> value);
         /// <summary>
         /// 配置outputDTO和Model字段的对应关系
         /// </summary>
