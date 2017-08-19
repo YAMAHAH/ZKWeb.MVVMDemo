@@ -115,22 +115,12 @@ namespace InfrastructurePlugins.BaseModule.Module
                     }
                     else
                     {
-                        // _properties.AppendFormat("\"{0}_{1}\", ", tempClsType.Name.Replace("OutputDto", ""), propInfo.Name);
                         propinfos.Add(new EnumPropInfo() { ParentType = tempClsType, PropInfo = propInfo });
                     }
                 }
                 else
                 {
                     propinfos.Add(new EnumPropInfo() { ParentType = tempClsType, PropInfo = propInfo });
-
-                    if (tempClsType.Name.Contains("TenantOutputDto"))
-                    {
-                        // _properties.AppendFormat("\"{0}\", ", propInfo.Name);
-                    }
-                    else
-                    {
-                        // _properties.AppendFormat("\"{0}_{1}\", ", tempClsType.Name.Replace("OutputDto", ""), propInfo.Name);
-                    }
                 }
             }
             return propinfos;

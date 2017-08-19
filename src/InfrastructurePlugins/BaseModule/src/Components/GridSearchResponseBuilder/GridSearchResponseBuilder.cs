@@ -80,13 +80,13 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             customQuery = query;
         }
 
-        protected IContainer Rejector => ZKWeb.Application.Ioc;
+        protected IContainer Injector => ZKWeb.Application.Ioc;
 
         private IDtoToModelMapProfile<TEntity, TDto, TPrimaryKey> DtoToModelProfile
         {
             get
             {
-                var dtoToModelMapper = Rejector.Resolve<IDtoToModelMapper>();
+                var dtoToModelMapper = Injector.Resolve<IDtoToModelMapper>();
                 var dtoMapProfile = dtoToModelMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
                 return dtoMapProfile;
             }
@@ -94,16 +94,16 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
 
         private IMapper ColumnQueryFilterProfile()
         {
-            var dtmMapper = Rejector.Resolve<IDtoToModelMapper>();
-            var dtmProfile = dtmMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
+            var dtmMapper = Injector.Resolve<IDtoToModelMapper>();
+            var dtmMapProfile = dtmMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
+            dtmMapProfile = Injector.Resolve<IDtoToModelMapProfile<TEntity, TDto, TPrimaryKey>>();
             var dtmAutoMapper = dtmMapper.GetDtoMapper<TDto>();
             if (dtmAutoMapper == null)
             {
                 var mapperConf = new MapperConfiguration(cfg => cfg.CreateMap<GridSearchColumnFilter, ColumnQueryCondition>()
                     .ForMember(m => m.SrcExpression, opt => opt.ResolveUsing(m =>
                     {
-                        var dtoMapVal = dtmProfile?.GetMember(m.Column);
-
+                        var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
                         var cqExpr = dtoMapVal?.Expression;
                         if (dtoMapVal?.ColumnFilterWrapper != null)
                         {
@@ -113,14 +113,14 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                         if (dtoMapVal == null)
                         {
                             cqExpr = GetPropertyExpression(ParaExpression, m.Column);
-                            var val = dtmProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
-                            dtmProfile.AddOrUpdate(val.Column, val);
+                            var val = dtmMapProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
+                            dtmMapProfile.AddOrUpdate(val.Column, val);
                         }
                         return cqExpr;
                     }))
                     .ForMember(m => m.IsCustomColumnFilter, opt => opt.ResolveUsing(m =>
                     {
-                        var dtoMapVal = dtmProfile?.GetMember(m.Column);
+                        var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
                         return dtoMapVal.IsCustomColumnFilter;
                     }))
                     .ForMember(m => m.PropertyName, opt => opt.MapFrom(m => m.Column))
@@ -157,13 +157,13 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                     }))
                     .ForMember(m => m.ProperyType, opt => opt.ResolveUsing(m =>
                     {
-                        var dtoMapVal = dtmProfile?.GetMember(m.Column);
+                        var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
 
                         if (dtoMapVal == null)
                         {
                             var cqExpr = GetPropertyExpression(ParaExpression, m.Column);
-                            dtoMapVal = dtmProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
-                            dtmProfile.AddOrUpdate(dtoMapVal.Column, dtoMapVal);
+                            dtoMapVal = dtmMapProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
+                            dtmMapProfile.AddOrUpdate(dtoMapVal.Column, dtoMapVal);
                         }
                         var propType = m.ProperyType ?? dtoMapVal.ColumnType;
                         return propType;

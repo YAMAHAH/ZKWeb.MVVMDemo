@@ -16,7 +16,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
     /// <summary>
     /// 用户DTO和用户实体对应关系配置
     /// </summary>
-    [ExportMany]
+    [ExportMany,SingletonReuse]
     public class UserDtoProfile : DtoToModelMapProfile<User, UserOutputDto, Guid>
     {
         public UserDtoProfile()
@@ -25,7 +25,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
              .ForMember(r => r.CreateTime, opt => opt.Map(m => m.CreateTime.ToString()))
              .ForMember(r => r.UpdateTime, opt => opt.Map(m => m.UpdateTime.ToString()))
              .ForMember(r => r.Id, opt => opt.Map(m => m.Id)
-                        .Map(a =>
+                        .MapObjectDictInfo(a =>
                         {
                             a.Editable = true;
                             a.Text = "主键";

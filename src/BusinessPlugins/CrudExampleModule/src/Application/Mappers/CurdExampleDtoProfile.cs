@@ -17,7 +17,7 @@ namespace BusinessPlugins.CrudExampleModule.Application.Mappers
             FilterKeywordWith(t => new { t.Name, t.Description })
                 .ForMember(u => u.CreateTime, opt => opt.Map(m => m.CreateTime.ToString()))
                 .ForMember(u => u.Description, opt => opt.Map(m => m.Description))
-                .ForMember(d => d.UpdateTime, opt => opt.Map(m => m.UpdateTime.ToString()).Map(m => { m.Editable = true; }))
+                .ForMember(d => d.UpdateTime, opt => opt.Map(m => m.UpdateTime.ToString()).MapObjectDictInfo(m => { m.Editable = true; }))
                 .ForMember(d => d.Name, opt => opt.Map(u => u.Name))
                 .ForMember(d => d.Id, (opt) => opt.Map(t => t.Id));
         }

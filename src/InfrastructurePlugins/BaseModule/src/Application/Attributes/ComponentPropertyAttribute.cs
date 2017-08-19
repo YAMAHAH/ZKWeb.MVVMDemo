@@ -17,7 +17,18 @@ namespace InfrastructurePlugins.BaseModule.Application.Attributes
         /// 源实体的属性
         /// </summary>
         public string SrcModelProp { get; set; }
+        /// <summary>
+        /// 组别类型
+        /// </summary>
         public Type GroupType { get; set; }
+        /// <summary>
+        /// 根据名称和属性计算
+        /// </summary>
+        public Guid ParentId { get; set; }
+        public string Parent { get; set; }
+        /// <summary>
+        /// 模板类类型
+        /// </summary>
         public Type TempClassType { get; set; }
         public string TempName { get; set; }
         public string Alias { get; set; }
