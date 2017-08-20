@@ -1,4 +1,5 @@
 ﻿using BusinessPlugins.OrganizationModule.Application.Dtos;
+using BusinessPlugins.OrganizationModule.Application.Services;
 using BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfaces;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.DtoToModelMap;
@@ -18,6 +19,7 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
     {
         public RoleDtoProfile()
         {
+            BelongTo(typeof(RoleManageService));
             FilterKeywordWith(r => new { r.Name, r.Remark })
              .ForMember(r => r.CreateTime, opt => opt.Map(m => m.CreateTime.ToString()))
              .ForMember(r => r.UpdateTime, opt => opt.Map(m => m.UpdateTime.ToString()))

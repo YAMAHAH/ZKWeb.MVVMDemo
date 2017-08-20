@@ -116,6 +116,12 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                             var val = dtmMapProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
                             dtmMapProfile.AddOrUpdate(val.Column, val);
                         }
+                        else if (cqExpr == null)
+                        {
+                            cqExpr = GetPropertyExpression(ParaExpression, m.Column);
+                            dtoMapVal.Expression = cqExpr;
+                            dtoMapVal.ColumnType = cqExpr.ReturnType;
+                        }
                         return cqExpr;
                     }))
                     .ForMember(m => m.IsCustomColumnFilter, opt => opt.ResolveUsing(m =>

@@ -1,4 +1,5 @@
 ﻿using BusinessPlugins.OrganizationModule.Application.Dtos;
+using BusinessPlugins.OrganizationModule.Application.Services;
 using BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfaces;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.OrganizationModule.Domain.Extensions;
@@ -16,11 +17,12 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
     /// <summary>
     /// 用户DTO和用户实体对应关系配置
     /// </summary>
-    [ExportMany,SingletonReuse]
+    [ExportMany, SingletonReuse]
     public class UserDtoProfile : DtoToModelMapProfile<User, UserOutputDto, Guid>
     {
         public UserDtoProfile()
         {
+            BelongTo(typeof(UserManageService));
             FilterKeywordWith(u => new { u.Username, u.Remark })
              .ForMember(r => r.CreateTime, opt => opt.Map(m => m.CreateTime.ToString()))
              .ForMember(r => r.UpdateTime, opt => opt.Map(m => m.UpdateTime.ToString()))

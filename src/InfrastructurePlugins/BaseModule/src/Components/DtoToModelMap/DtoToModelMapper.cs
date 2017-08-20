@@ -2,9 +2,12 @@
 using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
 using InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder;
+using InfrastructurePlugins.BaseModule.Module;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
@@ -73,39 +76,142 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         public DtoToModelMapProfile()
         {
             this.Name = typeof(TDto).FullName;
-            //根据模板类型自动生成相应的模板类对象信息
+            MakeTempClsObjectInfo();
         }
+
+        private List<Type> typeLists = new List<Type>();
+        /// <summary>
+        /// 获取某个类型的所有属性(递归)
+        /// </summary>
+        /// <param name="tempClsType"></param>
+        /// <returns></returns>
+        protected List<EnumPropInfo> TraversalProperties(Type tempClsType)
+        {
+            var propinfos = new List<EnumPropInfo>();
+            if (null == tempClsType) { return propinfos; }
+            foreach (PropertyInfo pi in tempClsType.GetProperties(BindingFlags.Public |
+                BindingFlags.Instance | BindingFlags.DeclaredOnly))
+            {
+                PropertyInfo propInfo = tempClsType.GetProperty(pi.Name);
+
+                var propType = propInfo.PropertyType;
+                //if (propType.Equals(tempClsType)) return null;
+
+                if (propType.IsArray || (propType.GetTypeInfo().IsClass &&
+                    !propType.GetTypeInfo().IsGenericType &&
+                    !propType.Equals(typeof(String)) &&
+                    !propType.GetTypeInfo().IsValueType))
+                {
+                    if (!this.typeLists.Contains(propType))
+                    {
+                        this.typeLists.Add(propType);
+                        propinfos.AddRange(TraversalProperties(propType));
+                    }
+                }
+                else if (propType.GetTypeInfo().IsGenericType)
+                {
+                    var t = propType.GetGenericArguments()[0];
+                    if (propType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                    {
+                        t = propType.GetGenericArguments()[1];
+                    }
+                    if (t.GetTypeInfo().IsClass &&
+                        !t.GetTypeInfo().IsGenericType &&
+                        !t.Equals(typeof(String)) &&
+                        !t.GetTypeInfo().IsValueType)
+                    {
+                        if (!this.typeLists.Contains(t))
+                        {
+                            this.typeLists.Add(t);
+                            propinfos.AddRange(TraversalProperties(t));
+                        }
+                    }
+                    else
+                    {
+                        propinfos.Add(new EnumPropInfo() { ParentType = tempClsType, PropInfo = propInfo });
+                    }
+                }
+                else
+                {
+                    propinfos.Add(new EnumPropInfo() { ParentType = tempClsType, PropInfo = propInfo });
+                }
+            }
+            return propinfos;
+        }
+        private void MakeTempClsObjectInfo()
+        {
+            //根据模板类型自动生成相应的模板类对象信息
+            var dtoType = typeof(TDto);
+            //枚举实体的所有单层属性,生成相应的
+            var objectInfos = TraversalProperties(dtoType);
+            foreach (var objInfo in objectInfos)
+            {
+                var propInfo = objInfo.PropInfo;
+                var propType = objInfo.PropInfo.PropertyType;
+                var objAlias = objInfo.ParentType.Name.Replace("OutputDto", "") + "_" + propInfo.Name;
+                var val = new DtoToModelMapValue<TModel, TPrimaryKey>()
+                {
+                    TemplateObjectInfo = new ComponentPropertyAttribute()
+                    {
+                        Name = propInfo.Name,
+                        Alias = objAlias,
+                        TempClassType = TemplateClassType,
+                        DataType = propType.GetTypeInfo().IsGenericType ? propType.GetGenericArguments()[0].Name : propType.Name,
+                        GroupType = objInfo.ParentType
+                    },
+                    ColumnType = propType,
+                    Column = propInfo.Name
+                };
+                AddOrUpdate(objAlias, val);
+            }
+        }
+
         public void Register()
         {
             var mapper = ZKWeb.Application.Ioc.Resolve<IDtoToModelMapper>();
             mapper.AddOrUpdateMap<TModel, TDto, TPrimaryKey>(this);
         }
 
-        DtoToModelMapOption<TModel, TPrimaryKey> mapOptions = new DtoToModelMapOption<TModel, TPrimaryKey>();
         public DtoToModelMapProfile<TModel, TDto, TPrimaryKey> ForMember<TMember>(Expression<Func<TDto, TMember>> destMember,
          Action<DtoToModelMapOption<TModel, TPrimaryKey>> optionAction)
         {
+            var mapOptions = new DtoToModelMapOption<TModel, TPrimaryKey>();
             optionAction(mapOptions);
             var prop = destMember.Body.ToString().Split('.')[1];
-            var value = new DtoToModelMapValue<TModel, TPrimaryKey>()
+            DtoToModelMapValue<TModel, TPrimaryKey> dtmMapValue;
+            if (xDtoToModelMap.TryGetValue(prop, out dtmMapValue))
             {
-                Column = prop,
-                ColumnType = typeof(TMember),
-                Expression = mapOptions.Expression,
-                RefMapProfileType = mapOptions.RefMapProfileType,
-                ColumnFilter = mapOptions.ColumnFilter,
-                ColumnFilterWrapper = mapOptions.ColumnFilterWrapper,
-                IsCustomColumnFilter = mapOptions.ColumnFilter != null || mapOptions.ColumnFilterWrapper != null,
-                TemplateObjectInfo = mapOptions.TemplateObjectInfo,
-                ColumnFilterFunc = mapOptions.ColumnFilterFunc
-            };
-            AddOrUpdate(prop, value);
+                if (mapOptions.Expression != null) dtmMapValue.Expression = mapOptions.Expression;
+                if (mapOptions.RefMapProfileType != null) dtmMapValue.RefMapProfileType = mapOptions.RefMapProfileType;
+                if (mapOptions.ColumnFilter != null) dtmMapValue.ColumnFilter = mapOptions.ColumnFilter;
+                if (mapOptions.ColumnFilterWrapper != null) dtmMapValue.ColumnFilterWrapper = mapOptions.ColumnFilterWrapper;
+                if (mapOptions.ColumnFilterFunc != null) dtmMapValue.ColumnFilterFunc = mapOptions.ColumnFilterFunc;
+                dtmMapValue.IsCustomColumnFilter = dtmMapValue.ColumnFilter != null || dtmMapValue.ColumnFilterWrapper != null;
+                mapOptions.ObjectInfoAction?.Invoke(dtmMapValue.TemplateObjectInfo);
+            }
+            else
+            {
+                var value = new DtoToModelMapValue<TModel, TPrimaryKey>()
+                {
+                    Column = prop,
+                    ColumnType = typeof(TMember),
+                    Expression = mapOptions.Expression,
+                    RefMapProfileType = mapOptions.RefMapProfileType,
+                    ColumnFilter = mapOptions.ColumnFilter,
+                    ColumnFilterWrapper = mapOptions.ColumnFilterWrapper,
+                    IsCustomColumnFilter = mapOptions.ColumnFilter != null || mapOptions.ColumnFilterWrapper != null,
+                    TemplateObjectInfo = mapOptions.TemplateClassObjectInfo,
+                    ColumnFilterFunc = mapOptions.ColumnFilterFunc
+                };
+                AddOrUpdate(prop, value);
+            }
             return this;
         }
 
         public DtoToModelMapProfile<TModel, TDto, TPrimaryKey> CreateMember<TMember>(string memberName,
                 Action<DtoToModelMapOption<TModel, TPrimaryKey>> optionAction)
         {
+            var mapOptions = new DtoToModelMapOption<TModel, TPrimaryKey>();
             optionAction(mapOptions);
             var prop = memberName;
             var value = new DtoToModelMapValue<TModel, TPrimaryKey>()
@@ -117,7 +223,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                 ColumnFilter = mapOptions.ColumnFilter,
                 ColumnFilterWrapper = mapOptions.ColumnFilterWrapper,
                 IsCustomColumnFilter = mapOptions.ColumnFilter != null || mapOptions.ColumnFilterWrapper != null,
-                TemplateObjectInfo = mapOptions.TemplateObjectInfo,
+                TemplateObjectInfo = mapOptions.TemplateClassObjectInfo,
                 ColumnFilterFunc = mapOptions.ColumnFilterFunc
             };
             AddOrUpdate(prop, value);
@@ -267,6 +373,11 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         public ComponentPropertyAttribute TemplateObjectInfo { get; set; }
     }
 
+    /// <summary>
+    /// 配置选项
+    /// </summary>
+    /// <typeparam name="TModel"></typeparam>
+    /// <typeparam name="TPrimaryKey"></typeparam>
     public class DtoToModelMapOption<TModel, TPrimaryKey> where TModel : class, IEntity, IEntity<TPrimaryKey>
     {
         public LambdaExpression Expression { get; set; }
@@ -277,7 +388,8 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
 
         public QueryColumnFilterFunc<TModel, TPrimaryKey> ColumnFilterFunc { get; set; }
 
-        public ComponentPropertyAttribute TemplateObjectInfo { get; set; } = new ComponentPropertyAttribute();
+        public ComponentPropertyAttribute TemplateClassObjectInfo { get; set; } = new ComponentPropertyAttribute();
+        public Action<ComponentPropertyAttribute> ObjectInfoAction { get; set; }
         /// <summary>
         /// 引用配置文件类型
         /// </summary>
@@ -332,7 +444,8 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// <returns></returns>
         public DtoToModelMapOption<TModel, TPrimaryKey> MapObjectDictInfo(Action<ComponentPropertyAttribute> objectInfoAction)
         {
-            objectInfoAction(TemplateObjectInfo);
+            ObjectInfoAction = objectInfoAction;
+            objectInfoAction(TemplateClassObjectInfo);
             return this;
         }
         /// <summary>
@@ -343,9 +456,9 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// <returns></returns>
         public DtoToModelMapOption<TModel, TPrimaryKey> CreateGroup(string GroupName, string text, string parent = null)
         {
-            TemplateObjectInfo.Name = GroupName;
-            TemplateObjectInfo.Text = text;
-            TemplateObjectInfo.Parent = parent;
+            TemplateClassObjectInfo.Name = GroupName;
+            TemplateClassObjectInfo.Text = text;
+            TemplateClassObjectInfo.Parent = parent;
             return this;
         }
         /// <summary>
@@ -357,7 +470,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         public DtoToModelMapOption<TModel, TPrimaryKey> RefMapProfile(Type mapProfileType, string parent = null)
         {
             RefMapProfileType = mapProfileType;
-            TemplateObjectInfo.Parent = parent;
+            TemplateClassObjectInfo.Parent = parent;
             return this;
         }
         /// <summary>
