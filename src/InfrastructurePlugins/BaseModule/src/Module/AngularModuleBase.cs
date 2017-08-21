@@ -261,7 +261,17 @@ namespace InfrastructurePlugins.BaseModule.Module
     public class EnumPropInfo
     {
         public Type ParentType { get; set; }
+        public PropertyInfo ParentPropInfo { get; set; }
         public PropertyInfo PropInfo { get; set; }
+        public PropType PropType { get; set; }
+
+    }
+
+    public enum PropType
+    {
+        Basic = 0,
+        List = 1,
+        Object = 2
     }
 
 

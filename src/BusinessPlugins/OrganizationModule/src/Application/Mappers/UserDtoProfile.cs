@@ -1,8 +1,8 @@
 ﻿using BusinessPlugins.OrganizationModule.Application.Dtos;
 using BusinessPlugins.OrganizationModule.Application.Services;
-using BusinessPlugins.OrganizationModule.Components.PrivilegeTranslators.Interfaces;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.OrganizationModule.Domain.Extensions;
+using InfrastructurePlugins.BaseModule.Application.Mappers;
 using InfrastructurePlugins.BaseModule.Components.DtoToModelMap;
 using System;
 using System.Collections.Generic;
@@ -44,8 +44,9 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
              .ForMember(u => u.RoleIds, opt => opt.Map(u => u.Roles.Select(r => r.To.Id).ToList()))
              .ForMember(u => u.Roles, opt => opt.MapColumnFilterWrapper(c =>
              {
+                 var mapperFactory = new ColumnFilterMapperFactory<Role, RoleOutputDto, Guid>();
+                 mapperFactory.CreateChildQueryExpression(c);
                  var roleIds = c.Value.ConvertOrDefault<IList<Guid>>();
-
                  if (roleIds != null)
                  {
                      Expression<Func<User, bool>> expr = e => Regex.IsMatch(e.Id.ToString(), ".*") && e.Roles.Any(r => roleIds.Contains(r.To.Id));
@@ -53,13 +54,8 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
                  }
                  return u => false;
              }))
-             ;
-        }
 
-        private string GetPrivilegeNames(Role r)
-        {
-            var translator = ZKWeb.Application.Ioc.Resolve<IPrivilegeTranslator>();
-            return string.Join(",", r.GetPrivileges().Select(p => translator.Translate(p)));
+             ;
         }
 
     }

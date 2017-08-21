@@ -17,6 +17,8 @@ namespace InfrastructurePlugins.BaseModule.Application.Dtos
 
         [Description("子表达式")]
         public bool IsChildExpress { get; set; }
+        [Description("子查询")]
+        public bool IsChildQuery { get; set; }
 
         [Description("属性类型")]
         public Type ProperyType { get; set; }

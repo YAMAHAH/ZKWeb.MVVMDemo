@@ -12,6 +12,8 @@ export class GridSearchColumnFilter {
     public Value: any;
     /** 子表达式 */
     public IsChildExpress: boolean;
+    /** 子查询 */
+    public IsChildQuery: boolean;
     /** 属性类型 */
     public ProperyType: any;
     /** 正则表达式 */

@@ -14,6 +14,11 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// 子表达式
         /// </summary>
         public bool IsChildExpress { get; set; }
+
+        /// <summary>
+        /// 子查询
+        /// </summary>
+        public bool IsChildQuery { get; set; }
         /// <summary>
         /// 属性类型
         /// </summary>

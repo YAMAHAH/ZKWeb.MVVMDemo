@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InfrastructurePlugins.BaseModule.Module;
+using System;
 
 namespace InfrastructurePlugins.BaseModule.Application.Attributes
 {
@@ -30,6 +31,10 @@ namespace InfrastructurePlugins.BaseModule.Application.Attributes
         /// 模板类类型
         /// </summary>
         public Type TempClassType { get; set; }
+        /// <summary>
+        /// 属性类型
+        /// </summary>
+        public PropType PropertyType { get; set; }
         public string TempName { get; set; }
         public string Alias { get; set; }
         public string Name { get; set; }
