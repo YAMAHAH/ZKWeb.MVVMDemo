@@ -45,7 +45,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
         protected QueryFilterDelegate<TEntity> _customQuerySorter;
         protected IDictionary<string, QueryColumnFilterDelegate<TEntity, TPrimaryKey>> _customColumnFilters;
 
-        protected IMapper mapper;
+        //protected IMapper mapper;
 
         protected IQueryable<TEntity> customQuery;
 
@@ -62,6 +62,8 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                 return xParaExpr;
             }
         }
+
+        protected ExpressionCreateFactory<TEntity, TDto, TPrimaryKey> exprFactory;
         public GridSearchResponseBuilder(GridSearchRequestDto request)
         {
             _request = request;
@@ -72,7 +74,9 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
             _customQuerySorter = null;
             _customColumnFilters = new Dictionary<string, QueryColumnFilterDelegate<TEntity, TPrimaryKey>>();
 
-            mapper = ColumnQueryFilterProfile();
+            exprFactory = new ExpressionCreateFactory<TEntity, TDto, TPrimaryKey>();
+            // exprFactory.CreateChildQueryExpression(c);
+            //mapper = exprFactory.Mapper;
         }
 
         public GridSearchResponseBuilder(GridSearchRequestDto request, IQueryable<TEntity> query) : this(request)
@@ -629,19 +633,11 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                 return query;
             }
             //获取用户模板预设的过滤条件
-            var userPresetFilterProv = ZKWeb.Application.Ioc.Resolve<IUserPresetTemplateFilterProvider>();
+            var userPresetFilterProv = Injector.Resolve<IUserPresetTemplateFilterProvider>();
             var userPresetFilter = userPresetFilterProv.GetUserPresetFilter<TEntity>();
 
-            // 按列查询条件进行过滤
-            var entityType = typeof(TEntity);
-
-            var root = new ColumnQueryCondition() { IsChildExpress = true };
-            var cqconds = mapper.Map<List<ColumnQueryCondition>>(_request.ColumnFilters.ToList());
-
-            root.Childs.AddRange(cqconds);
-            var expBuilder = new LambdaExpressionBuilder<TEntity>();
-            var rootExpr = expBuilder.GenerateLambdaExpression(root);
-            Expression<Func<TEntity, bool>> columnFilterExpr = rootExpr;
+            // 生成列查询条件表达式
+            var columnFilterExpr = exprFactory.CreateQueryExpression(_request.ColumnFilters.ToArray());
 
             ////合并表达式
             var paramExpr = userPresetFilter.Parameters[0];

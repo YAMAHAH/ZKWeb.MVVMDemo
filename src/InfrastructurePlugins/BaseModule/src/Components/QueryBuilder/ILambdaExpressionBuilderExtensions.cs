@@ -72,8 +72,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression Any<T, TSource>(this ILambdaExpressionBuilder<T> q, LambdaExpression memberExpr, Expression<Func<TSource, bool>> predicate)
         {
-            var ce = Expression.Constant(predicate.Compile());
-            return Expression.Call(typeof(Enumerable), "Any", new Type[] { typeof(TSource) }, memberExpr, ce);
+            return Expression.Call(typeof(Enumerable), "Any", new Type[] { typeof(TSource) }, GetMemberExpression(q, memberExpr), predicate);
         }
 
         public static Expression All<T, TSource>(this ILambdaExpressionBuilder<T> q, string memberName, Expression<Func<TSource, bool>> predicate)
@@ -83,8 +82,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         public static Expression All<T, TSource>(this ILambdaExpressionBuilder<T> q, LambdaExpression memberExpr, Expression<Func<TSource, bool>> predicate)
         {
-            var ce = Expression.Constant(predicate.Compile());
-            return Expression.Call(typeof(Enumerable), "All", new Type[] { typeof(TSource) }, memberExpr, ce);
+            return Expression.Call(typeof(Enumerable), "All", new Type[] { typeof(TSource) }, GetMemberExpression(q, memberExpr), predicate);
         }
 
         public static Expression RegExp<T>(this ILambdaExpressionBuilder<T> q, LambdaExpression memberExpr, string pattern)

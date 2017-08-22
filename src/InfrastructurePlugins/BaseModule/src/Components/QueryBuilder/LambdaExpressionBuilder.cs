@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 
 namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 {

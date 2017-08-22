@@ -2,8 +2,8 @@
 using BusinessPlugins.OrganizationModule.Application.Services;
 using BusinessPlugins.OrganizationModule.Domain.Entities;
 using BusinessPlugins.OrganizationModule.Domain.Extensions;
-using InfrastructurePlugins.BaseModule.Application.Mappers;
 using InfrastructurePlugins.BaseModule.Components.DtoToModelMap;
+using InfrastructurePlugins.BaseModule.Components.QueryBuilder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,8 +44,26 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
              .ForMember(u => u.RoleIds, opt => opt.Map(u => u.Roles.Select(r => r.To.Id).ToList()))
              .ForMember(u => u.Roles, opt => opt.MapColumnFilterWrapper(c =>
              {
-                 var mapperFactory = new ColumnFilterMapperFactory<Role, RoleOutputDto, Guid>();
-                 mapperFactory.CreateChildQueryExpression(c);
+                 ////****************请求的是复杂对象列表(any,all)************************
+                 ////创建基于UserToRole表达式工厂
+                 //var childExprFactory = new ExpressionCreateFactory<UserToRole, UserToRoleOutputDto, Guid>();
+                 ////创建表达式树生成器
+                 //var lbdExprBuilder = childExprFactory.CreateBuilder();
+                 ////创建子查询表达式
+                 //Expression<Func<UserToRole, bool>> childQueryExpr = childExprFactory.CreateChildQueryExpression(c.Childs.ToArray());
+                 ////创建基于User表达式工厂
+                 //var anyExprFactory = new ExpressionCreateFactory<User, UserOutputDto, Guid>();
+                 ////创建表达式生成器
+                 //var anyExprBuilder = anyExprFactory.CreateBuilder();
+                 ////创建any方法表达式
+                 //var anyExpr = anyExprBuilder.Any(c.Column, childQueryExpr);
+                 ////创建e.Roles.Any(childQueryExpr)
+                 //var resultExpr = anyExprBuilder.GetLambdaExpression(anyExpr);
+                 ////***************请求的是对象类型u=>u.Role.Second.Id == "myID" || u.Role.Second.Name.contains("L3")*************************************
+                 ////创建对象成员
+                 ////var memberExpr = anyExprBuilder.GetPropertyExpression(c.Column);
+
+                 //return resultExpr;
                  var roleIds = c.Value.ConvertOrDefault<IList<Guid>>();
                  if (roleIds != null)
                  {

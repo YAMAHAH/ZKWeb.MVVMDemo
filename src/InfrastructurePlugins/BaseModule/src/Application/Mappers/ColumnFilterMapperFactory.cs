@@ -4,19 +4,24 @@ using InfrastructurePlugins.BaseModule.Components.DtoToModelMap;
 using InfrastructurePlugins.BaseModule.Components.Exceptions;
 using InfrastructurePlugins.BaseModule.Components.QueryBuilder;
 using InfrastructurePlugins.BaseModule.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.FastReflection;
 using System.Linq.Expressions;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
-using System.FastReflection;
 
 namespace InfrastructurePlugins.BaseModule.Application.Mappers
 {
+    /// <summary>
+    /// 查询条件映射配置工厂
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TDto"></typeparam>
+    /// <typeparam name="TPrimaryKey"></typeparam>
     public class ColumnFilterMapperFactory<TEntity, TDto, TPrimaryKey>
          where TEntity : class, IEntity, IEntity<TPrimaryKey> where TDto : IOutputDto
     {
+        protected IContainer Injector => ZKWeb.Application.Ioc;
+
         private ParameterExpression xParaExpr;
         protected ParameterExpression ParaExpression
         {
@@ -30,8 +35,8 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                 return xParaExpr;
             }
         }
-        protected IContainer Injector => ZKWeb.Application.Ioc;
-        private LambdaExpression GetPropertyExpression(ParameterExpression paraExpr, string propertyName)
+
+        private LambdaExpression CreatePropertyExpression(ParameterExpression paraExpr, string propertyName)
         {
             var props = propertyName.Split('.');
             Expression propExpr = paraExpr;
@@ -45,17 +50,6 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
             }
             return propExpr == null ? null : Expression.Lambda(propExpr, paraExpr);
         }
-
-        public ColumnFilterMapperFactory(string name) : this()
-        {
-
-        }
-        public ColumnFilterMapperFactory()
-        {
-            Mapper = CreateMapper();
-        }
-        public IMapper Mapper { get; set; }
-
         public IMapper CreateMapper()
         {
             var dtmMapper = Injector.Resolve<IDtoToModelMapper>();
@@ -76,13 +70,13 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                         //创建实体
                         if (dtoMapVal == null)
                         {
-                            cqExpr = GetPropertyExpression(ParaExpression, m.Column);
+                            cqExpr = CreatePropertyExpression(ParaExpression, m.Column);
                             var val = dtmMapProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
                             dtmMapProfile.AddOrUpdate(val.Column, val);
                         }
                         else if (cqExpr == null)
                         {
-                            cqExpr = GetPropertyExpression(ParaExpression, m.Column);
+                            cqExpr = CreatePropertyExpression(ParaExpression, m.Column);
                             dtoMapVal.Expression = cqExpr;
                             dtoMapVal.ColumnType = cqExpr.ReturnType;
                         }
@@ -131,7 +125,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
 
                         if (dtoMapVal == null)
                         {
-                            var cqExpr = GetPropertyExpression(ParaExpression, m.Column);
+                            var cqExpr = CreatePropertyExpression(ParaExpression, m.Column);
                             dtoMapVal = dtmMapProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
                             dtmMapProfile.AddOrUpdate(dtoMapVal.Column, dtoMapVal);
                         }
@@ -141,35 +135,6 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                 return mapperConf.CreateMapper();
             }
             return dtmAutoMapper;
-        }
-
-        public Expression<Func<TEntity, bool>> CreateQueryExpression(params GridSearchColumnFilter[] columnFilters)
-        {
-            var root = new ColumnQueryCondition() { IsChildExpress = true };
-            var colFilters = columnFilters.ToList();
-            var cqconds = Mapper.Map<List<ColumnQueryCondition>>(colFilters);
-
-            root.Childs.AddRange(cqconds);
-            var expBuilder = new LambdaExpressionBuilder<TEntity>();
-            var rootExpr = expBuilder.GenerateLambdaExpression(root);
-            return rootExpr;
-        }
-
-        /// <summary>
-        /// 创建子查询表达式
-        /// </summary>
-        /// <param name="columnFilters"></param>
-        /// <returns></returns>
-        public Expression<Func<TEntity, bool>> CreateChildQueryExpression(params GridSearchColumnFilter[] columnFilters)
-        {
-            var root = new ColumnQueryCondition() { IsChildExpress = true };
-            var colFilters = columnFilters.Where(f => f.IsChildQuery).ToList();
-            var cqconds = Mapper.Map<List<ColumnQueryCondition>>(colFilters);
-
-            root.Childs.AddRange(cqconds);
-            var expBuilder = new LambdaExpressionBuilder<TEntity>();
-            var rootExpr = expBuilder.GenerateLambdaExpression(root);
-            return rootExpr;
         }
     }
 }
