@@ -1,5 +1,6 @@
 ﻿using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder;
+using InfrastructurePlugins.BaseModule.Module;
 using System;
 using System.Linq.Expressions;
 using ZKWeb.Database;
@@ -17,6 +18,21 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// 列类型
         /// </summary>
         public Type ColumnType { get; set; }
+        /// <summary>
+        /// 列所属对象的类型
+        /// </summary>
+        public Type ObjectType { get; set; }
+        /// <summary>
+        /// 属性归类
+        /// </summary>
+        public PropClassify PropertyClassify { get; set; }
+
+        /// <summary>
+        /// 前缀
+        /// 例:e.a.b.c 前缀:a.b 列为c
+        /// 前缀根据对象结构自动生成
+        /// </summary>
+        public string Prefix { get; set; }
         /// <summary>
         /// 列对应的表达式
         /// </summary>

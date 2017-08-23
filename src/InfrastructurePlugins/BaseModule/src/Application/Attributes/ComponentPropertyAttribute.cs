@@ -34,7 +34,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Attributes
         /// <summary>
         /// 属性类型
         /// </summary>
-        public PropType PropertyType { get; set; }
+        public PropClassify PropertyType { get; set; }
         public string TempName { get; set; }
         public string Alias { get; set; }
         public string Name { get; set; }

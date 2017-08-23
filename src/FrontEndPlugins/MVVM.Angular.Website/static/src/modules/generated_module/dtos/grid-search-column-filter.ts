@@ -15,7 +15,7 @@ export class GridSearchColumnFilter {
     /** 子查询 */
     public IsChildQuery: boolean;
     /** 属性类型 */
-    public ProperyType: any;
+    public PropertyType: any;
     /** 正则表达式 */
     public RegExp: string;
     /** 属性名称 */

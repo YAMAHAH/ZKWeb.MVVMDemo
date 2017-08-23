@@ -1,4 +1,5 @@
 ﻿using InfrastructurePlugins.BaseModule.Components.QueryBuilder;
+using InfrastructurePlugins.BaseModule.Module;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,7 +22,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Dtos
         public bool IsChildQuery { get; set; }
 
         [Description("属性类型")]
-        public Type ProperyType { get; set; }
+        public Type PropertyType { get; set; }
 
         [Description("正则表达式")]
         public string RegExp { get; set; }

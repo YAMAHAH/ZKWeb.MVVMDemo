@@ -263,14 +263,26 @@ namespace InfrastructurePlugins.BaseModule.Module
         public Type ParentType { get; set; }
         public PropertyInfo ParentPropInfo { get; set; }
         public PropertyInfo PropInfo { get; set; }
-        public PropType PropType { get; set; }
+        public PropClassify PropClassify { get; set; }
 
     }
 
-    public enum PropType
+    /// <summary>
+    /// 属性归类
+    /// </summary>
+    public enum PropClassify
     {
+        /// <summary>
+        /// 基本类型
+        /// </summary>
         Basic = 0,
+        /// <summary>
+        /// 列表类型
+        /// </summary>
         List = 1,
+        /// <summary>
+        /// 对象类型
+        /// </summary>
         Object = 2
     }
 

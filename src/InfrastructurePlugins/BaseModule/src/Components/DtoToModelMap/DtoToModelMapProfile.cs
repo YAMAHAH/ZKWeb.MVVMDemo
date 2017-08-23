@@ -54,7 +54,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                             ParentType = tempClsType,
                             ParentPropInfo = parentPropInfo,
                             PropInfo = propInfo,
-                            PropType = propType.IsArray ? PropType.List : PropType.Object
+                            PropClassify = propType.IsArray ? PropClassify.List : PropClassify.Object
                         });
                         propinfos.AddRange(TraversalProperties(propType, propInfo));
                     }
@@ -79,7 +79,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                                 ParentType = tempClsType,
                                 ParentPropInfo = parentPropInfo,
                                 PropInfo = propInfo,
-                                PropType = PropType.List
+                                PropClassify = PropClassify.List
                             });
                             propinfos.AddRange(TraversalProperties(genericType, propInfo));
                         }
@@ -91,7 +91,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                             ParentType = tempClsType,
                             ParentPropInfo = parentPropInfo,
                             PropInfo = propInfo,
-                            PropType = PropType.List
+                            PropClassify = PropClassify.List
                         });
                     }
                 }
@@ -102,7 +102,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                         ParentType = tempClsType,
                         ParentPropInfo = parentPropInfo,
                         PropInfo = propInfo,
-                        PropType = PropType.Basic
+                        PropClassify = PropClassify.Basic
                     });
                 }
             }
@@ -129,10 +129,12 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                         TempClassType = TemplateClassType,
                         DataType = propType.GetTypeInfo().IsGenericType ? propType.GetGenericArguments()[0].Name : propType.Name,
                         GroupType = objInfo.ParentType,
-                        PropertyType = objInfo.PropType
+                        PropertyType = objInfo.PropClassify
                     },
                     ColumnType = propType,
-                    Column = propInfo.Name
+                    Column = propInfo.Name,
+                    ObjectType = objInfo.ParentType,
+                    PropertyClassify = objInfo.PropClassify
                 };
                 AddOrUpdate(objAlias, val);
             }

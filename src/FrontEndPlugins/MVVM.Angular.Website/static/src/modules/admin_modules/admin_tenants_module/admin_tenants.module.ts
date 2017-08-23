@@ -63,4 +63,34 @@ const routes: Routes = [
         RouterModule
     ]
 })
-export class AdminTenantsModule { }
+export class AdminTenantsModule {
+
+    u = {
+        RItems: [
+            {
+                Rid: "111",
+                RName: "R对象名称",
+                Citems: [
+                    { cid: 123, cname: "C对象名称" },
+                    { cid: 126, cname: "C对象名称" },
+                ]
+            },
+            {
+                Rid: "112",
+                RName: "R对象名称",
+                Citems: [
+                    { cid: 127, cname: "C对象名称" },
+                    { cid: 128, cname: "C对象名称" },
+                ]
+            }
+        ],
+        p: {
+            pv: {
+                prop1: "pv对象属性1"
+            },
+            prop2: "p对象属性2",
+        },
+        prop3: "U对象属性3"
+
+    }
+}

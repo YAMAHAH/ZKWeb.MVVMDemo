@@ -63,7 +63,10 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// <returns></returns>
         public Expression<Func<T, bool>> GetLambdaExpression(Expression body)
         {
-            return Expression.Lambda<Func<T, bool>>(body == null ? Expression.Constant(true) : body, this.Parameters);
+            //  Type delegateType = typeof(Func<,>).MakeGenericType(typeof(T), typeof(bool));
+            var bodyExpr = body == null ? Expression.Constant(true) : body;
+            // LambdaExpression lambda = Expression.Lambda(delegateType, bodyExpr, this.Parameters);
+            return Expression.Lambda<Func<T, bool>>(bodyExpr, this.Parameters);
         }
 
         public LambdaExpression ParseLambda(ParameterExpression[] parameters, Type resultType, string expression, params object[] values)
@@ -109,6 +112,62 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 return base.Visit(node);
             }
         }
+        public static object CreateBuilder(Type type)
+        {
+            var builderType = typeof(LambdaExpressionBuilder<>).MakeGenericType(type);
+            return Activator.CreateInstance(builderType);
+        }
+
+        //        U为一个对象,
+        //items是U的一个R对象的集合属性,
+        //C是R对象的一个对象,
+        //P是U的一个对象属性,
+        //PV是P的一个对象属性,
+        //prop1是PV对象的属性,
+        //prop2是P对象的属性,
+        //Prop3是U对象的一个属性
+
+        //对于集合的操作暂时可取any, all, count
+
+        //构建如下表达式:
+
+        //u.Ritems.any(r=>r.rname == "rname" && r.Citems.any(c=>c.id == "13")) ||
+
+        //(u.p.pv.Prop1 == "myprop1" && u.p.prop2 == "myprop2") &&
+
+        //u.prop3 == "myprop3"
+
+        //column prefix
+        //Ritems      null     =>Ritems.any()
+        //Citems      Ritems    =>Ritems.any(r=>r.Citems.any())
+        //rname Ritems => Ritems.any(r => r.rname == 455)
+        //id Ritems.Citems => r.Citems.any(c => c.id == "13")
+        //p           null     =>p
+        //pv          p        =>p.pv
+        //prop1       p.pv     =>p.pv.prop1
+        //prop2       p        =>p.prop2
+
+        private Expression RecursionGenerateListExpression(ColumnQueryCondition c)
+        {
+            ////****************请求的是复杂对象列表(any,all)************************
+            ////创建基于UserToRole表达式工厂
+            //var childExprFactory = new ExpressionCreateFactory<UserToRole, UserToRoleOutputDto, Guid>();
+            ////创建表达式树生成器
+            //var lbdExprBuilder = childExprFactory.CreateBuilder();
+
+            ////创建子查询表达式
+            //Expression<Func<UserToRole, bool>> childQueryExpr = childExprFactory.CreateChildQueryExpression(c.Childs.ToArray());
+            ////创建基于User表达式工厂
+            //var anyExprFactory = new ExpressionCreateFactory<User, UserOutputDto, Guid>();
+            ////创建表达式生成器
+            //var anyExprBuilder = anyExprFactory.CreateBuilder();
+            ////创建any方法表达式
+            //var anyExpr = anyExprBuilder.Any(c.Column, childQueryExpr);
+            ////创建e.Roles.Any(childQueryExpr)
+            //var resultExpr = anyExprBuilder.GetLambdaExpression(anyExpr);
+            return null;
+        }
+
         /// <summary>
         /// 生成单个条件的表达式
         /// </summary>
@@ -123,6 +182,10 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 var visitor = new ReplaceExpressionVisitor(rightParamExpr, leftParamExpr);
                 var rightBodyExpr = visitor.Visit(qc.SrcExpression.Body);
                 qc.Expression = rightBodyExpr;
+                return;
+            }
+            if (qc.PropClassify == Module.PropClassify.List)
+            {
                 return;
             }
             //if (!string.IsNullOrEmpty(qc.RegExp))

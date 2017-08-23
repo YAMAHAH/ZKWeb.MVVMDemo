@@ -175,7 +175,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                             dtoMapVal = dtmMapProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
                             dtmMapProfile.AddOrUpdate(dtoMapVal.Column, dtoMapVal);
                         }
-                        var propType = m.ProperyType ?? dtoMapVal.ColumnType;
+                        var propType = m.PropertyType ?? dtoMapVal.ColumnType;
                         return propType;
                     })));
                 return mapperConf.CreateMapper();

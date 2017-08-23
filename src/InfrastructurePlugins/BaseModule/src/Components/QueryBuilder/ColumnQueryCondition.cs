@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InfrastructurePlugins.BaseModule.Module;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -27,6 +28,14 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// 属性名称
         /// </summary>
         public string PropertyName { get; set; }
+        /// <summary>
+        /// 属性分类
+        /// </summary>
+        public PropClassify PropClassify { get; set; }
+        /// <summary>
+        /// 前缀
+        /// </summary>
+        public string Prefix { get; set; }
         /// <summary>
         /// 操作符
         /// </summary>

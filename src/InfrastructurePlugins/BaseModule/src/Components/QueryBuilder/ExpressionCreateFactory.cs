@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using ZKWeb.Database;
 using ZKWebStandard.Ioc;
 
@@ -86,6 +87,29 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         {
             return new LambdaExpressionBuilder<TEntity>();
         }
+        public static object CreateBuilder(Type type)
+        {
+            var builderType = typeof(LambdaExpressionBuilder<>).MakeGenericType(type);
+            return Activator.CreateInstance(builderType);
+        }
+        public static dynamic TryParserArray(string[] values, Type t)
+        {
+            //string[] searchArray = value.Split(',');
+            var genericType = typeof(List<>).MakeGenericType(t);
+            var list = Activator.CreateInstance(genericType);
+            var addMethod = genericType.GetMethod("Add");
 
+            foreach (var l in values)
+            {
+                try
+                {
+                    var dValue = Convert.ChangeType(l, t);
+                    //dList.Add(dValue);
+                    addMethod.Invoke(list, new object[] { dValue });
+                }
+                catch { }
+            }
+            return list;
+        }
     }
 }

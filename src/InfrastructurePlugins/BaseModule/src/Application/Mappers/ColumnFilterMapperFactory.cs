@@ -76,7 +76,8 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                         }
                         else if (cqExpr == null)
                         {
-                            cqExpr = CreatePropertyExpression(ParaExpression, m.Column);
+                            var memberName = (dtoMapVal.Prefix + "." + m.Column).Trim();
+                            cqExpr = CreatePropertyExpression(ParaExpression, memberName);
                             dtoMapVal.Expression = cqExpr;
                             dtoMapVal.ColumnType = cqExpr.ReturnType;
                         }
@@ -87,6 +88,16 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                         var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
                         return dtoMapVal.IsCustomColumnFilter;
                     }))
+                    .ForMember(m => m.PropClassify, opt => opt.ResolveUsing(m =>
+                    {
+                        var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
+                        return dtoMapVal.PropertyClassify;
+                    }))
+                     .ForMember(m => m.PropClassify, opt => opt.ResolveUsing(m =>
+                     {
+                         var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
+                         return dtoMapVal.Prefix;
+                     }))
                     .ForMember(m => m.PropertyName, opt => opt.MapFrom(m => m.Column))
                     .ForMember(m => m.Value1, opt => opt.ResolveUsing(m =>
                     {
@@ -129,7 +140,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                             dtoMapVal = dtmMapProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
                             dtmMapProfile.AddOrUpdate(dtoMapVal.Column, dtoMapVal);
                         }
-                        var propType = m.ProperyType ?? dtoMapVal.ColumnType;
+                        var propType = m.PropertyType ?? dtoMapVal.ColumnType;
                         return propType;
                     })));
                 return mapperConf.CreateMapper();
