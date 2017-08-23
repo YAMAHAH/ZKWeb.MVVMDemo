@@ -1,4 +1,5 @@
-﻿using InfrastructurePlugins.BaseModule.Utils;
+﻿using InfrastructurePlugins.BaseModule.Module;
+using InfrastructurePlugins.BaseModule.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,9 +119,10 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             return Activator.CreateInstance(builderType);
         }
 
-        //        U为一个对象,
-        //items是U的一个R对象的集合属性,
-        //C是R对象的一个对象,
+        //U为一个对象,
+        //Ritems是U的一个R对象的集合属性,
+        //rname是R对象的一个属性,
+        //Citems是R对象的一个C对象的集合属性,
         //P是U的一个对象属性,
         //PV是P的一个对象属性,
         //prop1是PV对象的属性,
@@ -147,8 +149,36 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         //prop1       p.pv     =>p.pv.prop1
         //prop2       p        =>p.prop2
 
+        //private double CalaCost(BomStructure rootNode)
+        //{
+        //    var curCost = 1 * rootNode.Total;
+        //    int i = 0;
+        //    foreach (var child in rootNode.Childs)
+        //    {
+        //        rootNode.Cost = CalaCost(child) + (i == 0 ? 0 : rootNode.Cost);
+        //        i += 1;
+        //    }
+        //    rootNode.Cost = curCost + (i == 0 ? 0 : rootNode.Cost);
+        //    return rootNode.Cost;
+        //}
         private Expression RecursionGenerateListExpression(ColumnQueryCondition c)
         {
+            foreach (var item in c.Childs)
+            {
+               c.Expression = RecursionGenerateListExpression(item);
+            }
+
+            //属性   操作   值  连接 u.Ritems.Any(r=>r.Rname=="Rname" && r.Citems.Any(c=>c.id == "13"))
+            // Ritems Any none none list  1
+            //   Rname Equals "rname" none basic 2
+            //   Citems Any none and list 3
+            //     id Equals "13" none basic 4
+            //
+
+            //0.从c中获取前缀
+            //1.构建u.Ritems
+            //2.创建any()
+           // u.Ritems.any(r => r.rname == "rname" && r.Citems.any(c => c.id == "13"))
             ////****************请求的是复杂对象列表(any,all)************************
             ////创建基于UserToRole表达式工厂
             //var childExprFactory = new ExpressionCreateFactory<UserToRole, UserToRoleOutputDto, Guid>();
@@ -184,7 +214,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 qc.Expression = rightBodyExpr;
                 return;
             }
-            if (qc.PropClassify == Module.PropClassify.List)
+            if (qc.PropClassify == PropClassify.List)
             {
                 return;
             }

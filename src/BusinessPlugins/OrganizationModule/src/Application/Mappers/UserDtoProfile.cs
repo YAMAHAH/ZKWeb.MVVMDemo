@@ -59,9 +59,9 @@ namespace BusinessPlugins.OrganizationModule.Application.Mappers
                  //var anyExpr = anyExprBuilder.Any(c.Column, childQueryExpr);
                  ////创建e.Roles.Any(childQueryExpr)
                  //var resultExpr = anyExprBuilder.GetLambdaExpression(anyExpr);
-                 ////***************请求的是对象类型u=>u.Role.Second.Id == "myID" || u.Role.Second.Name.contains("L3")*************************************
-                 ////创建对象成员
-                 ////var memberExpr = anyExprBuilder.GetPropertyExpression(c.Column);
+                 //////***************请求的是对象类型u=>u.Role.Second.Id == "myID" || u.Role.Second.Name.contains("L3")*************************************
+                 //////创建对象成员
+                 //////var memberExpr = anyExprBuilder.GetPropertyExpression(c.Column);
 
                  //return resultExpr;
                  var roleIds = c.Value.ConvertOrDefault<IList<Guid>>();

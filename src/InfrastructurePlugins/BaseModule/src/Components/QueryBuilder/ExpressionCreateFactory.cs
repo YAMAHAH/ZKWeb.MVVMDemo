@@ -92,6 +92,11 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             var builderType = typeof(LambdaExpressionBuilder<>).MakeGenericType(type);
             return Activator.CreateInstance(builderType);
         }
+        public static object MakeExpressionCreateFactory(Type entityType,Type dtoType,Type primaryType)
+        {
+            var genericType = typeof(LambdaExpressionBuilder<>).MakeGenericType(entityType,dtoType,primaryType);
+            return Activator.CreateInstance(genericType);
+        }
         public static dynamic TryParserArray(string[] values, Type t)
         {
             //string[] searchArray = value.Split(',');
