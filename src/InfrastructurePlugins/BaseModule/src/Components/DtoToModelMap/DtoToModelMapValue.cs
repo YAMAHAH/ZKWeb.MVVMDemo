@@ -1,5 +1,6 @@
 ﻿using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder;
+using InfrastructurePlugins.BaseModule.Components.QueryBuilder;
 using InfrastructurePlugins.BaseModule.Module;
 using System;
 using System.Linq.Expressions;
@@ -21,7 +22,15 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// <summary>
         /// 列所属对象的类型
         /// </summary>
-        public Type ObjectType { get; set; }
+        public Type DtoEntityType { get; set; }
+        /// <summary>
+        /// 父模型类型
+        /// </summary>
+        public Type ParentModelType { get; set; }
+        /// <summary>
+        /// 对应模型类型
+        /// </summary>
+        public Type ModelType { get; set; }
         /// <summary>
         /// 属性归类
         /// </summary>
@@ -37,6 +46,12 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// 列对应的表达式
         /// </summary>
         public LambdaExpression Expression { get; set; }
+        /// <summary>
+        /// 实体类型的表达式生成器
+        /// </summary>
+        public ILambdaExpressionBuilderBase ExpressionBuilder { get; set; }
+
+        public ILambdaExpressionBuilderBase ParentExpressionBuilder { get; set; }
 
         public QueryColumnFilterDelegate<TModel, TPrimaryKey> ColumnFilter { get; set; }
         /// <summary>

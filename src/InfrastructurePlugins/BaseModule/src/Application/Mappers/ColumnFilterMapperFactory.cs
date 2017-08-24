@@ -76,7 +76,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                         }
                         else if (cqExpr == null)
                         {
-                            var memberName = (dtoMapVal.Prefix + "." + m.Column).Trim();
+                            var memberName = string.IsNullOrEmpty(dtoMapVal.Prefix) ? m.Column : (dtoMapVal.Prefix + "." + m.Column).Trim();
                             cqExpr = CreatePropertyExpression(ParaExpression, memberName);
                             dtoMapVal.Expression = cqExpr;
                             dtoMapVal.ColumnType = cqExpr.ReturnType;
@@ -93,11 +93,31 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                         var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
                         return dtoMapVal.PropertyClassify;
                     }))
-                     .ForMember(m => m.PropClassify, opt => opt.ResolveUsing(m =>
+                    .ForMember(m => m.Prefix, opt => opt.ResolveUsing(m =>
                      {
                          var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
                          return dtoMapVal.Prefix;
                      }))
+                    .ForMember(m => m.ExpressionBuilder, opt => opt.ResolveUsing(m =>
+                     {
+                         var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
+                         return dtoMapVal.ExpressionBuilder;
+                     }))
+                     .ForMember(m => m.ParentExpressionBuilder, opt => opt.ResolveUsing(m =>
+                     {
+                         var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
+                         return dtoMapVal.ParentExpressionBuilder;
+                     }))
+                      .ForMember(m => m.ParentModelType, opt => opt.ResolveUsing(m =>
+                      {
+                          var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
+                          return dtoMapVal.ParentModelType;
+                      }))
+                       .ForMember(m => m.ModelType, opt => opt.ResolveUsing(m =>
+                       {
+                           var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
+                           return dtoMapVal.ModelType;
+                       }))
                     .ForMember(m => m.PropertyName, opt => opt.MapFrom(m => m.Column))
                     .ForMember(m => m.Value1, opt => opt.ResolveUsing(m =>
                     {

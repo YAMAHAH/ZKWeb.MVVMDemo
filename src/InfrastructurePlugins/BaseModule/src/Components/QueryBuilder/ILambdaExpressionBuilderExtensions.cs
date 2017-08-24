@@ -133,7 +133,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// <param name="q"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        private static Expression GetMemberExpression<T, P>(this ILambdaExpressionBuilder<T> q, Expression<Func<T, P>> property)
+        public static Expression GetMemberExpression<T, P>(this ILambdaExpressionBuilder<T> q, Expression<Func<T, P>> property)
         {
             if (q.Parameters == null || q.Parameters.Length == 0)
             {
@@ -144,7 +144,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             Expression memberExpr = visitor.ReplaceParameter(property.Body);
             return memberExpr;
         }
-        private static Expression GetMemberExpression<T>(this ILambdaExpressionBuilder<T> q, LambdaExpression property)
+        public static Expression GetMemberExpression<T>(this ILambdaExpressionBuilder<T> q, LambdaExpression property)
         {
             if (q.Parameters == null || q.Parameters.Length == 0)
             {

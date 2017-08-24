@@ -2,10 +2,12 @@
 using System.ComponentModel;
 using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
 
 namespace InfrastructurePlugins.MultiTenantModule.Application.Dtos
 {
     [Description("租户传出信息")]
+    [ModelTypeMapper(typeof(Tenant))]
     public class TenantOutputDto : IOutputDto
     {
         [Description("租户Id")]

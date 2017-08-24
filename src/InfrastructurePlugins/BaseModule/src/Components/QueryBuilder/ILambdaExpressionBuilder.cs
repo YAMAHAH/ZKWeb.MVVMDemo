@@ -4,10 +4,22 @@ using System.Linq.Expressions;
 
 namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 {
-    public interface ILambdaExpressionBuilder<T>
+    public interface ILambdaExpressionBuilderBase
     {
         string ParameterName { get; set; }
         ParameterExpression[] Parameters { get; set; }
+        void GenerateExpression(ColumnQueryCondition c);
+        LambdaExpression CreatePropertyExpression(string propertyName);
+        Expression GetMemberExpression(LambdaExpression property);
+        Expression Any(ColumnQueryCondition c, Expression predicate);
+        Expression All(ColumnQueryCondition c, Expression predicate);
+        Expression Count(ColumnQueryCondition c, Expression predicate);
+        Expression GenerateListExpression(ColumnQueryCondition c, Expression predicateExpr);
+    }
+
+    public interface ILambdaExpressionBuilder<T> : ILambdaExpressionBuilderBase
+    {
+
         ICollection<ColumnQueryCondition> QueryCondtions { get; set; }
         /// <summary>
         /// 获取某个查询条件结点的表达式生成对应的表达式树

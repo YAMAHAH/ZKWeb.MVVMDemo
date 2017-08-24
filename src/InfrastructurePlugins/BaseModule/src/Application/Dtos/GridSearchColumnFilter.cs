@@ -32,6 +32,8 @@ namespace InfrastructurePlugins.BaseModule.Application.Dtos
 
         [Description("操作符")]
         public OpertionSymbol OpertionSymbol { get; set; }
+        [Description("集合操作符")]
+        public SetOpertionSymbol SetOpertionSymbol { get; set; }
 
         [Description("值1")]
         public object Value1 { get; set; }

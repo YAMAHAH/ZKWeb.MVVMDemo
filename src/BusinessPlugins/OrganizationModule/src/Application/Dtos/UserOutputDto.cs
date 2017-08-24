@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
+using BusinessPlugins.OrganizationModule.Domain.Entities;
 
 namespace BusinessPlugins.OrganizationModule.Application.Dtos
 {
     [Description("用户传出信息")]
+    [ModelTypeMapper(typeof(User))]
     public class UserOutputDto : IOutputDto
     {
         [Description("用户Id")]

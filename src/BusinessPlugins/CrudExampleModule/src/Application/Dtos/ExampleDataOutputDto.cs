@@ -1,10 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Application.Attributes;
+using BusinessPlugins.CrudExampleModule.Domain.Entities;
 
 namespace BusinessPlugins.CrudExampleModule.Application.Dtos
 {
     [Description("示例数据的传出信息")]
+    [ModelTypeMapper(typeof(ExampleData))]
     public class ExampleDataOutputDto : IOutputDto
     {
         [Description("数据Id")]

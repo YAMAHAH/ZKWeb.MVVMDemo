@@ -1,5 +1,6 @@
 ﻿using InfrastructurePlugins.BaseModule.Application.Attributes;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
+using InfrastructurePlugins.BaseModule.Components.QueryBuilder;
 using InfrastructurePlugins.BaseModule.Module;
 using System;
 using System.Collections.Concurrent;
@@ -32,10 +33,12 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// </summary>
         /// <param name="tempClsType"></param>
         /// <returns></returns>
-        protected List<EnumPropInfo> TraversalProperties(Type tempClsType, PropertyInfo parentPropInfo)
+        protected List<EnumPropInfo> TraversalProperties(Type tempClsType, EnumPropInfo parentInfo)
         {
             var propinfos = new List<EnumPropInfo>();
             if (null == tempClsType) { return propinfos; }
+            var modelType = tempClsType.GetTypeInfo().GetCustomAttribute<ModelTypeMapperAttribute>()?.ModelType ?? tempClsType;
+
             foreach (PropertyInfo pi in tempClsType.GetProperties(BindingFlags.Public |
                 BindingFlags.Instance | BindingFlags.DeclaredOnly))
             {
@@ -49,14 +52,17 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                     if (!this.typeLists.Contains(propType))
                     {
                         this.typeLists.Add(propType);
-                        propinfos.Add(new EnumPropInfo()
+                        var enumPropInfo = new EnumPropInfo()
                         {
-                            ParentType = tempClsType,
-                            ParentPropInfo = parentPropInfo,
+                            ParentModelType = parentInfo?.ModelType,
+                            ModelType = modelType,
+                            DtoEntityType = tempClsType,
+                            ParentPropInfo = parentInfo?.PropInfo,
                             PropInfo = propInfo,
                             PropClassify = propType.IsArray ? PropClassify.List : PropClassify.Object
-                        });
-                        propinfos.AddRange(TraversalProperties(propType, propInfo));
+                        };
+                        propinfos.Add(enumPropInfo);
+                        propinfos.AddRange(TraversalProperties(propType, enumPropInfo));
                     }
                 }
                 else if (propType.GetTypeInfo().IsGenericType)
@@ -74,22 +80,27 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                         if (!this.typeLists.Contains(genericType))
                         {
                             this.typeLists.Add(genericType);
-                            propinfos.Add(new EnumPropInfo()
+                            var enumPropInfo = new EnumPropInfo()
                             {
-                                ParentType = tempClsType,
-                                ParentPropInfo = parentPropInfo,
+                                ParentModelType = parentInfo?.ModelType,
+                                ModelType = modelType,
+                                DtoEntityType = tempClsType,
+                                ParentPropInfo = parentInfo?.PropInfo,
                                 PropInfo = propInfo,
                                 PropClassify = PropClassify.List
-                            });
-                            propinfos.AddRange(TraversalProperties(genericType, propInfo));
+                            };
+                            propinfos.Add(enumPropInfo);
+                            propinfos.AddRange(TraversalProperties(genericType, enumPropInfo));
                         }
                     }
                     else
                     {
                         propinfos.Add(new EnumPropInfo()
                         {
-                            ParentType = tempClsType,
-                            ParentPropInfo = parentPropInfo,
+                            ParentModelType = parentInfo?.ModelType,
+                            ModelType = modelType,
+                            DtoEntityType = tempClsType,
+                            ParentPropInfo = parentInfo?.PropInfo,
                             PropInfo = propInfo,
                             PropClassify = PropClassify.List
                         });
@@ -99,8 +110,10 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                 {
                     propinfos.Add(new EnumPropInfo()
                     {
-                        ParentType = tempClsType,
-                        ParentPropInfo = parentPropInfo,
+                        ParentModelType = parentInfo?.ModelType,
+                        ModelType = modelType,
+                        DtoEntityType = tempClsType,
+                        ParentPropInfo = parentInfo?.PropInfo,
                         PropInfo = propInfo,
                         PropClassify = PropClassify.Basic
                     });
@@ -108,6 +121,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             }
             return propinfos;
         }
+        Dictionary<Type, ILambdaExpressionBuilderBase> typeBuilders = new Dictionary<Type, ILambdaExpressionBuilderBase>();
         private void MakeTempClsObjectInfo()
         {
             //根据模板类型自动生成相应的模板类对象信息
@@ -119,7 +133,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             {
                 var propInfo = objInfo.PropInfo;
                 var propType = objInfo.PropInfo.PropertyType;
-                var objAlias = objInfo.ParentType.Name.Replace("OutputDto", "") + "_" + propInfo.Name;
+                var objAlias = objInfo.DtoEntityType.Name.Replace("OutputDto", "") + "_" + propInfo.Name;
                 var val = new DtoToModelMapValue<TModel, TPrimaryKey>()
                 {
                     TemplateObjectInfo = new ComponentPropertyAttribute()
@@ -128,16 +142,36 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                         Alias = objAlias,
                         TempClassType = TemplateClassType,
                         DataType = propType.GetTypeInfo().IsGenericType ? propType.GetGenericArguments()[0].Name : propType.Name,
-                        GroupType = objInfo.ParentType,
+                        GroupType = objInfo.DtoEntityType,
                         PropertyType = objInfo.PropClassify
                     },
                     ColumnType = propType,
                     Column = propInfo.Name,
-                    ObjectType = objInfo.ParentType,
-                    PropertyClassify = objInfo.PropClassify
+                    DtoEntityType = objInfo.DtoEntityType,
+                    PropertyClassify = objInfo.PropClassify,
+                    ExpressionBuilder = CreateLambdaExpressionBuilder(objInfo.ModelType ?? objInfo.DtoEntityType),
+                    ParentExpressionBuilder = objInfo.ParentModelType == null ? null : CreateLambdaExpressionBuilder(objInfo.ParentModelType),
+                    ModelType = objInfo.ModelType,
+                    ParentModelType = objInfo.ParentModelType
+
                 };
                 AddOrUpdate(objAlias, val);
             }
+        }
+        /// <summary>
+        /// 创建表达式生成器
+        /// </summary>
+        /// <param name="entityType">实体类型</param>
+        /// <returns></returns>
+        private ILambdaExpressionBuilderBase CreateLambdaExpressionBuilder(Type entityType)
+        {
+            //按约定获取指定的实体类型
+            if (typeBuilders.ContainsKey(entityType)) return typeBuilders[entityType];
+
+            var builderType = typeof(LambdaExpressionBuilder<>).MakeGenericType(entityType);
+            var builder = (ILambdaExpressionBuilderBase)Activator.CreateInstance(builderType);
+            typeBuilders[entityType] = builder;
+            return builder;
         }
         public IContainer Injector { get; } = ZKWeb.Application.Ioc;
 

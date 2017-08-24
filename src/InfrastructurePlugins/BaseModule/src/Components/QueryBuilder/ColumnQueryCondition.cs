@@ -25,6 +25,14 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// </summary>
         public Type ProperyType { get; set; } = typeof(object);
         /// <summary>
+        /// 父域模型类型
+        /// </summary>
+        public Type ParentModelType { get; set; }
+        /// <summary>
+        /// 域模型类型
+        /// </summary>
+        public Type ModelType { get; set; }
+        /// <summary>
         /// 属性名称
         /// </summary>
         public string PropertyName { get; set; }
@@ -36,10 +44,38 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// 前缀
         /// </summary>
         public string Prefix { get; set; }
+
+        /// <summary>
+        /// 成员名称,前缀和列名的组合
+        /// </summary>
+        public string MemberName
+        {
+            get
+            {
+                return string.IsNullOrEmpty(Prefix) ? PropertyName : (Prefix + "." + PropertyName).Trim();
+            }
+        }
+        /// <summary>
+        /// 表达式生成器
+        /// </summary>
+        public ILambdaExpressionBuilderBase ExpressionBuilder { get; set; }
+        /// <summary>
+        /// 父结点表达式生成器
+        /// </summary>
+        public ILambdaExpressionBuilderBase ParentExpressionBuilder { get; set; }
+        /// <summary>
+        /// 指示是否处理完成
+        /// </summary>
+        public bool IsProcessDone { get; set; }
         /// <summary>
         /// 操作符
         /// </summary>
         public OpertionSymbol OpertionSymbol { get; set; }
+
+        /// <summary>
+        /// 集合操作符
+        /// </summary>
+        public SetOpertionSymbol SetOpertion { get; set; }
         /// <summary>
         /// 值1
         /// </summary>

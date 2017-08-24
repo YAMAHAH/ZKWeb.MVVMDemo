@@ -115,12 +115,12 @@ namespace InfrastructurePlugins.BaseModule.Module
                     }
                     else
                     {
-                        propinfos.Add(new EnumPropInfo() { ParentType = tempClsType, PropInfo = propInfo });
+                        propinfos.Add(new EnumPropInfo() { DtoEntityType = tempClsType, PropInfo = propInfo });
                     }
                 }
                 else
                 {
-                    propinfos.Add(new EnumPropInfo() { ParentType = tempClsType, PropInfo = propInfo });
+                    propinfos.Add(new EnumPropInfo() { DtoEntityType = tempClsType, PropInfo = propInfo });
                 }
             }
             return propinfos;
@@ -185,7 +185,7 @@ namespace InfrastructurePlugins.BaseModule.Module
                                 .SelectMany(p =>
                                 {
                                     var datafield = p.PropInfo.GetCustomAttribute<ComponentPropertyAttribute>();
-                                    datafield.GroupType = p.ParentType;
+                                    datafield.GroupType = p.DtoEntityType;
                                     var propType = p.PropInfo.PropertyType;
                                     if (datafield != null)
                                     {
@@ -201,10 +201,10 @@ namespace InfrastructurePlugins.BaseModule.Module
                                             }
                                         }
                                         if (datafield.Name == null) datafield.Name = p.PropInfo.Name;
-                                        if (datafield.Alias == null) datafield.Alias = p.ParentType.Name.Replace("OutputDto", "") + "_" + p.PropInfo.Name;
+                                        if (datafield.Alias == null) datafield.Alias = p.DtoEntityType.Name.Replace("OutputDto", "") + "_" + p.PropInfo.Name;
                                         if (nameLists.Contains(datafield.Alias))
                                         {
-                                            datafield.Alias = p.ParentType.Name.Replace("OutputDto", "") + "_" + datafield.Name;
+                                            datafield.Alias = p.DtoEntityType.Name.Replace("OutputDto", "") + "_" + datafield.Name;
                                         }
                                         nameLists.Add(datafield.Alias);
                                     }
@@ -260,7 +260,22 @@ namespace InfrastructurePlugins.BaseModule.Module
 
     public class EnumPropInfo
     {
-        public Type ParentType { get; set; }
+        /// <summary>
+        /// 域模型类型
+        /// </summary>
+        public Type ModelType { get; set; }
+        /// <summary>
+        /// 父域模型类型
+        /// </summary>
+        public Type ParentModelType { get; set; }
+        /// <summary>
+        /// Dto实体类型
+        /// </summary>
+        public Type DtoEntityType { get; set; }
+        /// <summary>
+        /// 前缀
+        /// </summary>
+        public string Prefix { get; set; }
         public PropertyInfo ParentPropInfo { get; set; }
         public PropertyInfo PropInfo { get; set; }
         public PropClassify PropClassify { get; set; }

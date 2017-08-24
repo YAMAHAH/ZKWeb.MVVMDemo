@@ -86,9 +86,16 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         private void RecursionGenerateExpression(ColumnQueryCondition c)
         {
             //生成相应的表达式树
-            if (!c.IsChildExpress) GenerateExpression(c);
+            if (!c.IsChildExpress)
+            {
+                if (c.PropClassify == PropClassify.List)
+                    RecursionGenerateListExpression(c);
+                else
+                    GenerateExpression(c);
+            }
             foreach (var t in c.Childs)
             {
+                if (c.PropClassify == PropClassify.List && c.IsProcessDone) break;
                 RecursionGenerateExpression(t);
                 //拼接表达式树
                 ConcatExpression(c, t, c.Childs.First() == t);
@@ -149,25 +156,104 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         //prop1       p.pv     =>p.pv.prop1
         //prop2       p        =>p.prop2
 
-        //private double CalaCost(BomStructure rootNode)
-        //{
-        //    var curCost = 1 * rootNode.Total;
-        //    int i = 0;
-        //    foreach (var child in rootNode.Childs)
-        //    {
-        //        rootNode.Cost = CalaCost(child) + (i == 0 ? 0 : rootNode.Cost);
-        //        i += 1;
-        //    }
-        //    rootNode.Cost = curCost + (i == 0 ? 0 : rootNode.Cost);
-        //    return rootNode.Cost;
-        //}
+        public LambdaExpression CreatePropertyExpression(string propertyName)
+        {
+            var props = propertyName.Split('.');
+            ParameterExpression paraExpr = this.Parameters[0];
+            Expression propExpr = paraExpr;
+            foreach (var prop in props)
+            {
+                propExpr = propExpr.Property(prop);
+            }
+            return Expression.Lambda(propExpr, paraExpr);
+        }
+
+        public Expression GetMemberExpression(LambdaExpression property)
+        {
+            var paraExpr = Parameters[0];
+            if (paraExpr == null)
+            {
+                return property.Body;
+            }
+            ParameterExpressionVisitor visitor = new ParameterExpressionVisitor(paraExpr);
+            Expression memberExpr = visitor.ReplaceParameter(property.Body);
+            return memberExpr;
+        }
+        public Expression Any(ColumnQueryCondition c, Expression predicate)
+        {
+            var memberExpr = c.ParentExpressionBuilder.CreatePropertyExpression(c.MemberName);
+            return Expression.Call(typeof(Enumerable),
+                "Any",
+                new Type[] { c.ModelType },
+                c.ParentExpressionBuilder.GetMemberExpression(memberExpr), predicate);
+        }
+        public Expression All(ColumnQueryCondition c, Expression predicate)
+        {
+            var memberExpr = c.ParentExpressionBuilder.CreatePropertyExpression(c.MemberName);
+            return Expression.Call(typeof(Enumerable),
+                "All",
+                new Type[] { c.ModelType },
+                c.ParentExpressionBuilder.GetMemberExpression(memberExpr), predicate);
+        }
+        public Expression Count(ColumnQueryCondition c, Expression predicate)
+        {
+            var memberExpr = c.ParentExpressionBuilder.CreatePropertyExpression(c.MemberName);
+            return Expression.Call(typeof(Enumerable),
+                "Count",
+                new Type[] { c.ModelType },
+                c.ParentExpressionBuilder.GetMemberExpression(memberExpr), predicate);
+        }
+        public Expression GenerateListExpression(ColumnQueryCondition c, Expression predicateExpr)
+        {
+            Expression expr = null;
+            switch (c.SetOpertion)
+            {
+                case SetOpertionSymbol.None:
+                    break;
+                case SetOpertionSymbol.Any:
+                    expr = c.ParentExpressionBuilder.Any(c, predicateExpr);
+                    break;
+                case SetOpertionSymbol.All:
+                    expr = c.ParentExpressionBuilder.All(c, predicateExpr);
+                    break;
+                case SetOpertionSymbol.Count:
+                    break;
+                case SetOpertionSymbol.Min:
+                    break;
+                case SetOpertionSymbol.Max:
+                    break;
+                case SetOpertionSymbol.average:
+                    break;
+                default:
+                    break;
+            }
+            return expr;
+        }
         private Expression RecursionGenerateListExpression(ColumnQueryCondition c)
         {
-            foreach (var item in c.Childs)
+            Expression predicateExpr = null;
+            c.IsProcessDone = true;
+            foreach (var child in c.Childs)
             {
-               c.Expression = RecursionGenerateListExpression(item);
+                if (child.PropClassify == PropClassify.List)
+                {
+                    child.Expression = RecursionGenerateListExpression(child);
+                }
+                else
+                {
+                    c.ExpressionBuilder.GenerateExpression(child);
+                }
+                ConcatExpression(predicateExpr, child, c.Childs.First() == child);
             }
-
+            if (c.PropClassify == PropClassify.List)
+            {
+                c.Expression = c.ParentExpressionBuilder.GenerateListExpression(c, predicateExpr);
+            }
+            else
+            {
+                c.ExpressionBuilder.GenerateExpression(c);
+            }
+            return c.Expression;
             //属性   操作   值  连接 u.Ritems.Any(r=>r.Rname=="Rname" && r.Citems.Any(c=>c.id == "13"))
             // Ritems Any none none list  1
             //   Rname Equals "rname" none basic 2
@@ -178,7 +264,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             //0.从c中获取前缀
             //1.构建u.Ritems
             //2.创建any()
-           // u.Ritems.any(r => r.rname == "rname" && r.Citems.any(c => c.id == "13"))
+            // u.Ritems.any(r => r.rname == "rname" && r.Citems.any(c => c.id == "13"))
             ////****************请求的是复杂对象列表(any,all)************************
             ////创建基于UserToRole表达式工厂
             //var childExprFactory = new ExpressionCreateFactory<UserToRole, UserToRoleOutputDto, Guid>();
@@ -195,14 +281,13 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             //var anyExpr = anyExprBuilder.Any(c.Column, childQueryExpr);
             ////创建e.Roles.Any(childQueryExpr)
             //var resultExpr = anyExprBuilder.GetLambdaExpression(anyExpr);
-            return null;
         }
 
         /// <summary>
         /// 生成单个条件的表达式
         /// </summary>
         /// <param name="qc"></param>
-        private void GenerateExpression(ColumnQueryCondition qc)
+        public void GenerateExpression(ColumnQueryCondition qc)
         {
             Expression expr = null;
             if (qc.IsCustomColumnFilter)
@@ -340,6 +425,26 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             else if (c.Concat == ConcatType.Not)
             {
                 p.Expression = Expression.Not(p.Expression);
+            }
+        }
+
+        private void ConcatExpression(Expression p, ColumnQueryCondition c, bool first)
+        {
+            if (first)
+            {
+                p = c.Expression;
+            }
+            else if (c.Concat == ConcatType.AndAlso || c.Concat == ConcatType.None)
+            {
+                p = Expression.AndAlso(p, c.Expression);
+            }
+            else if (c.Concat == ConcatType.OrElse)
+            {
+                p = Expression.OrElse(p, c.Expression);
+            }
+            else if (c.Concat == ConcatType.Not)
+            {
+                p = Expression.Not(p);
             }
         }
     }
