@@ -25,6 +25,11 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// </summary>
         public bool IsSetOperation { get; set; }
         /// <summary>
+        /// 指示是否是集合结点
+        /// </summary>
+
+        public bool IsSetNode { get; set; }
+        /// <summary>
         /// 属性类型
         /// </summary>
         public Type ProperyType { get; set; } = typeof(object);

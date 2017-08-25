@@ -98,6 +98,11 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                          var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
                          return dtoMapVal.Prefix;
                      }))
+                     .ForMember(m => m.IsSetNode, opt => opt.ResolveUsing(m =>
+                     {
+                         var dtoMapVal = dtmMapProfile?.GetMember(m.Column);
+                         return dtoMapVal.IsSetNode;
+                     }))
                     .ForMember(m => m.ExpressionBuilder, opt => opt.ResolveUsing(m =>
                      {
                          var dtoMapVal = dtmMapProfile?.GetMember(m.Column);

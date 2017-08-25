@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
 using InfrastructurePlugins.BaseModule.Application.Mappers;
+using InfrastructurePlugins.BaseModule.Components.DtoToModelMap;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,58 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         {
             xMapper = new ColumnFilterMapperFactory<TEntity, TDto, TPrimaryKey>().CreateMapper();
         }
+        /// <summary>
+        /// 解析条件生成对应的结点树
+        /// 前端对象->转换后端条件对象->枚举属于集合结点且非自定义的条件对象->解析对象生成相应的结点树
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        private ColumnQueryCondition ParseFilterAndCreateTree(ColumnQueryCondition filter)
+        {
+            var newFilter = filter;
+            if (newFilter.IsCustomColumnFilter)
+            {
+                return newFilter;
+            }
+            Dictionary<string, ColumnQueryCondition> filterTreeMaps = new Dictionary<string, ColumnQueryCondition>();
+            filterTreeMaps[newFilter.PropertyName] = newFilter;
+            var dtmMapper = Injector.Resolve<IDtoToModelMapper>();
+            var dtmMapProfile = dtmMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
+            var nodeNames = newFilter.Prefix.Split('.');
+            var rootNode = nodeNames.FirstOrDefault();
+            var preNode = string.Empty;
 
+            foreach (var nodeName in nodeNames)
+            {
+                var mapValue = dtmMapProfile.GetMember(nodeName);
+                var newNode = new ColumnQueryCondition()
+                {
+                    PropertyName = nodeName,
+                    ProperyType = mapValue.ColumnType,
+                    Prefix = mapValue.Prefix,
+                    ModelType = mapValue.ModelType,
+                    ParentModelType = mapValue.ParentModelType,
+                    ExpressionBuilder = mapValue.ExpressionBuilder,
+                    ParentExpressionBuilder = mapValue.ParentExpressionBuilder,
+                    PropClassify = mapValue.PropertyClassify,
+                    SetOpertion = newFilter.SetOpertion,
+                    SrcExpression = mapValue.Expression,
+                    IsCustomColumnFilter = mapValue.IsCustomColumnFilter,
+                    IsSetNode = mapValue.IsSetNode,
+                    IsSetOperation = mapValue.IsSetNode && mapValue.PropertyClassify == Module.PropClassify.List
+                };
+                filterTreeMaps[nodeName] = newNode;
+                if (!string.IsNullOrEmpty(preNode))
+                {
+                    filterTreeMaps[preNode].Childs.Add(newNode);
+                }
+                preNode = nodeName;
+            }
+
+            if (!string.IsNullOrEmpty(preNode)) filterTreeMaps[preNode].Childs.Add(newFilter);
+
+            return filterTreeMaps[rootNode] ?? newFilter;
+        }
         /// <summary>
         /// 创建表达式
         /// </summary>
@@ -92,9 +144,9 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             var builderType = typeof(LambdaExpressionBuilder<>).MakeGenericType(type);
             return Activator.CreateInstance(builderType);
         }
-        public static object MakeExpressionCreateFactory(Type entityType,Type dtoType,Type primaryType)
+        public static object MakeExpressionCreateFactory(Type entityType, Type dtoType, Type primaryType)
         {
-            var genericType = typeof(LambdaExpressionBuilder<>).MakeGenericType(entityType,dtoType,primaryType);
+            var genericType = typeof(LambdaExpressionBuilder<>).MakeGenericType(entityType, dtoType, primaryType);
             return Activator.CreateInstance(genericType);
         }
         public static dynamic TryParserArray(string[] values, Type t)

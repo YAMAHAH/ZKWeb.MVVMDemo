@@ -72,9 +72,9 @@ namespace InfrastructurePlugins.BaseModule.Module
         /// </summary>
         /// <param name="tempClsType"></param>
         /// <returns></returns>
-        protected List<EnumPropInfo> TraversalProperties(Type tempClsType)
+        protected List<ViewModelPropInfo> TraversalProperties(Type tempClsType)
         {
-            var propinfos = new List<EnumPropInfo>();
+            var propinfos = new List<ViewModelPropInfo>();
             if (null == tempClsType) { return propinfos; }
             foreach (PropertyInfo pi in tempClsType.GetProperties(BindingFlags.Public |
                 BindingFlags.Instance | BindingFlags.DeclaredOnly))
@@ -115,12 +115,12 @@ namespace InfrastructurePlugins.BaseModule.Module
                     }
                     else
                     {
-                        propinfos.Add(new EnumPropInfo() { DtoEntityType = tempClsType, PropInfo = propInfo });
+                        propinfos.Add(new ViewModelPropInfo() { DtoEntityType = tempClsType, PropInfo = propInfo });
                     }
                 }
                 else
                 {
-                    propinfos.Add(new EnumPropInfo() { DtoEntityType = tempClsType, PropInfo = propInfo });
+                    propinfos.Add(new ViewModelPropInfo() { DtoEntityType = tempClsType, PropInfo = propInfo });
                 }
             }
             return propinfos;
@@ -258,7 +258,7 @@ namespace InfrastructurePlugins.BaseModule.Module
         }
     }
 
-    public class EnumPropInfo
+    public class ViewModelPropInfo
     {
         /// <summary>
         /// 域模型类型
@@ -289,6 +289,10 @@ namespace InfrastructurePlugins.BaseModule.Module
         /// 基本类型,对象类型,列表类型
         /// </summary>
         public PropClassify PropClassify { get; set; }
+        /// <summary>
+        /// 指示是否是集合结点
+        /// </summary>
+        public bool IsSetNode { get; set; }
 
     }
 

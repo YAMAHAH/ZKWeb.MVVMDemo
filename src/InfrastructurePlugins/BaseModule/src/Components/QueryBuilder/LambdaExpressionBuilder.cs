@@ -86,7 +86,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             //生成相应的表达式树
             if (!c.IsChildExpress)
             {
-                if (c.PropClassify == PropClassify.List)
+                if (c.IsSetNode && !c.IsCustomColumnFilter)
                     RecursionGenerateListExpression(c);
                 else
                     GenerateExpression(c);
@@ -328,32 +328,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             // prop3 
         }
 
-
-        private ColumnQueryCondition ParseFilterAndCreateTree(ColumnQueryCondition filter)
-        {
-            Dictionary<string, ColumnQueryCondition> filterTreeMaps = new Dictionary<string, ColumnQueryCondition>();
-            filterTreeMaps[filter.PropertyName] = filter;
-
-            var nodeNames = filter.Prefix.Split('.');
-            var rootNode = nodeNames.FirstOrDefault();
-            var preNode = string.Empty;
-
-            foreach (var nodeName in nodeNames)
-            {
-                var newNode = new ColumnQueryCondition() { PropertyName = nodeName };
-                filterTreeMaps[nodeName] = newNode;
-                if (!string.IsNullOrEmpty(preNode))
-                {
-                    filterTreeMaps[preNode].Childs.Add(newNode);
-                }
-                preNode = nodeName;
-            }
-
-            if (!string.IsNullOrEmpty(preNode)) filterTreeMaps[preNode].Childs.Add(filter);
-
-            return filterTreeMaps[rootNode] ?? filter;
-        }
-
         /// <summary>
         /// 生成单个条件的表达式
         /// </summary>
@@ -361,7 +335,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         public void GenerateExpression(ColumnQueryCondition filterRequest)
         {
             Expression expr = null;
-            if (filterRequest.IsCustomColumnFilter || filterRequest.PropClassify == PropClassify.List && filterRequest.IsSetOperation)
+            if (filterRequest.IsCustomColumnFilter || filterRequest.IsSetOperation)
             {
                 var leftParamExpr = this.Parameters[0];
                 var rightParamExpr = filterRequest.SrcExpression.Parameters[0];
@@ -370,10 +344,10 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 filterRequest.Expression = rightBodyExpr;
                 return;
             }
-            if (filterRequest.PropClassify == PropClassify.List)
-            {
-                return;
-            }
+            //if (filterRequest.PropClassify == PropClassify.List)
+            //{
+            //    return;
+            //}
 
             //if (!string.IsNullOrEmpty(qc.RegExp))
             //{

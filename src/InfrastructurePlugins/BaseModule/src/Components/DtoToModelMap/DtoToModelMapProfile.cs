@@ -29,17 +29,17 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
 
         private List<Type> typeLists = new List<Type>();
         /// <summary>
-        /// 获取某个类型的所有属性(递归)
+        /// 递归枚举某个类型的所有属性
         /// </summary>
-        /// <param name="tempClsType"></param>
+        /// <param name="entityType"></param>
         /// <returns></returns>
-        protected List<EnumPropInfo> TraversalProperties(Type tempClsType, EnumPropInfo parentInfo)
+        protected List<ViewModelPropInfo> TraversalProperties(Type entityType, ViewModelPropInfo parentInfo)
         {
-            var propinfos = new List<EnumPropInfo>();
-            if (null == tempClsType) { return propinfos; }
-            var modelType = tempClsType.GetTypeInfo().GetCustomAttribute<ModelTypeMapperAttribute>()?.ModelType ?? tempClsType;
+            var propinfos = new List<ViewModelPropInfo>();
+            if (null == entityType) { return propinfos; }
+            var modelType = entityType.GetTypeInfo().GetCustomAttribute<ModelTypeMapperAttribute>()?.ModelType ?? entityType;
 
-            foreach (PropertyInfo pi in tempClsType.GetProperties(BindingFlags.Public |
+            foreach (PropertyInfo pi in entityType.GetProperties(BindingFlags.Public |
                 BindingFlags.Instance | BindingFlags.DeclaredOnly))
             {
                 PropertyInfo propInfo = pi;
@@ -54,15 +54,16 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                     if (!this.typeLists.Contains(propType))
                     {
                         this.typeLists.Add(propType);
-                        var enumPropInfo = new EnumPropInfo()
+                        var enumPropInfo = new ViewModelPropInfo()
                         {
                             Prefix = prefix,
                             ParentModelType = parentInfo?.ModelType,
                             ModelType = modelType,
-                            DtoEntityType = tempClsType,
+                            DtoEntityType = entityType,
                             ParentPropInfo = parentInfo?.PropInfo,
                             PropInfo = propInfo,
-                            PropClassify = propType.IsArray ? PropClassify.List : PropClassify.Object
+                            PropClassify = propType.IsArray ? PropClassify.List : PropClassify.Object,
+                            IsSetNode = propType.IsArray ? true : parentInfo?.IsSetNode ?? false
                         };
                         propinfos.Add(enumPropInfo);
                         propinfos.AddRange(TraversalProperties(propType, enumPropInfo));
@@ -83,15 +84,16 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                         if (!this.typeLists.Contains(genericType))
                         {
                             this.typeLists.Add(genericType);
-                            var enumPropInfo = new EnumPropInfo()
+                            var enumPropInfo = new ViewModelPropInfo()
                             {
                                 Prefix = prefix,
                                 ParentModelType = parentInfo?.ModelType,
                                 ModelType = modelType,
-                                DtoEntityType = tempClsType,
+                                DtoEntityType = entityType,
                                 ParentPropInfo = parentInfo?.PropInfo,
                                 PropInfo = propInfo,
-                                PropClassify = PropClassify.List
+                                PropClassify = PropClassify.List,
+                                IsSetNode = parentInfo?.IsSetNode ?? true
                             };
                             propinfos.Add(enumPropInfo);
                             propinfos.AddRange(TraversalProperties(genericType, enumPropInfo));
@@ -99,29 +101,31 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                     }
                     else
                     {
-                        propinfos.Add(new EnumPropInfo()
+                        propinfos.Add(new ViewModelPropInfo()
                         {
                             Prefix = prefix,
                             ParentModelType = parentInfo?.ModelType,
                             ModelType = modelType,
-                            DtoEntityType = tempClsType,
+                            DtoEntityType = entityType,
                             ParentPropInfo = parentInfo?.PropInfo,
                             PropInfo = propInfo,
-                            PropClassify = PropClassify.List
+                            PropClassify = PropClassify.List,
+                            IsSetNode = true
                         });
                     }
                 }
                 else
                 {
-                    propinfos.Add(new EnumPropInfo()
+                    propinfos.Add(new ViewModelPropInfo()
                     {
                         Prefix = prefix,
                         ParentModelType = parentInfo?.ModelType,
                         ModelType = modelType,
-                        DtoEntityType = tempClsType,
+                        DtoEntityType = entityType,
                         ParentPropInfo = parentInfo?.PropInfo,
                         PropInfo = propInfo,
-                        PropClassify = PropClassify.Basic
+                        PropClassify = PropClassify.Basic,
+                        IsSetNode = parentInfo?.IsSetNode ?? false
                     });
                 }
             }
@@ -159,7 +163,9 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                     ParentExpressionBuilder = objInfo.ParentModelType == null ? null : CreateLambdaExpressionBuilder(objInfo.ParentModelType),
                     ModelType = objInfo.ModelType,
                     ParentModelType = objInfo.ParentModelType,
-                    Prefix = objInfo.Prefix
+                    Prefix = objInfo.Prefix,
+                    IsSetNode = objInfo.IsSetNode
+
                 };
                 AddOrUpdate(objAlias, val);
             }

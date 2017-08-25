@@ -35,6 +35,10 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// 属性归类
         /// </summary>
         public PropClassify PropertyClassify { get; set; }
+        /// <summary>
+        /// 指示是否是集合结点
+        /// </summary>
+        public bool IsSetNode { get; set; }
 
         /// <summary>
         /// 前缀
