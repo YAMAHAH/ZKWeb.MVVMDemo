@@ -6,15 +6,82 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
 {
     public interface ILambdaExpressionBuilderBase
     {
+        /// <summary>
+        /// 参数名称
+        /// </summary>
         string ParameterName { get; set; }
+        /// <summary>
+        /// 生成器的参数表达式
+        /// </summary>
         ParameterExpression[] Parameters { get; set; }
+        /// <summary>
+        /// 生成对象和基本类型的表达式
+        /// </summary>
+        /// <param name="c"></param>
         void GenerateExpression(ColumnQueryCondition c);
+        /// <summary>
+        /// 根据属性名称生成表达式
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         LambdaExpression CreatePropertyExpression(string propertyName);
         Expression GetMemberExpression(LambdaExpression property);
+        /// <summary>
+        /// 生成集合任意一行满足的表达式
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         Expression Any(ColumnQueryCondition c, Expression predicate);
+        /// <summary>
+        /// 生成集合所有行都满足的表达式
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         Expression All(ColumnQueryCondition c, Expression predicate);
+        /// <summary>
+        /// 生成集合计数表达式
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         Expression Count(ColumnQueryCondition c, Expression predicate);
-        Expression GenerateListExpression(ColumnQueryCondition c, Expression predicateExpr);
+        /// <summary>
+        /// 生成集合最大值表达式
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        Expression Max(ColumnQueryCondition c, Expression predicate);
+        /// <summary>
+        /// 生成集合最小值表达式
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        Expression Min(ColumnQueryCondition c, Expression predicate);
+        /// <summary>
+        /// 生成集合平均值表达式
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        Expression Average(ColumnQueryCondition c, Expression predicate);
+        /// <summary>
+        /// 生成集合汇总表达式
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        Expression Sum(ColumnQueryCondition c, Expression predicate);
+        /// <summary>
+        /// 生成集合对象的表达式
+        /// </summary>
+        /// <param name="filterRequest"></param>
+        /// <param name="predicateExpr"></param>
+        /// <returns></returns>
+        Expression GenerateListExpression(ColumnQueryCondition filterRequest, Expression predicateExpr);
     }
 
     public interface ILambdaExpressionBuilder<T> : ILambdaExpressionBuilderBase
@@ -27,7 +94,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// </summary>
         /// <param name="body"></param>
         /// <returns></returns>
-        Expression<Func<T, bool>> GetLambdaExpression(Expression body);
+        Expression<Func<T, bool>> MakeLambdaExpression(Expression body);
         /// <summary>
         /// 生成lambda表达式树
         /// </summary>

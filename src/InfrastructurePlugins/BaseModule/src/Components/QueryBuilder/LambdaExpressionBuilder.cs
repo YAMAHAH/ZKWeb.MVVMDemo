@@ -53,7 +53,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         public Expression<Func<T, bool>> GenerateLambdaExpression(ColumnQueryCondition root)
         {
             RecursionGenerateExpression(root);
-            return GetLambdaExpression(root.Expression);
+            return MakeLambdaExpression(root.Expression);
         }
 
         /// <summary>
@@ -62,11 +62,9 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// <typeparam name="TFunc"></typeparam>
         /// <param name="body"></param>
         /// <returns></returns>
-        public Expression<Func<T, bool>> GetLambdaExpression(Expression body)
+        public Expression<Func<T, bool>> MakeLambdaExpression(Expression body)
         {
-            //  Type delegateType = typeof(Func<,>).MakeGenericType(typeof(T), typeof(bool));
             var bodyExpr = body == null ? Expression.Constant(true) : body;
-            // LambdaExpression lambda = Expression.Lambda(delegateType, bodyExpr, this.Parameters);
             return Expression.Lambda<Func<T, bool>>(bodyExpr, this.Parameters);
         }
 
@@ -120,10 +118,9 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 return base.Visit(node);
             }
         }
-        public static object CreateBuilder(Type type)
+        public static LambdaExpressionBuilder<T> CreateExpressionBuilder<T>()
         {
-            var builderType = typeof(LambdaExpressionBuilder<>).MakeGenericType(type);
-            return Activator.CreateInstance(builderType);
+            return new LambdaExpressionBuilder<T>();
         }
 
         //U为一个对象,
@@ -167,7 +164,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             }
             return Expression.Lambda(propExpr, paraExpr);
         }
-
         public Expression GetMemberExpression(LambdaExpression property)
         {
             var paraExpr = Parameters[0];
@@ -203,6 +199,38 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 new Type[] { c.ModelType },
                 c.ParentExpressionBuilder.GetMemberExpression(memberExpr), predicate);
         }
+        public Expression Max(ColumnQueryCondition c, Expression predicate)
+        {
+            var memberExpr = c.ParentExpressionBuilder.CreatePropertyExpression(c.MemberName);
+            return Expression.Call(typeof(Enumerable),
+                "Max",
+                new Type[] { c.ModelType },
+                c.ExpressionBuilder.GetMemberExpression(memberExpr), predicate);
+        }
+        public Expression Min(ColumnQueryCondition c, Expression predicate)
+        {
+            var memberExpr = c.ParentExpressionBuilder.CreatePropertyExpression(c.MemberName);
+            return Expression.Call(typeof(Enumerable),
+                "Min",
+                new Type[] { c.ModelType },
+                c.ExpressionBuilder.GetMemberExpression(memberExpr), predicate);
+        }
+        public Expression Average(ColumnQueryCondition c, Expression predicate)
+        {
+            var memberExpr = c.ParentExpressionBuilder.CreatePropertyExpression(c.MemberName);
+            return Expression.Call(typeof(Enumerable),
+                "Average",
+                new Type[] { c.ModelType },
+                c.ExpressionBuilder.GetMemberExpression(memberExpr), predicate);
+        }
+        public Expression Sum(ColumnQueryCondition c, Expression predicate)
+        {
+            var memberExpr = c.ParentExpressionBuilder.CreatePropertyExpression(c.MemberName);
+            return Expression.Call(typeof(Enumerable),
+                "Sum",
+                new Type[] { c.ModelType },
+                c.ExpressionBuilder.GetMemberExpression(memberExpr), predicate);
+        }
         public Expression GenerateListExpression(ColumnQueryCondition c, Expression predicateExpr)
         {
             Expression expr = null;
@@ -217,18 +245,40 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                     expr = c.ParentExpressionBuilder.All(c, predicateExpr);
                     break;
                 case SetOpertionSymbol.Count:
+                    c.SrcExpression = Expression.Lambda(c.ParentExpressionBuilder.Count(c, predicateExpr), c.ParentExpressionBuilder.Parameters[0]);
+                    c.ParentExpressionBuilder.GenerateExpression(c);
+                    expr = c.Expression;
                     break;
                 case SetOpertionSymbol.Min:
+                    c.SrcExpression = Expression.Lambda(c.ParentExpressionBuilder.Min(c, predicateExpr), c.ParentExpressionBuilder.Parameters[0]);
+                    c.ParentExpressionBuilder.GenerateExpression(c);
+                    expr = c.Expression;
                     break;
                 case SetOpertionSymbol.Max:
+                    c.SrcExpression = Expression.Lambda(c.ParentExpressionBuilder.Max(c, predicateExpr), c.ParentExpressionBuilder.Parameters[0]);
+                    c.ParentExpressionBuilder.GenerateExpression(c);
+                    expr = c.Expression;
                     break;
-                case SetOpertionSymbol.average:
+                case SetOpertionSymbol.Average:
+                    c.SrcExpression = Expression.Lambda(c.ParentExpressionBuilder.Average(c, predicateExpr), c.ParentExpressionBuilder.Parameters[0]);
+                    c.ParentExpressionBuilder.GenerateExpression(c);
+                    expr = c.Expression;
+                    break;
+                case SetOpertionSymbol.Sum:
+                    c.SrcExpression = Expression.Lambda(c.ParentExpressionBuilder.Sum(c, predicateExpr), c.ParentExpressionBuilder.Parameters[0]);
+                    c.ParentExpressionBuilder.GenerateExpression(c);
+                    expr = c.Expression;
                     break;
                 default:
                     break;
             }
             return expr;
         }
+        /// <summary>
+        /// 递归生成列表对象表达式树
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         private Expression RecursionGenerateListExpression(ColumnQueryCondition c)
         {
             Expression predicateExpr = null;
@@ -254,55 +304,77 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 c.ExpressionBuilder.GenerateExpression(c);
             }
             return c.Expression;
-            //属性   操作   值  连接 u.Ritems.Any(r=>r.Rname=="Rname" && r.Citems.Any(c=>c.id == "13"))
-            // Ritems Any none none list  1
-            //   Rname Equals "rname" none basic 2
-            //   Citems Any none and list 3
-            //     id Equals "13" none basic 4
-            //
+            //属性   操作   值  连接 
+            //u.Ritems.Max(r=>r.Total) > 0 && u.Ritems.Any(r=>r.Rname=="Rname" && r.Citems.Any(c=>c.id == "13")) ||
+            //(u.p.pv.Prop1 == "myprop1" && u.p.prop2 == "myprop2") &&
+            //u.prop3 == "myprop3"
 
-            //0.从c中获取前缀
-            //1.构建u.Ritems
-            //2.创建any()
-            // u.Ritems.any(r => r.rname == "rname" && r.Citems.any(c => c.id == "13"))
-            ////****************请求的是复杂对象列表(any,all)************************
-            ////创建基于UserToRole表达式工厂
-            //var childExprFactory = new ExpressionCreateFactory<UserToRole, UserToRoleOutputDto, Guid>();
-            ////创建表达式树生成器
-            //var lbdExprBuilder = childExprFactory.CreateBuilder();
+            //前端传递过来的对象数据
+            //属性  操作   值  集合运算  前缀
+            //total  >     0     Max     Ritems
+            //Rname  ==   Rname  none    Ritems  
+            //id     ==    13    none    Ritems.Citems
+            //解析成后端的数据对象结构:
+            //属性    操作   值  集合运算  类型  前缀 
+            // Ritems none  none   Max     list  none
+            //   Total > 0 none basic  Ritems none
+            // Ritems none none  Any  list  none
+            //   Rname == rname  none basic  Ritems
+            //   Citems none none Any list  Ritems
+            //     id  == 13 none basic  Ritems.Citems
 
-            ////创建子查询表达式
-            //Expression<Func<UserToRole, bool>> childQueryExpr = childExprFactory.CreateChildQueryExpression(c.Childs.ToArray());
-            ////创建基于User表达式工厂
-            //var anyExprFactory = new ExpressionCreateFactory<User, UserOutputDto, Guid>();
-            ////创建表达式生成器
-            //var anyExprBuilder = anyExprFactory.CreateBuilder();
-            ////创建any方法表达式
-            //var anyExpr = anyExprBuilder.Any(c.Column, childQueryExpr);
-            ////创建e.Roles.Any(childQueryExpr)
-            //var resultExpr = anyExprBuilder.GetLambdaExpression(anyExpr);
+            // prop1 p.pv
+            // prop2 p
+            // prop3 
+        }
+
+
+        private ColumnQueryCondition ParseFilterAndCreateTree(ColumnQueryCondition filter)
+        {
+            Dictionary<string, ColumnQueryCondition> filterTreeMaps = new Dictionary<string, ColumnQueryCondition>();
+            filterTreeMaps[filter.PropertyName] = filter;
+
+            var nodeNames = filter.Prefix.Split('.');
+            var rootNode = nodeNames.FirstOrDefault();
+            var preNode = string.Empty;
+
+            foreach (var nodeName in nodeNames)
+            {
+                var newNode = new ColumnQueryCondition() { PropertyName = nodeName };
+                filterTreeMaps[nodeName] = newNode;
+                if (!string.IsNullOrEmpty(preNode))
+                {
+                    filterTreeMaps[preNode].Childs.Add(newNode);
+                }
+                preNode = nodeName;
+            }
+
+            if (!string.IsNullOrEmpty(preNode)) filterTreeMaps[preNode].Childs.Add(filter);
+
+            return filterTreeMaps[rootNode] ?? filter;
         }
 
         /// <summary>
         /// 生成单个条件的表达式
         /// </summary>
-        /// <param name="qc"></param>
-        public void GenerateExpression(ColumnQueryCondition qc)
+        /// <param name="filterRequest"></param>
+        public void GenerateExpression(ColumnQueryCondition filterRequest)
         {
             Expression expr = null;
-            if (qc.IsCustomColumnFilter)
+            if (filterRequest.IsCustomColumnFilter || filterRequest.PropClassify == PropClassify.List && filterRequest.IsSetOperation)
             {
                 var leftParamExpr = this.Parameters[0];
-                var rightParamExpr = qc.SrcExpression.Parameters[0];
+                var rightParamExpr = filterRequest.SrcExpression.Parameters[0];
                 var visitor = new ReplaceExpressionVisitor(rightParamExpr, leftParamExpr);
-                var rightBodyExpr = visitor.Visit(qc.SrcExpression.Body);
-                qc.Expression = rightBodyExpr;
+                var rightBodyExpr = visitor.Visit(filterRequest.SrcExpression.Body);
+                filterRequest.Expression = rightBodyExpr;
                 return;
             }
-            if (qc.PropClassify == PropClassify.List)
+            if (filterRequest.PropClassify == PropClassify.List)
             {
                 return;
             }
+
             //if (!string.IsNullOrEmpty(qc.RegExp))
             //{
             //    var regExpr = this.RegExp(qc.SrcExpression, qc.RegExp);
@@ -310,97 +382,97 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             //    return;
             //}
             //根据操作符生成相应的表达式
-            switch (qc.OpertionSymbol)
+            switch (filterRequest.OpertionSymbol)
             {
                 case OpertionSymbol.Equals:
-                    expr = qc.SrcExpression == null ? this.Equals(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
-                    this.Equals(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.Equals(filterRequest.MemberName, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat) :
+                    this.Equals(filterRequest.SrcExpression, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat);
                     break;
                 case OpertionSymbol.NotEquals:
-                    expr = qc.SrcExpression == null ? this.NotEquals(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
-                       this.NotEquals(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.NotEquals(filterRequest.MemberName, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat) :
+                       this.NotEquals(filterRequest.SrcExpression, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat);
                     break;
                 case OpertionSymbol.GreaterThan:
-                    expr = qc.SrcExpression == null ? this.GreaterThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
-                        this.GreaterThan(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.GreaterThan(filterRequest.MemberName, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat) :
+                        this.GreaterThan(filterRequest.SrcExpression, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat);
                     break;
                 case OpertionSymbol.NotGreaterThan:
-                    expr = qc.SrcExpression == null ? this.NotGreaterThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
-                        this.NotGreaterThan(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.NotGreaterThan(filterRequest.MemberName, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat) :
+                        this.NotGreaterThan(filterRequest.SrcExpression, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat);
                     break;
                 case OpertionSymbol.GreaterThanOrEqueals:
-                    expr = qc.SrcExpression == null ? this.GreaterThanOrEquals(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
-                        this.GreaterThanOrEquals(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.GreaterThanOrEquals(filterRequest.MemberName, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat) :
+                        this.GreaterThanOrEquals(filterRequest.SrcExpression, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat);
                     break;
                 case OpertionSymbol.LessThan:
-                    expr = qc.SrcExpression == null ? this.LessThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
-                        this.LessThan(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.LessThan(filterRequest.MemberName, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat) :
+                        this.LessThan(filterRequest.SrcExpression, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat);
                     break;
                 case OpertionSymbol.NotLessThan:
-                    expr = qc.SrcExpression == null ? this.LessThan(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
-                         this.LessThan(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.LessThan(filterRequest.MemberName, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat) :
+                         this.LessThan(filterRequest.SrcExpression, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat);
                     break;
                 case OpertionSymbol.LessThanOrEqual:
-                    expr = qc.SrcExpression == null ? this.LessThanOrEqual(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat) :
-                        this.LessThanOrEqual(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.LessThanOrEqual(filterRequest.MemberName, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat) :
+                        this.LessThanOrEqual(filterRequest.SrcExpression, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), filterRequest.Concat);
                     break;
                 case OpertionSymbol.Like:
-                    expr = qc.SrcExpression == null ? this.Like<T>(qc.PropertyName, Convert.ToString(qc.Value1)) :
-                        this.Like<T>(qc.SrcExpression, qc.Value1 as string);
+                    expr = filterRequest.SrcExpression == null ? this.Like<T>(filterRequest.MemberName, Convert.ToString(filterRequest.Value1)) :
+                        this.Like<T>(filterRequest.SrcExpression, filterRequest.Value1 as string);
                     break;
                 case OpertionSymbol.NotLike:
-                    expr = qc.SrcExpression == null ? this.NotLike<T>(qc.PropertyName, Convert.ToString(qc.Value1)) :
-                        this.NotLike<T>(qc.SrcExpression, qc.Value1 as string);
+                    expr = filterRequest.SrcExpression == null ? this.NotLike<T>(filterRequest.MemberName, Convert.ToString(filterRequest.Value1)) :
+                        this.NotLike<T>(filterRequest.SrcExpression, filterRequest.Value1 as string);
                     break;
                 case OpertionSymbol.StartsWith:
-                    expr = qc.SrcExpression == null ? this.StartsWith(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat) :
-                        this.StartsWith(qc.SrcExpression, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.StartsWith(filterRequest.MemberName, ConverterHelper.ConvertTo<string>(filterRequest.Value1), filterRequest.Concat) :
+                        this.StartsWith(filterRequest.SrcExpression, ConverterHelper.ConvertTo<string>(filterRequest.Value1), filterRequest.Concat);
                     break;
                 case OpertionSymbol.NotStartsWith:
-                    expr = qc.SrcExpression == null ? this.StartsWith(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat) :
-                        this.StartsWith(qc.SrcExpression, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.StartsWith(filterRequest.MemberName, ConverterHelper.ConvertTo<string>(filterRequest.Value1), filterRequest.Concat) :
+                        this.StartsWith(filterRequest.SrcExpression, ConverterHelper.ConvertTo<string>(filterRequest.Value1), filterRequest.Concat);
                     break;
                 case OpertionSymbol.EndsWith:
-                    expr = qc.SrcExpression == null ? this.EndsWith(qc.PropertyName, Convert.ToString(qc.Value1), qc.Concat) :
-                        this.EndsWith(qc.SrcExpression, qc.Value1 as string, qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.EndsWith(filterRequest.MemberName, Convert.ToString(filterRequest.Value1), filterRequest.Concat) :
+                        this.EndsWith(filterRequest.SrcExpression, filterRequest.Value1 as string, filterRequest.Concat);
                     break;
                 case OpertionSymbol.NotEndsWith:
-                    expr = qc.SrcExpression == null ? this.NotEndsWith(qc.PropertyName, Convert.ToString(qc.Value1), qc.Concat) :
-                        this.NotEndsWith(qc.SrcExpression, qc.Value1 as string, qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.NotEndsWith(filterRequest.MemberName, Convert.ToString(filterRequest.Value1), filterRequest.Concat) :
+                        this.NotEndsWith(filterRequest.SrcExpression, filterRequest.Value1 as string, filterRequest.Concat);
                     break;
                 case OpertionSymbol.In:
-                    expr = qc.SrcExpression == null ? this.In(qc.PropertyName, qc.Concat, ConverterHelper.ChangeType(qc.Value1, typeof(object[]))) :
-                        this.In(qc.SrcExpression, qc.Concat, ConverterHelper.ChangeType(qc.Value1, typeof(object[])));
+                    expr = filterRequest.SrcExpression == null ? this.In(filterRequest.MemberName, filterRequest.Concat, ConverterHelper.ChangeType(filterRequest.Value1, typeof(object[]))) :
+                        this.In(filterRequest.SrcExpression, filterRequest.Concat, ConverterHelper.ChangeType(filterRequest.Value1, typeof(object[])));
                     break;
                 case OpertionSymbol.NotIn:
-                    expr = qc.SrcExpression == null ? this.NotIn(qc.PropertyName, qc.Concat, ConverterHelper.ChangeType(qc.Value1, typeof(object[]))) :
-                        this.NotIn(qc.SrcExpression, qc.Concat, ConverterHelper.ChangeType(qc.Value1, typeof(object[])));
+                    expr = filterRequest.SrcExpression == null ? this.NotIn(filterRequest.MemberName, filterRequest.Concat, ConverterHelper.ChangeType(filterRequest.Value1, typeof(object[]))) :
+                        this.NotIn(filterRequest.SrcExpression, filterRequest.Concat, ConverterHelper.ChangeType(filterRequest.Value1, typeof(object[])));
                     break;
                 case OpertionSymbol.Between:
-                    expr = qc.SrcExpression == null ? this.Between(qc.PropertyName, qc.Value1, qc.Value2, qc.Concat) :
-                        this.Between(qc.SrcExpression, qc.Value1, qc.Value2, qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.Between(filterRequest.MemberName, filterRequest.Value1, filterRequest.Value2, filterRequest.Concat) :
+                        this.Between(filterRequest.SrcExpression, filterRequest.Value1, filterRequest.Value2, filterRequest.Concat);
                     break;
                 case OpertionSymbol.NotBetween:
-                    expr = qc.SrcExpression == null ? this.NotBetween(qc.PropertyName, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), ConverterHelper.ChangeType(qc.Value2, qc.ProperyType), qc.Concat) :
-                        this.NotBetween(qc.SrcExpression, ConverterHelper.ChangeType(qc.Value1, qc.ProperyType), ConverterHelper.ChangeType(qc.Value2, qc.ProperyType), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.NotBetween(filterRequest.MemberName, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), ConverterHelper.ChangeType(filterRequest.Value2, filterRequest.ProperyType), filterRequest.Concat) :
+                        this.NotBetween(filterRequest.SrcExpression, ConverterHelper.ChangeType(filterRequest.Value1, filterRequest.ProperyType), ConverterHelper.ChangeType(filterRequest.Value2, filterRequest.ProperyType), filterRequest.Concat);
                     break;
                 case OpertionSymbol.Fuzzy:
-                    expr = qc.SrcExpression == null ? this.Fuzzy(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat) :
-                        this.Fuzzy(qc.SrcExpression, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.Fuzzy(filterRequest.MemberName, ConverterHelper.ConvertTo<string>(filterRequest.Value1), filterRequest.Concat) :
+                        this.Fuzzy(filterRequest.SrcExpression, ConverterHelper.ConvertTo<string>(filterRequest.Value1), filterRequest.Concat);
                     break;
                 case OpertionSymbol.NotFuzzy:
-                    expr = qc.SrcExpression == null ? this.NotFuzzy(qc.PropertyName, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat) :
-                        this.NotFuzzy(qc.SrcExpression, ConverterHelper.ConvertTo<string>(qc.Value1), qc.Concat);
+                    expr = filterRequest.SrcExpression == null ? this.NotFuzzy(filterRequest.MemberName, ConverterHelper.ConvertTo<string>(filterRequest.Value1), filterRequest.Concat) :
+                        this.NotFuzzy(filterRequest.SrcExpression, ConverterHelper.ConvertTo<string>(filterRequest.Value1), filterRequest.Concat);
                     break;
                 case OpertionSymbol.RegExp:
-                    expr = qc.SrcExpression == null ? this.RegExp(qc.PropertyName, qc.Value1.ToString()) :
-                        this.RegExp(qc.SrcExpression, qc.Value1.ToString());
+                    expr = filterRequest.SrcExpression == null ? this.RegExp(filterRequest.MemberName, filterRequest.Value1.ToString()) :
+                        this.RegExp(filterRequest.SrcExpression, filterRequest.Value1.ToString());
                     break;
                 default:
                     break;
             }
 
-            qc.Expression = expr;
+            filterRequest.Expression = expr;
         }
         /// <summary>
         /// 接接表达式树
@@ -427,7 +499,12 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 p.Expression = Expression.Not(p.Expression);
             }
         }
-
+        /// <summary>
+        /// 接接表达式树
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="c"></param>
+        /// <param name="first"></param>
         private void ConcatExpression(Expression p, ColumnQueryCondition c, bool first)
         {
             if (first)

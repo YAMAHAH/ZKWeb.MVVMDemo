@@ -11,6 +11,7 @@
         Count = 3,
         Min = 4,
         Max = 5,
-        average = 6
+        Average = 6,
+        Sum = 7
     }
 }

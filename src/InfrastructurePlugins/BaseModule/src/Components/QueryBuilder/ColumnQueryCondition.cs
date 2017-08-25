@@ -21,6 +21,10 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// </summary>
         public bool IsChildQuery { get; set; }
         /// <summary>
+        /// 指示是否聚合函数
+        /// </summary>
+        public bool IsSetOperation { get; set; }
+        /// <summary>
         /// 属性类型
         /// </summary>
         public Type ProperyType { get; set; } = typeof(object);

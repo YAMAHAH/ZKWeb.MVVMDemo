@@ -276,8 +276,18 @@ namespace InfrastructurePlugins.BaseModule.Module
         /// 前缀
         /// </summary>
         public string Prefix { get; set; }
+        /// <summary>
+        /// 父结点的属性信息,
+        /// </summary>
         public PropertyInfo ParentPropInfo { get; set; }
+        /// <summary>
+        /// 结点的属性信息
+        /// </summary>
         public PropertyInfo PropInfo { get; set; }
+        /// <summary>
+        /// 属性的类型
+        /// 基本类型,对象类型,列表类型
+        /// </summary>
         public PropClassify PropClassify { get; set; }
 
     }

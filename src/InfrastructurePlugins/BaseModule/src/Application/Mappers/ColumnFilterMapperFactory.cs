@@ -72,11 +72,11 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                         {
                             cqExpr = CreatePropertyExpression(ParaExpression, m.Column);
                             var val = dtmMapProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
-                            dtmMapProfile.AddOrUpdate(val.Column, val);
+                            dtmMapProfile.AddOrUpdate(val.ColumnName, val);
                         }
                         else if (cqExpr == null)
                         {
-                            var memberName = string.IsNullOrEmpty(dtoMapVal.Prefix) ? m.Column : (dtoMapVal.Prefix + "." + m.Column).Trim();
+                            var memberName = dtoMapVal?.MemberName;
                             cqExpr = CreatePropertyExpression(ParaExpression, memberName);
                             dtoMapVal.Expression = cqExpr;
                             dtoMapVal.ColumnType = cqExpr.ReturnType;
@@ -158,7 +158,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                         {
                             var cqExpr = CreatePropertyExpression(ParaExpression, m.Column);
                             dtoMapVal = dtmMapProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
-                            dtmMapProfile.AddOrUpdate(dtoMapVal.Column, dtoMapVal);
+                            dtmMapProfile.AddOrUpdate(dtoMapVal.ColumnName, dtoMapVal);
                         }
                         var propType = m.PropertyType ?? dtoMapVal.ColumnType;
                         return propType;

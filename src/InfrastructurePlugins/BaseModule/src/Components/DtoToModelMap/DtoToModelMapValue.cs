@@ -14,21 +14,21 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// <summary>
         /// 列名
         /// </summary>
-        public string Column { get; set; }
+        public string ColumnName { get; set; }
         /// <summary>
         /// 列类型
         /// </summary>
         public Type ColumnType { get; set; }
         /// <summary>
-        /// 列所属对象的类型
+        /// 列所属DTO对象的类型
         /// </summary>
         public Type DtoEntityType { get; set; }
         /// <summary>
-        /// 父模型类型
+        /// 对应模型的父模型类型
         /// </summary>
         public Type ParentModelType { get; set; }
         /// <summary>
-        /// 对应模型类型
+        /// 对应的模型类型
         /// </summary>
         public Type ModelType { get; set; }
         /// <summary>
@@ -43,6 +43,17 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// </summary>
         public string Prefix { get; set; }
         /// <summary>
+        /// 成员名称
+        /// 前缀和列名的组合
+        /// </summary>
+        public string MemberName
+        {
+            get
+            {
+                return string.IsNullOrEmpty(Prefix) ? ColumnName : (Prefix + "." + ColumnName).Trim();
+            }
+        }
+        /// <summary>
         /// 列对应的表达式
         /// </summary>
         public LambdaExpression Expression { get; set; }
@@ -50,7 +61,9 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// 实体类型的表达式生成器
         /// </summary>
         public ILambdaExpressionBuilderBase ExpressionBuilder { get; set; }
-
+        /// <summary>
+        /// 父模型类型的表达式生成器
+        /// </summary>
         public ILambdaExpressionBuilderBase ParentExpressionBuilder { get; set; }
 
         public QueryColumnFilterDelegate<TModel, TPrimaryKey> ColumnFilter { get; set; }

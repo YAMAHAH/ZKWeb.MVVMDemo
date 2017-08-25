@@ -12,6 +12,8 @@ export enum SetOpertionSymbol {
     Min = 4,
     /** Max */
     Max = 5,
-    /** average */
-    average = 6
+    /** Average */
+    Average = 6,
+    /** Sum */
+    Sum = 7
 }

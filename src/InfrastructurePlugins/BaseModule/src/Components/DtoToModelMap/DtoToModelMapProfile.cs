@@ -44,6 +44,8 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             {
                 PropertyInfo propInfo = pi;
                 var propType = pi.PropertyType;
+                var prefix = parentInfo == null ? string.Empty : parentInfo.Prefix == string.Empty ? parentInfo.PropInfo.Name : string.Join(".", parentInfo.Prefix, parentInfo.PropInfo.Name);
+
                 if (propType.IsArray || (propType.GetTypeInfo().IsClass &&
                     !propType.GetTypeInfo().IsGenericType &&
                     !propType.Equals(typeof(String)) &&
@@ -54,6 +56,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                         this.typeLists.Add(propType);
                         var enumPropInfo = new EnumPropInfo()
                         {
+                            Prefix = prefix,
                             ParentModelType = parentInfo?.ModelType,
                             ModelType = modelType,
                             DtoEntityType = tempClsType,
@@ -82,6 +85,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                             this.typeLists.Add(genericType);
                             var enumPropInfo = new EnumPropInfo()
                             {
+                                Prefix = prefix,
                                 ParentModelType = parentInfo?.ModelType,
                                 ModelType = modelType,
                                 DtoEntityType = tempClsType,
@@ -97,6 +101,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                     {
                         propinfos.Add(new EnumPropInfo()
                         {
+                            Prefix = prefix,
                             ParentModelType = parentInfo?.ModelType,
                             ModelType = modelType,
                             DtoEntityType = tempClsType,
@@ -110,6 +115,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                 {
                     propinfos.Add(new EnumPropInfo()
                     {
+                        Prefix = prefix,
                         ParentModelType = parentInfo?.ModelType,
                         ModelType = modelType,
                         DtoEntityType = tempClsType,
@@ -146,14 +152,14 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                         PropertyType = objInfo.PropClassify
                     },
                     ColumnType = propType,
-                    Column = propInfo.Name,
+                    ColumnName = propInfo.Name,
                     DtoEntityType = objInfo.DtoEntityType,
                     PropertyClassify = objInfo.PropClassify,
                     ExpressionBuilder = CreateLambdaExpressionBuilder(objInfo.ModelType ?? objInfo.DtoEntityType),
                     ParentExpressionBuilder = objInfo.ParentModelType == null ? null : CreateLambdaExpressionBuilder(objInfo.ParentModelType),
                     ModelType = objInfo.ModelType,
-                    ParentModelType = objInfo.ParentModelType
-
+                    ParentModelType = objInfo.ParentModelType,
+                    Prefix = objInfo.Prefix
                 };
                 AddOrUpdate(objAlias, val);
             }
@@ -171,6 +177,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             var builderType = typeof(LambdaExpressionBuilder<>).MakeGenericType(entityType);
             var builder = (ILambdaExpressionBuilderBase)Activator.CreateInstance(builderType);
             typeBuilders[entityType] = builder;
+
             return builder;
         }
         public IContainer Injector { get; } = ZKWeb.Application.Ioc;
@@ -201,7 +208,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             {
                 var value = new DtoToModelMapValue<TModel, TPrimaryKey>()
                 {
-                    Column = prop,
+                    ColumnName = prop,
                     ColumnType = typeof(TMember),
                     Expression = mapOptions.Expression,
                     ColumnFilter = mapOptions.ColumnFilter,
@@ -223,7 +230,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             var prop = memberName;
             var value = new DtoToModelMapValue<TModel, TPrimaryKey>()
             {
-                Column = prop,
+                ColumnName = prop,
                 ColumnType = typeof(TMember),
                 Expression = mapOptions.Expression,
                 ColumnFilter = mapOptions.ColumnFilter,
@@ -240,7 +247,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         {
             return new DtoToModelMapValue<TModel, TPrimaryKey>()
             {
-                Column = column,
+                ColumnName = column,
                 ColumnType = columnType,
                 Expression = expression
             };

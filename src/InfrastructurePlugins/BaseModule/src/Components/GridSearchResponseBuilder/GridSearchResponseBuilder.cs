@@ -118,7 +118,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                         {
                             cqExpr = GetPropertyExpression(ParaExpression, m.Column);
                             var val = dtmMapProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
-                            dtmMapProfile.AddOrUpdate(val.Column, val);
+                            dtmMapProfile.AddOrUpdate(val.ColumnName, val);
                         }
                         else if (cqExpr == null)
                         {
@@ -173,7 +173,7 @@ namespace InfrastructurePlugins.BaseModule.Components.GridSearchResponseBuilder
                         {
                             var cqExpr = GetPropertyExpression(ParaExpression, m.Column);
                             dtoMapVal = dtmMapProfile.CreateMapValue(m.Column, cqExpr.ReturnType, cqExpr);
-                            dtmMapProfile.AddOrUpdate(dtoMapVal.Column, dtoMapVal);
+                            dtmMapProfile.AddOrUpdate(dtoMapVal.ColumnName, dtoMapVal);
                         }
                         var propType = m.PropertyType ?? dtoMapVal.ColumnType;
                         return propType;
