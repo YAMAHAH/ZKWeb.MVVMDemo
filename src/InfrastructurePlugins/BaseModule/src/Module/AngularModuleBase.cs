@@ -272,6 +272,7 @@ namespace InfrastructurePlugins.BaseModule.Module
         /// Dto实体类型
         /// </summary>
         public Type DtoEntityType { get; set; }
+
         /// <summary>
         /// 前缀
         /// </summary>
@@ -293,6 +294,10 @@ namespace InfrastructurePlugins.BaseModule.Module
         /// 指示是否是集合结点
         /// </summary>
         public bool IsSetNode { get; set; }
+        /// <summary>
+        /// 指示是否引用独立实体
+        /// </summary>
+        public bool IsRefNode { get; set; }
 
     }
 

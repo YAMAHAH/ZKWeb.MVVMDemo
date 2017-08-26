@@ -65,7 +65,7 @@ namespace InfrastructurePlugins.BaseModule.Application.Mappers
                         var cqExpr = dtoMapVal?.Expression;
                         if (dtoMapVal?.ColumnFilterWrapper != null)
                         {
-                            cqExpr = dtoMapVal.ColumnFilterWrapper(m);
+                            cqExpr = (LambdaExpression)dtoMapVal.ColumnFilterWrapper.DynamicInvoke(m);
                         }
                         //创建实体
                         if (dtoMapVal == null)

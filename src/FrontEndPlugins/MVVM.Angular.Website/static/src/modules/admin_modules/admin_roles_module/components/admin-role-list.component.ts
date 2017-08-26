@@ -72,6 +72,8 @@ export class AdminRoleListComponent extends CrudWithDialogBaseComponent {
     }
 
     submitRemove(obj: any) {
+        
         return this.roleManageService.Remove(obj.Id);
+
     }
 }

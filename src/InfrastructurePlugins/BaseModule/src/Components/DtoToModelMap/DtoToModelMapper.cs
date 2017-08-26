@@ -55,7 +55,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
          where TDto : IOutputDto where TModel : class, IEntity, IEntity<TPrimaryKey>
         {
             if (dtoToModelMap == null) return false;
-            var key = dtoToModelMap.Name;
+            var key = dtoToModelMap.FullName;
             IDtoToModelMapProfileBase value = xDtoToModelMaps.AddOrUpdate(key, dtoToModelMap, (k, v) => v = dtoToModelMap);
             return value != null;
         }

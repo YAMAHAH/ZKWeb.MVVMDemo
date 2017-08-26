@@ -39,6 +39,10 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// 指示是否是集合结点
         /// </summary>
         public bool IsSetNode { get; set; }
+        /// <summary>
+        /// 指示是滞引用另一个实体
+        /// </summary>
+        public bool IsRefNode { get; set; }
 
         /// <summary>
         /// 前缀
@@ -59,8 +63,27 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         }
         /// <summary>
         /// 列对应的表达式
+        /// 如果是引用其它类型结点,则要从引用结点获取值
         /// </summary>
-        public LambdaExpression Expression { get; set; }
+        /// 
+
+        private LambdaExpression xExpression;
+        public LambdaExpression Expression
+        {
+            get
+            {
+                if (xExpression == null && IsRefNode)
+                {
+                    xExpression = RefNodeValue.Value.Expression;
+                    //从其它结占获取
+                }
+                return xExpression;
+            }
+            set
+            {
+                xExpression = value;
+            }
+        }
         /// <summary>
         /// 实体类型的表达式生成器
         /// </summary>
@@ -70,11 +93,25 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         /// </summary>
         public ILambdaExpressionBuilderBase ParentExpressionBuilder { get; set; }
 
+        public Lazy<IDtoToModelMapValueBase> RefNodeValue { get; set; }
+
         public QueryColumnFilterDelegate<TModel, TPrimaryKey> ColumnFilter { get; set; }
         /// <summary>
-        /// 自定义列委托,返回表达式树
+        /// 自定义列委托,返回表达式树ColumnFilterWrapperDelegate<TModel, TPrimaryKey>
         /// </summary>
-        public ColumnFilterWrapperDelegate<TModel, TPrimaryKey> ColumnFilterWrapper { get; set; }
+        private Delegate xColumnFilterWrapper;
+        public Delegate ColumnFilterWrapper
+        {
+            get
+            {
+                if (xColumnFilterWrapper == null && IsRefNode)
+                {
+                    xColumnFilterWrapper = RefNodeValue.Value.ColumnFilterWrapper;
+                }
+                return xColumnFilterWrapper;
+            }
+            set { xColumnFilterWrapper = value; }
+        }
         /// <summary>
         /// 是否自定义委托
         /// </summary>

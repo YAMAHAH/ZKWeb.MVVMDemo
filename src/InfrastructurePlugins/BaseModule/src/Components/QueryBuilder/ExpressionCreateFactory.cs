@@ -31,13 +31,16 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         }
         /// <summary>
         /// 解析条件生成对应的结点树
-        /// 前端对象->转换后端条件对象->枚举属于集合结点且非自定义的条件对象->解析对象生成相应的结点树
+        /// 前端对象->转换后端条件对象->生成集合结点->解析对象生成相应的结点树
+        /// 要考虑非自定义的条件
+        /// 集合查询不支持子表达式??
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
         private ColumnQueryCondition ParseFilterAndCreateTree(ColumnQueryCondition filter)
         {
             var newFilter = filter;
+            //如果是自定义直接返回
             if (newFilter.IsCustomColumnFilter)
             {
                 return newFilter;
@@ -49,6 +52,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             var nodeNames = newFilter.Prefix.Split('.');
             var rootNode = nodeNames.FirstOrDefault();
             var preNode = string.Empty;
+            bool isCustomeFilter = false;
 
             foreach (var nodeName in nodeNames)
             {
@@ -75,9 +79,10 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                     filterTreeMaps[preNode].Childs.Add(newNode);
                 }
                 preNode = nodeName;
+                if (isCustomeFilter) break; //若结点是自定义条件,则直接退出
             }
 
-            if (!string.IsNullOrEmpty(preNode)) filterTreeMaps[preNode].Childs.Add(newFilter);
+            if (!string.IsNullOrEmpty(preNode) && !isCustomeFilter) filterTreeMaps[preNode].Childs.Add(newFilter);
 
             return filterTreeMaps[rootNode] ?? newFilter;
         }
@@ -90,7 +95,19 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         {
             var root = new ColumnQueryCondition() { IsChildExpress = true };
             var colFilters = columnFilters.ToList();
+            //前端转换为后端的对象
             var cqconds = xMapper.Map<List<ColumnQueryCondition>>(colFilters);
+            //处理集合结点对象,分析出有多个结点
+            var setNodes = cqconds.Where(c => c.IsSetNode).ToList();
+            foreach (var item in setNodes)
+            {
+                var newNode = ParseFilterAndCreateTree(item);
+               
+            }
+            //用新结点去替换原来的结点(item)
+            //获取原来结点的位置
+            //删除原来的结点
+            //
 
             root.Childs.AddRange(cqconds);
             var expBuilder = new LambdaExpressionBuilder<TEntity>();

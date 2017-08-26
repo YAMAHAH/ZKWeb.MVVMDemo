@@ -93,7 +93,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             }
             foreach (var t in c.Childs)
             {
-                if (c.PropClassify == PropClassify.List && c.IsProcessDone) break;
+                if (t.IsSetNode && c.IsProcessDone) break;
                 RecursionGenerateExpression(t);
                 //拼接表达式树
                 ConcatExpression(c, t, c.Childs.First() == t);
@@ -122,37 +122,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         {
             return new LambdaExpressionBuilder<T>();
         }
-
-        //U为一个对象,
-        //Ritems是U的一个R对象的集合属性,
-        //rname是R对象的一个属性,
-        //Citems是R对象的一个C对象的集合属性,
-        //P是U的一个对象属性,
-        //PV是P的一个对象属性,
-        //prop1是PV对象的属性,
-        //prop2是P对象的属性,
-        //Prop3是U对象的一个属性
-
-        //对于集合的操作暂时可取any, all, count
-
-        //构建如下表达式:
-
-        //u.Ritems.any(r=>r.rname == "rname" && r.Citems.any(c=>c.id == "13")) ||
-
-        //(u.p.pv.Prop1 == "myprop1" && u.p.prop2 == "myprop2") &&
-
-        //u.prop3 == "myprop3"
-
-        //column prefix
-        //Ritems      null     =>Ritems.any()
-        //Citems      Ritems    =>Ritems.any(r=>r.Citems.any())
-        //rname Ritems => Ritems.any(r => r.rname == 455)
-        //id Ritems.Citems => r.Citems.any(c => c.id == "13")
-        //p           null     =>p
-        //pv          p        =>p.pv
-        //prop1       p.pv     =>p.pv.prop1
-        //prop2       p        =>p.prop2
-
         public LambdaExpression CreatePropertyExpression(string propertyName)
         {
             var props = propertyName.Split('.');
@@ -285,7 +254,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             c.IsProcessDone = true;
             foreach (var child in c.Childs)
             {
-                if (child.PropClassify == PropClassify.List)
+                if (child.PropClassify == PropClassify.List && !child.IsCustomColumnFilter)
                 {
                     child.Expression = RecursionGenerateListExpression(child);
                 }
@@ -304,28 +273,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 c.ExpressionBuilder.GenerateExpression(c);
             }
             return c.Expression;
-            //属性   操作   值  连接 
-            //u.Ritems.Max(r=>r.Total) > 0 && u.Ritems.Any(r=>r.Rname=="Rname" && r.Citems.Any(c=>c.id == "13")) ||
-            //(u.p.pv.Prop1 == "myprop1" && u.p.prop2 == "myprop2") &&
-            //u.prop3 == "myprop3"
-
-            //前端传递过来的对象数据
-            //属性  操作   值  集合运算  前缀
-            //total  >     0     Max     Ritems
-            //Rname  ==   Rname  none    Ritems  
-            //id     ==    13    none    Ritems.Citems
-            //解析成后端的数据对象结构:
-            //属性    操作   值  集合运算  类型  前缀 
-            // Ritems none  none   Max     list  none
-            //   Total > 0 none basic  Ritems none
-            // Ritems none none  Any  list  none
-            //   Rname == rname  none basic  Ritems
-            //   Citems none none Any list  Ritems
-            //     id  == 13 none basic  Ritems.Citems
-
-            // prop1 p.pv
-            // prop2 p
-            // prop3 
         }
 
         /// <summary>

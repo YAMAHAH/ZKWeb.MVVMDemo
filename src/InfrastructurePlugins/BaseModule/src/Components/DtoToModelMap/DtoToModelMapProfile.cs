@@ -17,13 +17,13 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
     {
         private ConcurrentDictionary<string, DtoToModelMapValue<TModel, TPrimaryKey>> xDtoToModelMap = new ConcurrentDictionary<string, DtoToModelMapValue<TModel, TPrimaryKey>>();
 
-        public string Name { get; set; }
+        public string FullName { get; set; }
 
         public Expression<Func<TModel, object>> KeywordFilterExpression { get; set; }
 
         public DtoToModelMapProfile()
         {
-            this.Name = typeof(TDto).FullName;
+            this.FullName = typeof(TDto).FullName;
             MakeTempClsObjectInfo();
         }
 
@@ -38,7 +38,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             var propinfos = new List<ViewModelPropInfo>();
             if (null == entityType) { return propinfos; }
             var modelType = entityType.GetTypeInfo().GetCustomAttribute<ModelTypeMapperAttribute>()?.ModelType ?? entityType;
-
+            var isRefNode = parentInfo != null;
             foreach (PropertyInfo pi in entityType.GetProperties(BindingFlags.Public |
                 BindingFlags.Instance | BindingFlags.DeclaredOnly))
             {
@@ -63,7 +63,8 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                             ParentPropInfo = parentInfo?.PropInfo,
                             PropInfo = propInfo,
                             PropClassify = propType.IsArray ? PropClassify.List : PropClassify.Object,
-                            IsSetNode = propType.IsArray ? true : parentInfo?.IsSetNode ?? false
+                            IsSetNode = propType.IsArray ? true : parentInfo?.IsSetNode ?? false,
+                            IsRefNode = isRefNode
                         };
                         propinfos.Add(enumPropInfo);
                         propinfos.AddRange(TraversalProperties(propType, enumPropInfo));
@@ -93,7 +94,8 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                                 ParentPropInfo = parentInfo?.PropInfo,
                                 PropInfo = propInfo,
                                 PropClassify = PropClassify.List,
-                                IsSetNode = parentInfo?.IsSetNode ?? true
+                                IsSetNode = parentInfo?.IsSetNode ?? true,
+                                IsRefNode = isRefNode
                             };
                             propinfos.Add(enumPropInfo);
                             propinfos.AddRange(TraversalProperties(genericType, enumPropInfo));
@@ -110,7 +112,8 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                             ParentPropInfo = parentInfo?.PropInfo,
                             PropInfo = propInfo,
                             PropClassify = PropClassify.List,
-                            IsSetNode = true
+                            IsSetNode = true,
+                            IsRefNode = isRefNode
                         });
                     }
                 }
@@ -125,7 +128,8 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                         ParentPropInfo = parentInfo?.PropInfo,
                         PropInfo = propInfo,
                         PropClassify = PropClassify.Basic,
-                        IsSetNode = parentInfo?.IsSetNode ?? false
+                        IsSetNode = parentInfo?.IsSetNode ?? false,
+                        IsRefNode = isRefNode
                     });
                 }
             }
@@ -143,7 +147,11 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             {
                 var propInfo = objInfo.PropInfo;
                 var propType = objInfo.PropInfo.PropertyType;
-                var objAlias = objInfo.DtoEntityType.Name.Replace("OutputDto", "") + "_" + propInfo.Name;
+                var columnName = propInfo.Name;
+
+                var objAlias = string.IsNullOrEmpty(objInfo.Prefix) ? columnName : (objInfo.Prefix + "." + columnName).Trim();
+                //objInfo.DtoEntityType.Name.Replace("OutputDto", "") + "_" + propInfo.Name;
+                // var primaryKey = modelType?.GetProperty("Id").PropertyType;
                 var val = new DtoToModelMapValue<TModel, TPrimaryKey>()
                 {
                     TemplateObjectInfo = new ComponentPropertyAttribute()
@@ -164,11 +172,22 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
                     ModelType = objInfo.ModelType,
                     ParentModelType = objInfo.ParentModelType,
                     Prefix = objInfo.Prefix,
-                    IsSetNode = objInfo.IsSetNode
-
+                    IsSetNode = objInfo.IsSetNode,
+                    RefNodeValue = new Lazy<IDtoToModelMapValueBase>(() => CreateDtoToModelMapValue(objInfo.DtoEntityType, objInfo.PropInfo.Name))
                 };
                 AddOrUpdate(objAlias, val);
             }
+        }
+        /// <summary>
+        /// 创建引用结点的值
+        /// </summary>
+        /// <param name="dtoType"></param>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        private IDtoToModelMapValueBase CreateDtoToModelMapValue(Type dtoType, string columnName)
+        {
+            var refMapProfile = DtoToModelMapper.GetDtoToModelMap(dtoType);
+            return refMapProfile.GetMemberMapValue(columnName);
         }
         /// <summary>
         /// 创建表达式生成器
@@ -188,10 +207,10 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
         }
         public IContainer Injector { get; } = ZKWeb.Application.Ioc;
 
-        public void Register()
+        protected IDtoToModelMapper DtoToModelMapper => Injector.Resolve<IDtoToModelMapper>();
+        public void RegisterToContiner()
         {
-            var mapper = ZKWeb.Application.Ioc.Resolve<IDtoToModelMapper>();
-            mapper.AddOrUpdateMap<TModel, TDto, TPrimaryKey>(this);
+            DtoToModelMapper.AddOrUpdateMap<TModel, TDto, TPrimaryKey>(this);
         }
 
         public DtoToModelMapProfile<TModel, TDto, TPrimaryKey> ForMember<TMember>(Expression<Func<TDto, TMember>> destMember,
@@ -278,12 +297,17 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
             return expValue;
         }
 
-        public DtoToModelMapValue<TModel, TPrimaryKey> GetMember(string destMember)
+        public DtoToModelMapValue<TModel, TPrimaryKey> GetMember(string memberName)
         {
-            var propKey = destMember;
+            var propKey = memberName;
             DtoToModelMapValue<TModel, TPrimaryKey> expValue;
             xDtoToModelMap.TryGetValue(propKey, out expValue);
             return expValue;
+        }
+
+        public IDtoToModelMapValueBase GetMemberMapValue(string memberName)
+        {
+            return GetMember(memberName);
         }
 
         public Type TemplateClassType { get; set; }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using InfrastructurePlugins.BaseModule.Application.Dtos;
+using System;
 using ZKWeb.Database;
 
 namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
@@ -8,6 +9,7 @@ namespace InfrastructurePlugins.BaseModule.Components.DtoToModelMap
     {
         IDtoToModelMapProfile<TModel, TDto, TPrimaryKey> GetDtoToModelMap<TModel, TDto, TPrimaryKey>()
            where TDto : IOutputDto where TModel : class, IEntity, IEntity<TPrimaryKey>;
+        IDtoToModelMapProfileBase GetDtoToModelMap(Type dtoToModelMapType);
         bool AddOrUpdateMap<TModel, TDto, TPrimaryKey>(IDtoToModelMapProfileBase dtoToModelMap)
           where TDto : IOutputDto where TModel : class, IEntity, IEntity<TPrimaryKey>;
 

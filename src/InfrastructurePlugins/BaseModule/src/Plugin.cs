@@ -33,7 +33,7 @@ namespace InfrastructurePlugins.BaseModule.src
             var dtmProfileMaps = injector.ResolveMany<IDtoToModelMapProfileBase>();
             foreach (var map in dtmProfileMaps)
             {
-                map.Register();
+                map.RegisterToContiner();
             }
             // 替换默认的参数提供器
             var originalProvider = ZKWeb.Application.Ioc.Resolve<IActionParameterProvider>();
