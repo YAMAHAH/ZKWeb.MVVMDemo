@@ -37,7 +37,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        private List<ColumnQueryCondition> ParseFilterAndCreateTree(ColumnQueryCondition[] filters)
+        private List<ColumnQueryCondition> ParseFilterAndCreateTree(IList<ColumnQueryCondition> filters)
         {
             Dictionary<string, ColumnQueryCondition> filterTreeMaps = new Dictionary<string, ColumnQueryCondition>();
             List<string> rootNodes = new List<string>();
@@ -55,18 +55,29 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 var dtmMapper = Injector.Resolve<IDtoToModelMapper>();
                 var dtmMapProfile = dtmMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
 
-                var splitNames = newFilter.Prefix.Split('.');
+                //var splitNames = newFilter.Prefix.Split('.');
                 var nodeNames = new List<string>();
-                var j = splitNames.Length;
-                while (j > -1)
+                //var j = splitNames.Length;
+                //while (j > -1)
+                //{
+                //    var joinStr = splitNames[0];
+                //    for (int i = 1; i < j; i++)
+                //    {
+                //        joinStr = string.Join(".", joinStr, splitNames[i]);
+                //    }
+                //    nodeNames.Add(joinStr);
+                //    j--;
+                //}
+
+                //nodeNames.add(newFilter.Prefix)
+                var newNodeStr = newFilter.Prefix;
+                var lastIdx = newNodeStr.LastIndexOf(".");
+                nodeNames.Add(newNodeStr);
+                while (lastIdx > -1)
                 {
-                    var joinStr = splitNames[0];
-                    for (int i = 1; i < j; i++)
-                    {
-                        joinStr = string.Join(".", joinStr, splitNames[i]);
-                    }
-                    nodeNames.Add(joinStr);
-                    j--;
+                    newNodeStr = newNodeStr.Substring(0, lastIdx);
+                    nodeNames.Add(newNodeStr);
+                    lastIdx = newNodeStr.LastIndexOf(".");
                 }
 
                 var rootNode = nodeNames.FirstOrDefault();
@@ -124,15 +135,11 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             var cqconds = xMapper.Map<List<ColumnQueryCondition>>(colFilters);
             //处理集合结点对象,分析出有多个结点
             var setNodes = cqconds.Where(c => c.IsSetNode).ToList();
-            foreach (var item in setNodes)
-            {
-                var newNode = ParseFilterAndCreateTree(item);
 
-            }
-            //用新结点去替换原来的结点(item)
-            //获取原来结点的位置
-            //删除原来的结点
-            //
+            var newNodes = ParseFilterAndCreateTree(setNodes);
+
+            cqconds = cqconds.Where(c => setNodes.Any(s => s != c)).ToList();
+            cqconds.AddRange(newNodes);
 
             root.Childs.AddRange(cqconds);
             var expBuilder = new LambdaExpressionBuilder<TEntity>();
