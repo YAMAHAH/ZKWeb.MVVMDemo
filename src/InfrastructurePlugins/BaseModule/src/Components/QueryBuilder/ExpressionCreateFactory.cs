@@ -37,54 +37,79 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        private ColumnQueryCondition ParseFilterAndCreateTree(ColumnQueryCondition filter)
+        private List<ColumnQueryCondition> ParseFilterAndCreateTree(ColumnQueryCondition[] filters)
         {
-            var newFilter = filter;
-            //如果是自定义直接返回
-            if (newFilter.IsCustomColumnFilter)
-            {
-                return newFilter;
-            }
             Dictionary<string, ColumnQueryCondition> filterTreeMaps = new Dictionary<string, ColumnQueryCondition>();
-            filterTreeMaps[newFilter.PropertyName] = newFilter;
-            var dtmMapper = Injector.Resolve<IDtoToModelMapper>();
-            var dtmMapProfile = dtmMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
-            var nodeNames = newFilter.Prefix.Split('.');
-            var rootNode = nodeNames.FirstOrDefault();
-            var preNode = string.Empty;
-            bool isCustomeFilter = false;
-
-            foreach (var nodeName in nodeNames)
+            List<string> rootNodes = new List<string>();
+            foreach (var filter in filters)
             {
-                var mapValue = dtmMapProfile.GetMember(nodeName);
-                var newNode = new ColumnQueryCondition()
+                var newFilter = filter;
+                //如果是自定义直接返回
+                if (newFilter.IsCustomColumnFilter)
                 {
-                    PropertyName = nodeName,
-                    ProperyType = mapValue.ColumnType,
-                    Prefix = mapValue.Prefix,
-                    ModelType = mapValue.ModelType,
-                    ParentModelType = mapValue.ParentModelType,
-                    ExpressionBuilder = mapValue.ExpressionBuilder,
-                    ParentExpressionBuilder = mapValue.ParentExpressionBuilder,
-                    PropClassify = mapValue.PropertyClassify,
-                    SetOpertion = newFilter.SetOpertion,
-                    SrcExpression = mapValue.Expression,
-                    IsCustomColumnFilter = mapValue.IsCustomColumnFilter,
-                    IsSetNode = mapValue.IsSetNode,
-                    IsSetOperation = mapValue.IsSetNode && mapValue.PropertyClassify == Module.PropClassify.List
-                };
-                filterTreeMaps[nodeName] = newNode;
-                if (!string.IsNullOrEmpty(preNode))
-                {
-                    filterTreeMaps[preNode].Childs.Add(newNode);
+                    //PropertyName应该是全称,包含前缀
+                    rootNodes.Add(newFilter.MemberName);
+                    filterTreeMaps[newFilter.MemberName] = newFilter;
+                    continue;
                 }
-                preNode = nodeName;
-                if (isCustomeFilter) break; //若结点是自定义条件,则直接退出
+                var dtmMapper = Injector.Resolve<IDtoToModelMapper>();
+                var dtmMapProfile = dtmMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
+
+                var splitNames = newFilter.Prefix.Split('.');
+                var nodeNames = new List<string>();
+                var j = splitNames.Length;
+                while (j > -1)
+                {
+                    var joinStr = splitNames[0];
+                    for (int i = 1; i < j; i++)
+                    {
+                        joinStr = string.Join(".", joinStr, splitNames[i]);
+                    }
+                    nodeNames.Add(joinStr);
+                    j--;
+                }
+
+                var rootNode = nodeNames.FirstOrDefault();
+                if (!rootNodes.Contains(rootNode)) rootNodes.Add(rootNode);
+
+                var preNode = string.Empty;
+                bool isCustomeFilter = false;
+
+                foreach (var nodeName in nodeNames)
+                {
+                    //获取成员全称
+                    var mapValue = dtmMapProfile.GetMember(nodeName);
+                    var newNode = new ColumnQueryCondition()
+                    {
+                        PropertyName = nodeName,
+                        ProperyType = mapValue.ColumnType,
+                        Prefix = mapValue.Prefix,
+                        ModelType = mapValue.ModelType,
+                        ParentModelType = mapValue.ParentModelType,
+                        ExpressionBuilder = mapValue.ExpressionBuilder,
+                        ParentExpressionBuilder = mapValue.ParentExpressionBuilder,
+                        PropClassify = mapValue.PropertyClassify,
+                        SetOpertion = newFilter.SetOpertion,
+                        SrcExpression = mapValue.Expression,
+                        IsCustomColumnFilter = mapValue.IsCustomColumnFilter,
+                        IsSetNode = mapValue.IsSetNode,
+                        IsSetOperation = mapValue.IsSetNode && mapValue.PropertyClassify == Module.PropClassify.List
+                    };
+                    filterTreeMaps[nodeName] = newNode;
+                    if (!string.IsNullOrEmpty(preNode))
+                    {
+                        filterTreeMaps[preNode].Childs.Add(newNode);
+                    }
+                    preNode = nodeName;
+                    if (isCustomeFilter) break; //若结点是自定义条件,则直接退出
+                }
+
+                if (!string.IsNullOrEmpty(preNode) && !isCustomeFilter) filterTreeMaps[preNode].Childs.Add(newFilter);
             }
+            //获取根的所有值
+            var results = filterTreeMaps.Where(kv => rootNodes.Any(r => r == kv.Key)).Select(kv => kv.Value).ToList();
 
-            if (!string.IsNullOrEmpty(preNode) && !isCustomeFilter) filterTreeMaps[preNode].Childs.Add(newFilter);
-
-            return filterTreeMaps[rootNode] ?? newFilter;
+            return results;
         }
         /// <summary>
         /// 创建表达式
@@ -102,7 +127,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
             foreach (var item in setNodes)
             {
                 var newNode = ParseFilterAndCreateTree(item);
-               
+
             }
             //用新结点去替换原来的结点(item)
             //获取原来结点的位置
