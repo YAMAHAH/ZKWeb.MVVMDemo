@@ -29,6 +29,21 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         {
             xMapper = new ColumnFilterMapperFactory<TEntity, TDto, TPrimaryKey>().CreateMapper();
         }
+
+        private void test()
+        {
+
+            //nodeNames.add(newFilter.Prefix)
+            //var newNodeStr = newFilter.Prefix;
+            //var lastIdx = newNodeStr.LastIndexOf(".");
+            //nodeNames.Add(newNodeStr);
+            //while (lastIdx > -1)
+            //{
+            //    newNodeStr = newNodeStr.Substring(0, lastIdx);
+            //    nodeNames.Add(newNodeStr);
+            //    lastIdx = newNodeStr.LastIndexOf(".");
+            //}
+        }
         /// <summary>
         /// 解析条件生成对应的结点树
         /// 前端对象->转换后端条件对象->生成集合结点->解析对象生成相应的结点树
@@ -47,7 +62,6 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 //如果是自定义直接返回
                 if (newFilter.IsCustomColumnFilter)
                 {
-                    //PropertyName应该是全称,包含前缀
                     rootNodes.Add(newFilter.MemberName);
                     filterTreeMaps[newFilter.MemberName] = newFilter;
                     continue;
@@ -55,31 +69,19 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                 var dtmMapper = Injector.Resolve<IDtoToModelMapper>();
                 var dtmMapProfile = dtmMapper.GetDtoToModelMap<TEntity, TDto, TPrimaryKey>();
 
-                //var splitNames = newFilter.Prefix.Split('.');
                 var nodeNames = new List<string>();
-                //var j = splitNames.Length;
-                //while (j > -1)
-                //{
-                //    var joinStr = splitNames[0];
-                //    for (int i = 1; i < j; i++)
-                //    {
-                //        joinStr = string.Join(".", joinStr, splitNames[i]);
-                //    }
-                //    nodeNames.Add(joinStr);
-                //    j--;
-                //}
-
-                //nodeNames.add(newFilter.Prefix)
-                var newNodeStr = newFilter.Prefix;
-                var lastIdx = newNodeStr.LastIndexOf(".");
-                nodeNames.Add(newNodeStr);
-                while (lastIdx > -1)
+                var splitNames = newFilter.Prefix.Split('.');
+                var j = splitNames.Length;
+                while (j > 0)
                 {
-                    newNodeStr = newNodeStr.Substring(0, lastIdx);
-                    nodeNames.Add(newNodeStr);
-                    lastIdx = newNodeStr.LastIndexOf(".");
+                    var joinStr = splitNames[0];
+                    for (int i = 1; i < j; i++)
+                    {
+                        joinStr = string.Join(".", joinStr, splitNames[i]);
+                    }
+                    nodeNames.Add(joinStr);
+                    j--;
                 }
-
                 var rootNode = nodeNames.FirstOrDefault();
                 if (!rootNodes.Contains(rootNode)) rootNodes.Add(rootNode);
 
@@ -92,7 +94,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
                     var mapValue = dtmMapProfile.GetMember(nodeName);
                     var newNode = new ColumnQueryCondition()
                     {
-                        PropertyName = nodeName,
+                        PropertyName = mapValue.ColumnName,
                         ProperyType = mapValue.ColumnType,
                         Prefix = mapValue.Prefix,
                         ModelType = mapValue.ModelType,
