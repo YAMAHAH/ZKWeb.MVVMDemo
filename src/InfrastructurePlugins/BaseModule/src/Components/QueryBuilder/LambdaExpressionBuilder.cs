@@ -64,7 +64,7 @@ namespace InfrastructurePlugins.BaseModule.Components.QueryBuilder
         /// <returns></returns>
         public Expression<Func<T, bool>> MakeLambdaExpression(Expression body)
         {
-            var bodyExpr = body == null ? Expression.Constant(true) : body;
+            var bodyExpr = body ?? Expression.Constant(true);
             return Expression.Lambda<Func<T, bool>>(bodyExpr, this.Parameters);
         }
 

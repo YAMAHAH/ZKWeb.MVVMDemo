@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using ZKWeb.Logging;
-using InfrastructurePlugins.BaseModule.Domain.Repositories.Interfaces;
+﻿using InfrastructurePlugins.BaseModule.Domain.Repositories.Interfaces;
 using InfrastructurePlugins.BaseModule.Domain.Services.Bases;
 using InfrastructurePlugins.TaskSchedulerModule.Components.ScheduledTasks.Interfaces;
 using InfrastructurePlugins.TaskSchedulerModule.Domain.Entities;
+using System;
+using System.Linq;
+using System.Threading;
+using ZKWeb.Logging;
 using ZKWebStandard.Ioc;
 
 namespace InfrastructurePlugins.TaskSchedulerModule.Domain.Services
@@ -53,8 +53,10 @@ namespace InfrastructurePlugins.TaskSchedulerModule.Domain.Services
                         }
                     }
                 }
-            });
-            thread.IsBackground = true;
+            })
+            {
+                IsBackground = true
+            };
             thread.Start();
         }
 

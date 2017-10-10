@@ -35,7 +35,7 @@ namespace InfrastructurePlugins.BaseModule.Components.ActionParameterProviders
             var bodyDict = httpContext.GetOrCreateData("bodyDict", () =>
             {
                 var jsonBody = httpContext.Request.GetJsonBody();
-                var encryptObj = JsonConvert.DeserializeObject<EncryptInput>(jsonBody);
+                var encryptObj = jsonBody == null ? null : JsonConvert.DeserializeObject<EncryptInput>(jsonBody);
                 if (encryptObj != null && encryptObj is IEncryptInput && ((IEncryptInput)encryptObj).data != null)
                 {
                     //从会话中取出客户端密钥 上下文->会话ID->密钥

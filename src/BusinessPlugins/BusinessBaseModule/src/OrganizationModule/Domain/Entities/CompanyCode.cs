@@ -2,7 +2,7 @@
 using BusinessPlugins.SalesModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using ZKWeb.Database;
@@ -42,7 +42,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
         public List<SalesOrganization> SalesOrganizations { get; set; }
         public List<PurchaseOrganization> PurchaseOrganizations { get; set; }
 
-        public List<Plant> plants { get; set; }
+        public List<Plant> Plants { get; set; }
         #endregion
         #region 实体配置
         public void Configure(IEntityMappingBuilder<CompanyCode> builder)

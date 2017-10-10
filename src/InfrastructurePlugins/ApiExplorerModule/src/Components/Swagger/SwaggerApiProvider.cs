@@ -1,26 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Routing;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.FastReflection;
+using System.Linq;
 using System.Reflection;
-using InfrastructurePlugins.BaseModule.Application.Services.Interfaces;
 using ZKWebStandard.Extensions;
 using ZKWebStandard.Ioc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
 
 namespace InfrastructurePlugins.ApiExplorerModule.Components.Swagger
 {
     /// <summary>
     /// 根据应用服务获取Api列表
     /// </summary>
-    [ExportMany]
+    [ExportMany(ContractKey ="Plugin")]
+
     public class SwaggerApiProvider : IApiDescriptionGroupCollectionProvider
     {
         /// <summary>

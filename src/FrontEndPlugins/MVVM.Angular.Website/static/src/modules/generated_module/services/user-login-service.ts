@@ -29,4 +29,14 @@ export class UserLoginService {
                 body: { request }
             }, extra);
     }
+
+    /** swagger登录管理员 */
+    LoginAdminOfSwagger(request: UserLoginRequestDto, extra?: ApiCallExtra): Observable<ActionResponseDto> {
+        return this.appApiService.call<ActionResponseDto>(
+            "/api/UserLoginService/LoginAdminOfSwagger",
+            {
+                method: "POST",
+                body: { request }
+            }, extra);
+    }
 }

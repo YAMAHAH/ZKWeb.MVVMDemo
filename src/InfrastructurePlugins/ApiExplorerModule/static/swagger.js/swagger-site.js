@@ -69,7 +69,7 @@
             Password: password,
             Captcha: captcha
         };
-        $.post("/api/UserLoginService/LoginAdmin", args)
+        $.post("/api/UserLoginService/LoginAdminOfSwagger", args)
             .done(function (result) {
                 alert("Login Success");
                 $form.hide();

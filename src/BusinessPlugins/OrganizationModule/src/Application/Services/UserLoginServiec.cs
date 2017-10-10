@@ -6,6 +6,7 @@ using InfrastructurePlugins.CaptchaModule.Managers;
 using BusinessPlugins.OrganizationModule.Application.Dtos;
 using BusinessPlugins.OrganizationModule.Domain.Services;
 using ZKWebStandard.Ioc;
+using InfrastructurePlugins.BaseModule.Application.Services.Attributes;
 
 namespace BusinessPlugins.OrganizationModule.Application.Services
 {
@@ -75,6 +76,29 @@ namespace BusinessPlugins.OrganizationModule.Application.Services
             //session["clientPublicKey"] = publicKey;
             //session["clientSecretKey"] = aesSecretKey;           
             //sessionManager.SaveSession();
+            // 登录用户
+            _adminManager.Login(
+                request.Tenant,
+                request.Username,
+                request.Password,
+                request.RememberLogin ?? true);
+            return ActionResponseDto.CreateSuccess();
+        }
+
+        /// <summary>
+        /// swagger登录管理员
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [Description("swagger登录管理员")]
+        [DataSecurity(IsDisabled = true)]
+        public virtual ActionResponseDto LoginAdminOfSwagger(UserLoginRequestDto request)
+        {
+            // 检查验证码
+            if (!_captchaManager.Check("AdminLogin", request.Captcha))
+            {
+                throw new BadRequestException("Incorrect captcha");
+            }
             // 登录用户
             _adminManager.Login(
                 request.Tenant,

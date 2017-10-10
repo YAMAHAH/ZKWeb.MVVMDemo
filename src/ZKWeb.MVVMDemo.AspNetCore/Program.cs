@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
-using ZKWeb.MVVMDemo.AspNetCore.Swagger;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using System;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ZKWeb.MVVMDemo.AspNetCore
 {
@@ -25,31 +21,10 @@ namespace ZKWeb.MVVMDemo.AspNetCore
             try
             {
                 var host = new WebHostBuilder()
-                    .ConfigureServices(s =>
-                    {
-                        //添加cros
-                        s.AddCors(options => options.AddPolicy("defaultCors",
-                             p => p.WithOrigins("*","http://localhost:9000","http://localhost:53128")
-                                    .AllowAnyMethod()
-                                    .AllowAnyHeader()
-                                    .AllowCredentials()
-                                    .WithExposedHeaders("x-set-zkweb-sessionid")
-                        ));
-                        // 添加Mvc组件
-                        s.AddMvcCore().AddApiExplorer();
-                        // 添加Swgger组件，使用自定义的Api列表提供器
-                        s.Replace(new ServiceDescriptor(
-                            typeof(IApiDescriptionGroupCollectionProvider),
-                            new ZKWebSwaggerApiProvider()));
-                        s.AddSwaggerGen(c =>
-                        {
-                            c.OperationFilter<ZKWebSwaggerOperationFilter>();
-                            c.SchemaFilter<ZKWebSwaggerSchemaFilter>();
-                            c.DocInclusionPredicate((a, b) => true);
-                            c.SwaggerDoc("v1", new Info() { Title = "ZKWeb MVVM Demo", Version = "V1" });
-                        });
-
-                    })
+                     .UseConfiguration(new ConfigurationBuilder()
+                        .AddJsonFile("hosting.json", optional: true)
+                       // .AddCommandLine(args)
+                        .Build())
                     .UseKestrel()
                     .UseIISIntegration()
                     .UseStartup<Startup>()

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>netcoreapp1.1</TargetFramework>
+		<TargetFramework>netcoreapp2.0</TargetFramework>
 		<AssemblyName>ZKWeb.MVVMDemo.Console</AssemblyName>
 		<OutputType>Exe</OutputType>
 		<PackageId>ZKWeb.MVVMDemo.Console</PackageId>
@@ -13,13 +13,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="6.1.0" />
+		<PackageReference Include="AutoMapper" Version="6.1.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
-		<PackageReference Include="ZKWeb" Version="1.9.0.1" />
-		<PackageReference Include="ZKWeb.Hosting.AspNetCore" Version="1.9.0" />
-		<PackageReference Include="ZKWeb.ORM.InMemory" Version="1.9.0" />
-		<PackageReference Include="ZKWeb.ORM.EFCore" Version="1.9.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
+		<PackageReference Include="ZKWeb" Version="2.0.0" />
+		<PackageReference Include="ZKWeb.Hosting.AspNetCore" Version="2.0.0" />
+		<PackageReference Include="ZKWeb.ORM.InMemory" Version="2.0.0" />
+		<PackageReference Include="ZKWeb.ORM.EFCore" Version="2.0.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">

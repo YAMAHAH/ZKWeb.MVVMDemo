@@ -1,6 +1,7 @@
 ﻿using BusinessPlugins.OrganizationModule.Domain;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -43,7 +44,7 @@ namespace BusinessPlugins.WarehouseModule.Domain.Entities
             nativeBuilder.HasOne(i => i.StorageLocation)
                 .WithMany(l => l.StorageLocationAddresses)
                 .HasForeignKey(i => i.StorageLocationId)
-                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);
         }
         #endregion
     }

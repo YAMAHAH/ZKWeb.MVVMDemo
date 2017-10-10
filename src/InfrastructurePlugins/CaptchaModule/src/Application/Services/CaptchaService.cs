@@ -10,6 +10,7 @@ using InfrastructurePlugins.CaptchaModule.Managers;
 using InfrastructurePlugins.SessionStateModule.Domain.Extensions;
 using InfrastructurePlugins.SessionStateModule.Domain.Services;
 using ZKWebStandard.Ioc;
+using InfrastructurePlugins.BaseModule.Application.Services.Attributes;
 
 namespace InfrastructurePlugins.CaptchaModule.Application.Services
 {
@@ -32,6 +33,7 @@ namespace InfrastructurePlugins.CaptchaModule.Application.Services
         /// <param name="key">使用的键名</param>
         /// <returns></returns>
         [Description("获取验证码图片的Base64")]
+        [DataSecurity(IsDisabled = true)]
         public string GetCaptchaImageBase64(string key)
         {
             using (var stream = new MemoryStream())

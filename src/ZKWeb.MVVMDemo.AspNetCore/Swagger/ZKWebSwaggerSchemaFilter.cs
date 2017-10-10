@@ -1,6 +1,5 @@
 ﻿using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.FastReflection;
 using System.Linq;

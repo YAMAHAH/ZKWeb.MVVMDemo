@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>netstandard1.6</TargetFramework>
+		<TargetFramework>netstandard2.0</TargetFramework>
 		<AssemblyName>ZKWeb.MVVMPlugins</AssemblyName>
 		<PackageId>ZKWeb.MVVMPlugins</PackageId>
 		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -26,14 +26,14 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="6.1.0" />
-		<PackageReference Include="FluentValidation" Version="7.1.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="1.0.4.6" />
+		<PackageReference Include="AutoMapper" Version="6.1.1" />
+		<PackageReference Include="FluentValidation" Version="7.2.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="1.0.4.7" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
-		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.7.6" />
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.7.9" />
 		<PackageReference Include="System.Security.Cryptography.Csp" Version="4.3.0" />
-		<PackageReference Include="ZKWeb" Version="1.9.0.1" />
-		<PackageReference Include="ZKWeb.ORM.EFCore" Version="1.9.0.1" />
+		<PackageReference Include="ZKWeb" Version="2.0.0" />
+		<PackageReference Include="ZKWeb.ORM.EFCore" Version="2.0.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">

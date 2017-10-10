@@ -3,7 +3,7 @@ using BusinessPlugins.SalesModule.Domain.Entities;
 using BusinessPlugins.WarehouseModule.Domain.Entities;
 using InfrastructurePlugins.BaseModule.Components.Extensions;
 using InfrastructurePlugins.MultiTenantModule.Domain.Entities;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using ZKWeb.Database;
@@ -79,7 +79,7 @@ namespace BusinessPlugins.OrganizationModule.Domain.Entities
 
             //公司代码
             nativeBuilder.HasOne(p => p.CompanyCode)
-                .WithMany(cc => cc.plants)
+                .WithMany(cc => cc.Plants)
                 .HasForeignKey(p => p.CompanyCodeId)
                 .OnDelete(DeleteBehavior.Restrict);
             nativeBuilder.HasOne(p => p.SalesOrganization)
