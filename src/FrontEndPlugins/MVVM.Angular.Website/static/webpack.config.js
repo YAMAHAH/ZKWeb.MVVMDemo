@@ -17,14 +17,14 @@ var webpackConfig = {
         path: path.resolve(__dirname, './dist'),
     },
     plugins: [
-        new ngtools.AotPlugin({
+        new ngtools.AngularCompilerPlugin({
             tsConfigPath: path.resolve(__dirname, './tsconfig.json'),
             skipMetadataEmit: false,
             entryModule: path.resolve(__dirname, './src/app_module/app.module#AppModule'),
             compilerOptions: {
                 emitDecoratorMetadata: true,
                 experimentalDecorators: true,
-                sourceMap: true,
+                sourceMap: true
             }
         }),
         new webpack.optimize.CommonsChunkPlugin({
@@ -98,22 +98,36 @@ var webpackConfig = {
         new CopyWebpackPlugin([
             //  { from: path.resolve(__dirname, "./src/vendor/images/favicon.ico"), to: "favicon.ico" },
             { from: path.resolve(__dirname, "./src/vendor/styles/preloader/preloader.css"), to: "preloader.css" },
-            { from: path.resolve(__dirname, "./src/app-config.json"), to: "." }
-        ]),
+            { from: path.resolve(__dirname, "./src/app-config.json"), to: "." },
+
+            // { from: path.resolve(__dirname, "./src/vendor"), to: "vendor" }
+        ])
     ],
     module: {
-        rules: [{
-                test: /\.ts$/,
-                loaders: ['@ngtools/webpack'],
+        rules: [
+            // {
+            //     test: /\.ts$/,
+            //     loaders: ['@ngtools/webpack'],
+            // },
+            {
+                test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+                use: ['@ngtools/webpack']
             },
             {
                 test: /\.js$/,
                 loaders: ['babel-loader'],
                 exclude: [/node_modules/, /dist/]
             },
+            // {
+            //     test: /\.css$/,
+            //     use: ['style-loader', 'css-loader']
+            // },
             {
                 test: /\.css$/,
-                loaders: ['style-loader', 'css-loader']
+                use: [
+                    { loader: 'style-loader' },
+                    { loader: 'css-loader' }
+                ]
             },
             {
                 test: /\.scss$/,
@@ -121,31 +135,70 @@ var webpackConfig = {
             },
             {
                 test: /\.html$/,
-                loader: 'raw-loader'
+                use: [{
+                    loader: "raw-loader"
+                }]
             },
             {
                 test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 10000,
+                        mimetype: "application/font-woff",
+                        fallback: 'file-loader'
+                    }
+                }]
             },
             {
                 test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 10000,
+                        mimetype: "application/font-woff",
+                        fallback: 'file-loader'
+                    }
+                }]
             },
             {
                 test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 10000,
+                        mimetype: "application/octet-stream",
+                        fallback: 'file-loader'
+                    }
+                }]
             },
             {
                 test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'file-loader'
+                use: [{
+                    loader: "file-loader",
+                    options: {
+                        outputPath: 'assets/images/'
+                    }
+                }]
             },
             {
                 test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 10000,
+                        mimetype: "image/svg+xml"
+                    }
+                }]
             },
             {
                 test: /\.(jpg|jpeg|bmp|png|gif)$/,
-                loader: "file-loader"
+                use: [{
+                    loader: "file-loader",
+                    options: {
+                        outputPath: 'assets/images/'
+                    }
+                }]
             },
         ]
     }

@@ -21,7 +21,7 @@ export class AdminLoginComponent implements OnInit {
         Password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6)])),
         Captcha: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(4)]))
     });
-    logoUrl = require("@vendor/images/logo.png");
+    logoUrl = require("src/vendor/images/logo.png");
     msgs: Message[] = [];
     captchaRefreshEvent = new EventEmitter();
     isSubmitting = false;

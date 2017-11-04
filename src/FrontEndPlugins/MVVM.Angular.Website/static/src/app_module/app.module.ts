@@ -10,7 +10,8 @@ import { HttpClientModule } from '@angular/common/http';
 @NgModule({
     imports: [
         BrowserModule,
-        BrowserAnimationsModule, HttpClientModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
         GlobalModule.forRoot(),
         RouterModule.forRoot(appRootRoutesConfig)
     ],

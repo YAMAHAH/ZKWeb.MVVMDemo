@@ -123,6 +123,7 @@ export class Translation_zh_CN {
 		"IsSuccess": "是否成功",
 		"Switch Language": "切换语言",
 		"Switch Timezone": "切换时区",
+		"Production Management System": "生产管理系统",
 		"ExampleData": "示例数据",
 		"Example Datas": "示例数据",
 		"Edit ExampleData": "编辑示例数据",

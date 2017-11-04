@@ -23,7 +23,7 @@ import { CrudWithDialogBaseComponent } from '@business_bases/desktop/base_module
 export class AdminUserListComponent extends CrudWithDialogBaseComponent {
     roleOptions: SelectItem[];
     userTypeOptions: SelectItem[];
-    defaultAvatarUrl: string = require("@vendor/images/default-avatar.jpg");
+    defaultAvatarUrl: string = require('src/vendor/images/default-avatar.jpg');
 
     constructor(
         confirmationService: ConfirmationService,

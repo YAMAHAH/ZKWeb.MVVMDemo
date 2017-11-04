@@ -17,12 +17,12 @@ import { Router } from '@angular/router';
     styleUrls: ['../styles/admin-container.scss']
 })
 export class AdminContainerComponent implements OnInit {
-    logoUrl = require("@vendor/images/logo.png");
+    logoUrl = require("src/vendor/images/logo.png");
     activeMenuId: string;
     dropdownVisible: boolean = false;
     mobileMenuActive: boolean = false;
     navMenuGroups: NavMenuGroup[] = [];
-    defaultAvatarUrl: string = require("@vendor/images/default-avatar.jpg");
+    defaultAvatarUrl: string = require("src/vendor/images/default-avatar.jpg");
     avatarUrl: string = this.defaultAvatarUrl;
     username: string;
     switchLanguageItems: MenuItem[] = [];

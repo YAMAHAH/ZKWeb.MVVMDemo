@@ -1,7 +1,7 @@
 {
-  "Name": "产品管理系统",
+  "Name": "A产品管理系统",
   "Version": "1.0",
-  "Description": "产品管理系统",
+  "Description": " 产品管理系统",
   "Dependencies": [
     "BaseModule",
     "BusinessBaseModule",

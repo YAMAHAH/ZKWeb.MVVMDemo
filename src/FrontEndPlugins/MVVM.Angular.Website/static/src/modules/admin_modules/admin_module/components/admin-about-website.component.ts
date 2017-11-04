@@ -30,7 +30,7 @@ export class AdminAboutWebsiteComponent implements OnInit {
         this.timezone = this.appTranslationService.translate(this.appConfigService.timezone);
         this.apiUrlBase = this.appConfigService.apiUrlBase;
         this.websiteManagerService.GetWebsiteInfo().subscribe(
-            s => this.websiteInfo = s,
+            s => { this.websiteInfo = s;console.log(s); },
             e => this.adminToastService.showToastMessage("error", e));
     }
 }

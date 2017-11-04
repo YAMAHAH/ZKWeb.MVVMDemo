@@ -1,7 +1,7 @@
 {
-  "Name": "生产管理系统",
-  "Version": "1.0",
-  "Description": "生产管理系统",
+  "Name": "Production Management System",
+  "Version": "2.0",
+  "Description": "Production Management System",
   "Dependencies": [
     "BaseModule",
     "BusinessBaseModule",

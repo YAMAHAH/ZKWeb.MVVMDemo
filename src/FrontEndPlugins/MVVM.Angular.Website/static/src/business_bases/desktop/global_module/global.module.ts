@@ -3,19 +3,21 @@ import { AppTranslationService } from './services/app-translation-service';
 import { AppConfigService } from './services/app-config-service';
 import { AppApiService } from './services/app-api-service';
 import { TransPipe } from './pipes/trans-pipe';
-import { HttpModule } from '@angular/http';
 import { RouterOutletComponent } from './components/router-outlet.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './components/page_not_found.component';
 import { AppStoreService } from './services/app-store-service';
 import { AppScriptService } from './services/app-script-service';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
 
 @NgModule({
     imports: [
         CommonModule,
-        HttpModule,
-        RouterModule
+        RouterModule,
+        HttpClientModule,
+        HttpModule
     ],
     declarations: [
         RouterOutletComponent,
@@ -27,8 +29,10 @@ import { AppScriptService } from './services/app-script-service';
         RouterOutletComponent,
         PageNotFoundComponent,
         CommonModule,
-        HttpModule,
-        RouterModule
+        RouterModule,
+        HttpClientModule,
+        HttpModule
+
     ]
 })
 export class GlobalModule {
@@ -41,7 +45,6 @@ export class GlobalModule {
                 AppTranslationService,
                 AppStoreService,
                 AppScriptService
-
             ]
         };
     }

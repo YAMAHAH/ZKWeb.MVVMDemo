@@ -113,7 +113,8 @@ namespace BusinessPlugins.OrganizationModule.Components.Translates
                 { "ErrorMessage", "错误信息" },
                 { "IsSuccess", "是否成功" },
                 { "Switch Language", "切换语言" },
-                { "Switch Timezone", "切换时区" }
+                { "Switch Timezone", "切换时区" },
+                { "Production Management System","生产管理系统" }
             };
         }
     }
